@@ -153,7 +153,7 @@ Exemple:
 
 Frontend
 
-- React
+- React (TypeScript)
 - CSS
 - Bootstrap
 
