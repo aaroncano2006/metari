@@ -24,7 +24,7 @@ L'usuari pot crear i unir-se a grups, cercar-los per nom o categòria i afegir a
 
 L'usuari administrador de grup té control total sobre el grup, pot publicar i gestionar tasques o reptes, gestionar els usuaris o eliminar el grup.
 
-El convidat pot ...
+El convidat pot veure grups públics i el seu contingut però no podrà interactuar amb ell (no pot enviar proves de que ha completat el repte o tasca, no pot unir-se a grups ni afegir comentaris).
 
 L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per gestionar tasques o competir amb els teus amics.
 
