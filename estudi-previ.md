@@ -63,10 +63,10 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 | Categoria      | Requisit                                       |
 | -------------- | ---------------------------------------------- |
-| Seguretat      |                                                |
-| Rendiment      |                                                |
-| Usabilitat     |                                                |
-| Disponibilitat |                                                |
+| Seguretat      | Validació de camps, contrasenyes encriptades, ús de la llibreria Helmet per evitar vulnerabilitats comuns dels navegadors.                                               |
+| Rendiment      |                                                | Intentar que el temps de resposta de les peticions a l'API es realitzin el més ràpid possible.
+| Usabilitat     |                                                | Interfície Responsive i intuitiva.
+| Disponibilitat |                                                | 
 
 ---
 
