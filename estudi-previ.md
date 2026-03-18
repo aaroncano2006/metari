@@ -49,10 +49,12 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | RF11  | Sistema de puntuació del grup (rànquing)
 | RF12 | Sistema d'amics
 | RF13 | Sistema de puntuació entre amics
-| RF14 | Administrar usuaris
-| RF15  | Administrar grups (tots els grups de l'aplicació)
-| RF16  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
-| RF17  | Administrar categories      |
+| RF14 | Personalització bàsica del perfil (canvi de nom visible, canvi de username, canvi de correu, canvi de contrasenya, canvi de foto de perfil)
+| RF15 | Sistema de notificacions bàsic (correu electrònic Nodemailer)
+| RF16 | Administrar usuaris
+| RF17  | Administrar grups (tots els grups de l'aplicació)
+| RF18  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
+| RF19  | Administrar categories      |
 
 
 ---
