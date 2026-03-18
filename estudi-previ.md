@@ -76,10 +76,10 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 | Actor            | Accions Principals                         |
 | ---------------- | ----------------------------------- |
-| Guest                 |   |
-|                  | Pot inscriure's a esdeveniments     |
-|                  | Pot crear i gestionar esdeveniments |
-|                  | Modera contingut i gestiona usuaris |
+| Guest            |  Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. |
+| Usuari                 | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries per a la comunitat i administrar el seu perfil.    |
+| Usuari administrador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és propietari o administrador (publicar tasques i reptes, crear categòries només per els seus grups, administrar membres i configuracions del grup.) |
+|  Admin    | Control total de l'aplicació. Modera grups, tasques, reptes, categòries i usuaris. |
 
 ## Diagrama de casos d'ús 
 
