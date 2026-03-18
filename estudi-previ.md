@@ -101,25 +101,74 @@ Usuari
 
 - id
 - nom
+- username
+- profile_picture
 - email
-- rol
+- password
+- rol (User/Admin)
+- completed_tasks
+- wins (reptes guanyats)
+- timestamps
 
-Esdeveniment
+Grup
+
+- id
+- nom
+- tasques[]
+- reptes[]
+<!-- - categòries[] -->
+- membres[]
+- admins[]
+- isPublic (boolean)
+- timestamps
+
+Tasques
 
 - id
 - titol
-- data
-- ubicacio
+- descripcio
+- autor
+- start_date
+- due_date
+- proofs[
+    {
+        userId,
+        filename
+    }
+]
+- categories[]
+- difficulty
+- score
+- timestamps
 
-Inscripcio
+Reptes
 
 - id
-- usuari\_id
-- esdeveniment\_id
+- titol
+- descripcio
+- autor
+- start_date
+- due_date
+- proofs[
+    {
+        userId,
+        filename
+    }
+]
+- categories[]
+- difficulty
+- score
+- timestamps
+
+Categoria
+
+- id
+- nom
+- timestamps
 
 Relacions:
 
-Usuari (1) —— (N) Inscripcio (N) —— (1) Esdeveniment
+
 ### Model de dades
 
 ![alt text](diagrames/model-dades.png)
