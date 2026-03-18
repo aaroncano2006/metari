@@ -64,9 +64,9 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | Categoria      | Requisit                                       |
 | -------------- | ---------------------------------------------- |
 | Seguretat      | Validació de camps, contrasenyes encriptades, ús de la llibreria Helmet per evitar vulnerabilitats comuns dels navegadors.                                               |
-| Rendiment      |                                                | Intentar que el temps de resposta de les peticions a l'API es realitzin el més ràpid possible.
-| Usabilitat     |                                                | Interfície Responsive i intuitiva.
-| Disponibilitat |                                                | 
+| Rendiment      |   Intentar que el temps de resposta de les peticions a l'API es realitzin el més ràpid possible.                                             | 
+| Usabilitat     |  Interfície Responsive i intuitiva.                                              | 
+| Disponibilitat |  Disponible 24 hores els 7 dies de la setmana excepte  quan estigui en manteniment.                                              | 
 
 ---
 
@@ -76,7 +76,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 | Actor            | Accions Principals                         |
 | ---------------- | ----------------------------------- |
-|                  | Pot consultar esdeveniments públics i registrar-se   |
+| Guest                 |   |
 |                  | Pot inscriure's a esdeveniments     |
 |                  | Pot crear i gestionar esdeveniments |
 |                  | Modera contingut i gestiona usuaris |
