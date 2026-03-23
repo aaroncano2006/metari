@@ -83,7 +83,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ## Diagrama de casos d'ús 
 
-![alt text](diagrames/casos-us.png)
+![alt text](img/Casos-Us.png)
 
 ### Lectura ràpida del diagrama
 
