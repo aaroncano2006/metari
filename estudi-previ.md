@@ -145,13 +145,31 @@ Tasca
         timestamps
     }
 ]
-- groups[]
 - categories[]
 - assigned_to[]
 - completed_by[]
 - difficulty
 - score
 - isPublic (boolean)
+- timestamps
+
+Tasca_Template
+
+- _id (MongoID)
+- titol
+- descripcio
+- author (default null)
+- originalAuthor
+- start_date (default null)
+- due_date (default null)
+- proofs[] (empty array)
+- comments [] (empty array)
+- categories[]
+- assigned_to[] (empty array)
+- completed_by[] (empty array)
+- difficulty
+- score
+- isPublic (boolean) (default false)
 - timestamps
 
 Repte
@@ -173,6 +191,23 @@ Repte
 - difficulty
 - score
 - isPublic (boolean)
+- timestamps
+
+Repte_Template
+
+- _id (MongoID)
+- titol
+- descripcio
+- author (default null)
+- originalAuthor
+- start_date (default null)
+- due_date (default null)
+- proofs[] (empty array)
+- categories[]
+- completed_by[] (empty array)
+- difficulty
+- score
+- isPublic (boolean) (default false)
 - timestamps
 
 Categoria
