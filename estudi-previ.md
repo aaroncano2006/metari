@@ -117,18 +117,19 @@ Grup
 - nom
 - tasques[]
 - reptes[]
-- categòries[] (adicional/extra)
+- categories[] (adicional/extra)
 - membres[]
 - admins[]
+- author
 - isPublic (boolean)
 - timestamps
 
-Tasques
+Tasca
 
 - id
 - titol
 - descripcio
-- autor
+- author
 - start_date
 - due_date
 - proofs[
@@ -137,18 +138,20 @@ Tasques
         filename
     }
 ]
+- groups[]
 - categories[]
+- assigned_to[]
 - difficulty
 - score
 - isPublic (boolean)
 - timestamps
 
-Reptes
+Repte
 
 - id
 - titol
 - descripcio
-- autor
+- author
 - start_date
 - due_date
 - proofs[
@@ -171,7 +174,33 @@ Categoria
 
 Relacions:
 
+Com la base de dades la farem a MongoDB no compta com a tal amb un sistema relacional, però amb arrays i referenciant IDs podem relacionar diversos documents.
 
+Metari comptarà amb les següents relacions:
+
+- **Usuari -> Grup:** Un usuari pot estar en diferents grups (document Usuari, camp groups[]). Un grup pot tenir diversos usuaris (document Grups, camps membres[], admins[] i author, per diferenciar usuaris sense permisos dins del grup, usuaris amb privilegis i el creador del grup, que per defecte també estarà al llistat d'administradors).
+
+- **Usuari -> Tasca:** Un usuari pot ser autor de diferents tasques, però la tasca només pot tenir un autor (document Tasca, camp author). Una tasca pot tenir diferents usuaris assignats (document Tasca, camp assigned_to[]).
+
+- **Usuari -> Repte:** Un usuari pot ser autor de diferents reptes, però el repte només pot tenir un autor (document Repte, camp author).
+
+- **Tasca -> Grup:** Una tasca pot estar en diferents grups (document Tasca, camp groups[]. S'ha fet d'aquesta forma ja que l'autor de la tasca pot decidir compartir aquesta tasca amb la comunitat). Un grup pot tenir diverses tasques (document Grup, camp tasques[]).
+
+**IMPORTANT:** Si una tasca compartida amb la comunitat (`isPublic = true`) s'utilitza en un altre grup podriem tenir problemes d'afegir dades d'altres grups (camp proofs[] amb les proves de que s'ha completat la tasca o repte i groups[] amb tots els grups on està ubicada la tasca). Per solucionar-ho farem el següent:
+
+- Quan un nou grup vulgui utilitzar una tasca compartida, mitjançant la id de la tasca original recuperem tots els camps amb els valors originals excepte `proofs[]` (el deixarem buit), `groups[]` (només el grup on es publiqui) i isPublic ho deixarem a `false`.
+
+- Quan es publiqui simplement es crearà una còpia amb les dades ajustades per al grup on s'ha publicat aquesta tasca compartida.
+
+Amb els **reptes** haurem de fer el mateix!!!
+
+**Repte -> Grup:** Un repte pot estar en diferents grups (document Repte, camp groups[]. S'ha fet d'aquesta forma ja que l'autor del repte pot decidir compartir aquest repte amb la comunitat). Un grup pot tenir diverses tasques (document Grup, camp reptes[]).
+
+**Categoria -> Grup:** Un grup pot tenir diverses categories (camp categories[]).
+
+**Categoria -> Tasca:** Una tasca pot tenir diverses categories (document Tasca, camp categories[]).
+
+**Categoria -> Repte:** Un repte pot tenir diverses categories (document Tasca, camp categories[]).
 
 ### Model de dades
 
