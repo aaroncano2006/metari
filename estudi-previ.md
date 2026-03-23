@@ -99,7 +99,7 @@ Aquest diagrama es pot adaptar fàcilment a altres temàtiques canviant actors i
 
 Usuari
 
-- id
+- _id (MongoID)
 - nom
 - username
 - profile_picture
@@ -113,7 +113,7 @@ Usuari
 
 Grup
 
-- id
+- _id (MongoID)
 - nom
 - tasques[]
 - reptes[]
@@ -126,7 +126,7 @@ Grup
 
 Tasca
 
-- id
+- _id (MongoID)
 - titol
 - descripcio
 - author
@@ -136,6 +136,13 @@ Tasca
     {
         userId,
         filename
+    }
+]
+- comments [
+    {
+        userId,
+        body,
+        timestamps
     }
 ]
 - groups[]
@@ -186,9 +193,9 @@ Metari comptarà amb les següents relacions:
 
 - **Tasca -> Grup:** Una tasca pot estar en diferents grups (document Tasca, camp groups[]. S'ha fet d'aquesta forma ja que l'autor de la tasca pot decidir compartir aquesta tasca amb la comunitat). Un grup pot tenir diverses tasques (document Grup, camp tasques[]).
 
-**IMPORTANT:** Si una tasca compartida amb la comunitat (`isPublic = true`) s'utilitza en un altre grup podriem tenir problemes d'afegir dades d'altres grups (camp proofs[] amb les proves de que s'ha completat la tasca o repte i groups[] amb tots els grups on està ubicada la tasca). Per solucionar-ho farem el següent:
+**IMPORTANT:** Si una tasca compartida amb la comunitat (`isPublic = true`) s'utilitza en un altre grup podriem tenir problemes d'afegir dades d'altres grups (camp proofs[] amb les proves de que s'ha completat la tasca o repte, comentaris (camp comments[]) i groups[] amb tots els grups on està ubicada la tasca). Per solucionar-ho farem el següent:
 
-- Quan un nou grup vulgui utilitzar una tasca compartida, mitjançant la id de la tasca original recuperem tots els camps amb els valors originals excepte `proofs[]` (el deixarem buit), `groups[]` (només el grup on es publiqui) i isPublic ho deixarem a `false`.
+- Quan un nou grup vulgui utilitzar una tasca compartida, mitjançant la id de la tasca original recuperem tots els camps amb els valors originals excepte `proofs[]` (el deixarem buit), `comments[]` (només existeix a tasques, el deixarem buit), `groups[]` (només el grup on es publiqui) i isPublic ho deixarem a `false`.
 
 - Quan es publiqui simplement es crearà una còpia amb les dades ajustades per al grup on s'ha publicat aquesta tasca compartida.
 
@@ -208,10 +215,7 @@ Amb els **reptes** haurem de fer el mateix!!!
 
 ### Lectura ràpida del model de dades
 
-- Usuari representa qualsevol persona registrada al sistema.
-- Un usuari organitzador pot crear diversos esdeveniments.
-- Un usuari registrat es pot inscriure a diversos esdeveniments.
-- La taula Inscripcio resol la relació entre usuaris i esdeveniments i permet guardar informació pròpia de la inscripció.
+
 
 ---
 
@@ -219,7 +223,7 @@ Amb els **reptes** haurem de fer el mateix!!!
 
 Pantalles principals:
 
-- Pàgina d'inici (llista d'esdeveniments)
+- Pàgina d'inici ()
 - Detall d'esdeveniment
 - Panells d'usuaris
 - Formulari de creació
