@@ -239,6 +239,8 @@ Exemple:
 
 ## 6. Tecnologies utilitzades
 
+**MERN Stack**
+
 Frontend
 
 - React (TypeScript)
