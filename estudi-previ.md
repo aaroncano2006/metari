@@ -213,7 +213,7 @@ Amb els **reptes** haurem de fer el mateix!!!
 
 ### Model de dades
 
-![alt text](diagrames/model-dades.png)
+![alt text](img/Model-relacions.png)
 
 ### Lectura ràpida del model de dades
 
