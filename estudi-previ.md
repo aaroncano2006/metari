@@ -108,6 +108,7 @@ Usuari
 - rol (User/Admin)
 - completed_tasks
 - wins (reptes guanyats)
+- grups[] (many to many)
 - timestamps
 
 Grup
@@ -116,7 +117,7 @@ Grup
 - nom
 - tasques[]
 - reptes[]
-<!-- - categòries[] -->
+- categòries[] (adicional/extra)
 - membres[]
 - admins[]
 - isPublic (boolean)
@@ -139,6 +140,7 @@ Tasques
 - categories[]
 - difficulty
 - score
+- isPublic (boolean)
 - timestamps
 
 Reptes
@@ -158,6 +160,7 @@ Reptes
 - categories[]
 - difficulty
 - score
+- isPublic (boolean)
 - timestamps
 
 Categoria
@@ -167,6 +170,7 @@ Categoria
 - timestamps
 
 Relacions:
+
 
 
 ### Model de dades
