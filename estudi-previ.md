@@ -148,6 +148,7 @@ Tasca
 - groups[]
 - categories[]
 - assigned_to[]
+- completed_by[]
 - difficulty
 - score
 - isPublic (boolean)
@@ -168,6 +169,7 @@ Repte
     }
 ]
 - categories[]
+- completed_by[]
 - difficulty
 - score
 - isPublic (boolean)
@@ -195,7 +197,7 @@ Metari comptarà amb les següents relacions:
 
 **IMPORTANT:** Si una tasca compartida amb la comunitat (`isPublic = true`) s'utilitza en un altre grup podriem tenir problemes d'afegir dades d'altres grups (camp proofs[] amb les proves de que s'ha completat la tasca o repte, comentaris (camp comments[]) i groups[] amb tots els grups on està ubicada la tasca). Per solucionar-ho farem el següent:
 
-- Quan un nou grup vulgui utilitzar una tasca compartida, mitjançant la id de la tasca original recuperem tots els camps amb els valors originals excepte `proofs[]` (el deixarem buit), `comments[]` (només existeix a tasques, el deixarem buit), `groups[]` (només el grup on es publiqui) i isPublic ho deixarem a `false`.
+- Quan un nou grup vulgui utilitzar una tasca compartida, mitjançant la id de la tasca original recuperem tots els camps amb els valors originals excepte `proofs[]` (el deixarem buit), `assigned_to[]` i `comments[]` (només existeixen a tasques, els deixarem buits), `completed_by[]` (el deixarem buit) `groups[]` (només el grup on es publiqui) i isPublic ho deixarem a `false`.
 
 - Quan es publiqui simplement es crearà una còpia amb les dades ajustades per al grup on s'ha publicat aquesta tasca compartida.
 
