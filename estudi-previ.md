@@ -156,7 +156,7 @@ Tasca
 
 Repte
 
-- id
+- _id (MongoID)
 - titol
 - descripcio
 - author
@@ -177,7 +177,7 @@ Repte
 
 Categoria
 
-- id
+- _id (MongoID)
 - nom
 - timestamps
 
