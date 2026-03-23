@@ -50,11 +50,10 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | RF12 | Sistema d'amics
 | RF13 | Sistema de puntuació entre amics
 | RF14 | Personalització bàsica del perfil (canvi de nom visible, canvi de username, canvi de correu, canvi de contrasenya, canvi de foto de perfil)
-| RF15 | Sistema de notificacions bàsic (correu electrònic Nodemailer)
-| RF16 | Administrar usuaris
-| RF17  | Administrar grups (tots els grups de l'aplicació)
-| RF18  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
-| RF19  | Administrar categories      |
+| RF15 | Administrar usuaris
+| RF16  | Administrar grups (tots els grups de l'aplicació)
+| RF17  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
+| RF18  | Administrar categories      |
 
 
 ---
@@ -66,7 +65,8 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | Seguretat      | Validació de camps, contrasenyes encriptades, ús de la llibreria Helmet per evitar vulnerabilitats comuns dels navegadors.                                               |
 | Rendiment      |   Intentar que el temps de resposta de les peticions a l'API es realitzin el més ràpid possible.                                             | 
 | Usabilitat     |  Interfície Responsive i intuitiva.                                              | 
-| Disponibilitat |  Disponible 24 hores els 7 dies de la setmana excepte  quan estigui en manteniment.                                              | 
+| Disponibilitat |  Disponible 24 hores els 7 dies de la setmana excepte  quan estigui en manteniment.
+| Notificacions | Sistema de notificacions bàsic (correu electrònic Nodemailer).                                            | 
 
 ---
 
