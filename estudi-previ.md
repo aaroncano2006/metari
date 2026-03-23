@@ -226,25 +226,21 @@ Metari comptarà amb les següents relacions:
 
 - **Usuari -> Tasca:** Un usuari pot ser autor de diferents tasques, però la tasca només pot tenir un autor (document Tasca, camp author). Una tasca pot tenir diferents usuaris assignats (document Tasca, camp assigned_to[]).
 
+- **Usuari -> Tasca_Template:** Un usuari pot ser autor de diferents templates de tasques al compartir-les amb la comunitat, però la template de la tasca només pot tenir un autor (document Tasca_Template, camp originalAuthor).
+
 - **Usuari -> Repte:** Un usuari pot ser autor de diferents reptes, però el repte només pot tenir un autor (document Repte, camp author).
 
-- **Tasca -> Grup:** Una tasca pot estar en diferents grups (document Tasca, camp groups[]. S'ha fet d'aquesta forma ja que l'autor de la tasca pot decidir compartir aquesta tasca amb la comunitat). Un grup pot tenir diverses tasques (document Grup, camp tasques[]).
+- **Usuari -> Repte_Template:** Un usuari pot ser autor de diferents templates de reptes al compartir-los amb la comunitat, però el repte només pot tenir un autor (document Repte_Template, camp originalAuthor).
 
-**IMPORTANT:** Si una tasca compartida amb la comunitat (`isPublic = true`) s'utilitza en un altre grup podriem tenir problemes d'afegir dades d'altres grups (camp proofs[] amb les proves de que s'ha completat la tasca o repte, comentaris (camp comments[]) i groups[] amb tots els grups on està ubicada la tasca). Per solucionar-ho farem el següent:
+- **Grup -> Tasques:** Un grup pot tenir diferents tasques (document Grup, camp tasques[]).
 
-- Quan un nou grup vulgui utilitzar una tasca compartida, mitjançant la id de la tasca original recuperem tots els camps amb els valors originals excepte `proofs[]` (el deixarem buit), `assigned_to[]` i `comments[]` (només existeixen a tasques, els deixarem buits), `completed_by[]` (el deixarem buit) `groups[]` (només el grup on es publiqui) i isPublic ho deixarem a `false`.
-
-- Quan es publiqui simplement es crearà una còpia amb les dades ajustades per al grup on s'ha publicat aquesta tasca compartida.
-
-Amb els **reptes** haurem de fer el mateix!!!
-
-**Repte -> Grup:** Un repte pot estar en diferents grups (document Repte, camp groups[]. S'ha fet d'aquesta forma ja que l'autor del repte pot decidir compartir aquest repte amb la comunitat). Un grup pot tenir diverses tasques (document Grup, camp reptes[]).
+**Grup -> Reptes:** Un grup pot tenir diferents reptes (document Grup, camp reptes[]).
 
 **Categoria -> Grup:** Un grup pot tenir diverses categories (camp categories[]).
 
 **Categoria -> Tasca:** Una tasca pot tenir diverses categories (document Tasca, camp categories[]).
 
-**Categoria -> Repte:** Un repte pot tenir diverses categories (document Tasca, camp categories[]).
+**Categoria -> Repte:** Un repte pot tenir diverses categories (document Repte, camp categories[]).
 
 ### Model de dades
 
