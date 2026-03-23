@@ -120,7 +120,7 @@ Grup
 - categories[] (adicional/extra)
 - membres[]
 - admins[]
-- author
+- owner
 - isPublic (boolean)
 - timestamps
 
@@ -187,7 +187,7 @@ Com la base de dades la farem a MongoDB no compta com a tal amb un sistema relac
 
 Metari comptarà amb les següents relacions:
 
-- **Usuari -> Grup:** Un usuari pot estar en diferents grups (document Usuari, camp groups[]). Un grup pot tenir diversos usuaris (document Grups, camps membres[], admins[] i author, per diferenciar usuaris sense permisos dins del grup, usuaris amb privilegis i el creador del grup, que per defecte també estarà al llistat d'administradors).
+- **Usuari -> Grup:** Un usuari pot estar en diferents grups (document Usuari, camp groups[]). Un grup pot tenir diversos usuaris (document Grups, camps membres[], admins[] i owner, per diferenciar usuaris sense permisos dins del grup, usuaris amb privilegis i el creador del grup, que per defecte també estarà al llistat d'administradors).
 
 - **Usuari -> Tasca:** Un usuari pot ser autor de diferents tasques, però la tasca només pot tenir un autor (document Tasca, camp author). Una tasca pot tenir diferents usuaris assignats (document Tasca, camp assigned_to[]).
 
