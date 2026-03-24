@@ -114,6 +114,7 @@ Usuari
 - completed_tasks
 - wins (reptes guanyats)
 - grups[] (many to many)
+- friends[]
 - timestamps
 
 Grup
@@ -253,7 +254,9 @@ Metari comptarà amb les següents relacions:
 
 ## Lectura ràpida del model de dades
 
+- Un usuari representa qualsevol persona registrada al sistema.
 
+- Un usuari pot consultar, cercar i crear grups. 
 
 ---
 
