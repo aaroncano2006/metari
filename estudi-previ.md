@@ -329,7 +329,7 @@ Pujada de fitxers
 
 ## Diagrama d'arquitectura 
 
-
+![alt text](img/diagrama-arquitectura.png)
 
 ---
 
