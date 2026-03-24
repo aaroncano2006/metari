@@ -1,8 +1,8 @@
 # Estudi previ
 
----
 
-## 1. Descripció del sistema
+
+# 1. Descripció del sistema
 
 **Nom del projecte:** Metari
 
@@ -30,7 +30,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ---
 
-## 2. Requisits del sistema
+# 2. Requisits del sistema
 
 ### Requisits funcionals
 
@@ -70,7 +70,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ---
 
-## 4. Model de negoci
+# 4. Model de negoci
 
 ## Actors del sistema
 
@@ -98,9 +98,9 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 Els permisos són acumulatius (Role Based Access Control (RBAC)), els rols superiors hereden les funcions dels inferiors.
 
 Aquest diagrama es pot adaptar fàcilment a altres temàtiques canviant actors i casos d'ús principals.
-## 3. Model conceptual (simplificat)
+# 3. Model conceptual (simplificat)
 
-### Entitats principals:
+## Entitats principals:
 
 Usuari
 
@@ -247,17 +247,17 @@ Metari comptarà amb les següents relacions:
 
 **Categoria -> Repte:** Un repte pot tenir diverses categories (document Repte, camp categories[]).
 
-### Model de dades
+## Model de dades
 
 ![alt text](img/Model-relacions.png)
 
-### Lectura ràpida del model de dades
+## Lectura ràpida del model de dades
 
 
 
 ---
 
-## 5. Disseny inicial de la interfície (bàsic)
+# 5. Disseny inicial de la interfície (bàsic)
 
 Pantalles principals:
 
@@ -273,7 +273,7 @@ Exemple:
 
 ---
 
-## 6. Tecnologies utilitzades
+# 6. Tecnologies utilitzades
 
 **MERN Stack**
 
@@ -302,13 +302,13 @@ Pujada de fitxers
 
 - Multer
 
-### Diagrama d'arquitectura 
+## Diagrama d'arquitectura 
 
 
 
 ---
 
-## 7. Planificació inicial
+# 7. Planificació inicial
 
 | Fase | Descripció   |
 | ---- | ------------ |
