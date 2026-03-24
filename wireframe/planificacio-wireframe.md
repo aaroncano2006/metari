@@ -34,6 +34,8 @@
         - Camp email o username
         - Password
         - Checkbox Remember Me
+    - Enllaç a Register (No tens compte? Registra't)
+    - Enllaç a Forgot Password (Has oblidat la contrasenya?)
 - Forgot Password
 - Restore Password
 - Profile
