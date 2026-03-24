@@ -2,7 +2,7 @@
 
 ## Pàgines de l'aplicació, endpoints, redireccions del frontend i components.
 
-- Home ( **/** o **/home** )
+- **Home** ( **/** o **/home** )
     - Navbar
         - Left Side:
             - Logo
@@ -21,7 +21,7 @@
     - Discover List
     - My Groups List
     - Friends List + Ranking
-- Register (/register, si estàs loguejat redirecciona a /home)
+- **Register** (/register, si estàs loguejat redirecciona a /home)
     - Formulari de registre per crear compte.
         - Camp nom visible (name) (si es deixa buit agafarà el username).
         - Camp d'usuari (username) (obligatori) (únic i disponible).
@@ -29,25 +29,25 @@
         - Password (obligatori i recomanable 12 caràcters de llarg)
         - Checkbox rememeber me
     - Enllaç a Login (Tens un compte? Inicia sessió)
-- Login (/login, si estàs loguejat redirecciona a /home)
+- **Login** (/login, si estàs loguejat redirecciona a /home)
     - Formulari d'inici de sessió
         - Camp email o username
         - Password
         - Checkbox Remember Me
     - Enllaç a Register (No tens compte? Registra't)
     - Enllaç a Forgot Password (Has oblidat la contrasenya?)
-- Forgot Password
-- Restore Password
-- Profile
-- My Groups
-- Friends
-- Group
-- Admin Panel Home
-- Admin Panel Users
-- Admin Panel Groups
-- Admin Panel Tasks
-- Admin Panel Challenges
-- Admin Panel Categories
+- **Forgot Password**
+- **Restore Password**
+- **Profile**
+- **My Groups**
+- **Friends**
+- **Group**
+- **Admin Panel Home**
+- **Admin Panel Users**
+- **Admin Panel Groups**
+- **Admin Panel Tasks**
+- **Admin Panel Challenges**
+- **Admin Panel Categories**
 
 ## Paleta de colors
 
