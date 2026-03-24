@@ -256,7 +256,29 @@ Metari comptarà amb les següents relacions:
 
 - Un usuari representa qualsevol persona registrada al sistema.
 
-- Un usuari pot consultar, cercar i crear grups. 
+- Un usuari pot consultar, cercar, unir-se i crear grups.
+
+- Un usuari pot consultar rànquings.
+
+- Un usuari pot afegir amics.
+
+- Un usuari pot crear tasques, reptes i categories dins dels grups on és membre.
+
+- Les tasques i reptes tenen categories assignades.
+
+- Un usuari pot compartir tasques o reptes i per tant és autor de les templates.
+
+- Els grups tenen membres, administradors, un propietari, reptes, tasques i categories.
+
+- Un usuari pot editar totes les tasques que siguin seves dins dels seus grups.
+
+- Un usuari pot adjuntar proves de que ha completat la tasca o repte i comentaris dins les tasques.
+
+- Un usuari adminstrador (no owner) pot administrar totes les tasques del grup.
+
+- Un usuari administrador pot administrar el grup, canviant el seu nom, les categories, i gestionant els altres membres del grup (poden alternar el seu rol entre membre del grup o administrador o expulsar-lo. no poden gestionar l'owner).
+
+- L'owner del grup té control total sobre el grup.
 
 ---
 
