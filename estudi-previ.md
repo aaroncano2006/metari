@@ -1,7 +1,5 @@
 # Estudi previ
 
-
-
 # 1. Descripció del sistema
 
 **Nom del projecte:** Metari
