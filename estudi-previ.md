@@ -87,10 +87,15 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ### Lectura ràpida del diagrama
 
-- **Visitant**: pot consultar esdeveniments i crear un compte.
-- **Usuari registrat**: pot iniciar sessió, gestionar el seu perfil i inscriure's a esdeveniments.
-- **Organitzador**: a més de les funcionalitats bàsiques, pot crear i gestionar esdeveniments i controlar les inscripcions.
-- **Administrador**: s'encarrega de moderar contingut i gestionar usuaris.
+- **Visitant**: Pot consultar grups i rankings, cercar-los i crear un compte.
+
+- **Usuari registrat**: Pot iniciar sessió, gestionar el seu perfil, unir-se a grups, crear grups, crear reptes/tasques/categories dins dels grups als que pertany, afegir comentaris i afegir proves.
+
+- **Usuari Administrador/Owner**: Mateixos permisos que l'usuari registrat, però dins del grup poden admnistrar totes les tasques i reptes que es publiquen (editar-les i eliminar-les) i administrar el grup (canviar el nom, canviar categories, administrar els membres (canviar el seu rol o expulsar-los, excepte l'owner), L'owner té control total del grup (incloent eliminació).)
+
+- **Administrador**: Control total de l'aplicació. Pot administrar usuaris, tots els grups i administrar tasques, reptes i categories públiques.
+
+Els permisos són acumulatius (Role Based Access Control (RBAC)), els rols superiors hereden les funcions dels inferiors.
 
 Aquest diagrama es pot adaptar fàcilment a altres temàtiques canviant actors i casos d'ús principals.
 ## 3. Model conceptual (simplificat)
