@@ -12,15 +12,17 @@ Els usuaris poden crear i unir-se a grups.
 
 Els usuaris que siguin administradors de grup poden gestionar els membres, crear i validar els reptes i opcionalment compartir el repte amb la comunitat, permitint que altres grups puguin utilitzar aquest repte.
 
-Dins dels grups hi haurà un sistema de puntuació entre els diferents usuaris en funció de quins reptes o tasques validats per l'administador del grup ha completat l'usuari.
+Dins dels grups hi haurà un sistema de puntuació entre els diferents usuaris en funció de quins reptes o tasques validats pels administradors del grup ha completat l'usuari.
 
 També hi haurà un sistema d'amics amb un ranking exclusivament entre tú i els teus amics.
 
-L'administrador pot gestionar usuaris, grups, categòries, reptes, tasques i comentaris.
+L'administrador pot gestionar usuaris, grups, categòries, reptes, tasques i comentaris. Té control total de l'aplicació.
 
-L'usuari pot crear i unir-se a grups, cercar-los per nom o categòria i afegir amics.
+L'usuari pot crear i unir-se a grups, crear tasques o reptes dins del grup, cercar grups per nom o categòria i afegir amics.
 
-L'usuari administrador de grup té control total sobre el grup, pot publicar i gestionar tasques o reptes, gestionar els usuaris o eliminar el grup.
+L'usuari propietari de grup (owner) té control total sobre el grup, pot publicar i gestionar tasques o reptes, gestionar els usuaris o eliminar el grup.
+
+L'usuari administrador de grup pot publicar i gestionar tasques o reptes i gestionar els usuaris excepte l'owner.
 
 El convidat pot veure grups públics i el seu contingut però no podrà interactuar amb ell (no pot enviar proves de que ha completat el repte o tasca, no pot unir-se a grups ni afegir comentaris).
 
@@ -77,6 +79,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | Guest            |  Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. |
 | Usuari                 | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries per a la comunitat i administrar el seu perfil.    |
 | Usuari administrador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és propietari o administrador (publicar tasques i reptes, crear categòries només per els seus grups, administrar membres i configuracions del grup.) |
+| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari administrador de grup, però aquest té control total de tots els grups on és propietari.
 |  Admin    | Control total de l'aplicació. Modera grups, tasques, reptes, categòries i usuaris. |
 
 ## Diagrama de casos d'ús 
