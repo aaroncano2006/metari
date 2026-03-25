@@ -40,7 +40,9 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 - Personalitzar el perfil
 - Consultar grups
 - Cercar grups
-- Crear grups
+- Afegir amics.
+- Consultar rankings.
+- Crear grups.
 - Crear tasques, reptes i categories dins dels grups. 
 - Compartir tasques i reptes amb la comunitat.
 - Administrar el grup, els reptes, tasques i categories i els usuaris del grup (Administradors de grup i Owner del grup)
@@ -48,4 +50,4 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 **Ús d'API externa:**
 
-No tenim pensat l'ús de cap API externa. Desenvoluparem un backend basat en API RESTful i desenvolupat en ExpressJS, es faran les peticions a aquesta API interna i es desarà en la nostra base de dades MongoDB
+No tenim pensat l'ús de cap API externa. Desenvoluparem un backend basat en API RESTful i desenvolupat en ExpressJS, es faran les peticions a aquesta API interna i es desarà en la nostra base de dades MongoDB.
