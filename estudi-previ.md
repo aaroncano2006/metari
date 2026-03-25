@@ -113,6 +113,7 @@ Usuari
 - wins (reptes guanyats)
 - grups[] (many to many)
 - friends[]
+- remember_token (restauració de contrasenya)
 - timestamps
 
 Grup
