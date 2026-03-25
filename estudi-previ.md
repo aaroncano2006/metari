@@ -173,6 +173,7 @@ Tasca
 - difficulty
 - score
 - isPublic (boolean)
+- isApproved (boolean) (default false)
 - timestamps
 
 Tasca_Template
@@ -192,6 +193,7 @@ Tasca_Template
 - difficulty
 - score
 - isPublic (boolean) (default false)
+- isApproved (boolean) (default false)
 - timestamps
 
 Repte
@@ -213,6 +215,7 @@ Repte
 - difficulty
 - score
 - isPublic (boolean)
+- isApproved (boolean) (default false)
 - timestamps
 
 Repte_Template
@@ -230,6 +233,7 @@ Repte_Template
 - difficulty
 - score
 - isPublic (boolean) (default false)
+- isApproved (boolean) (default false)
 - timestamps
 
 Categoria
