@@ -1,0 +1,79 @@
+@startuml
+
+entity Usuari {
+  id
+  nom
+}
+
+entity Grup {
+  id
+  nom
+}
+
+entity Meta {
+  id
+  nom
+}
+
+entity Repte {
+  id
+  nom
+}
+
+entity Tasca {
+  id
+  nom
+}
+
+entity Comentari {
+  id
+  text
+}
+
+entity Categoria {
+  id
+  nom
+}
+
+entity Invitacio {
+  id
+  estat
+}
+
+' Un usuari pot crear 0 o molts grups
+Usuari ||--o{ Grup : crea
+
+' Relació many-to-many: membres
+Grup ||--o{ Usuari : te membres
+
+' Administradors de grups
+Usuari }o--|{ Grup : administra
+
+' Un grup conté 1 o moltes metes
+Grup }|--|{ Meta : conte
+
+' Herència
+Meta <|-- Repte
+Meta <|-- Tasca
+
+' Un usuari pot fer 1 o molts comentaris
+Usuari ||--|{ Comentari : escriu
+
+' Un comentari està en una meta (repte o tasca)
+Meta ||--o{ Comentari : te
+
+' Les metes tenen 1 o més categories
+Meta }|--|{ Categoria : te
+
+' Invitacions
+Usuari ||--o{ Invitacio : envia
+Usuari ||--o{ Invitacio : rep
+Grup ||--o{ Invitacio : per_a
+
+' Assignació de tasques
+Tasca }|--o{ Usuari : assignada_a
+
+' Compleció de metes
+Usuari }o--|{ Meta : completa
+
+@enduml
