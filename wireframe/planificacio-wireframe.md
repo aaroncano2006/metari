@@ -14,6 +14,7 @@
                 - User Dropdown
                     - Enllaç a Profile
                     - Log Out
+                - Botó per accedir a l'admin panel (si estàs loguejat com l'administrador de l'aplicació)
             - Si no estàs loguejat:
                 - Enllaç a Register
                 - Enllaç a Login
@@ -36,9 +37,18 @@
         - Checkbox Remember Me
     - Enllaç a Register (No tens compte? Registra't)
     - Enllaç a Forgot Password (Has oblidat la contrasenya?)
-- **Forgot Password**
-- **Restore Password**
+- **Forgot Password** (/forgot-password, si estpas loguejat redirecciona a /home)
+    - Formulari de restaruar contrasenya
+        - Camp email o username
+- **Restore Password** (/reset-password?token=${token} (Token generat des del Backend))
+    - Formulari de nova contrasenya amb confirmació
 - **Profile**
+    - Visualització del perfil (foto, nom de visualització, username)
+    - Formulari per canviar les dades
+        - Camp nom visible (name) (si es deixa buit agafarà el username).
+        - Camp d'usuari (username) (obligatori) (únic i disponible).
+        - Camp email (email) (obligatori) (únic i disponible)
+        - Password (obligatori i recomanable 12 caràcters de llarg)
 - **My Groups**
 - **Friends**
 - **Group**
