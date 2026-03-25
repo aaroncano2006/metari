@@ -6,15 +6,15 @@
     - Navbar
         - Left Side:
             - Logo
-            - Enllaç a Home
+            - Enllaç a Home  
+        - Right Side:
             - Enllaç a My Groups (Redirecciona a Register (/register) si no estàs loguejat)
             - Friends (Redirecciona a Register (/register) si no estàs loguejat)
-        - Right Side:
             - Si estàs loguejat:
                 - User Dropdown
                     - Enllaç a Profile
+                    - Enllaç per accedir a l'admin panel (si estàs loguejat com l'administrador de l'aplicació)
                     - Log Out
-                - Botó per accedir a l'admin panel (si estàs loguejat com l'administrador de l'aplicació)
             - Si no estàs loguejat:
                 - Enllaç a Register
                 - Enllaç a Login
