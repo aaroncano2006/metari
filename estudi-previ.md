@@ -16,7 +16,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 **Usuari registrat:**
 
-- L'usuari pot crear i unir-se a grups, crear tasques o reptes dins del grup, validar només els seus reptes o tasques, opcionalmet compartir-los amb la comunitat, cercar grups per nom o categòria, afegir amics i personalitzar el seu perfil.
+- L'usuari pot crear i unir-se a grups, crear tasques o reptes dins dels grups als que pertany, opcionalmet compartir-los amb la comunitat, cercar grups per nom o categòria, afegir amics i personalitzar el seu perfil.
 
 **Sistema d'amics:**
 
@@ -24,23 +24,27 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 - El sistema de puntuació de cada perfil d'usuari es basa en quants reptes han guanyat i quantes tasques han completat. En base a aquests paràmetres es monta el sistema de puntuació entre amics.
 
-**Grups**
+**Grups:**
 
-- Dins dels grups hi haurà un sistema de puntuació entre els diferents usuaris en funció de quins reptes o tasques validats pels administradors del grup ha completat l'usuari.
+- Dins dels grups es publicaran tasques o reptes.
 
-- Es poden adjuntar proves als reptes i tasques per demostrar que s'han completat. Gràcies a aquestes proves, el creador de la tasca o repte o qualsevol administrador podrà validar que s'ha completat.
+- Dins dels grups hi haurà un sistema de puntuació entre els diferents usuaris en funció de quins reptes o tasques validats pels moderadors del grup ha completat l'usuari.
 
-**Usuari administrador de grup:**
+- Es poden adjuntar proves als reptes i tasques per demostrar que s'han completat. Gràcies a aquestes proves, el creador de la tasca o repte o qualsevol moderador podrà marcar que l'usuari ha completat el repte o tasca.
 
-- Els usuaris que siguin administradors de grup poden gestionar els membres, crear i validar tots els reptes i opcionalment compartir-los amb la comunitat, permitint que altres grups puguin utilitzar aquest repte.
+**Usuari moderador de grup:**
+
+- Els usuaris que siguin moderadors de grup poden gestionar els membres, validar tots els reptes, i canviar el nom del grup i les seves categories.
 
 **Usuari propietari del grup (owner):**
 
-- L'usuari propietari de grup (owner) té control total sobre el grup, pot publicar i gestionar tasques o reptes, gestionar els usuaris o eliminar el grup.
+- L'usuari propietari de grup (owner) té control total sobre el grup, mateixos permisos que el moderador del grup però amb la diferència de que pot eliminar el grup.
+
+- Si es vol sortir del grup, pot assignar un nou propietari.
 
 **Admin de l'aplicació:**
 
-- L'administrador pot gestionar usuaris, grups, categòries, reptes, tasques i comentaris. Té control total de l'aplicació.
+- L'administrador de l'aplicació pot gestionar usuaris, grups, categòries, reptes, tasques i comentaris. Té control total de l'aplicació.
 
 ---
 
@@ -54,20 +58,21 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | RF2  | Iniciar sessió           |
 | RF3  | Crear grups              |
 | RF4  | Crear reptes/tasques/categories     |
-| RF5  | Crear comentaris NOMÉS en la tasca (útil per aclarar dubtes)     |
-| RF6  | Administrar reptes/tasques              |
+| RF5  | Crear comentaris (útil per aclarar dubtes)     |
+| RF6  | Administrar reptes/tasques |
 | RF7  | Inscriure's a un grup    |
-| RF8  | Cercar grup per nom o categories    |
-| RF9  | Administrar un grup (usuari de grup)
-| RF10  | Adjunció de proves (per demostrar que el repte s'ha completat)      |
-| RF11  | Sistema de puntuació del grup (rànquing)
-| RF12 | Sistema d'amics
-| RF13 | Sistema de puntuació entre amics
-| RF14 | Personalització bàsica del perfil (canvi de nom visible, canvi de username, canvi de correu, canvi de contrasenya, canvi de foto de perfil)
-| RF15 | Administrar usuaris
-| RF16  | Administrar grups (tots els grups de l'aplicació)
-| RF17  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
-| RF18  | Administrar categories      |
+| RF8  | Sortir d'un grup    |
+| RF9  | Cercar grup per nom o categories    |
+| RF10  | Administrar un grup (usuari administrador de grup)
+| RF11  | Adjunció de proves (per demostrar que el repte s'ha completat)      |
+| RF12  | Sistema de puntuació del grup (rànquing)
+| RF13 | Sistema d'amics
+| RF14 | Sistema de puntuació entre amics
+| RF15 | Personalització bàsica del perfil (canvi de nom visible, canvi de username, canvi de correu, canvi de contrasenya, canvi de foto de perfil)
+| RF16 | Administrar usuaris
+| RF17  | Administrar grups (tots els grups de l'aplicació)
+| RF18  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
+| RF19  | Administrar categories      |
 
 
 ---
@@ -90,10 +95,10 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 | Actor            | Accions Principals                         |
 | ---------------- | ----------------------------------- |
-| Guest            |  Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. |
-| Usuari                 | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries per a la comunitat i administrar el seu perfil.    |
-| Usuari administrador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és propietari o administrador (publicar tasques i reptes, crear categòries només per els seus grups, administrar membres i configuracions del grup.) |
-| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari administrador de grup, però aquest té control total de tots els grups on és propietari.
+| Guest            |  Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. També pot cercar-los, però conservant la restricció d'interacció. |
+| Usuari                 | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries dins del grup i opcionalment compartir-los amb la comunitat i administrar el seu perfil.    |
+| Usuari administrador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és propietari o administrador, valida el contingut del grup (tasques i reptes que publiquen els usuaris), afegir i eliminar usuaris (excepte el propietari/creador del grup) i canviar el nom del grup. |
+| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari administrador de grup, però aquest té control total de tots els grups on és propietari i pot eliminar el grup i canviar el propietari en cas d'abandonar un grup.
 |  Admin    | Control total de l'aplicació. Modera grups, tasques, reptes, categòries i usuaris. |
 
 ## Diagrama de casos d'ús 
@@ -112,7 +117,6 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 Els permisos són acumulatius (Role Based Access Control (RBAC)), els rols superiors hereden les funcions dels inferiors.
 
-Aquest diagrama es pot adaptar fàcilment a altres temàtiques canviant actors i casos d'ús principals.
 # 3. Model conceptual (simplificat)
 
 ## Entitats principals:
@@ -128,6 +132,7 @@ Usuari
 - rol (User/Admin)
 - completed_tasks
 - wins (reptes guanyats)
+- score (puntuació total que es suma dels reptes guanyats)
 - grups[] (many to many)
 - friends[]
 - remember_token (restauració de contrasenya)
@@ -139,14 +144,13 @@ Grup
 - nom
 - tasques[]
 - reptes[]
-- categories[] (adicional/extra)
 - membres[]
-- admins[]
+- moderators[]
 - owner
 - isPublic (boolean)
 - timestamps
 
-Tasca
+Meta
 
 - _id (MongoID)
 - titol
@@ -168,15 +172,19 @@ Tasca
     }
 ]
 - categories[]
-- assigned_to[]
 - completed_by[]
-- difficulty
-- score
 - isPublic (boolean)
 - isApproved (boolean) (default false)
+- isCommunityApproved (boolean) (default false)
 - timestamps
 
-Tasca_Template
+Tasca (hereda de Meta)
+
+- priority (enum ["high", "medium", "low"])
+- assigned_to[]
+
+
+<!-- Tasca_Template
 
 - _id (MongoID)
 - titol
@@ -194,31 +202,14 @@ Tasca_Template
 - score
 - isPublic (boolean) (default false)
 - isApproved (boolean) (default false)
-- timestamps
+- timestamps -->
 
-Repte
+Repte (hereda de Meta)
 
-- _id (MongoID)
-- titol
-- descripcio
-- author
-- start_date
-- due_date
-- proofs[
-    {
-        userId,
-        filename
-    }
-]
-- categories[]
-- completed_by[]
 - difficulty
 - score
-- isPublic (boolean)
-- isApproved (boolean) (default false)
-- timestamps
 
-Repte_Template
+<!-- Repte_Template
 
 - _id (MongoID)
 - titol
@@ -234,7 +225,7 @@ Repte_Template
 - score
 - isPublic (boolean) (default false)
 - isApproved (boolean) (default false)
-- timestamps
+- timestamps -->
 
 Categoria
 
