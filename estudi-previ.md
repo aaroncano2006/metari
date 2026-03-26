@@ -277,7 +277,7 @@ Metari comptarà amb les següents relacions:
 
 ## Model de dades
 
-![alt text](img/Model-relacions.png)
+![alt text](img/diagrama-classes-2.png)
 
 ## Lectura ràpida del model de dades
 
