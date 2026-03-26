@@ -156,6 +156,7 @@ Meta
 - titol
 - descripcio
 - author
+- reposter (default mateix que author) (al publicar en un altre grup si isPublic = true, canviarà a la id del que la publica al nou grup).
 - start_date
 - due_date
 - proofs[
