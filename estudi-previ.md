@@ -63,7 +63,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | RF7  | Inscriure's a un grup    |
 | RF8  | Sortir d'un grup    |
 | RF9  | Cercar grup per nom o categories    |
-| RF10  | Administrar un grup (usuari administrador de grup)
+| RF10  | Administrar un grup (usuari moderador de grup)
 | RF11  | Adjunció de proves (per demostrar que el repte s'ha completat)      |
 | RF12  | Sistema de puntuació del grup (rànquing)
 | RF13 | Sistema d'amics
@@ -97,8 +97,8 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | ---------------- | ----------------------------------- |
 | Guest            |  Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. També pot cercar-los, però conservant la restricció d'interacció. |
 | Usuari                 | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries dins del grup i opcionalment compartir-los amb la comunitat i administrar el seu perfil.    |
-| Usuari administrador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és propietari o administrador, valida el contingut del grup (tasques i reptes que publiquen els usuaris), afegir i eliminar usuaris (excepte el propietari/creador del grup) i canviar el nom del grup. |
-| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari administrador de grup, però aquest té control total de tots els grups on és propietari i pot eliminar el grup i canviar el propietari en cas d'abandonar un grup.
+| Usuari moderador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és moderador, valida el contingut del grup (tasques i reptes que publiquen els usuaris), afegir i eliminar usuaris (excepte el propietari/creador del grup) i canviar el nom del grup. |
+| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari moderador de grup, però aquest té control total de tots els grups on és propietari i pot eliminar el grup i canviar el propietari en cas d'abandonar un grup.
 |  Admin    | Control total de l'aplicació. Modera grups, tasques, reptes, categòries i usuaris. |
 
 ## Diagrama de casos d'ús 
@@ -111,7 +111,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 - **Usuari registrat**: Pot iniciar sessió, gestionar el seu perfil, unir-se a grups, crear grups, crear reptes/tasques/categories dins dels grups als que pertany, afegir comentaris i afegir proves.
 
-- **Usuari Administrador/Owner**: Mateixos permisos que l'usuari registrat, però dins del grup poden admnistrar totes les tasques i reptes que es publiquen (editar-les i eliminar-les) i administrar el grup (canviar el nom, canviar categories, administrar els membres (canviar el seu rol o expulsar-los, excepte l'owner), L'owner té control total del grup (incloent eliminació).)
+- **Usuari Moderador/Owner**: Mateixos permisos que l'usuari registrat, però dins del grup poden admnistrar totes les tasques i reptes que es publiquen (editar-les i eliminar-les) i administrar el grup (canviar el nom, canviar categories, administrar els membres (canviar el seu rol o expulsar-los, excepte l'owner), L'owner té control total del grup (incloent eliminació).)
 
 - **Administrador**: Control total de l'aplicació. Pot administrar usuaris, tots els grups i administrar tasques, reptes i categories públiques.
 
@@ -159,6 +159,11 @@ Meta
 - reposter (default mateix que author) (al publicar en un altre grup si isPublic = true, canviarà a la id del que la publica al nou grup).
 - start_date
 - due_date
+- type (enum ["Repte", "Tasca"])
+- priority (enum ["high", "medium", "low"]) (nullable, no s'assigna si el tipus és "Repte")
+- assigned_to[] (array buit, no s'assigna si el tipus és "Repte")
+- difficulty (nullable, no s'assigna si el tipus és "Tasca")
+- score (nullable, no s'assigna si el tipus és "Tasca")
 - proofs[
     {
         userId,
@@ -180,10 +185,10 @@ Meta
 - isCommunityApproved (boolean) (default false)
 - timestamps
 
-Tasca (hereda de Meta)
+<!-- Tasca (hereda de Meta)
 
 - priority (enum ["high", "medium", "low"])
-- assigned_to[]
+- assigned_to[] -->
 
 
 <!-- Tasca_Template
@@ -206,10 +211,10 @@ Tasca (hereda de Meta)
 - isApproved (boolean) (default false)
 - timestamps -->
 
-Repte (hereda de Meta)
+<!-- Repte (hereda de Meta)
 
 - difficulty
-- score
+- score -->
 
 <!-- Repte_Template
 
@@ -233,6 +238,15 @@ Categoria
 
 - _id (MongoID)
 - nom
+- timestamps
+
+Invitació
+
+- _id (MongoID)
+- fromUser (user1ID)
+- fromGroup (groupID)
+- to (user2ID)
+- accepted (boolean, default false)
 - timestamps
 
 <!-- Relacions:
@@ -267,7 +281,7 @@ Metari comptarà amb les següents relacions:
 
 ## Lectura ràpida del model de dades
 
-- Un usuari representa qualsevol persona registrada al sistema.
+<!-- - Un usuari representa qualsevol persona registrada al sistema.
 
 - Un usuari pot consultar, cercar, unir-se i crear grups.
 
@@ -291,7 +305,7 @@ Metari comptarà amb les següents relacions:
 
 - Un usuari administrador pot administrar el grup, canviant el seu nom, les categories, i gestionant els altres membres del grup (poden alternar el seu rol entre membre del grup o administrador o expulsar-lo. no poden gestionar l'owner).
 
-- L'owner del grup té control total sobre el grup.
+- L'owner del grup té control total sobre el grup. -->
 
 ---
 
