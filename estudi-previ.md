@@ -159,6 +159,11 @@ Meta
 - reposter (default mateix que author) (al publicar en un altre grup si isPublic = true, canviarà a la id del que la publica al nou grup).
 - start_date
 - due_date
+- type (enum ["Repte", "Tasca"])
+- priority (enum ["high", "medium", "low"]) (nullable, no s'assigna si el tipus és "Repte")
+- assigned_to[] (array buit, no s'assigna si el tipus és "Repte")
+- difficulty (nullable, no s'assigna si el tipus és "Tasca")
+- score (nullable, no s'assigna si el tipus és "Tasca")
 - proofs[
     {
         userId,
@@ -180,10 +185,10 @@ Meta
 - isCommunityApproved (boolean) (default false)
 - timestamps
 
-Tasca (hereda de Meta)
+<!-- Tasca (hereda de Meta)
 
 - priority (enum ["high", "medium", "low"])
-- assigned_to[]
+- assigned_to[] -->
 
 
 <!-- Tasca_Template
@@ -206,10 +211,10 @@ Tasca (hereda de Meta)
 - isApproved (boolean) (default false)
 - timestamps -->
 
-Repte (hereda de Meta)
+<!-- Repte (hereda de Meta)
 
 - difficulty
-- score
+- score -->
 
 <!-- Repte_Template
 
