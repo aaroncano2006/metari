@@ -240,6 +240,15 @@ Categoria
 - nom
 - timestamps
 
+Invitació
+
+- _id (MongoID)
+- fromUser (user1ID)
+- fromGroup (groupID)
+- to (user2ID)
+- accepted (boolean, default false)
+- timestamps
+
 <!-- Relacions:
 
 Com la base de dades la farem a MongoDB no compta com a tal amb un sistema relacional, però amb arrays i referenciant IDs podem relacionar diversos documents.
