@@ -35,10 +35,12 @@ entity Categoria {
   nom
 }
 
-entity Invitacio {
-  id
-  estat
-}
+' entity Invitacio {
+'   id
+'   estat
+' }
+
+<> Invitacio
 
 ' Un usuari pot crear 0 o molts grups
 Usuari ||--o{ Grup : crea
@@ -66,9 +68,9 @@ Meta ||--o{ Comentari : te
 Meta }|--|{ Categoria : te
 
 ' Invitacions
-Usuari ||--o{ Invitacio : envia
-Usuari ||--o{ Invitacio : rep
-Grup ||--o{ Invitacio : per_a
+Usuari ||--o{ Invitacio : envia (invitació)
+Usuari ||--o{ Invitacio : rep (invitació)
+Grup ||--o{ Invitacio : (invitació) per_a
 
 ' Assignació de tasques
 Tasca }|--|{ Usuari : assignada_a

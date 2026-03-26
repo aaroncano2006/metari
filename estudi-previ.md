@@ -162,7 +162,8 @@ Meta
 - proofs[
     {
         userId,
-        filename
+        filename,
+        isValidated (boolean)
     }
 ]
 - comments [
@@ -234,7 +235,7 @@ Categoria
 - nom
 - timestamps
 
-Relacions:
+<!-- Relacions:
 
 Com la base de dades la farem a MongoDB no compta com a tal amb un sistema relacional, però amb arrays i referenciant IDs podem relacionar diversos documents.
 
@@ -258,7 +259,7 @@ Metari comptarà amb les següents relacions:
 
 **Categoria -> Tasca:** Una tasca pot tenir diverses categories (document Tasca, camp categories[]).
 
-**Categoria -> Repte:** Un repte pot tenir diverses categories (document Repte, camp categories[]).
+**Categoria -> Repte:** Un repte pot tenir diverses categories (document Repte, camp categories[]). -->
 
 ## Model de dades
 
