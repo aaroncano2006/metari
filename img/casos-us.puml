@@ -22,16 +22,16 @@ package "Plataforma METARI" {
     usecase "Iniciar Sessió" as UR1
     usecase "Crear Grups" as UR2
     usecase "Crear Reptes/Tasques/Categories" as UR3
-    usecase "Fer Comentaris" as UR4
-    usecase "Inscriures a un Grup" as UR5
-    usecase "Sortir d'un grup" as UR6
-    usecase "Afegir Amics" as UR7
-    usecase "Personalitzar Perfil" as UR8
+    usecase "Afegir Proves" as UR4
+    usecase "Fer Comentaris" as UR5
+    usecase "Inscriures a un Grup" as UR6
+    usecase "Sortir d'un grup" as UR7
+    usecase "Afegir Amics" as UR8
+    usecase "Personalitzar Perfil" as UR9
     
     ' Propietari/Moderador de grup
-    usecase "Administrar Tasques/Reptes (Propietari)" as URP1
-    usecase "Afegir Proves (Propietari)" as URP2
-    usecase "Administrar Grups Propis" as URP3
+    usecase "Administrar Tasques/Reptes" as URP1
+    usecase "Administrar Grups Propis" as URP2
 
     ' Admin
     usecase "Administrar Reptes/Tasques Publiques" as A1
@@ -54,11 +54,11 @@ UR --> UR5
 UR --> UR6
 UR --> UR7
 UR --> UR8
+UR --> UR9
 
 ' Registrat (Propietari/Admin Grup)
 UR --> URP1 : "propietari/moderador grup"
 UR --> URP2 : "propietari/moderador grup"
-UR --> URP3 : "propietari/moderador grup"
 
 ' Admin
 Admin --> A1
