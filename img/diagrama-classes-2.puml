@@ -1,0 +1,94 @@
+@startuml
+left to right direction
+
+' Entitats principals
+entity Usuari {
+  id
+  nom
+}
+
+entity Grup {
+  id
+  nom
+}
+
+entity Meta {
+  id
+  nom
+}
+
+entity Categoria {
+  id
+  nom
+}
+
+entity Invitacio {
+  id
+  estat
+}
+
+entity Assignacio {
+  data
+  completat
+}
+
+entity Data {
+  date
+}
+
+entity Comentari {
+  id
+
+}
+
+' Diamants de relacions ternàries
+<> AssignacioRel
+<> InvitacioRel
+<> comentariRel
+
+note right of comentariRel : Comentar
+note right of AssignacioRel : Assignar
+note right of InvitacioRel : Convidar
+
+' Assignació ternària Usuari–Meta amb Assignacio
+Usuari }o-- AssignacioRel : assigna
+' Usuari }o-- AssignacioRel : es assignada
+Meta }o-- AssignacioRel
+Assignacio ||.. AssignacioRel : assignacio
+Data }|-- AssignacioRel : el_dia
+
+' Relació many-to-many Grup–Usuari
+Usuari ||--o{ Grup : te
+
+' Relació ternària Invitacions
+Usuari }o-- InvitacioRel : envia
+Usuari }o-- InvitacioRel : rep
+Grup }o-- InvitacioRel : per_a
+Invitacio }o.. InvitacioRel
+
+' Un usuari pot crear 0 o molts grups
+Usuari ||--o{ Grup : crea
+
+' Administradors de grups
+Usuari }o--o{ Grup : administra
+
+' Un grup conté 1 o moltes metes
+Grup }|--o{ Meta : conte
+
+' Relació many-to-many Meta–Categoria
+Meta }o--|{ Categoria : te
+
+' Un usuari completa metes
+' Usuari }o--o{ Meta : completa
+
+'un usuari fa un comentari a una meta
+Usuari ||-- comentariRel
+Comentari }o-- comentariRel : te
+Grup }o-- comentariRel : te
+
+
+'un comentari pertany a un grup
+' Comentari }o--|| Grup : pertany
+
+
+@enduml
