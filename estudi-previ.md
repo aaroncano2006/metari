@@ -89,7 +89,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ---
 
-# 4. Model de negoci
+# 3. Model de negoci
 
 ## Actors del sistema
 
@@ -117,7 +117,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 Els permisos són acumulatius (Role Based Access Control (RBAC)), els rols superiors hereden les funcions dels inferiors.
 
-# 3. Model conceptual (simplificat)
+# 4. Model conceptual (simplificat)
 
 ## Entitats principals:
 
