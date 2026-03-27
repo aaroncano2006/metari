@@ -1,0 +1,98 @@
+@startuml
+left to right direction
+
+' Entitats principals
+entity Usuari {
+  _id :objectID
+  grups[]: objectID
+  friends[]: objectID 
+  ----
+  nom: string
+  username: string
+  profile_picture: string
+  email: string
+  password: string
+  rol: enum
+  completed_tasks: integer
+  wins: integer
+  score: integer
+  remember_token: string
+  timeStamps: dateTime
+}
+
+entity Grup {
+  _id: objectID
+  membres[]:  objectID
+  moderadors[]:  objectID
+  grupOwner:  objectID
+  ----
+  nom: string
+  tasca: objectID
+  repte: objectID
+  isPublic: boolean
+  timeStamps:
+}
+
+entity Meta {
+  _id: objectID  Pk
+  author: objectID
+  reposter: objectID
+  assigned_to[]: objectID
+  completed_by[]: objectID
+  categories[]: objectId
+  ----
+  titol: string
+  descripcio: string
+  start_date: dateTime
+  due_date: dateTime
+  type: enum
+  priority: enum
+  difficulty: enum
+  score: integer
+  proofs[{ 
+    userId: objectID
+    filename:  string
+    isValidated: boolean 
+  }]
+  comments [{
+    userId: objectID
+    body: string
+    timeStamps: dateTime
+  }]:
+  isPublic: boolean
+  isApproved: boolean (default false)
+  isCommunityApproved: boolean (default false)
+  timeStamps: dateTime
+}
+
+entity Categoria {
+  _id: objectID
+  ----
+  nom: string
+  descripcio: string
+  timeStamps: dateTime
+}
+
+entity Invitacio {
+  _id: objectID
+  fromUser: objectID
+  fromGroup: objectID
+  to: objectID
+  ----
+  accepted: boolean (default false)
+  timeStamps: dateTime
+}
+
+' entity Assignacio {
+'   data
+'   completat
+' }
+
+
+Usuari }|--o{ Grup
+
+Meta }|--|{ Grup
+Meta }|--|{ Categoria
+Usuari ||--|| Invitacio
+
+@enduml
