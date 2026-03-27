@@ -84,7 +84,7 @@ Meta }o--|{ Categoria : te
 'un usuari fa un comentari a una meta
 Usuari ||-- comentariRel
 Comentari }o-- comentariRel : te
-Grup }o-- comentariRel : te
+Meta }o-- comentariRel : te
 
 
 'un comentari pertany a un grup
