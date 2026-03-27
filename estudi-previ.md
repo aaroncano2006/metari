@@ -200,6 +200,8 @@ Invitació
 - accepted (boolean, default false)
 - timestamps
 
+![alt text](img/diagrama-relacions.png)
+
 ## Model de dades
 
 ![alt text](img/diagrama-classes-2.png)
