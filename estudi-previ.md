@@ -57,7 +57,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | RF1  | Registrar usuaris        |
 | RF2  | Iniciar sessió           |
 | RF3  | Crear grups              |
-| RF4  | Crear reptes/tasques/categories     |
+| RF4  | Crear metes i categories     |
 | RF5  | Crear comentaris (útil per aclarar dubtes)     |
 | RF6  | Administrar reptes/tasques |
 | RF7  | Inscriure's a un grup    |
