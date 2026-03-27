@@ -135,7 +135,7 @@ Usuari
 - score (puntuació total que es suma dels reptes guanyats)
 - grups[] (many to many)
 - friends[]
-- remember_token (restauració de contrasenya)
+- restore_token (restauració de contrasenya)
 - timestamps
 
 Grup
@@ -146,7 +146,7 @@ Grup
 - reptes[]
 - membres[]
 - moderators[]
-- owner
+- groupOwner
 - isPublic (boolean)
 - timestamps
 
@@ -185,55 +185,6 @@ Meta
 - isCommunityApproved (boolean) (default false)
 - timestamps
 
-<!-- Tasca (hereda de Meta)
-
-- priority (enum ["high", "medium", "low"])
-- assigned_to[] -->
-
-
-<!-- Tasca_Template
-
-- _id (MongoID)
-- titol
-- descripcio
-- author (default null)
-- originalAuthor
-- start_date (default null)
-- due_date (default null)
-- proofs[] (empty array)
-- comments [] (empty array)
-- categories[]
-- assigned_to[] (empty array)
-- completed_by[] (empty array)
-- difficulty
-- score
-- isPublic (boolean) (default false)
-- isApproved (boolean) (default false)
-- timestamps -->
-
-<!-- Repte (hereda de Meta)
-
-- difficulty
-- score -->
-
-<!-- Repte_Template
-
-- _id (MongoID)
-- titol
-- descripcio
-- author (default null)
-- originalAuthor
-- start_date (default null)
-- due_date (default null)
-- proofs[] (empty array)
-- categories[]
-- completed_by[] (empty array)
-- difficulty
-- score
-- isPublic (boolean) (default false)
-- isApproved (boolean) (default false)
-- timestamps -->
-
 Categoria
 
 - _id (MongoID)
@@ -249,63 +200,27 @@ Invitació
 - accepted (boolean, default false)
 - timestamps
 
-<!-- Relacions:
-
-Com la base de dades la farem a MongoDB no compta com a tal amb un sistema relacional, però amb arrays i referenciant IDs podem relacionar diversos documents.
-
-Metari comptarà amb les següents relacions:
-
-- **Usuari -> Grup:** Un usuari pot estar en diferents grups (document Usuari, camp groups[]). Un grup pot tenir diversos usuaris (document Grups, camps membres[], admins[] i owner, per diferenciar usuaris sense permisos dins del grup, usuaris amb privilegis i el creador del grup, que per defecte també estarà al llistat d'administradors).
-
-- **Usuari -> Tasca:** Un usuari pot ser autor de diferents tasques, però la tasca només pot tenir un autor (document Tasca, camp author). Una tasca pot tenir diferents usuaris assignats (document Tasca, camp assigned_to[]).
-
-- **Usuari -> Tasca_Template:** Un usuari pot ser autor de diferents templates de tasques al compartir-les amb la comunitat, però la template de la tasca només pot tenir un autor (document Tasca_Template, camp originalAuthor).
-
-- **Usuari -> Repte:** Un usuari pot ser autor de diferents reptes, però el repte només pot tenir un autor (document Repte, camp author).
-
-- **Usuari -> Repte_Template:** Un usuari pot ser autor de diferents templates de reptes al compartir-los amb la comunitat, però el repte només pot tenir un autor (document Repte_Template, camp originalAuthor).
-
-- **Grup -> Tasques:** Un grup pot tenir diferents tasques (document Grup, camp tasques[]).
-
-**Grup -> Reptes:** Un grup pot tenir diferents reptes (document Grup, camp reptes[]).
-
-**Categoria -> Grup:** Un grup pot tenir diverses categories (camp categories[]).
-
-**Categoria -> Tasca:** Una tasca pot tenir diverses categories (document Tasca, camp categories[]).
-
-**Categoria -> Repte:** Un repte pot tenir diverses categories (document Repte, camp categories[]). -->
-
 ## Model de dades
 
 ![alt text](img/diagrama-classes-2.png)
 
 ## Lectura ràpida del model de dades
 
-<!-- - Un usuari representa qualsevol persona registrada al sistema.
+Un usuari pot crear cap o molts grups.
 
-- Un usuari pot consultar, cercar, unir-se i crear grups.
+Un usuari pot pertanyer a cap o a molts grups.
 
-- Un usuari pot consultar rànquings.
+Molts o cap usuari poden administrar cap o molts grups.
 
-- Un usuari pot afegir amics.
+Un usuari pot enviar i rebre cap o moltes invitacions d'amistat o d'unió a un grup.
 
-- Un usuari pot crear tasques, reptes i categories dins dels grups on és membre.
+Un usuari pot assignar cap o moltes metes a un o cap usuari.
 
-- Les tasques i reptes tenen categories assignades.
+Un usuari pot escriure cap o molts comentaris en cap o moltes metes.
 
-- Un usuari pot compartir tasques o reptes i per tant és autor de les templates.
+Un grup o molts grups poden contenir cap o moltes metes.
 
-- Els grups tenen membres, administradors, un propietari, reptes, tasques i categories.
-
-- Un usuari pot editar totes les tasques que siguin seves dins dels seus grups.
-
-- Un usuari pot adjuntar proves de que ha completat la tasca o repte i comentaris dins les tasques.
-
-- Un usuari adminstrador (no owner) pot administrar totes les tasques del grup.
-
-- Un usuari administrador pot administrar el grup, canviant el seu nom, les categories, i gestionant els altres membres del grup (poden alternar el seu rol entre membre del grup o administrador o expulsar-lo. no poden gestionar l'owner).
-
-- L'owner del grup té control total sobre el grup. -->
+Una meta pot tenir una o més categories.
 
 ---
 
@@ -317,7 +232,7 @@ Pantalles principals:
 - Detall d'esdeveniment
 - Panells d'usuaris
 - Formulari de creació
-- Formularia de login
+- Formulari de login
   
 Exemple: 
 
