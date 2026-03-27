@@ -32,10 +32,6 @@ entity Assignacio {
   completat
 }
 
-entity Data {
-  date
-}
-
 entity Comentari {
   id
 
@@ -55,7 +51,6 @@ Usuari }o-- AssignacioRel : assigna
 ' Usuari }o-- AssignacioRel : es assignada
 Meta }o-- AssignacioRel
 Assignacio ||.. AssignacioRel : assignacio
-Data }|-- AssignacioRel : el_dia
 
 ' Relació many-to-many Grup–Usuari
 Usuari ||--o{ Grup : te
