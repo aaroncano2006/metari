@@ -8,15 +8,15 @@ card "Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap"
 
 card "Backend API\n Express JS"
 
-database "MongoDB"
+database "MariaDB"
 
 card "Servei de correu\n (Notificacions)\n Nodemailer"
 
 "Usuari/Admin" --> "Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap" : Navegació web
 
-"Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap" ---> "Backend API\n Express JS" : HTTP/JSON
+"Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap" ---> "Backend API\n Express JS" : HTTP
 
-"Backend API\n Express JS" --> "MongoDB" : Consultes CRUD
+"Backend API\n Express JS" --> "MariaDB" : Consultes CRUD
 
 "Backend API\n Express JS" --> "Servei de correu\n (Notificacions)\n Nodemailer" : Enviament de correus
 
