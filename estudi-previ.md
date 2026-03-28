@@ -296,6 +296,10 @@ Backend
 - Express JS
 - API RESTful
 
+ORM
+
+- [Prisma](https://www.prisma.io/orm)
+
 Base de dades
 
 - MariaDB
