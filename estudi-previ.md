@@ -57,7 +57,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 | RF1  | Registrar usuaris        |
 | RF2  | Iniciar sessió           |
 | RF3  | Crear grups              |
-| RF4  | Crear reptes/tasques/categories     |
+| RF4  | Crear metes i categories     |
 | RF5  | Crear comentaris (útil per aclarar dubtes)     |
 | RF6  | Administrar reptes/tasques |
 | RF7  | Inscriure's a un grup    |
@@ -89,7 +89,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ---
 
-# 4. Model de negoci
+# 3. Model de negoci
 
 ## Actors del sistema
 
@@ -117,11 +117,11 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 Els permisos són acumulatius (Role Based Access Control (RBAC)), els rols superiors hereden les funcions dels inferiors.
 
-# 3. Model conceptual (simplificat)
+# 4. Model conceptual (simplificat)
 
 ## Entitats principals:
 
-Usuari
+<!-- Usuari
 
 - _id (MongoID)
 - nom
@@ -136,19 +136,58 @@ Usuari
 - grups[] (many to many)
 - friends[]
 - restore_token (restauració de contrasenya)
-- timestamps
+- timestamps -->
 
-Grup
+User
 
-- _id (MongoID)
-- nom
-- tasques[]
-- reptes[]
-- membres[]
-- moderators[]
-- groupOwner
-- isPublic (boolean)
-- timestamps
+- id (AI) (NOT NULL)
+- nom (string)
+- username (string) (unique)
+- email (string) (unique)
+- password (text) (hashed)
+- role (enum("User", "Admin")) (default: "User")
+- completed_tasks (unsignedBigInt)
+- score (unisngedBigInt)
+- restore_token (text)
+- created_at
+- updated_at
+
+Friends (relació many to many per al sistema d'amics)
+
+- id
+- requester_id
+- receiver_id
+- status ENUM("pending", "accepted", "blocked")
+- created_at
+- updated_at
+
+Group
+
+- id
+- name
+- description
+- owner_id (FK → users.id)
+- created_at
+- updated_at
+
+group_user
+
+- id
+- group_id
+- user_id
+- role ENUM("member", "admin") DEFAULT "member"
+- created_at
+- updated_at
+
+meta
+
+- id
+- titol
+- descripcio
+- autor
+-
+
+
 
 Meta
 
@@ -160,7 +199,7 @@ Meta
 - start_date
 - due_date
 - type (enum ["Repte", "Tasca"])
-- priority (enum ["high", "medium", "low"]) (nullable, no s'assigna si el tipus és "Repte")
+- priority (enum ["high", "medium", "low"]) (nullable, no s'assigna si el tipus és "Tasca")
 - assigned_to[] (array buit, no s'assigna si el tipus és "Repte")
 - difficulty (nullable, no s'assigna si el tipus és "Tasca")
 - score (nullable, no s'assigna si el tipus és "Tasca")
@@ -244,7 +283,7 @@ Exemple:
 
 # 6. Tecnologies utilitzades
 
-**MERN Stack**
+**MERN Stack** (utilitzant MariaDB)
 
 Frontend
 
@@ -259,8 +298,7 @@ Backend
 
 Base de dades
 
-- MongoDB
-- Model de referències (Camp adicional per referenciar el document extern)
+- MariaDB
 
 Autenticació
 
