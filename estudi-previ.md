@@ -52,40 +52,39 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ### Requisits funcionals
 
-| Codi | Descripció               |
-| ---- | -------------------------|
-| RF1  | Registrar usuaris        |
-| RF2  | Iniciar sessió           |
-| RF3  | Crear grups              |
-| RF4  | Crear metes i categories     |
-| RF5  | Crear comentaris (útil per aclarar dubtes)     |
-| RF6  | Administrar reptes/tasques |
-| RF7  | Inscriure's a un grup    |
-| RF8  | Sortir d'un grup    |
-| RF9  | Cercar grup per nom o categories    |
-| RF10  | Administrar un grup (usuari moderador de grup)
-| RF11  | Adjunció de proves (per demostrar que el repte s'ha completat)      |
-| RF12  | Sistema de puntuació del grup (rànquing)
-| RF13 | Sistema d'amics
-| RF14 | Sistema de puntuació entre amics
-| RF15 | Personalització bàsica del perfil (canvi de nom visible, canvi de username, canvi de correu, canvi de contrasenya, canvi de foto de perfil)
-| RF16 | Administrar usuaris
-| RF17  | Administrar grups (tots els grups de l'aplicació)
-| RF18  | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)
-| RF19  | Administrar categories      |
-
+| Codi | Descripció                                                                                                                                  |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| RF1  | Registrar usuaris                                                                                                                           |
+| RF2  | Iniciar sessió                                                                                                                              |
+| RF3  | Crear grups                                                                                                                                 |
+| RF4  | Crear metes i categories                                                                                                                    |
+| RF5  | Crear comentaris (útil per aclarar dubtes)                                                                                                  |
+| RF6  | Administrar reptes/tasques                                                                                                                  |
+| RF7  | Inscriure's a un grup                                                                                                                       |
+| RF8  | Sortir d'un grup                                                                                                                            |
+| RF9  | Cercar grup per nom o categories                                                                                                            |
+| RF10 | Administrar un grup (usuari moderador de grup)                                                                                              |
+| RF11 | Adjunció de proves (per demostrar que el repte s'ha completat)                                                                              |
+| RF12 | Sistema de puntuació del grup (rànquing)                                                                                                    |
+| RF13 | Sistema d'amics                                                                                                                             |
+| RF14 | Sistema de puntuació entre amics                                                                                                            |
+| RF15 | Personalització bàsica del perfil (canvi de nom visible, canvi de username, canvi de correu, canvi de contrasenya, canvi de foto de perfil) |
+| RF16 | Administrar usuaris                                                                                                                         |
+| RF17 | Administrar grups (tots els grups de l'aplicació)                                                                                           |
+| RF18 | Administrar/validar reptes (totes les tasques de l'aplicació que es vulguin compartir amb la comunitat)                                     |
+| RF19 | Administrar categories                                                                                                                      |
 
 ---
 
 ### Requisits no funcionals
 
-| Categoria      | Requisit                                       |
-| -------------- | ---------------------------------------------- |
-| Seguretat      | Validació de camps, contrasenyes encriptades, ús de la llibreria Helmet per evitar vulnerabilitats comuns dels navegadors.                                               |
-| Rendiment      |   Intentar que el temps de resposta de les peticions a l'API es realitzin el més ràpid possible.                                             | 
-| Usabilitat     |  Interfície Responsive i intuitiva.                                              | 
-| Disponibilitat |  Disponible 24 hores els 7 dies de la setmana excepte  quan estigui en manteniment.
-| Notificacions | Sistema de notificacions bàsic (correu electrònic Nodemailer).                                            | 
+| Categoria      | Requisit                                                                                                                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Seguretat      | Validació de camps, contrasenyes encriptades, ús de la llibreria Helmet per evitar vulnerabilitats comuns dels navegadors. |
+| Rendiment      | Intentar que el temps de resposta de les peticions a l'API es realitzin el més ràpid possible.                             |
+| Usabilitat     | Interfície Responsive i intuitiva.                                                                                         |
+| Disponibilitat | Disponible 24 hores els 7 dies de la setmana excepte quan estigui en manteniment.                                          |
+| Notificacions  | Sistema de notificacions bàsic (correu electrònic Nodemailer).                                                             |
 
 ---
 
@@ -93,15 +92,15 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 ## Actors del sistema
 
-| Actor            | Accions Principals                         |
-| ---------------- | ----------------------------------- |
-| Guest            |  Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. També pot cercar-los, però conservant la restricció d'interacció. |
-| Usuari                 | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries dins del grup i opcionalment compartir-los amb la comunitat i administrar el seu perfil.    |
-| Usuari moderador de grup  | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és moderador, valida el contingut del grup (tasques i reptes que publiquen els usuaris), afegir i eliminar usuaris (excepte el propietari/creador del grup) i canviar el nom del grup. |
-| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari moderador de grup, però aquest té control total de tots els grups on és propietari i pot eliminar el grup i canviar el propietari en cas d'abandonar un grup.
-|  Admin    | Control total de l'aplicació. Modera grups, tasques, reptes, categòries i usuaris. |
+| Actor                             | Accions Principals                                                                                                                                                                                                                                                      |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Guest                             | Pot veure grups públics i el seu contingut però no podrà interactuar amb ell. També pot cercar-los, però conservant la restricció d'interacció.                                                                                                                         |
+| Usuari                            | Pot unir-se i crear grups, afegir amics, crear tasques, reptes i categòries dins del grup i opcionalment compartir-los amb la comunitat i administrar el seu perfil.                                                                                                    |
+| Usuari moderador de grup          | Mateixos permisos que l'usuari, però aquest pot administrar els grups dels quals és moderador, valida el contingut del grup (tasques i reptes que publiquen els usuaris), afegir i eliminar usuaris (excepte el propietari/creador del grup) i canviar el nom del grup. |
+| Usuari propietari de grup (owner) | Mateixos permisos que l'usuari moderador de grup, però aquest té control total de tots els grups on és propietari i pot eliminar el grup i canviar el propietari en cas d'abandonar un grup.                                                                            |
+| Admin                             | Control total de l'aplicació. Modera grups, tasques, reptes, categòries i usuaris.                                                                                                                                                                                      |
 
-## Diagrama de casos d'ús 
+## Diagrama de casos d'ús
 
 ![alt text](img/Casos-Us.png)
 
@@ -121,125 +120,137 @@ Els permisos són acumulatius (Role Based Access Control (RBAC)), els rols super
 
 ## Entitats principals:
 
-<!-- Usuari
-
-- _id (MongoID)
-- nom
-- username
-- profile_picture
-- email
-- password
-- rol (User/Admin)
-- completed_tasks
-- wins (reptes guanyats)
-- score (puntuació total que es suma dels reptes guanyats)
-- grups[] (many to many)
-- friends[]
-- restore_token (restauració de contrasenya)
-- timestamps -->
-
-User
-
-- id (AI) (NOT NULL)
-- nom (string)
-- username (string) (unique)
-- email (string) (unique)
-- password (text) (hashed)
-- role (enum("User", "Admin")) (default: "User")
-- completed_tasks (unsignedBigInt)
-- score (unisngedBigInt)
-- restore_token (text)
-- created_at
-- updated_at
-
-Friends (relació many to many per al sistema d'amics)
+**User**
 
 - id
-- requester_id
-- receiver_id
-- status ENUM("pending", "accepted", "blocked")
+- nom
+- username
+- email
+- password
+- role (enum("User", "Admin")) (default: "User") (Distingueix entre usuari registrat i administrador de l'aplicació)
+- completed_tasks (Comptador de tasques completades)
+- score (Puntuació que es suma dels reptes que ha completat)
+- restore_token (Token temporal per restaurar la contrasenya).
 - created_at
 - updated_at
 
-Group
+**Group**
 
 - id
 - name
 - description
-- owner_id (FK → users.id)
+- owner_id (FK → users.id) (Propietari del grup)
+- is_public (Indica si el grup és públic o privat)
 - created_at
 - updated_at
 
-group_user
+**Meta** (objectiu) (entitat general per a reptes i tasques)
 
 - id
-- group_id
-- user_id
-- role ENUM("member", "admin") DEFAULT "member"
+- title
+- description
+- author_id (FK → users.id) (autor de la tasca o repte)
+- group_id (FK → users.id) (autor de la tasca o repte)
+- type (enum("challenge", "task")) (Indica si el tipus de meta és un repte o una tasca)
 - created_at
 - updated_at
 
-meta
+**Category**
 
 - id
-- titol
-- descripcio
-- autor
--
+- name
+- description
+- created_at
+- updated_at
 
+## Relacions Many to Many
 
+**category_meta** (Permet assignar varies categories a varies meta)
 
-Meta
+- category_id (PK),
+- meta_id (PK),
+- created_at
+- updated_at
 
-- _id (MongoID)
-- titol
-- descripcio
-- author
-- reposter (default mateix que author) (al publicar en un altre grup si isPublic = true, canviarà a la id del que la publica al nou grup).
-- start_date
-- due_date
-- type (enum ["Repte", "Tasca"])
-- priority (enum ["high", "medium", "low"]) (nullable, no s'assigna si el tipus és "Tasca")
-- assigned_to[] (array buit, no s'assigna si el tipus és "Repte")
-- difficulty (nullable, no s'assigna si el tipus és "Tasca")
-- score (nullable, no s'assigna si el tipus és "Tasca")
-- proofs[
-    {
-        userId,
-        filename,
-        isValidated (boolean)
-    }
-]
-- comments [
-    {
-        userId,
-        body,
-        timestamps
-    }
-]
-- categories[]
-- completed_by[]
-- isPublic (boolean)
-- isApproved (boolean) (default false)
-- isCommunityApproved (boolean) (default false)
-- timestamps
+**group_user** (Membres de cada grup i els seus rols dins d'aquests)
 
-Categoria
+- group_id (PK, FK → groups.id)
+- user_id (PK, FK → users.id)
+- role (enum("member", "moderator")) (Rol de l’usuari dins del grup)
 
-- _id (MongoID)
-- nom
-- timestamps
+**Assignations** (Assignacions de metes a usuaris i grups)
 
-Invitació
+- id
+- group_id (A quin grup pertany aquesta assignació)
+- meta_id (Quina meta està involucrada en aquesta assignació)
+- user_id (A quin usuari s'ha assignat la meta, només si és de tipus tasca, ja que els reptes són de tot el grup).
+- start_date (Data d'inici de l'assginació, és interessant que sigui una propietat de l'assignació ja que en cas de tornar la meta pública no quadraria que tingués la mateixa data en cas de per exemple publicar-la una setmana després en un altre grup, el mateix passa amb due_date).
+- due_date (Data de venciment de la meta).
+- priority (enum("high", "low"))
+  difficulty (enum("easy", "normal", "hard", "extreme"))
+  score
+  completed (Indica si la tasca ha estat completada)
+  created_at
+  updated_at
 
-- _id (MongoID)
-- fromUser (user1ID)
-- fromGroup (groupID)
-- to (user2ID)
-- accepted (boolean, default false)
-- timestamps
+Comportament:
 
-![alt text](img/diagrama-relacions.png)
+- Si meta.type = "task" → assignació individual (user_id obligatori)
+- Si meta.type = "challenge" → assignació grupal (user_id pot ser NULL)
+
+**Comments** (Comentaris sobre assignacions)
+
+- id
+- assignation_id (FK → assignations.id)
+- user_id (FK → users.id)
+- body (Text del comentari)
+- created_at
+- updated_at
+
+**Proofs** (Evidència de que la meta ha estat completada)
+
+- id
+- assignation_id (FK → assignations.id)
+- user_id (FK → users.id)
+- proof (URL o ruta de l’arxiu)
+- is_valid (Indica si la prova ha estat validada)
+- created_at
+- updated_at
+
+Comportament:
+
+- Per tasques:
+  - Quan is_valid = true → es marca assignations.completed = true
+- Per reptes:
+  - Permet saber quins usuaris han completat el repte dins del grup
+
+**Invitations** (Invitacions d'amistat o d'unió a un grup)
+
+- id
+- sender_id (FK → users.id)
+- receiver_id (FK → users.id)
+- group_id (FK → groups.id)
+- status (enum("pending", "accepted", "rejected"))
+- created_at
+- updated_at
+
+**Index** (Ternaria entre usuaris, metes i grups)
+
+- id
+- user_id (FK → users.id)
+- meta_id (FK → metas.id)
+- group_id (FK → groups.id)
+- is_public
+- is_approved
+- is_community_approved
+
+Serveix com a sistema de:
+
+- moderació
+- visibilitat
+- validació comunitària
+
+![alt text](img/Metari_db_reverse-engineer.png)
 
 ## Model de dades
 
@@ -249,19 +260,31 @@ Invitació
 
 Un usuari pot crear cap o molts grups.
 
-Un usuari pot pertanyer a cap o a molts grups.
+Un usuari pot pertànyer a cap o a molts grups.
 
-Molts o cap usuari poden administrar cap o molts grups.
+Cap o molts usuaris poden administrar cap o molts grups.
 
-Un usuari pot enviar i rebre cap o moltes invitacions d'amistat o d'unió a un grup.
+Un usuari pot enviar i rebre cap o moltes invitacions per a un grup (relació ternària central).
 
-Un usuari pot assignar cap o moltes metes a un o cap usuari.
-
-Un usuari pot escriure cap o molts comentaris en cap o moltes metes.
+Un usuari pot ser l'autor de cap o moltes metes.
 
 Un grup o molts grups poden contenir cap o moltes metes.
 
-Una meta pot tenir una o més categories.
+Una meta pot estar indexada en un grup sota la verificació d'un usuari (relació ternària inferior).
+
+Una meta ha de tenir, com a mínim, una o més categories.
+
+Una categoria pot estar assignada a cap o a moltes metes.
+
+Un usuari pot tenir assignades cap o moltes metes (relació ternària superior).
+
+Una assignació (vinclada a una meta i un usuari) pot rebre cap o molts comentaris.
+
+Un usuari pot escriure cap o molts comentaris en una assignació.
+
+Una assignació pot tenir vinculades cap o moltes proves (proofs).
+
+Un usuari pot realitzar cap o moltes proves per a una assignació concreta.
 
 ---
 
@@ -274,8 +297,8 @@ Pantalles principals:
 - Panells d'usuaris
 - Formulari de creació
 - Formulari de login
-  
-Exemple: 
+
+Exemple:
 
 ![alt text](diagrames/wireframebasic.png)
 
@@ -313,7 +336,7 @@ Pujada de fitxers
 
 - Multer
 
-## Diagrama d'arquitectura 
+## Diagrama d'arquitectura
 
 ![alt text](img/diagrama-arquitectura.png)
 

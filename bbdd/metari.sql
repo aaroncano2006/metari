@@ -127,7 +127,7 @@ CREATE TABLE invitations (
 CREATE TABLE group_user (
     group_id INT,
     user_id INT,
-    rolen ENUM("member", "moderator") NOT NULL DEFAULT "member",
+    role ENUM("member", "moderator") NOT NULL DEFAULT "member",
     PRIMARY KEY (group_id, user_id),
     FOREIGN KEY (group_id) REFERENCES groups(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
