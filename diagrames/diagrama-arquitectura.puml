@@ -14,7 +14,7 @@ card "Servei de correu\n (Notificacions)\n Nodemailer"
 
 "Usuari/Admin" --> "Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap" : Navegació web
 
-"Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap" ---> "Backend API\n Express JS" : HTTP
+"Frontend\nReact (Typescript)\n +\n CSS\n +\n Bootstrap" ---> "Backend API\n Express JS" : HTTP/JSON
 
 "Backend API\n Express JS" --> "MariaDB" : Consultes CRUD
 
