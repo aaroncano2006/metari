@@ -243,7 +243,7 @@ Invitació
 
 ## Model de dades
 
-![alt text](img/diagrama-classes-2.png)
+![alt text](img/diagrama-classes-3.png)
 
 ## Lectura ràpida del model de dades
 
