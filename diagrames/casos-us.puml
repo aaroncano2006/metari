@@ -8,8 +8,8 @@ actor "Usuari Registrat" as UR
 actor "Admin" as Admin
 
 ' Herencia de rols: L'usuari registrat pot fer el mateix que el convidat i acumulant
-UC <|-- UR
-UR <|-- Admin
+UC --|> UR
+UR --|> Admin
 
 package "Plataforma METARI" {
     
