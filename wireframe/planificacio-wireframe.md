@@ -20,8 +20,6 @@
                 - Enllaç a Login
     - Searchbar
     - Discover List
-    - My Groups List
-    - Friends List + Ranking
 
 - **Register** (/register, si estàs loguejat redirecciona a /home)
     - Formulari de registre per crear compte.
@@ -56,6 +54,7 @@
         - Password (obligatori i recomanable 12 caràcters de llarg)
     - Visualitzacio dels grups del usuari
     - Visualitzacio dels amics del usuari
+    - Visualitzacio de les metes assignades a l'usuari (només per a ell mateix)
     
 - **Group Admin Panel**  
     - Administrar les tasques i les asignacions
@@ -65,9 +64,4 @@
     - Visualitzacio, edicio, eliminacio i creacio de Grups, Categories i Metes
     - visualitzacio d'estadistiques de l'aplicacio
     
-
-
 ## Paleta de colors
-
-
-
