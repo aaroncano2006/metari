@@ -49,15 +49,21 @@
         - Camp d'usuari (username) (obligatori) (únic i disponible).
         - Camp email (email) (obligatori) (únic i disponible)
         - Password (obligatori i recomanable 12 caràcters de llarg)
-- **My Groups**
-- **Friends**
-- **Group**
-- **Admin Panel Home**
-- **Admin Panel Users**
-- **Admin Panel Groups**
-- **Admin Panel Tasks**
-- **Admin Panel Challenges**
-- **Admin Panel Categories**
+    - Visualitzacio dels grups del usuari
+    - Visualitzacio dels amics del usuari
+    
+- **Group Admin Panel**  
+    - Administrar les tasques i les asignacions
+    - administrar usuaris del grup
+    
+
+- **Admin Panel Users/Groups/Categories/Metes**
+    - Visualitzacio, edicio, eliminacio i creacio de Grups, Categories i Metes
+    - visualitzacio d'estadistiques de l'aplicacio
+    
+
 
 ## Paleta de colors
+
+
 
