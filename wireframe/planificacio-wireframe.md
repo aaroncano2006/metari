@@ -22,6 +22,7 @@
     - Discover List
     - My Groups List
     - Friends List + Ranking
+
 - **Register** (/register, si estàs loguejat redirecciona a /home)
     - Formulari de registre per crear compte.
         - Camp nom visible (name) (si es deixa buit agafarà el username).
@@ -30,6 +31,7 @@
         - Password (obligatori i recomanable 12 caràcters de llarg)
         - Checkbox rememeber me
     - Enllaç a Login (Tens un compte? Inicia sessió)
+
 - **Login** (/login, si estàs loguejat redirecciona a /home)
     - Formulari d'inici de sessió
         - Camp email o username
@@ -37,11 +39,14 @@
         - Checkbox Remember Me
     - Enllaç a Register (No tens compte? Registra't)
     - Enllaç a Forgot Password (Has oblidat la contrasenya?)
+
 - **Forgot Password** (/forgot-password, si estpas loguejat redirecciona a /home)
     - Formulari de restaruar contrasenya
         - Camp email o username
+
 - **Restore Password** (/reset-password?token=${token} (Token generat des del Backend))
     - Formulari de nova contrasenya amb confirmació
+    
 - **Profile**
     - Visualització del perfil (foto, nom de visualització, username)
     - Formulari per canviar les dades
@@ -56,7 +61,6 @@
     - Administrar les tasques i les asignacions
     - administrar usuaris del grup
     
-
 - **Admin Panel Users/Groups/Categories/Metes**
     - Visualitzacio, edicio, eliminacio i creacio de Grups, Categories i Metes
     - visualitzacio d'estadistiques de l'aplicacio
