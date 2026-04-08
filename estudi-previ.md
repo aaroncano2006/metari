@@ -371,3 +371,6 @@ Pujada de fitxers
 | 5    | Proves       |
 | 6    | Documentació |
 | 7    | Desplegament |
+
+
+**Nota**: És possible que algunes fases del projecte s'hagin de realitzar a l'hora, per exemple, desenvolupar el backend i provar-ho o documentar mentre es desplega per tenir documentat com s'executa en local i com es posa en producció.
