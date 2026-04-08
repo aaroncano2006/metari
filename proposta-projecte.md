@@ -15,7 +15,7 @@
 
 Metari és una plataforma comunitària de reptes i gestió de tasques.
 
-L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per gestionar tasques o competir amb els teus amics o altres usuaris dins de l'aplicació mitjançant grups.
+L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per gestionar "metes" ja siguin tasques o reptes, competir amb els teus amics o altres usuaris dins de l'aplicació mitjançant grups.
 
 **Convidat:**
 
@@ -23,7 +23,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 **Usuari registrat:**
 
-- L'usuari pot crear i unir-se a grups, crear tasques o reptes dins dels grups als que pertany, opcionalmet compartir-los amb la comunitat, cercar grups per nom o categòria, afegir amics i personalitzar el seu perfil.
+- L'usuari pot crear i unir-se a grups, crear metes dins dels grups als que pertany, opcionalmet compartir-los amb la comunitat, cercar grups per nom o categòria, afegir amics i personalitzar el seu perfil.
 
 **Sistema d'amics:**
 
@@ -33,15 +33,15 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 **Grups:**
 
-- Dins dels grups es publicaran tasques o reptes.
+- Dins dels grups es publicaran metes.
 
-- Dins dels grups hi haurà un sistema de puntuació entre els diferents usuaris en funció de quins reptes o tasques validats pels moderadors del grup ha completat l'usuari.
+- Dins dels grups hi haurà un sistema de puntuació entre els diferents usuaris en funció de quines metes validats pels moderadors del grup ha completat l'usuari.
 
 - Es poden adjuntar proves als reptes i tasques per demostrar que s'han completat. Gràcies a aquestes proves, el creador de la tasca o repte o qualsevol moderador podrà marcar que l'usuari ha completat el repte o tasca.
 
 **Usuari moderador de grup:**
 
-- Els usuaris que siguin moderadors de grup poden gestionar els membres, validar tots els reptes, i canviar el nom del grup i les seves categories.
+- Els usuaris que siguin moderadors de grup poden gestionar els membres, validar les metes, canviar el nom del grup i les seves categories.
 
 **Usuari propietari del grup (owner):**
 
@@ -51,7 +51,7 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 
 **Admin de l'aplicació:**
 
-- L'administrador de l'aplicació pot gestionar usuaris, grups, categòries, reptes, tasques i comentaris. Té control total de l'aplicació.
+- L'administrador de l'aplicació pot gestionar usuaris, grups, categòries, metes i comentaris. Té control total de l'aplicació.
 
 ## Principals funcionalitats:
 
@@ -61,10 +61,11 @@ L'objectiu de l'aplicació és oferir una plataforma intuitiva i interactiva per
 - Afegir amics.
 - Consultar rankings (amics i grups).
 - Crear grups.
-- Crear tasques, reptes i categories dins dels grups. 
-- Compartir tasques i reptes amb la comunitat.
-- Administrar el grup, els reptes, tasques i categories i els usuaris del grup (Administradors de grup i Owner del grup)
-- Administrar tots els usuaris, grups, reptes i categories de l'aplicació. Control total (només admin).
+- Crear metes i categories dins dels grups. 
+- Afegir proves de complecio de les metes.
+- Compartir metes amb la comunitat.
+- Administrar el grup, metes i categories i els usuaris del grup (Administradors de grup i Owner del grup)
+- Administrar tots els usuaris, grups, metes i categories de l'aplicació. Control total (només admin).
 
 ## Ús d'API externa:
 
