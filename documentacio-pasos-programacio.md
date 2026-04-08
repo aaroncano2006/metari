@@ -5,7 +5,7 @@ Documentacio dels pasos de programacio
 
 ## instal·lar prisma
 
-Creem el package.json:
+Per generar package.json:
 ```bash
 npm init -y
 ```
@@ -14,11 +14,25 @@ npm init -y
 ```bash
 npm install express
 ```
+
 ## Instal·lar nodemon:
+Instal·lem nodemon per les dev dependencies (-D)
 ```bash
-npm install nodemon
+npm install nodemon -D
 ```
+
 ## Instal·lar .env:
 ```bash
 npm i dotenv
 ```
+## forçar la versio de Node.js:
+
+Creem l'arxiu .nvmrc ( node version manager run configuration/commands) per establir la versio de node que s'ha de tenir per utilitzar l'aplicacio durant el desenvolupament.
+
+```bash
+nvm install && nvm use
+```
+
+
+# Frontend
+
