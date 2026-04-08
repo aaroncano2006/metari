@@ -290,17 +290,35 @@ Un usuari pot realitzar cap o moltes proves per a una assignació concreta.
 
 # 5. Disseny inicial de la interfície (bàsic)
 
-Pantalles principals:
+Per visualitzar millor com volem que sigui el frontend de Metari, hem especificat les principals pàgines i components en el [següent document](wireframe/planificacio-wireframe.md).
 
-- Pàgina d'inici ()
-- Detall d'esdeveniment
-- Panells d'usuaris
-- Formulari de creació
-- Formulari de login
+També hem realitzat un wireframe amb **Figma** per poder exemplificar millor com volem que es vegi el nostre frontend.
 
-Exemple:
+**Home**:
 
-![alt text](diagrames/wireframebasic.png)
+![alt text](wireframe/imgs/Home.png)
+
+**Profile**:
+
+![alt text](wireframe/imgs/Profile.png)
+
+**Register, Login, Forgot Password i Restore Password forms**:
+
+![alt text](wireframe/imgs/RegisterForm.png)
+
+![alt text](wireframe/imgs/LoginForm.png)
+
+![alt text](wireframe/imgs/ForgotPasswordForm.png)
+
+![alt text](wireframe/imgs/RestorePasswordForm.png)
+
+**Pàgina de grup (+ panell admin grup)**:
+
+![alt text](wireframe/imgs/GroupPage.png)
+
+**Panell d'administrador**:
+
+![alt text](wireframe/imgs/AdminPanel.png)
 
 ---
 
