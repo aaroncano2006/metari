@@ -34,5 +34,19 @@ nvm install && nvm use
 ```
 
 
+## Instal·lar prisma:
+Instal·lem prisma cli per les dev dependencies (--save-dev)
+```bash
+npm install prisma --save-dev
+```
+Instal·lem prisma client per les dev dependencies
+
+```bash
+npm install @prisma/client
+```
+aixo ens crea la carpeta de prisma
+
+i un arxiu de configuracio del prisma
+
 # Frontend
 
