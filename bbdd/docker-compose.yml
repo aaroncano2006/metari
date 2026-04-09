@@ -12,7 +12,7 @@ services:
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
     volumes:
       - db_data:/var/lib/mysql
-      - ./metari.sql:/docker-entrypoint-initdb.d/metari.sql
+      # - ./metari.sql:/docker-entrypoint-initdb.d/metari.sql
     ports:
       - "${MYSQL_PORT:-3306}:3306"
 
