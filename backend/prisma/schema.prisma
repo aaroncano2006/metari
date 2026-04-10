@@ -15,25 +15,199 @@ datasource db {
 }
 
 model User {
-  id              Int      @id @default(autoincrement())
-  name            String
-  username        String   @unique
-  email           String   @unique
-  password        String
-  role            Role     @default(user)
-  completed_tasks BigInt   @default(0)
-  score           BigInt   @default(0)
-  restore_token   String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt //Actualitza cada vegada que es fa un canvi a la taula
+  id                  Int           @id @default(autoincrement())
+  name                String //VARCHAR(191) es el valor per defecte  mariadb si no s'especifica
+  username            String        @unique
+  email               String        @unique
+  password            String
+  role                UserRole      @default(user)
+  completed_tasks     BigInt        @default(0)
+  score               BigInt        @default(0)
+  restore_token       String?
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt //Actualitza cada vegada que es fa un canvi a la taula
+  //Autogenerades relacions  bidireccionals
+  groups              Group[]
+  metas               Meta[]
+  assignations        Assignation[]
+  comments            Comment[]
+  proofs              Proof[]
+  //Aquestes dues relacions de retorn venen del mateix model aixi que s'han d'anomenar amb diferents noms (definits a les relacions del model invitation)
+  sentInvitations     Invitation[]  @relation("SentInvitations")
+  receivedInvitations Invitation[]  @relation("ReceivedInvitations")
+  groupUsers          GroupUser[]
+  indexedMetas        IndexedMeta[]
 
+  //El nom de la taula a la bbdd
   @@map("users")
 }
 
 //enum Rol del model User
-enum Role {
+enum UserRole {
   user
   admin
 }
 
+model Group {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String        @db.Text
+  owner_id     Int
+  is_public    Boolean
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  //referencia al model/taula user
+  owner        User          @relation(fields: [owner_id], references: [id])
+  //Autogenerades relacions bidireccionals
+  metas        Meta[]
+  assignations Assignation[]
+  invitations  Invitation[]
+  groupUsers   GroupUser[]
+  indexedMetas IndexedMeta[]
 
+  @@map("groups")
+}
+
+model Meta {
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String        @db.Text
+  author_id    Int
+  group_id     Int
+  type         MetaType      @default(task)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+  author       User          @relation(fields: [author_id], references: [id])
+  group        Group         @relation(fields: [group_id], references: [id])
+  //Autogenerades relacions bidireccionals
+  assignations Assignation[]
+  indexedMetas IndexedMeta[]
+
+  @@map("metas")
+}
+
+//enum tipus del model meta
+enum MetaType {
+  task
+  challange
+}
+
+model Assignation {
+  id         Int        @id @default(autoincrement())
+  group_id   Int?
+  meta_id    Int?
+  user_id    Int?
+  start_date DateTime?  @db.Date
+  due_date   DateTime?  @db.Date
+  priority   Priority?
+  difficulty Difficulty @default(normal)
+  score      BigInt?    @db.UnsignedBigInt
+  completed  Boolean    @default(false)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  group      Group?     @relation(fields: [group_id], references: [id])
+  meta       Meta?      @relation(fields: [meta_id], references: [id])
+  user       User?      @relation(fields: [user_id], references: [id])
+  //Autogenerades relacions bidireccionals
+  comments   Comment[]
+  proofs     Proof[]
+
+  @@map("assignations")
+}
+
+//enum del model Assignation
+enum Priority {
+  high
+  low
+}
+
+//enum del model Assignation
+enum Difficulty {
+  easy
+  normal
+  hard
+  extreme
+}
+
+model Comment {
+  id             Int         @id @default(autoincrement())
+  assignation_id Int
+  user_id        Int
+  body           String      @db.Text
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  assignation    Assignation @relation(fields: [assignation_id], references: [id])
+  user           User        @relation(fields: [user_id], references: [id])
+  //Autogenerades relacions bidireccionals
+
+  @@map("comments")
+}
+
+model Proof {
+  id             Int         @id @default(autoincrement())
+  assignation_id Int
+  user_id        Int
+  proof          String      @db.Text
+  is_valid       Boolean     @default(false)
+  created_at     DateTime    @default(now())
+  assignation    Assignation @relation(fields: [assignation_id], references: [id])
+  user           User        @relation(fields: [user_id], references: [id])
+  //Autogenerades relacions bidireccionals
+
+  @@map("proofs")
+}
+
+model Invitation {
+  id Int @id @default(autoincrement())
+
+  sender_id   Int
+  receiver_id Int
+  group_id    Int
+  status      Status   @default(pending)
+  created_at  DateTime @default(now())
+  group       Group    @relation(fields: [group_id], references: [id])
+  //Dues relacions al mateix model, s'ha d'especificar un nom per cada una de les relacions
+  sender      User     @relation("SentInvitations", fields: [sender_id], references: [id])
+  receiver    User     @relation("ReceivedInvitations", fields: [receiver_id], references: [id])
+  //Autogenerades relacions bidireccionals
+
+  @@map("invitations")
+}
+
+enum Status {
+  pending
+  accepted
+  rejected
+}
+
+model GroupUser {
+  group_id Int
+  user_id  Int
+  role     GroupUserRole @default(member)
+  group    Group         @relation(fields: [group_id], references: [id])
+  user     User          @relation(fields: [user_id], references: [id])
+  //Autogenerades relacions bidireccionals
+
+  @@id([group_id, user_id])
+  @@map("group_user")
+}
+
+enum GroupUserRole {
+  member
+  moderator
+}
+
+model IndexedMeta {
+  id                    Int      @id @default(autoincrement())
+  user_id               Int?
+  meta_id               Int
+  group_id              Int?
+  is_public             Boolean  @default(false)
+  is_approved           Boolean?
+  is_community_approved Boolean?
+  user                  User?    @relation(fields: [user_id], references: [id])
+  meta                  Meta     @relation(fields: [meta_id], references: [id])
+  group                 Group?   @relation(fields: [group_id], references: [id])
+
+  @@map("index")
+}

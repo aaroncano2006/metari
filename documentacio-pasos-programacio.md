@@ -3,12 +3,30 @@ Documentacio dels pasos de programacio
 
 # Backend
 
-## instal·lar prisma
+## Instal·lar prisma:
+Instal·lem prisma cli per les dev dependencies (--save-dev)
+```bash
+npm install prisma --save-dev
+```
+Instal·lem prisma client per les dev dependencies
+
+```bash
+npm install @prisma/client
+```
+
+```bash
+npx prisma init
+```
+aixo ens crea la carpeta de prisma i un arxiu de configuracio del prisma
+
+
 
 Per generar package.json:
 ```bash
 npm init -y
 ```
+
+
 
 ## Instal·lar  express:
 ```bash
