@@ -14,11 +14,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id   Int   @id    @default(autoincrement())
-  name  String
-  description String?
-  created_at  DateTime? @default(now())
-  updated_at DateTime? @default(now())
-  @@map("categories")
+model User {
+  id              Int      @id @default(autoincrement())
+  name            String
+  username        String   @unique
+  email           String   @unique
+  password        String
+  role            Role     @default(user)
+  completed_tasks BigInt   @default(0)
+  score           BigInt   @default(0)
+  restore_token   String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt //Actualitza cada vegada que es fa un canvi a la taula
+
+  @@map("users")
 }
+
+//enum Rol del model User
+enum Role {
+  user
+  admin
+}
+
+
