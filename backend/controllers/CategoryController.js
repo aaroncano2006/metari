@@ -1,14 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-const { PrismaMariaDb } = require("@prisma/adapter-mariadb");
-
-const adapter = new PrismaMariaDb({
-  host: "localhost",
-  port: 3307,
-  user: "root",
-  database: "metari_db",
-});
-
-const prisma = new PrismaClient({ adapter });
+const prisma = require("../config/prisma");
 
 const getCategories = async (req, res) => {
   try {
