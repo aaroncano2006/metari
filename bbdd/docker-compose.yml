@@ -25,7 +25,7 @@ services:
     environment:
       PMA_HOST: db
     ports:
-      - "8080:80"
+      - "${PHPMYADMIN_PORT:-8080}:80"
 
 volumes:
   db_data:
