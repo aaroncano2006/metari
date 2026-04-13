@@ -5,4 +5,6 @@ const categoryController = require('../controllers/CategoryController');
 // Definimos el GET de todas las categorías
 router.get('/', categoryController.getCategories);
 
+router.get('/:id', categoryController.getCategoryById);
+
 module.exports = router;
