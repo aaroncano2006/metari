@@ -14,8 +14,6 @@ const getCategoryById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
 
-    console.log(id);
-
     const category = await prisma.category.findUnique({
       where: { id: id },
     });
@@ -48,8 +46,51 @@ const createCategory = async (req, res) => {
   }
 };
 
+const updateCategory = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const data = req.body;
+
+    const updatedData = await prisma.category.update({
+      where: { id: id },
+      data: {
+        name: String(data.name),
+        description:
+          data?.description !== undefined ? String(data.description) : null,
+      },
+    });
+
+    res.status(200).json(updatedData);
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    res.status(500).json({ error: "Error actualitzant categoria" });
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const deleteCategory = await prisma.category.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    res.json(204).json({
+      "message": "Categoria eliminada correctament!"
+    });
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    res.status(500).json({ error: "Error eliminant categoria" });
+  }
+};
+
 module.exports = {
   getCategories,
   getCategoryById,
   createCategory,
+  updateCategory,
+  deleteCategory
 };
