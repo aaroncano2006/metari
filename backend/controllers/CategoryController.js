@@ -5,8 +5,8 @@ const getCategories = async (req, res) => {
     const categories = await prisma.category.findMany();
     res.status(200).json(categories);
   } catch (error) {
-    console.error("Error en Prisma:", error); 
-    res.status(500).json({ error: 'Error carregant categories' });
+    console.error("Error en Prisma:", error);
+    res.status(500).json({ error: "Error carregant categories" });
   }
 };
 
@@ -17,18 +17,39 @@ const getCategoryById = async (req, res) => {
     console.log(id);
 
     const category = await prisma.category.findUnique({
-      where: {id: id}
+      where: { id: id },
     });
 
     res.status(200).json(category);
   } catch (error) {
-    console.error("Error en Prisma:", error); 
-    res.status(500).json({ error: 'Error carregant categoria' });
+    console.error("Error en Prisma:", error);
+    res.status(500).json({ error: "Error carregant categoria" });
   }
-}
+};
+
+const createCategory = async (req, res) => {
+  try {
+    const category = req.body;
+
+    const newCategory = await prisma.category.create({
+      data: {
+        name: String(category.name),
+        description:
+          category?.description !== undefined
+            ? String(category.description)
+            : null,
+      },
+    });
+
+    res.status(200).json(newCategory);
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    res.status(500).json({ error: "Error creant categoria" });
+  }
+};
 
 module.exports = {
-  prisma,
   getCategories,
   getCategoryById,
+  createCategory,
 };
