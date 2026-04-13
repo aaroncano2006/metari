@@ -5,8 +5,8 @@ const categoryRoutes = require('./routes/CategoryRoutes');
 
 app.use(express.json());
 
-app.get("/", (request, response) => {
-    return response.status(200).json({
+app.get("/", (req, res) => {
+    return res.status(200).json({
         message: "Hello world"
     });
 });
