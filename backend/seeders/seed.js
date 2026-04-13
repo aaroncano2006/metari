@@ -1,4 +1,4 @@
-const { seedCategories } = require("./CategoriesSeeder");
+const { seedCategories } = require("./CategorySeeder");
 
 const seed = async () => {
     try {
