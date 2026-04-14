@@ -2,8 +2,17 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 const categoryRoutes = require('./routes/CategoryRoutes');
+const userRoutes = require('./routes/UserRoutes');
+
 
 app.use(express.json());
+
+
+// app.use((req, res, next) => {
+//     console.log("➡️", req.method, req.url);
+//     console.log("HEADERS:", req.headers["content-type"]);
+//     next();
+// });
 
 app.get("/", (request, response) => {
     return response.status(200).json({
@@ -12,6 +21,9 @@ app.get("/", (request, response) => {
 });
 
 app.use('/api/categories', categoryRoutes);
+app.use('/api/usuaris', userRoutes);
+
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
