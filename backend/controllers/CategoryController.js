@@ -15,7 +15,7 @@ const getCategoryById = async (req, res) => {
     const id = parseInt(req.params.id);
 
     const category = await prisma.category.findUnique({
-      where: { id: id },
+      where: { id },
     });
 
     res.status(200).json(category);
@@ -39,7 +39,7 @@ const createCategory = async (req, res) => {
       },
     });
 
-    res.status(200).json(newCategory);
+    res.status(201).json(newCategory);
   } catch (error) {
     console.error("Error en Prisma:", error);
     res.status(500).json({ error: "Error creant categoria" });
@@ -53,7 +53,7 @@ const updateCategory = async (req, res) => {
     const data = req.body;
 
     const updatedData = await prisma.category.update({
-      where: { id: id },
+      where: { id },
       data: {
         name: String(data.name),
         description:
@@ -74,7 +74,7 @@ const deleteCategory = async (req, res) => {
 
     const deleteCategory = await prisma.category.delete({
       where: {
-        id: id,
+        id,
       },
     });
 
