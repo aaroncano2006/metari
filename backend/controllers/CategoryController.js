@@ -39,7 +39,7 @@ const createCategory = async (req, res) => {
       },
     });
 
-    res.status(200).json(newCategory);
+    res.status(201).json(newCategory);
   } catch (error) {
     console.error("Error en Prisma:", error);
     res.status(500).json({ error: "Error creant categoria" });
