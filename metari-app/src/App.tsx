@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-      <h1 className='bg-warning'>Benvingut a Metari</h1>
+      <h1 className='bg-warning text-center'>Benvingut a Metari</h1>
     </>
   )
 }
