@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 const categoryRoutes = require('./routes/CategoryRoutes');
-const errorHandler = require('./middlewares/errorHandler');
+const errorHandler = require('./middlewares/errors/errorHandler');
 
 app.use(express.json());
 
