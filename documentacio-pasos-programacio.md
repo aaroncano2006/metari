@@ -55,6 +55,11 @@ nvm install && nvm use
 # Frontend
 
 
+npm create vite@latest react-notes-app
+
+React
+Typescript
+Install with npm and start now? -yes
 
 
 
