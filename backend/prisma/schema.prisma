@@ -154,12 +154,12 @@ model Comment {
 model Proof {
   id             Int         @id @default(autoincrement())
   assignation_id Int
-  user_id        Int
+  user_id        Int?
   proof          String      @db.Text
   is_valid       Boolean     @default(false)
   created_at     DateTime    @default(now())
   assignation    Assignation @relation(fields: [assignation_id], references: [id])
-  user           User        @relation(fields: [user_id], references: [id])
+  user           User?        @relation(fields: [user_id], references: [id])
   //Autogenerades relacions bidireccionals
 
   @@map("proofs")
