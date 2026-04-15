@@ -1,4 +1,4 @@
-const validateCategory = (data) => {
+const validateCategory = async (data) => {
 
     if (!data.name) {
         return "El nom de la categoria és obligatori!";
@@ -8,7 +8,7 @@ const validateCategory = (data) => {
         return "El nom enviat no és vàlid! Ha de ser un text";
     }
 
-    if (data.name.trim() = "") {
+    if (data.name.trim() === "") {
         return "El nom enviat està buit.";
     }
 
@@ -16,7 +16,7 @@ const validateCategory = (data) => {
         return "La descripció enviada no és vàlida! Ha de ser un text";
     }
 
-    return true;
+    return null;
 };
 
 module.exports = {

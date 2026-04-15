@@ -1,4 +1,7 @@
 const prisma = require("../config/prisma");
+const {
+  validateCategory,
+} = require("../middlewares/validators/validateCategory");
 
 const getCategories = async (req, res, next) => {
   try {
@@ -38,12 +41,20 @@ const createCategory = async (req, res, next) => {
   try {
     const category = req.body;
 
-    // Aquesta condició serà modificada quan afegim els validadors.
-    if (!category.name || typeof(category.name) !== "string") {
-      const error = new Error("Invalid category name");
+    const validate = await validateCategory(category);
+
+    if (validate) {
+      const error = new Error(validate);
       error.statusCode = 404;
       throw error;
     }
+
+    // Aquesta condició serà modificada quan afegim els validadors.
+    // if (!category.name || typeof(category.name) !== "string") {
+    //   const error = new Error("Invalid category name");
+    //   error.statusCode = 404;
+    //   throw error;
+    // }
 
     const newCategory = await prisma.category.create({
       data: {
@@ -67,23 +78,13 @@ const updateCategory = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
-    // const category = await prisma.category.findUnique({
-    //   where: { id },
-    // });
-
-    // // Aquesta condició si es manté
-    // if (!category) {
-    //   const error = new Error("No s'ha trobat la categoria");
-    //   error.statusCode = 404;
-    //   throw error;
-    // }
-
     const data = req.body;
 
-    // Aquesta condició serà modificada quan afegim els validadors.
-    if (!data.name || typeof(data.name) !== "string") {
-      const error = new Error("Invalid category name");
-      error.statusCode = 400;
+    const validate = await validateCategory(category);
+
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 404;
       throw error;
     }
 
@@ -115,7 +116,7 @@ const deleteCategory = async (req, res, next) => {
     });
 
     res.status(204).json({
-      "message": "Categoria eliminada correctament!"
+      message: "Categoria eliminada correctament!",
     });
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -129,5 +130,5 @@ module.exports = {
   getCategoryById,
   createCategory,
   updateCategory,
-  deleteCategory
+  deleteCategory,
 };
