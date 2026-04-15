@@ -37,15 +37,15 @@ const sendInvitations = async (req, res, next) => {
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
     const sender = await prisma.user.findUnique({
-        where: senderId
+        where: {id: senderId}
     });
 
     const receiver = await prisma.user.findUnique({
-        where: recieverId
+        where: {id: recieverId}
     });
 
     const group = await prisma.group.findUnique({
-        where: groupId
+        where: {id: groupId}
     });
 
     const invitation = await prisma.invitation.create({
@@ -60,7 +60,6 @@ const sendInvitations = async (req, res, next) => {
         from: 'Metari',
         to: receiver.email,
         subect: !group ? `${sender.name} (${sender.username}) t'ha enviat sol·licitud d'amistat` : `${sender.name} (${sender.username}) t'ha enviat sol·licitud per unir-te al següent grup: ${group.name}`,
-        text: `Hola, ${receiver.name}! L'usuari `
     });
 
   } catch (error) {
