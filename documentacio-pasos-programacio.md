@@ -54,3 +54,42 @@ nvm install && nvm use
 
 # Frontend
 
+
+
+
+
+
+# executar projecte en desenvolupament
+
+## backend 
+
+Instal·lar dependencies:
+```bash
+npm i
+```
+
+Importar prisma client:
+```bash
+npx prisma generate
+```
+
+Arrancar servei:
+```bash
+npm run dev
+```
+Servei en funcionament:
+```bash
+> backend@1.0.0 dev
+> nodemon index.js
+
+[nodemon] 3.1.14
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node index.js`
+◇ injected env (8) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+Server running on port 3001
+[nodemon] clean exit - waiting for changes before restart
+```
+
+
