@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config();
 const app = express();
 const categoryRoutes = require('./routes/CategoryRoutes');
+const userRoutes = require('./routes/UserRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
 const transporter = require('./config/nodemailer');
 
@@ -36,6 +37,9 @@ app.post("/test-email", async (req, res, next) => {
 });
 
 app.use('/api/categories', categoryRoutes);
+app.use('/api/usuaris', userRoutes);
+
+
 
 app.use(errorHandler);
 const PORT = process.env.PORT || 3001;
