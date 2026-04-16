@@ -1,21 +1,11 @@
 const prisma = require("../config/prisma");
 const utils = require("./Utils") 
 
-//handles bigint values for prisma
-// const handleBigInt = (data) =>
-//   JSON.parse(
-//     JSON.stringify(data, (_, value) =>
-//       typeof value === "bigint" ? Number(value) : value
-//     )
-//   );
-
-
 //Get all
 const getUsuaris = async (req, res) => {
     try {
         const users = await prisma.user.findMany();
-        // res.status(200).json(usuaris);
-        res.status(200).json(users);
+        res.status(200).json(utils.handleBigInt(users));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al carregar usuaris" });
@@ -41,7 +31,7 @@ const getUsuariById = async (req, res) => {
         //     return res.status(404).json({ error: "Usuari no trobat" });
         // }
 
-        res.status(200).json(handleBigInt(user));
+        res.status(200).json(utils.handleBigInt(user));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al trobar l'usuari" });
@@ -66,7 +56,7 @@ const createUsuari = async (req, res) => {
                 restore_token: null,
             },
         });        
-        res.status(201).json(handleBigInt(user));
+        res.status(201).json(utils.handleBigInt(user));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al crear l'usuari" });
