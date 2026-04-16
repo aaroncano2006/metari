@@ -31,6 +31,29 @@ const sendInvitations = async (req, res, next) => {
     const receiverId = parseInt(req.params.receiverid);
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
+    const countInv = await prisma.invitation.count({
+      where: {
+        OR: [
+          {
+            sender_id: senderId,
+            receiver_id: receiverId,
+            group_id: null,
+          },
+          {
+            sender_id: receiverId,
+            receiver_id: senderId,
+            group_id: null,
+          },
+        ],
+      },
+    });
+
+    if (countInv > 0) {
+      const error = new Error("Ja existeix una sol·licitud pendent d'aquest usuari o ja són amics.");
+      error.statusCode = 400;
+      throw error;
+    }
+
     if (senderId === receiverId) {
       const error = new Error(
         "No et pots enviar sol·licitud d'amistat a tu mateix!",
@@ -179,16 +202,19 @@ const rejectInvitation = async (req, res, next) => {
     }
 
     const sender = await prisma.user.findUnique({
-      where: { id: invitation.sender_id }
+      where: { id: invitation.sender_id },
     });
 
     await prisma.invitation.delete({
-      where: { id }
+      where: { id },
     });
 
     res.status(200).json({
       ok: true,
-      message: invitation.status === "pending" ? `Petició rebutjada!` : `${sender.name} (${sender.username}) i tu ja no sou amics!`,
+      message:
+        invitation.status === "pending"
+          ? `Petició rebutjada!`
+          : `${sender.name} (${sender.username}) i tu ja no sou amics!`,
     });
   } catch (error) {
     console.error("Error en Prisma:", error);
