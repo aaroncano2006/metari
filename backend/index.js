@@ -3,8 +3,9 @@ require('dotenv').config();
 const app = express();
 const categoryRoutes = require('./routes/CategoryRoutes');
 const userRoutes = require('./routes/UserRoutes');
+const invitationRoutes = require('./routes/InvitationRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
-const transporter = require('./config/nodemailer');
+const nodemailer = require('./config/nodemailer');
 
 app.use(express.json());
 
@@ -18,7 +19,7 @@ app.post("/test-email", async (req, res, next) => {
   const { to, subject, text } = req.body;
 
   try {
-    const info = await transporter.sendMail({
+    const info = await nodemailer.sendMail({
       from: 'Metari',
       to: to,
       subject: subject,
@@ -38,7 +39,7 @@ app.post("/test-email", async (req, res, next) => {
 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/usuaris', userRoutes);
-
+app.use('/api/invitations', invitationRoutes);
 
 
 app.use(errorHandler);

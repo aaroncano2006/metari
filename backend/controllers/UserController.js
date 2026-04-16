@@ -86,7 +86,7 @@ const updateUsuari = async (req, res) => {
                 username: userBody.username,
                 email : userBody.email,
                 password : userBody.password,
-                role: "user",
+                role: userBody.role,
                 completed_tasks: userBody.completed_tasks !== undefined ? parseInt(userBody.completed_tasks) : undefined,
                 score: userBody.score !== undefined ? parseInt(userBody.score) : undefined,
                 restore_token: userBody.restore_token,
