@@ -1,6 +1,13 @@
 const prisma = require("../config/prisma");
 const nodemailer = require("../config/nodemailer");
 
+const handleBigInt = (data) =>
+  JSON.parse(
+    JSON.stringify(data, (_, value) =>
+      typeof value === "bigint" ? Number(value) : value,
+    ),
+  );
+
 const getInvitations = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userid);
@@ -11,7 +18,7 @@ const getInvitations = async (req, res, next) => {
       include: { sender: true, receiver: true, group: true },
     });
 
-    res.status(200).json(invitations);
+    res.status(200).json(handleBigInt(invitations));
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
@@ -33,35 +40,93 @@ const getInvitations = async (req, res, next) => {
 const sendInvitations = async (req, res, next) => {
   try {
     const senderId = parseInt(req.params.senderid);
-    const recieverId = parseInt(req.params.receiverid);
+    const receiverId = parseInt(req.params.receiverid);
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
     const sender = await prisma.user.findUnique({
-        where: {id: senderId}
+      where: { id: senderId },
     });
 
     const receiver = await prisma.user.findUnique({
-        where: {id: recieverId}
+      where: { id: receiverId },
     });
 
-    const group = await prisma.group.findUnique({
-        where: {id: groupId}
-    });
+    const group = groupId
+      ? await prisma.group.findUnique({
+          where: { id: groupId },
+        })
+      : null;
+
+    if (!sender || !receiver) {
+      return res.status(404).json({ error: "Usuari no trobat" });
+    }
 
     const invitation = await prisma.invitation.create({
-        data: {
-            sender_id: senderId,
-            receiver_id: recieverId,
-            group_id: groupId,
-        }
+      data: {
+        sender_id: senderId,
+        receiver_id: receiverId,
+        ...(groupId && {
+          group: {
+            connect: { id: groupId },
+          },
+        }),
+      },
     });
 
-    const message = await nodemailer.sendMail({
-        from: 'Metari',
-        to: receiver.email,
-        subect: !group ? `${sender.name} (${sender.username}) t'ha enviat sol·licitud d'amistat` : `${sender.name} (${sender.username}) t'ha enviat sol·licitud per unir-te al següent grup: ${group.name}`,
+    await nodemailer.sendMail({
+      from: "Metari",
+      to: receiver.email,
+      subject: !group
+        ? `${sender.name} (${sender.username}) t'ha enviat una sol·licitud d'amistat`
+        : `${sender.name} (${sender.username}) t'ha enviat una sol·licitud per unir-se al grup ${group.name}`,
+
+      html: !group
+        ? `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <h2>Nova sol·licitud d'amistat</h2>
+
+          <p>Hola, <strong>${receiver.name}</strong>!</p>
+
+          <p>
+            L'usuari <strong>${sender.name} (${sender.username})</strong>
+            t'ha enviat una sol·licitud d'amistat.
+          </p>
+
+          <p>
+            Pots acceptar o rebutjar-la des del teu panell d'invitacions.
+          </p>
+
+          <hr />
+          <small style="color: #666;">
+            Metari - Gestiona les teves connexions
+          </small>
+        </div>
+        `
+        : `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <h2>Nova invitació a grup</h2>
+
+          <p>Hola, <strong>${receiver.name}</strong>!</p>
+
+          <p>
+            L'usuari <strong>${sender.name} (${sender.username})</strong>
+            t'ha enviat una sol·licitud per unir-se al grup
+            <strong>${group.name}</strong>.
+          </p>
+
+          <p>
+            Pots revisar-la i decidir si vols unir-t'hi des del teu panell d'invitacions.
+          </p>
+
+          <hr />
+          <small style="color: #666;">
+            Metari - Comunitats, objectius i connexions
+          </small>
+        </div>
+        `,
     });
 
+    return res.status(201).json(invitation);
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
