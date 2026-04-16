@@ -32,24 +32,24 @@ const sendInvitations = async (req, res, next) => {
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
     const countInv = await prisma.invitation.count({
-      where: {
-        OR: [
-          {
+      where: groupId
+        ? {
             sender_id: senderId,
             receiver_id: receiverId,
-            group_id: null,
+            group_id: groupId,
+          }
+        : {
+            OR: [
+              { sender_id: senderId, receiver_id: receiverId, group_id: null },
+              { sender_id: receiverId, receiver_id: senderId, group_id: null },
+            ],
           },
-          {
-            sender_id: receiverId,
-            receiver_id: senderId,
-            group_id: null,
-          },
-        ],
-      },
     });
 
     if (countInv > 0) {
-      const error = new Error("Ja existeix una sol·licitud pendent d'aquest usuari o ja són amics.");
+      const error = new Error(
+        "Ja existeix una sol·licitud amb aquestes característiques.",
+      );
       error.statusCode = 400;
       throw error;
     }
