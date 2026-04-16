@@ -13,16 +13,16 @@ const getMetas = async (req, res) => {
 };
 
 const createMeta = async (req, res) => {
-    const body = req.body;
+    const reqBody = req.body;
 
     try {       
         const meta = await prisma.meta.create({
             data: {
-                title: body.title,
-                description: body.description,
-                author_id: parseInt(body.author_id),
-                group_id: parseInt(body.group_id),
-                type: body.type,
+                title: reqBody.title,
+                description: reqBody.description,
+                author_id: parseInt(reqBody.author_id),
+                group_id: parseInt(reqBody.group_id),
+                type: reqBody.type,
 
             },
         });        
