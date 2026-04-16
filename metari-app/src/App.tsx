@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react'
 
 import './App.css'
+import { Routes, Route} from 'react-router-dom'
+import Home from './views/Home'
+import Profile from './views/Profile'
 
 function App() {
 
   return (
     <>
-      <h1 className='bg-warning text-center'>Benvingut a Metari</h1>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
     </>
   )
 }
