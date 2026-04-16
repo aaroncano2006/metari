@@ -55,8 +55,16 @@ nvm install && nvm use
 # Frontend
 
 
+npm create vite@latest react-notes-app
+
+- React
+- Typescript
+- Install with npm and start now? -yes
 
 
+npm install bootstrap
+
+npm install react-router-dom
 
 
 # executar projecte en desenvolupament
@@ -71,6 +79,10 @@ npm i
 Importar prisma client:
 ```bash
 npx prisma generate
+```
+Executar migracions:
+```bash
+npm run migrate
 ```
 
 Arrancar servei:

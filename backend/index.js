@@ -4,6 +4,7 @@ const app = express();
 const categoryRoutes = require('./routes/CategoryRoutes');
 const userRoutes = require('./routes/UserRoutes');
 const invitationRoutes = require('./routes/InvitationRoutes');
+const metaRoutes = require('./routes/MetaRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
 
@@ -40,6 +41,8 @@ app.post("/test-email", async (req, res, next) => {
 app.use('/api/categories', categoryRoutes);
 app.use('/api/usuaris', userRoutes);
 app.use('/api/invitations', invitationRoutes);
+app.use('/api/metas', metaRoutes);
+
 
 
 app.use(errorHandler);

@@ -3,8 +3,10 @@ const prisma = require("../config/prisma");
 const seedCategories = async () => {
   try {
     const categories = await prisma.category.findMany();
+    const overrideDB = false; 
 
-    if (categories.length > 0) {
+
+    if (categories.length > 0  && !overrideDB) {
         console.log("Existing Categories found! Aborting database seeding!");
         return;
     }

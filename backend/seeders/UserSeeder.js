@@ -50,7 +50,7 @@ const seedUsers = async () => {
         },
         
       ],
-      skipDuplicates: true, //Es irrellevant si abortem si ja hi ha dades. No ho es, si sobreescrivim.
+      skipDuplicates: true,
     });
 
     console.log("Usuaris seeded!");
