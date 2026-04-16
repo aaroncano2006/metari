@@ -170,10 +170,10 @@ model Invitation {
 
   sender_id   Int
   receiver_id Int
-  group_id    Int
+  group_id    Int?
   status      Status   @default(pending)
   created_at  DateTime @default(now())
-  group       Group    @relation(fields: [group_id], references: [id])
+  group       Group?    @relation(fields: [group_id], references: [id])
   //Dues relacions al mateix model, s'ha d'especificar un nom per cada una de les relacions
   sender      User     @relation("SentInvitations", fields: [sender_id], references: [id])
   receiver    User     @relation("ReceivedInvitations", fields: [receiver_id], references: [id])
