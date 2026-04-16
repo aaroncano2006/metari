@@ -1,20 +1,11 @@
 const prisma = require("../config/prisma");
-
-//handles bigint values for prisma
-const handleBigInt = (data) =>
-  JSON.parse(
-    JSON.stringify(data, (_, value) =>
-      typeof value === "bigint" ? Number(value) : value
-    )
-  );
-
+const utils = require("./Utils") 
 
 //Get all
 const getUsuaris = async (req, res) => {
     try {
         const users = await prisma.user.findMany();
-        // res.status(200).json(usuaris);
-        res.status(200).json(handleBigInt(users));
+        res.status(200).json(utils.handleBigInt(users));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al carregar usuaris" });
@@ -40,7 +31,7 @@ const getUsuariById = async (req, res) => {
         //     return res.status(404).json({ error: "Usuari no trobat" });
         // }
 
-        res.status(200).json(handleBigInt(user));
+        res.status(200).json(utils.handleBigInt(user));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al trobar l'usuari" });
@@ -65,7 +56,7 @@ const createUsuari = async (req, res) => {
                 restore_token: null,
             },
         });        
-        res.status(201).json(handleBigInt(user));
+        res.status(201).json(utils.handleBigInt(user));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al crear l'usuari" });
@@ -75,25 +66,25 @@ const createUsuari = async (req, res) => {
 
 //Actualitza Usuari
 const updateUsuari = async (req, res) => {
-    const userBody = req.body;
+    const reqBody = req.body;
     const id = parseInt(req.params.id);
 
     try {
         const user = await prisma.user.update({
             where: { id },
             data: {
-                name: userBody.name,
-                username: userBody.username,
-                email : userBody.email,
-                password : userBody.password,
-                role: "user",
-                completed_tasks: userBody.completed_tasks !== undefined ? parseInt(userBody.completed_tasks) : undefined,
-                score: userBody.score !== undefined ? parseInt(userBody.score) : undefined,
-                restore_token: userBody.restore_token,
+                name: reqBody.name,
+                username: reqBody.username,
+                email : reqBody.email,
+                password : reqBody.password,
+                role: "user", // forçant el rol, no volem que qualsevol canvii el seu rol a admin, o s'ha de comprobar si te rol admin avans de mosificar-lo
+                completed_tasks: reqBody.completed_tasks !== undefined ? parseInt(reqBody.completed_tasks) : undefined,
+                score: reqBody.score !== undefined ? parseInt(reqBody.score) : undefined,
+                restore_token: reqBody.restore_token,
             },
         });
         // res.status(200).json(user);
-        res.status(200).json(handleBigInt(user));
+        res.status(200).json(utils.handleBigInt(user));
 
     } catch (error) {
         console.error("Error en Prisma:", error);
