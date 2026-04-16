@@ -43,6 +43,12 @@ const sendInvitations = async (req, res, next) => {
     const receiverId = parseInt(req.params.receiverid);
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
+    if (senderId === receiverId) {
+      const error = new Error("No et pots enviar sol·licitud d'amistat a tu mateix!");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const sender = await prisma.user.findUnique({
       where: { id: senderId },
     });
@@ -58,7 +64,9 @@ const sendInvitations = async (req, res, next) => {
       : null;
 
     if (!sender || !receiver) {
-      return res.status(404).json({ error: "Usuari no trobat" });
+      const error = new Error("Usuari no trobat!");
+      error.statusCode = 404;
+      throw error;
     }
 
     const invitation = await prisma.invitation.create({
