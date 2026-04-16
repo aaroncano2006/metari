@@ -1,4 +1,6 @@
 const prisma = require("../config/prisma");
+const utils = require("./Utils") 
+
 
 
 //Get all
@@ -22,11 +24,11 @@ const createMeta = async (req, res) => {
                 description: reqBody.description,
                 author_id: parseInt(reqBody.author_id),
                 group_id: parseInt(reqBody.group_id),
-                type: reqBody.type,
+                // type: "reqBody.type,"
 
             },
         });        
-        res.status(201).json(handleBigInt(meta));
+        res.status(201).json(utils.handleBigInt(meta));
     } catch (error) {
         console.error("Error en Prisma:", error);
         res.status(500).json({ error: "Error al crear la meta" });
