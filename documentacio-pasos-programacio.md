@@ -57,9 +57,9 @@ nvm install && nvm use
 
 npm create vite@latest react-notes-app
 
-React
-Typescript
-Install with npm and start now? -yes
+- React
+- Typescript
+- Install with npm and start now? -yes
 
 
 npm install bootstrap
@@ -79,6 +79,10 @@ npm i
 Importar prisma client:
 ```bash
 npx prisma generate
+```
+Executar migracions:
+```bash
+npm run migrate
 ```
 
 Arrancar servei:
