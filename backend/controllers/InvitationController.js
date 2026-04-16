@@ -32,7 +32,9 @@ const sendInvitations = async (req, res, next) => {
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
     if (senderId === receiverId) {
-      const error = new Error("No et pots enviar sol·licitud d'amistat a tu mateix!");
+      const error = new Error(
+        "No et pots enviar sol·licitud d'amistat a tu mateix!",
+      );
       error.statusCode = 400;
       throw error;
     }
@@ -134,7 +136,7 @@ const acceptInvitation = async (req, res, next) => {
     const id = parseInt(req.params.id);
 
     const invitation = await prisma.invitation.findUnique({
-      where: {id},
+      where: { id },
       include: { sender: true, receiver: true, group: true },
     });
 
@@ -145,15 +147,15 @@ const acceptInvitation = async (req, res, next) => {
     }
 
     const acceptedInvitation = await prisma.invitation.update({
-      where: {id},
+      where: { id },
       data: {
         status: "accepted",
-      }
+      },
     });
 
     res.status(200).json({
       ok: true,
-      message: `${invitation.sender.name} (${invitation.sender.username}) i tu ja sou amics!`
+      message: `${invitation.sender.name} (${invitation.sender.username}) i tu ja sou amics!`,
     });
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -163,9 +165,34 @@ const acceptInvitation = async (req, res, next) => {
 
 const rejectInvitation = async (req, res, next) => {
   try {
+    const id = parseInt(req.params.id);
 
+    const invitation = await prisma.invitation.findUnique({
+      where: { id },
+      include: { sender: true, receiver: true, group: true },
+    });
+
+    if (!invitation) {
+      const error = new Error("No s'ha trobat la invitació");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const sender = await prisma.user.findUnique({
+      where: { id: invitation.sender_id }
+    });
+
+    await prisma.invitation.delete({
+      where: { id }
+    });
+
+    res.status(200).json({
+      ok: true,
+      message: invitation.status === "pending" ? `Petició rebutjada!` : `${sender.name} (${sender.username}) i tu ja no sou amics!`,
+    });
   } catch (error) {
-
+    console.error("Error en Prisma:", error);
+    next(error);
   }
 };
 
@@ -173,4 +200,5 @@ module.exports = {
   getInvitations,
   sendInvitations,
   acceptInvitation,
+  rejectInvitation,
 };
