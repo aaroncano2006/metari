@@ -62,6 +62,9 @@ Typescript
 Install with npm and start now? -yes
 
 
+npm install bootstrap
+
+npm install react-router-dom
 
 
 # executar projecte en desenvolupament
