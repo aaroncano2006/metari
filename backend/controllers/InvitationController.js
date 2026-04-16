@@ -25,18 +25,6 @@ const getInvitations = async (req, res, next) => {
   }
 };
 
-// const getPendingInvitations = async (req, res, next) => {
-
-// };
-
-// const getSentInvitations = async (req, res, next) => {
-
-// };
-
-// const getAcceptedInvitations = async (req, res, next) => {
-
-// };
-
 const sendInvitations = async (req, res, next) => {
   try {
     const senderId = parseInt(req.params.senderid);
@@ -106,7 +94,7 @@ const sendInvitations = async (req, res, next) => {
 
           <hr />
           <small style="color: #666;">
-            Metari - Gestiona les teves connexions
+            Metari - Comunitats, objectius i connexions
           </small>
         </div>
         `
@@ -141,15 +129,48 @@ const sendInvitations = async (req, res, next) => {
   }
 };
 
-// const acceptInvitation = async (req, res, next) => {
+const acceptInvitation = async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
 
-// };
+    const invitation = await prisma.invitation.findUnique({
+      where: {id},
+      include: { sender: true, receiver: true, group: true },
+    });
 
-// const rejectInvitation = async (req, res, next) => {
+    if (!invitation) {
+      const error = new Error("No s'ha trobat la invitació");
+      error.statusCode = 404;
+      throw error;
+    }
 
-// };
+    const acceptedInvitation = await prisma.invitation.update({
+      where: {id},
+      data: {
+        status: "accepted",
+      }
+    });
+
+    res.status(200).json({
+      ok: true,
+      message: `${invitation.sender.name} (${invitation.sender.username}) i tu ja sou amics!`
+    });
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    next(error);
+  }
+};
+
+const rejectInvitation = async (req, res, next) => {
+  try {
+
+  } catch (error) {
+
+  }
+};
 
 module.exports = {
   getInvitations,
   sendInvitations,
+  acceptInvitation,
 };
