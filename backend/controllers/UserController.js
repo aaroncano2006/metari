@@ -41,15 +41,15 @@ const getUsuariById = async (req, res) => {
 //Crea un usuari
 const createUsuari = async (req, res) => {
   // const { name, userName, password, email } = req.body;.
-  const userBody = req.body;
-  const userPassword = await utils.hash(userBody.password);
+  const reqBody = req.body;
+  const userPassword = await utils.hash(reqBody.password);
 
   try {
     const user = await prisma.user.create({
       data: {
-        name: userBody.name,
-        username: userBody.username,
-        email: userBody.email,
+        name: reqBody.name,
+        username: reqBody.username,
+        email: reqBody.email,
         password: userPassword,
         role: "user",
         completed_tasks: 0,
