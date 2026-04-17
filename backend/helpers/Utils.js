@@ -16,5 +16,6 @@ const hash = async (strToHash) => {
 };
 
 module.exports = {
-    handleBigInt,    
+    handleBigInt,
+    hash    
 };
