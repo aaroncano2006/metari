@@ -13,7 +13,6 @@ const getGroups = async (req, res) => {
 
 const getGroupById = async (req, res) => {
     const id = parseInt(req.params.id);
-
     try {
         const group = await prisma.group.findUnique({
             where: { id },
@@ -26,7 +25,6 @@ const getGroupById = async (req, res) => {
             //     indexedMetas: true,
             // },
         });
-
         res.status(200).json(utils.handleBigInt(group));
     } catch (error) {
         console.error("Error en Prisma:", error);
@@ -36,7 +34,6 @@ const getGroupById = async (req, res) => {
 
 const createGroup = async (req, res) => {
     const reqBody = req.body;
-
     try {
         const group = await prisma.group.create({
             data: {
@@ -46,7 +43,6 @@ const createGroup = async (req, res) => {
                 is_public: reqBody.is_public ?? true,
             },
         });
-
         res.status(201).json(utils.handleBigInt(group));
     } catch (error) {
         console.error("Error en Prisma:", error);
@@ -57,7 +53,6 @@ const createGroup = async (req, res) => {
 const updateGroup = async (req, res) => {
     const id = parseInt(req.params.id);
     const reqBody = req.body;
-
     try {
         const group = await prisma.group.update({
             where: { id },
@@ -68,7 +63,6 @@ const updateGroup = async (req, res) => {
                 is_public: reqBody.is_public,
             },
         });
-
         res.status(200).json(utils.handleBigInt(group));
     } catch (error) {
         console.error("Error en Prisma:", error);
@@ -78,12 +72,10 @@ const updateGroup = async (req, res) => {
 
 const deleteGroup = async (req, res) => {
     const id = parseInt(req.params.id);
-
     try {
         await prisma.group.delete({
             where: { id },
         });
-
         res.status(204).json({ message: "Grup eliminat correctament" });
     } catch (error) {
         console.error("Error en Prisma:", error);

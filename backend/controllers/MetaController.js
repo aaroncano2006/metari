@@ -12,6 +12,20 @@ const getMetas = async (req, res) => {
     }
 };
 
+const getMetaById = async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+        const meta = await prisma.meta.findUnique({
+            where: { id },
+            
+        });
+        res.status(200).json(utils.handleBigInt(meta));
+    } catch (error) {
+        console.error("Error en Prisma:", error);
+        res.status(500).json({ error: "Error al trobar la meta" });
+    }
+};
+
 const createMeta = async (req, res) => {
     const reqBody = req.body;
 
@@ -33,7 +47,46 @@ const createMeta = async (req, res) => {
     }
 };
 
+const updateMeta = async (req, res) => {
+    const id = parseInt(req.params.id);
+    const reqBody = req.body;
+    try {
+        const meta = await prisma.meta.update({
+            where: { id },
+            data: {
+                title: reqBody.title,
+                description: reqBody.description,
+                author_id: parseInt(reqBody.author_id),
+                group_id: parseInt(reqBody.group_id),
+                type: reqBody.type,
+
+            },
+        });
+        res.status(200).json(utils.handleBigInt(meta));
+    } catch (error) {
+        console.error("Error en Prisma:", error);
+        res.status(500).json({ error: "Error al actualitzar la meta" });
+    }
+};
+
+const deleteMeta = async (req, res) => {
+    const id = parseInt(req.params.id);
+    try {
+        await prisma.meta.delete({
+            where: { id },
+        });
+        res.status(204).json({ message: "Meta eliminada correctament" });
+    } catch (error) {
+        console.error("Error en Prisma:", error);
+        res.status(500).json({ error: "Error al eliminar la meta" });
+    }
+};
+
+
 module.exports = {
     getMetas,
+    getMetaById,
     createMeta,
+    updateMeta,
+    deleteMeta,
 };

@@ -52,6 +52,12 @@ nvm install && nvm use
 ```
 
 
+
+bcrypt :
+```bash
+npm install bcrypt
+```
+
 # Frontend
 
 
