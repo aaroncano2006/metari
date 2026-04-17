@@ -15,7 +15,12 @@ const hash = async (strToHash) => {
   return await bcrypt.hash(strToHash, saltRounds);
 };
 
+const compareHash = async (txtToCompare, hashToCompare) => {
+  return await bcrypt.compare(txtToCompare, hashToCompare);
+}
+
 module.exports = {
     handleBigInt,
-    hash    
+    hash,
+    compareHash
 };
