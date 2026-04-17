@@ -1,7 +1,5 @@
 const prisma = require("../config/prisma");
-const utils = require("./Utils") 
-
-
+const utils = require("../helpers/Utils") 
 
 //Get all
 const getMetas = async (req, res) => {
