@@ -1,12 +1,6 @@
 const prisma = require("../config/prisma");
 const nodemailer = require("../config/nodemailer");
-
-const handleBigInt = (data) =>
-  JSON.parse(
-    JSON.stringify(data, (_, value) =>
-      typeof value === "bigint" ? Number(value) : value,
-    ),
-  );
+const utils = require("../helpers/Utils");
 
 const getInvitations = async (req, res, next) => {
   try {
@@ -18,7 +12,7 @@ const getInvitations = async (req, res, next) => {
       include: { sender: true, receiver: true, group: true },
     });
 
-    res.status(200).json(handleBigInt(invitations));
+    res.status(200).json(utils.handleBigInt(invitations));
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);

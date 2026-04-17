@@ -1,6 +1,5 @@
 const prisma = require("../config/prisma");
-const utils = require("./Utils");
-
+const utils = require("../helpers/Utils");
 
 const getGroups = async (req, res) => {
     try {

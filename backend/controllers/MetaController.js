@@ -1,10 +1,5 @@
 const prisma = require("../config/prisma");
-const utils = require("./Utils") 
-
-
-//pendent comprobar si fa falta handlebigint aqui.
-
-
+const utils = require("../helpers/Utils") 
 
 //Get all
 const getMetas = async (req, res) => {
