@@ -40,10 +40,8 @@ app.post("/test-email", async (req, res, next) => {
 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/usuaris', userRoutes);
-app.use('/api/invitations', invitationRoutes);
+app.use('/api/invitacions', invitationRoutes);
 app.use('/api/metas', metaRoutes);
-
-
 
 app.use(errorHandler);
 const PORT = process.env.PORT || 3001;

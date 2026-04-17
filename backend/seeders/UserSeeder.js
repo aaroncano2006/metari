@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const utils = require("../helpers/Utils");
 
 const seedUsers = async () => {
   try {
@@ -16,7 +17,7 @@ const seedUsers = async () => {
           name: "Adria Borras",
           username: "Naimus",
           email: "naimus@test.com",
-          password: "123456",
+          password: await utils.hash("123456"),
           role: "admin",
           completed_tasks: 0,
           score: 0,
@@ -25,7 +26,7 @@ const seedUsers = async () => {
           name: "Bruno Oro",
           username: "Yesi",
           email: "yesi@test.com",
-          password: "123456",
+          password: await utils.hash("123456"),
           role: "user",
           completed_tasks: 0,
           score: 0,
@@ -34,7 +35,7 @@ const seedUsers = async () => {
           name: "Lucca",
           username: "Lucca",
           email: "lucca@test.com",
-          password: "123456",
+          password: await utils.hash("123456"),
           role: "user",
           completed_tasks: 5,
           score: 9001,
@@ -43,7 +44,7 @@ const seedUsers = async () => {
           name: "aaron",
           username: "aaron",
           email: "aaron@test.com",
-          password: "123456",
+          password: await utils.hash("123456"),
           role: "admin",
           completed_tasks: 0,
           score: 0,
