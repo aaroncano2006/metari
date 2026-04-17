@@ -42,6 +42,7 @@ const getUsuariById = async (req, res) => {
 const createUsuari = async (req, res) => {
     // const { name, userName, password, email } = req.body;.
     const userBody = req.body;
+    const userPassword = await utils.hash(userBody.password);
 
     try {       
         const user = await prisma.user.create({
@@ -49,7 +50,7 @@ const createUsuari = async (req, res) => {
                 name: userBody.name,
                 username: userBody.username,
                 email : userBody.email,
-                password : userBody.password,
+                password : userPassword,
                 role: "user",
                 completed_tasks:0,
                 score: 0,
@@ -68,19 +69,23 @@ const createUsuari = async (req, res) => {
 const updateUsuari = async (req, res) => {
     const reqBody = req.body;
     const id = parseInt(req.params.id);
+    // let userPassword = null; 
+    // if (reqBody.password) {
+    //     userPassword = await utils.hash(reqBody.password);
+    // }
 
     try {
         const user = await prisma.user.update({
             where: { id },
             data: {
-                name: userBody.name,
-                username: userBody.username,
-                email : userBody.email,
-                password : userBody.password,
-                role: userBody.role,
-                completed_tasks: userBody.completed_tasks !== undefined ? parseInt(userBody.completed_tasks) : undefined,
-                score: userBody.score !== undefined ? parseInt(userBody.score) : undefined,
-                restore_token: userBody.restore_token,
+                name: reqBody.name,
+                username: reqBody.username,
+                email : reqBody.email,
+                password : userPassword,
+                role: reqBody.role,
+                completed_tasks: reqBody.completed_tasks !== undefined ? parseInt(reqBody.completed_tasks) : undefined,
+                score: reqBody.score !== undefined ? parseInt(reqBody.score) : undefined,
+                restore_token: reqBody.restore_token,
             },
         });
         // res.status(200).json(user);
