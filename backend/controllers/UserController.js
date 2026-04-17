@@ -73,14 +73,14 @@ const updateUsuari = async (req, res) => {
         const user = await prisma.user.update({
             where: { id },
             data: {
-                name: reqBody.name,
-                username: reqBody.username,
-                email : reqBody.email,
-                password : reqBody.password,
-                role: "user", // forçant el rol, no volem que qualsevol canvii el seu rol a admin, o s'ha de comprobar si te rol admin avans de mosificar-lo
-                completed_tasks: reqBody.completed_tasks !== undefined ? parseInt(reqBody.completed_tasks) : undefined,
-                score: reqBody.score !== undefined ? parseInt(reqBody.score) : undefined,
-                restore_token: reqBody.restore_token,
+                name: userBody.name,
+                username: userBody.username,
+                email : userBody.email,
+                password : userBody.password,
+                role: userBody.role,
+                completed_tasks: userBody.completed_tasks !== undefined ? parseInt(userBody.completed_tasks) : undefined,
+                score: userBody.score !== undefined ? parseInt(userBody.score) : undefined,
+                restore_token: userBody.restore_token,
             },
         });
         // res.status(200).json(user);
