@@ -79,7 +79,7 @@ model Group {
 model Meta {
   id           Int           @id @default(autoincrement())
   title        String
-  description  String        @db.Text
+  description  String?        @db.Text
   author_id    Int
   group_id     Int
   type         MetaType      @default(task)
