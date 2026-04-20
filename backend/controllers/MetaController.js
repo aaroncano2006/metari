@@ -6,7 +6,7 @@ const { validateMeta } = require("../middlewares/validators/validateMeta");
 const getMetas = async (req, res, next) => {
   try {
     const metas = await prisma.meta.findMany();
-    res.status(200).json(metas);
+    res.status(200).json(utils.handleBigInt(metas));
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
