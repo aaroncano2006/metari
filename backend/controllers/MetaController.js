@@ -36,7 +36,7 @@ const createMeta = async (req, res) => {
                 description: reqBody.description,
                 author_id: parseInt(reqBody.author_id),
                 group_id: parseInt(reqBody.group_id),
-                // type: "reqBody.type,"
+                type: reqBody.type,
 
             },
         });        
