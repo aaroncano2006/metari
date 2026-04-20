@@ -109,7 +109,7 @@ const deleteMeta = async (req, res, next) => {
     await prisma.meta.delete({
       where: { id },
     });
-    res.status(204).json({ message: "Meta eliminada correctament" });
+    res.status(204).end();
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
