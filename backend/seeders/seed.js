@@ -4,6 +4,7 @@ const { seedInvitations } = require("./InvitationSeeder");
 const { seedGroups } = require("./GroupSeeder");
 const { seedMetas } = require("./MetaSeeder");
 const { seedAssignations } = require("./AssignationSeeder");
+const { seedProofs } = require("./ProofSeeder");
 
 const seed = async () => {
     try {
@@ -13,6 +14,7 @@ const seed = async () => {
         await seedGroups();
         await seedMetas();
         await seedAssignations();
+        await seedProofs();
         
     } catch (error) {
         console.log("Error seeding database! " + error);
