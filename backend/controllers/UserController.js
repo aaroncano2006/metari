@@ -110,16 +110,17 @@ const updateUsuari = async (req, res, next) => {
     }
 
     const dataToUpdate = {
-      name: reqBody.name,
-      username: reqBody.username,
-      email: reqBody.email,
-      role: reqBody.role,
+      name: reqBody.name ?? foundUser.name,
+      username: reqBody.username ?? foundUser.username,
+      email: reqBody.email ?? foundUser.email,
+      role: reqBody.role ?? foundUser.role,
+      restore_token: reqBody.restore_token ?? foundUser.restore_token,
       completed_tasks:
         reqBody.completed_tasks !== undefined
           ? parseInt(reqBody.completed_tasks)
-          : undefined,
-      score: reqBody.score !== undefined ? parseInt(reqBody.score) : undefined,
-      restore_token: reqBody.restore_token,
+          : foundUser.completed_tasks,
+      score:
+        reqBody.score !== undefined ? parseInt(reqBody.score) : foundUser.score,
     };
 
     let isSamePass = false;
