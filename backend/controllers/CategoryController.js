@@ -43,7 +43,7 @@ const createCategory = async (req, res, next) => {
 
     if (validate) {
       const error = new Error(validate);
-      error.statusCode = 404;
+      error.statusCode = 400;
       throw error;
     }
 
@@ -74,7 +74,7 @@ const updateCategory = async (req, res, next) => {
 
     if (validate) {
       const error = new Error(validate);
-      error.statusCode = 404;
+      error.statusCode = 400;
       throw error;
     }
 
