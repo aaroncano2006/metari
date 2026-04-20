@@ -17,6 +17,12 @@ const getCategoryById = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const category = await prisma.category.findUnique({
       where: { id },
     });
@@ -68,6 +74,12 @@ const updateCategory = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const data = req.body;
 
     const validate = await validateCategory(category);
@@ -97,6 +109,12 @@ const updateCategory = async (req, res, next) => {
 const deleteCategory = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
 
     const deleteCategory = await prisma.category.delete({
       where: {
