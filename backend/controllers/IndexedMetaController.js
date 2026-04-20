@@ -32,6 +32,12 @@ const getIndexedMetaById = async (req, res) => {
 const createIndexedMeta = async (req, res) => {
     const reqBody = req.body;
 
+    if ((reqBody.group_id && reqBody.user_id) || (!reqBody.group_id && !reqBody.user_id)) {
+        return res.status(400).json({
+            error: "You must provide either group_id or user_id, but not both or neither.",
+        });
+    }
+
     try {
         const indexedMeta = await prisma.indexedMeta.create({
             data: {
@@ -54,13 +60,19 @@ const createIndexedMeta = async (req, res) => {
 const updateIndexedMeta = async (req, res) => {
     const reqBody = req.body;
 
+    if ((reqBody.group_id && reqBody.user_id) || (!reqBody.group_id && !reqBody.user_id)) {
+        return res.status(400).json({
+            error: "You must provide either group_id or user_id, but not both or neither.",
+        });
+    }
+
     try {
         const updatedIndexedMeta = await prisma.indexedMeta.update({
             where: { id: parseInt(req.params.id) },
             data: {
-                user_id: reqBody.user_id ? parseInt(reqBody.user_id) : undefined,
-                meta_id: reqBody.meta_id ? parseInt(reqBody.meta_id) : undefined,
-                group_id: reqBody.group_id ? parseInt(reqBody.group_id) : undefined,
+                user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
+                meta_id: parseInt(reqBody.meta_id),
+                group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
                 is_public: reqBody.is_public,
                 is_approved: reqBody.is_approved,
                 is_community_approved: reqBody.is_community_approved,
