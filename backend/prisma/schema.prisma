@@ -59,7 +59,7 @@ enum UserRole {
 model Group {
   id           Int           @id @default(autoincrement())
   name         String
-  description  String        @db.Text
+  description  String?        @db.Text
   owner_id     Int
   is_public    Boolean
   created_at   DateTime      @default(now())
