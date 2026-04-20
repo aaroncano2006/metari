@@ -122,9 +122,7 @@ const deleteCategory = async (req, res, next) => {
       },
     });
 
-    res.status(204).json({
-      message: "Categoria eliminada correctament!",
-    });
+    res.status(204).end();
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
