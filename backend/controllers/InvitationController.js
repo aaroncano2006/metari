@@ -78,8 +78,12 @@ const sendInvitations = async (req, res, next) => {
 
     const invitation = await prisma.invitation.create({
       data: {
-        sender_id: senderId,
-        receiver_id: receiverId,
+        sender: {
+          connect: { id: senderId },
+        },
+        receiver: {
+          connect: { id: receiverId },
+        },
         ...(groupId && {
           group: {
             connect: { id: groupId },
