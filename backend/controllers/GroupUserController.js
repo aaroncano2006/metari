@@ -3,19 +3,21 @@ const utils = require("../helpers/Utils");
 
 
 
-const getGroupUsers = async (req, res) => {
+const getGroupUsers = async (res, next) => {
     try {
         const groupUsers = await prisma.groupUser.findMany();
 
         res.status(200).json(utils.handleBigInt(groupUsers));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar relacions grup-usuari" });
+        // res.status(500).json({ error: "Error al carregar relacions grup-usuari" });
+        next(error);
+
     }
 };
 
 
-const createGroupUser = async (req, res) => {
+const createGroupUser = async (req, res, next) => {
     const reqBody = req.body;
 
     try {
@@ -30,11 +32,13 @@ const createGroupUser = async (req, res) => {
         res.status(201).json(utils.handleBigInt(groupUser));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al afegir usuari al grup" });
+        // res.status(500).json({ error: "Error al afegir usuari al grup" });
+        next(error);
+
     }
 };
 
-const getGroupUser = async (req, res) => {
+const getGroupUser = async (req, res, next) => {
     try {
         const { group_id, user_id } = req.params;
 
@@ -54,11 +58,13 @@ const getGroupUser = async (req, res) => {
         res.status(200).json(utils.handleBigInt(groupUser));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar la relació" });
+        // res.status(500).json({ error: "Error al carregar la relació" });
+        next(error);
+
     }
 };
 
-const updateGroupUser = async (req, res) => {
+const updateGroupUser = async (req, res, next) => {
     const reqBody = req.body;
 
     try {
@@ -77,11 +83,13 @@ const updateGroupUser = async (req, res) => {
         res.status(200).json(utils.handleBigInt(updatedGroupUser));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al actualitzar la relació" });
+        // res.status(500).json({ error: "Error al actualitzar la relació" });
+        next(error);
+
     }
 };
 
-const deleteGroupUser = async (req, res) => {
+const deleteGroupUser = async (req, res, next) => {
     try {
         const deleted = await prisma.groupUser.delete({
             where: {
@@ -95,14 +103,16 @@ const deleteGroupUser = async (req, res) => {
         res.status(200).json(utils.handleBigInt(deleted));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al eliminar la relació" });
+        // res.status(500).json({ error: "Error al eliminar la relació" });
+        next(error);
+
     }
 };
 
 module.exports = {
-  getGroupUsers,
-  getGroupUser,
-  createGroupUser,
-  updateGroupUser,
-  deleteGroupUser,
+    getGroupUsers,
+    getGroupUser,
+    createGroupUser,
+    updateGroupUser,
+    deleteGroupUser,
 };

@@ -2,17 +2,18 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
 // GET ALL
-const getAssignations = async (req, res) => {
+const getAssignations = async (res, next) => {
   try {
     const assignations = await prisma.assignation.findMany();
     res.status(200).json(utils.handleBigInt(assignations));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al carregar assignacions" });
+    // res.status(500).json({ error: "Error al carregar assignacions" });
+    next(error);
   }
 };
 
-const getAssignationById = async (req, res) => {
+const getAssignationById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -30,11 +31,12 @@ const getAssignationById = async (req, res) => {
     res.status(200).json(utils.handleBigInt(assignation));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al carregar assignació" });
+    next(error);
+
   }
 };
 
-const createAssignation = async (req, res) => {
+const createAssignation = async (req, res, next) => {
     const reqBody = req.body;
 
     // si els 2 estan definits o ningun esta definit, error
@@ -62,12 +64,14 @@ const createAssignation = async (req, res) => {
         res.status(201).json(utils.handleBigInt(assignation));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al crear assignació" });
+        // res.status(500).json({ error: "Error al crear assignació" });
+        next(error);
+
     }
 };
 
 
-const updateAssignation = async (req, res) => {
+const updateAssignation = async (req, res, next) => {
   const reqBody = req.body;
   const { id } = req.params;
 
@@ -97,11 +101,13 @@ const updateAssignation = async (req, res) => {
     res.status(200).json(utils.handleBigInt(updatedAssignation));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al actualitzar assignació" });
+    // res.status(500).json({ error: "Error al actualitzar assignació" });
+    next(error);
+
   }
 };
 
-const deleteAssignation = async (req, res) => {
+const deleteAssignation = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -112,7 +118,8 @@ const deleteAssignation = async (req, res) => {
     res.status(200).json({ message: "Assignació eliminada correctament" });
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al eliminar assignació" });
+    next(error);
+
   }
 };
 

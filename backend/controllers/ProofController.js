@@ -3,18 +3,20 @@ const utils = require("../helpers/Utils");
 
 
 
-const getProofs = async (req, res) => {
+const getProofs = async (res, next) => {
     try {
         const proofs = await prisma.proof.findMany();
 
         res.status(200).json(utils.handleBigInt(proofs));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar proves" });
+        // res.status(500).json({ error: "Error al carregar proves" });
+        next(error);
+
     }
 };
 
-const getProofById = async (req, res) => {
+const getProofById = async (req, res, next) => {
     try {
         const proof = await prisma.proof.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -27,11 +29,13 @@ const getProofById = async (req, res) => {
         res.status(200).json(utils.handleBigInt(proof));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar la prova" });
+        // res.status(500).json({ error: "Error al carregar la prova" });
+        next(error);
+
     }
 };
 
-const createProof = async (req, res) => {
+const createProof = async (req, res, next) => {
     const reqBody = req.body;
 
     try {
@@ -47,11 +51,13 @@ const createProof = async (req, res) => {
         res.status(201).json(utils.handleBigInt(proof));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al crear la prova" });
+        // res.status(500).json({ error: "Error al crear la prova" });
+        next(error);
+
     }
 };
 
-const updateProof = async (req, res) => {
+const updateProof = async (req, res, next) => {
     const reqBody = req.body;
 
     try {
@@ -72,11 +78,13 @@ const updateProof = async (req, res) => {
         res.status(200).json(utils.handleBigInt(updatedProof));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al actualitzar la prova" });
+        // res.status(500).json({ error: "Error al actualitzar la prova" });
+        next(error);
+
     }
 };
 
-const deleteProof = async (req, res) => {
+const deleteProof = async (req, res, next) => {
     try {
         const proof = await prisma.proof.delete({
             where: { id: parseInt(req.params.id) },
@@ -85,16 +93,18 @@ const deleteProof = async (req, res) => {
         res.status(200).json(utils.handleBigInt(proof));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al eliminar la prova" });
+        // res.status(500).json({ error: "Error al eliminar la prova" });
+        next(error);
+
     }
 };
 
 module.exports = {
-  getProofs,
-  getProofById,
-  createProof,
-  updateProof,
-  deleteProof,
+    getProofs,
+    getProofById,
+    createProof,
+    updateProof,
+    deleteProof,
 };
 
 

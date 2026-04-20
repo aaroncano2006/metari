@@ -1,18 +1,20 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
-const getIndexedMetas = async (req, res) => {
+const getIndexedMetas = async (res, next) => {
     try {
         const indexedMetas = await prisma.indexedMeta.findMany();
 
         res.status(200).json(utils.handleBigInt(indexedMetas));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar l'índex de metas" });
+        // res.status(500).json({ error: "Error al carregar l'índex de metas" });
+        next(error);
+
     }
 };
 
-const getIndexedMetaById = async (req, res) => {
+const getIndexedMetaById = async (req, res, next) => {
     try {
         const indexedMeta = await prisma.indexedMeta.findUnique({
             where: { id: parseInt(req.params.id) },
@@ -25,11 +27,13 @@ const getIndexedMetaById = async (req, res) => {
         res.status(200).json(utils.handleBigInt(indexedMeta));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar l'índex de meta" });
+        // res.status(500).json({ error: "Error al carregar l'índex de meta" });
+        next(error);
+
     }
 };
 
-const createIndexedMeta = async (req, res) => {
+const createIndexedMeta = async (req, res, next) => {
     const reqBody = req.body;
 
     if ((reqBody.group_id && reqBody.user_id) || (!reqBody.group_id && !reqBody.user_id)) {
@@ -53,11 +57,13 @@ const createIndexedMeta = async (req, res) => {
         res.status(201).json(utils.handleBigInt(indexedMeta));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al crear l'índex de meta" });
+        // res.status(500).json({ error: "Error al crear l'índex de meta" });
+        next(error);
+
     }
 };
 
-const updateIndexedMeta = async (req, res) => {
+const updateIndexedMeta = async (req, res, next) => {
     const reqBody = req.body;
 
     if ((reqBody.group_id && reqBody.user_id) || (!reqBody.group_id && !reqBody.user_id)) {
@@ -82,11 +88,13 @@ const updateIndexedMeta = async (req, res) => {
         res.status(200).json(utils.handleBigInt(updatedIndexedMeta));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al actualitzar l'índex de meta" });
+        // res.status(500).json({ error: "Error al actualitzar l'índex de meta" });
+        next(error);
+
     }
 };
 
-const deleteIndexedMeta = async (req, res) => {
+const deleteIndexedMeta = async (req, res, next) => {
     try {
         const deleted = await prisma.indexedMeta.delete({
             where: { id: parseInt(req.params.id) },
@@ -95,14 +103,16 @@ const deleteIndexedMeta = async (req, res) => {
         res.status(200).json(utils.handleBigInt(deleted));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al eliminar l'índex de meta" });
+        // res.status(500).json({ error: "Error al eliminar l'índex de meta" });
+        next(error);
+
     }
 };
 
 module.exports = {
-  getIndexedMetas,
-  getIndexedMetaById,
-  createIndexedMeta,
-  updateIndexedMeta,
-  deleteIndexedMeta,
+    getIndexedMetas,
+    getIndexedMetaById,
+    createIndexedMeta,
+    updateIndexedMeta,
+    deleteIndexedMeta,
 };
