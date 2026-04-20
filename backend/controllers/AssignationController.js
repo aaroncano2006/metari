@@ -68,6 +68,8 @@ const createAssignation = async (req, res) => {
 
 
 const updateAssignation = async (req, res) => {
+  const reqBody = req.body;
+  const { id } = req.params;
 
   if ((reqBody.group_id && reqBody.user_id) || (!reqBody.group_id && !reqBody.user_id)) {
         return res.status(400).json({
@@ -76,8 +78,6 @@ const updateAssignation = async (req, res) => {
     }
 
   try {
-    const { id } = req.params;
-    const reqBody = req.body;
 
     const updatedAssignation = await prisma.assignation.update({
       where: { id: Number(id) },
