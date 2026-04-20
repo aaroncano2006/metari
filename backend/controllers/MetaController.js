@@ -2,17 +2,17 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils") 
 
 //Get all
-const getMetas = async (req, res) => {
+const getMetas = async (req, res, next) => {
     try {
         const metas = await prisma.meta.findMany();
         res.status(200).json(metas);
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar metas" });
+        next(error);
     }
 };
 
-const getMetaById = async (req, res) => {
+const getMetaById = async (req, res, next) => {
     const id = parseInt(req.params.id);
     try {
         const meta = await prisma.meta.findUnique({
@@ -22,11 +22,11 @@ const getMetaById = async (req, res) => {
         res.status(200).json(utils.handleBigInt(meta));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al trobar la meta" });
+        next(error);
     }
 };
 
-const createMeta = async (req, res) => {
+const createMeta = async (req, res, next) => {
     const reqBody = req.body;
 
     try {       
@@ -43,11 +43,11 @@ const createMeta = async (req, res) => {
         res.status(201).json(utils.handleBigInt(meta));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al crear la meta" });
+        next(error);
     }
 };
 
-const updateMeta = async (req, res) => {
+const updateMeta = async (req, res, next) => {
     const id = parseInt(req.params.id);
     const reqBody = req.body;
     try {
@@ -65,11 +65,11 @@ const updateMeta = async (req, res) => {
         res.status(200).json(utils.handleBigInt(meta));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al actualitzar la meta" });
+        next(error);
     }
 };
 
-const deleteMeta = async (req, res) => {
+const deleteMeta = async (req, res, next) => {
     const id = parseInt(req.params.id);
     try {
         await prisma.meta.delete({
@@ -78,7 +78,7 @@ const deleteMeta = async (req, res) => {
         res.status(204).json({ message: "Meta eliminada correctament" });
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al eliminar la meta" });
+        next(error);
     }
 };
 
