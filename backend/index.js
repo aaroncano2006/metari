@@ -6,6 +6,11 @@ const userRoutes = require('./routes/UserRoutes');
 const invitationRoutes = require('./routes/InvitationRoutes');
 const metaRoutes = require('./routes/MetaRoutes');
 const grupRoutes = require('./routes/GroupRoutes');
+const assignationRoutes = require('./routes/AssignationRoutes');
+const commentRoutes = require('./routes/CommentRoutes');
+const proofRoutes = require('./routes/ProofRoutes');
+const groupUserRoutes = require('./routes/GroupUserRoutes');
+const indexedMetaRoutes = require('./routes/IndexedMetaRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
 
@@ -44,6 +49,11 @@ app.use('/api/usuaris', userRoutes);
 app.use('/api/invitacions', invitationRoutes);
 app.use('/api/metas', metaRoutes);
 app.use('/api/grups', grupRoutes);
+app.use('/api/assignacions', assignationRoutes );
+app.use('/api/comentaris', commentRoutes );
+app.use('/api/proves', proofRoutes );
+app.use('/api/grupUsuaris', groupUserRoutes );
+app.use('/api/indexaMetas', indexedMetaRoutes );
 
 app.use(errorHandler);
 const PORT = process.env.PORT || 3001;
