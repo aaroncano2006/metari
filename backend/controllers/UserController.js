@@ -147,15 +147,15 @@ const updateUsuari = async (req, res, next) => {
 
 // Delete user (/api/users/1)
 const deleteUsuari = async (req, res, next) => {
-  const id = parseInt(req.params.id);
-
-  if (isNaN(id)) {
-    const error = new Error("ID invàlid");
-    error.statusCode = 400;
-    throw error;
-  }
-
   try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     await prisma.user.delete({
       where: { id },
     });
