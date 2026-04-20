@@ -107,10 +107,6 @@ const updateGroup = async (req, res, next) => {
       data: {
         name: reqBody.name ?? foundGroup.name,
         description: reqBody.description ?? foundGroup.description,
-        // owner_id:
-        //   reqBody.owner_id !== undefined
-        //     ? parseInt(reqBody.owner_id)
-        //     : foundGroup.owner_id,
         is_public: reqBody.is_public ?? foundGroup.is_public,
         owner: {
           connect: {
