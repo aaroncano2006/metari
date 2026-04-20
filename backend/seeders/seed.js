@@ -6,6 +6,7 @@ const { seedMetas } = require("./MetaSeeder");
 const { seedAssignations } = require("./AssignationSeeder");
 const { seedProofs } = require("./ProofSeeder");
 const { seedComments } = require("./CommentSeeder");
+const { seedGroupsUsers } = require("./GroupUserSeeder");
 
 const seed = async () => {
     try {
@@ -17,6 +18,7 @@ const seed = async () => {
         await seedAssignations();
         await seedProofs();
         await seedComments();
+        await seedGroupsUsers();
         
     } catch (error) {
         console.log("Error seeding database! " + error);
