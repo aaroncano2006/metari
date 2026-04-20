@@ -40,6 +40,6 @@ const validateGroup = async (data) => {
   return null;
 };
 
-modules.exports = {
+module.exports = {
   validateGroup,
 };
