@@ -1,17 +1,17 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
-const getGroups = async (req, res) => {
+const getGroups = async (req, res, next) => {
     try {
         const groups = await prisma.group.findMany();
         res.status(200).json(utils.handleBigInt(groups));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al carregar grups" });
+        next(error);
     }
 };
 
-const getGroupById = async (req, res) => {
+const getGroupById = async (req, res, next) => {
     const id = parseInt(req.params.id);
     try {
         const group = await prisma.group.findUnique({
@@ -28,11 +28,11 @@ const getGroupById = async (req, res) => {
         res.status(200).json(utils.handleBigInt(group));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al trobar el grup" });
+        next(error);
     }
 };
 
-const createGroup = async (req, res) => {
+const createGroup = async (req, res, next) => {
     const reqBody = req.body;
     try {
         const group = await prisma.group.create({
@@ -46,11 +46,11 @@ const createGroup = async (req, res) => {
         res.status(201).json(utils.handleBigInt(group));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al crear el grup" });
+        next(error);
     }
 };
 
-const updateGroup = async (req, res) => {
+const updateGroup = async (req, res, next) => {
     const id = parseInt(req.params.id);
     const reqBody = req.body;
     try {
@@ -66,11 +66,11 @@ const updateGroup = async (req, res) => {
         res.status(200).json(utils.handleBigInt(group));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al actualitzar el grup" });
+        next(error);
     }
 };
 
-const deleteGroup = async (req, res) => {
+const deleteGroup = async (req, res, next) => {
     const id = parseInt(req.params.id);
     try {
         await prisma.group.delete({
@@ -79,7 +79,7 @@ const deleteGroup = async (req, res) => {
         res.status(204).json({ message: "Grup eliminat correctament" });
     } catch (error) {
         console.error("Error en Prisma:", error);
-        res.status(500).json({ error: "Error al eliminar el grup" });
+        next(error);
     }
 };
 
