@@ -1,50 +1,66 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
+const { validateUser } = require("../middlewares/validators/validateUser");
 
 //Get all
-const getUsuaris = async (req, res) => {
+const getUsuaris = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany();
     res.status(200).json(utils.handleBigInt(users));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al carregar usuaris" });
+    next(error);
   }
 };
 
 // Get by id (/api/users/1)
-const getUsuariById = async (req, res) => {
-  const id = parseInt(req.params.id);
+const getUsuariById = async (req, res, next) => {
   try {
     // // Si el parametre de la busqueda is NaN, error  exemple: (/api/users/asdas)
     // if (isNaN(id)) {
     //     return res.status(400).json({ error: "ID invàlid" });
     // }
+    const id = parseInt(req.params.id);
+
+    // Evita errors per peticions amb identificadors no vàlids /api/usuaris/xd
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
 
     const user = await prisma.user.findUnique({
       // where: { id: id },
       where: { id },
     });
 
-    // // Si la res no troba l'usuari (404), error.
-    // if (!user) {
-    //     return res.status(404).json({ error: "Usuari no trobat" });
-    // }
+    if (!user) {
+      const error = new Error("No s'ha trobat l'usuari!");
+      error.statusCode = 404;
+      throw error;
+    }
 
     res.status(200).json(utils.handleBigInt(user));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al trobar l'usuari" });
+    next(error);
   }
 };
 
 //Crea un usuari
-const createUsuari = async (req, res) => {
+const createUsuari = async (req, res, next) => {
   // const { name, userName, password, email } = req.body;.
-  const reqBody = req.body;
-  const userPassword = await utils.hash(reqBody.password);
 
   try {
+    const reqBody = req.body;
+    const validate = await validateUser(reqBody);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
+    }
+    const userPassword = await utils.hash(reqBody.password);
+
     const user = await prisma.user.create({
       data: {
         name: reqBody.name,
@@ -60,18 +76,38 @@ const createUsuari = async (req, res) => {
     res.status(201).json(utils.handleBigInt(user));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al crear l'usuari" });
+    next(error);
   }
 };
 
 //Actualitza Usuari
-const updateUsuari = async (req, res) => {
+const updateUsuari = async (req, res, next) => {
   try {
     const reqBody = req.body;
     const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const foundUser = await prisma.user.findUnique({
       where: { id },
     });
+
+    if (!foundUser) {
+      const error = new Error("No s'ha trobat l'usuari a actualitzar");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const validate = await validateUser(reqBody, id);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
+    }
 
     const dataToUpdate = {
       name: reqBody.name,
@@ -104,22 +140,28 @@ const updateUsuari = async (req, res) => {
     res.status(200).json(utils.handleBigInt(user));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al actualitzar l'usuari" });
+    next(error);
   }
 };
 
 // Delete user (/api/users/1)
-const deleteUsuari = async (req, res) => {
+const deleteUsuari = async (req, res, next) => {
   const id = parseInt(req.params.id);
+
+  if (isNaN(id)) {
+    const error = new Error("ID invàlid");
+    error.statusCode = 400;
+    throw error;
+  }
 
   try {
     await prisma.user.delete({
       where: { id },
     });
-    res.status(204).json({ message: "Usuari eliminat correctament" });
+    res.status(204).end();
   } catch (error) {
     console.error("Error en Prisma:", error);
-    res.status(500).json({ error: "Error al eliminar l'usuari" });
+    next(error);
   }
 };
 
