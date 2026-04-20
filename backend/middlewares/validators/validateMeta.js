@@ -13,6 +13,10 @@ const validateMeta = async (data) => {
         return "El títol enviat està buit.";
     }
 
+    if (data.title.length < 5) {
+        return "El títol de la meta ha de tenir com a mínim 5 caràcters!";
+    }
+
     if (data.description && typeof data.description !== "string") {
         return "La descripció enviada no és vàlida! Ha de ser un text.";
     }
