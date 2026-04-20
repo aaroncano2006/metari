@@ -17,6 +17,12 @@ const getMetaById = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const meta = await prisma.meta.findUnique({
       where: { id },
     });
@@ -63,6 +69,12 @@ const updateMeta = async (req, res, next) => {
     const id = parseInt(req.params.id);
     const reqBody = req.body;
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const meta = await prisma.meta.update({
       where: { id },
       data: {
@@ -87,6 +99,13 @@ const updateMeta = async (req, res, next) => {
 const deleteMeta = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     await prisma.meta.delete({
       where: { id },
     });
