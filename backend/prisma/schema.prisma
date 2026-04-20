@@ -97,7 +97,7 @@ model Meta {
 //enum tipus del model meta
 enum MetaType {
   task
-  challange
+  challenge
 }
 
 model Assignation {
