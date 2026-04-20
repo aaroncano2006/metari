@@ -17,12 +17,28 @@ const validateMeta = async (data) => {
         return "La descripció enviada no és vàlida! Ha de ser un text.";
     }
 
+    if (!data.author_id) {
+        return "La id de l'autor de la meta és obligatoria!";
+    }
+
+    if (isNaN(data.author_id)) {
+        return "La id de l'autor de la meta no és vàlida";
+    }
+
     const existingAuthor = await prisma.user.findUnique({
         where: {id: parseInt(data.author_id)}
     });
 
     if (!existingAuthor) {
         return "La id de l'autor enviada no correspon a cap usuari registrat!";
+    }
+
+    if (!data.group_id) {
+        return "La id del grup de la meta és obligatoria!";
+    }
+
+    if (isNaN(data.group_id)) {
+        return "La id del grup de la meta no és vàlida";
     }
 
     const existingGroup = await prisma.group.findUnique({
