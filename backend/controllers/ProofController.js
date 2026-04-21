@@ -3,7 +3,7 @@ const utils = require("../helpers/Utils");
 
 
 
-const getProofs = async (res, next) => {
+const getProofs = async (req, res, next) => {
     try {
         const proofs = await prisma.proof.findMany();
 

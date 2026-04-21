@@ -3,7 +3,7 @@ const utils = require("../helpers/Utils");
 
 
 
-const getGroupUsers = async (res, next) => {
+const getGroupUsers = async (req, res, next) => {
     try {
         const groupUsers = await prisma.groupUser.findMany();
 

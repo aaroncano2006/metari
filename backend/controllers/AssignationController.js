@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
 // GET ALL
-const getAssignations = async (res, next) => {
+const getAssignations = async (req, res, next) => {
   try {
     const assignations = await prisma.assignation.findMany();
     res.status(200).json(utils.handleBigInt(assignations));

@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
 
-const getComments = async (res, next) => {
+const getComments = async (req, res, next) => {
     try {
         const comments = await prisma.comment.findMany();
 
@@ -22,7 +22,6 @@ const getCommentById = async (req, res, next) => {
         const comment = await prisma.comment.findUnique({
             where: { id: parseInt(req.params.id) },
         });
-
 
         res.status(200).json(utils.handleBigInt(comment));
     } catch (error) {

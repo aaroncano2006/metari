@@ -1,7 +1,7 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
-const getIndexedMetas = async (res, next) => {
+const getIndexedMetas = async (req, res, next) => {
     try {
         const indexedMetas = await prisma.indexedMeta.findMany();
 
