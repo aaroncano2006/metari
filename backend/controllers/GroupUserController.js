@@ -100,7 +100,7 @@ const deleteGroupUser = async (req, res, next) => {
             },
         });
 
-        res.status(200).json(utils.handleBigInt(deleted));
+        res.status(204).end();
     } catch (error) {
         console.error("Error en Prisma:", error);
         // res.status(500).json({ error: "Error al eliminar la relació" });
