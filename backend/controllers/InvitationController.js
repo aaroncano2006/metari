@@ -129,7 +129,7 @@ const sendInvitations = async (req, res, next) => {
           </small>
         </div>
         `,
-    });
+    }).catch(err => console.log("Error enviant correu: " + err));
 
     return res.status(201).json(utils.handleBigInt(invitation));
   } catch (error) {
