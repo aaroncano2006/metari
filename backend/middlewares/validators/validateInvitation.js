@@ -1,7 +1,6 @@
 const prisma = require("../../config/prisma");
 
 const validateInvitation = async (data) => {
-  if (isNaN(data.sender_id) || isNaN(data.receiver_id)) return "IDs no vàlids";
   if (data.sender_id === data.receiver_id)
     return "No et pots convidar a tu mateix";
 
