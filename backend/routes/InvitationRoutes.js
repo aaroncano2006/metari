@@ -11,4 +11,6 @@ router.delete('/:userid/:id', invitationController.rejectInvitation);
 // userid pot ser tant la id de l'emissor com la del
 // receptor
 
+// Les rutes hauran de ser refactoritzades quan s'implementi el login amb JWT.
+
 module.exports = router;

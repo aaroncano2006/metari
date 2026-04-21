@@ -141,7 +141,7 @@ const sendInvitations = async (req, res, next) => {
 const acceptInvitation = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const receiverId = parseInt(req.params.receiverid);
+    const receiverId = parseInt(req.params.receiverid); // S'haurà de refactoritzar més endavant per a JWT
 
     if (isNaN(id) || isNaN(receiverId)) {
       const error = new Error("IDs invàlides!");
