@@ -55,8 +55,8 @@ app.use('/api/grups', grupRoutes);
 app.use('/api/assignacions', assignationRoutes );
 app.use('/api/comentaris', commentRoutes );
 app.use('/api/proves', proofRoutes );
-app.use('/api/grupUsuaris', groupUserRoutes );
-app.use('/api/indexaMetas', indexedMetaRoutes );
+app.use('/api/grup-usuaris', groupUserRoutes );
+app.use('/api/indexa-metas', indexedMetaRoutes );
 
 app.use(errorHandler);
 const PORT = process.env.PORT || 3001;
