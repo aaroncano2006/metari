@@ -141,7 +141,7 @@ const sendInvitations = async (req, res, next) => {
 const acceptInvitation = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const receiverId = parseInt(req.params.userid);
+    const receiverId = parseInt(req.params.receiverid);
 
     if (isNaN(id) || isNaN(receiverId)) {
       const error = new Error("IDs invàlides!");
@@ -234,7 +234,7 @@ const rejectInvitation = async (req, res, next) => {
 
     const receiver = invitation.receiver;
 
-    if (userId !== sender.id || userId !== receiver.id) {
+    if (userId !== sender.id && userId !== receiver.id) {
       const error = new Error("No formes part d'aquest invitació! No pots rebutjar-la ni eliminar-la.");
       error.statusCode = 400;
       throw error;
