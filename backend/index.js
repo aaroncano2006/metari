@@ -25,27 +25,27 @@ app.get("/", (req, res) => {
     });
 });
 
-app.post("/test-email", async (req, res, next) => {
-  const { to, subject, text } = req.body;
+// app.post("/test-email", async (req, res, next) => {
+//   const { to, subject, text } = req.body;
 
-  try {
-    const info = await nodemailer.sendMail({
-      from: 'Metari',
-      to: to,
-      subject: subject,
-      text: text,
-      html: `<p>${text}</p>`,
-    });
+//   try {
+//     const info = await nodemailer.sendMail({
+//       from: 'Metari',
+//       to: to,
+//       subject: subject,
+//       text: text,
+//       html: `<p>${text}</p>`,
+//     });
 
-    res.status(200).json({
-      message: "Correo enviado correctamente",
-      info: info.messageId,
-    });
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
+//     res.status(200).json({
+//       message: "Correo enviado correctamente",
+//       info: info.messageId,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// });
 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/usuaris', userRoutes);
