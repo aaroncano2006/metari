@@ -16,6 +16,15 @@ const getInvitations = async (req, res, next) => {
       throw error;
     }
 
+    const foundUser = await prisma.user.findUnique({
+      where: {id: userId}
+    });
+    if (!foundUser) {
+      const error = new Error("No s'ha trobat l'usuari!");
+      error.statusCode = 404;
+      throw error;
+    }
+
     const validStatus = ["pending", "accepted", "rejected"];
     if (!validStatus.includes(status)) {
       const error = new Error("Estat de les peticions a consultar no vàlid!");
