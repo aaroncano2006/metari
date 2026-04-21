@@ -13,8 +13,11 @@ const groupUserRoutes = require('./routes/GroupUserRoutes');
 const indexedMetaRoutes = require('./routes/IndexedMetaRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
+const helmet = require("helmet");
 
 app.use(express.json());
+
+app.use(helmet());
 
 app.get("/", (req, res) => {
     return res.status(200).json({
