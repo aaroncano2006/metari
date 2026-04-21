@@ -23,7 +23,7 @@ const seedMetas = async () => {
           description:"A la versio red/Blue",
           author_id:3,
           group_id:2,
-          type:"challange",
+          type:"challenge",
         },
         
       ],
