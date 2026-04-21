@@ -103,9 +103,9 @@ enum MetaType {
 model Assignation {
   id         Int        @id @default(autoincrement())
   group_id   Int?
-  meta_id    Int?
+  meta_id    Int
   user_id    Int?
-  start_date DateTime?  @db.Date
+  start_date DateTime?  @db.Date @default(now())
   due_date   DateTime?  @db.Date
   priority   Priority?
   difficulty Difficulty @default(normal)
