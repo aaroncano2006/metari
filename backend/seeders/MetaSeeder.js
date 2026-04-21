@@ -25,6 +25,13 @@ const seedMetas = async () => {
           group_id:2,
           type:"challenge",
         },
+        {
+          title:"Acabar Seeders",
+          description:"Fer tots els seeders de metari",
+          author_id:1,
+          group_id:2,
+        },
+        
         
       ],
       skipDuplicates: true,
