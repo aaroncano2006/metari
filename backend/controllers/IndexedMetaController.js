@@ -1,7 +1,7 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
-const getIndexedMetas = async (res, next) => {
+const getIndexedMetas = async (req, res, next) => {
     try {
         const indexedMetas = await prisma.indexedMeta.findMany();
 
@@ -100,7 +100,7 @@ const deleteIndexedMeta = async (req, res, next) => {
             where: { id: parseInt(req.params.id) },
         });
 
-        res.status(200).json(utils.handleBigInt(deleted));
+        res.status(204).end();
     } catch (error) {
         console.error("Error en Prisma:", error);
         // res.status(500).json({ error: "Error al eliminar l'índex de meta" });

@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 
 
-const getComments = async (res, next) => {
+const getComments = async (req, res, next) => {
     try {
         const comments = await prisma.comment.findMany();
 
@@ -22,7 +22,6 @@ const getCommentById = async (req, res, next) => {
         const comment = await prisma.comment.findUnique({
             where: { id: parseInt(req.params.id) },
         });
-
 
         res.status(200).json(utils.handleBigInt(comment));
     } catch (error) {
@@ -87,7 +86,7 @@ const deleteComment = async (req, res, next) => {
             where: { id: parseInt(req.params.id) },
         });
 
-        res.status(200).json(utils.handleBigInt(comment));
+        res.status(204).end();
     } catch (error) {
         console.error("Error en Prisma:", error);
         // res.status(500).json({ error: "Error al eliminar el comentari" });

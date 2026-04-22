@@ -3,7 +3,7 @@ const utils = require("../helpers/Utils");
 
 
 
-const getProofs = async (res, next) => {
+const getProofs = async (req, res, next) => {
     try {
         const proofs = await prisma.proof.findMany();
 
@@ -90,7 +90,7 @@ const deleteProof = async (req, res, next) => {
             where: { id: parseInt(req.params.id) },
         });
 
-        res.status(200).json(utils.handleBigInt(proof));
+        res.status(204).end();
     } catch (error) {
         console.error("Error en Prisma:", error);
         // res.status(500).json({ error: "Error al eliminar la prova" });

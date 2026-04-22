@@ -4,40 +4,22 @@ const validateInvitation = async (data) => {
   if (data.sender_id === data.receiver_id)
     return "No et pots convidar a tu mateix";
 
-  const countInv = await prisma.invitation.count({
-    where: data.group_id
-      ? {
-          OR: [
-            {
-              sender_id: data.sender_id,
-              receiver_id: data.receiver_id,
-              group_id: data.group_id,
-            },
-            {
-              sender_id: data.receiver_id,
-              receiver_id: data.sender_id,
-              group_id: data.group_id,
-            },
-          ],
-        }
-      : {
-          OR: [
-            {
-              sender_id: data.sender_id,
-              receiver_id: data.receiver_id,
-              group_id: null,
-            },
-            {
-              sender_id: data.receiver_id,
-              receiver_id: data.sender_id,
-              group_id: null,
-            },
-          ],
-        },
+  const existingInv = await prisma.invitation.findFirst({
+    where: {
+      group_id: data.group_id || null,
+      OR: [
+        { sender_id: data.sender_id, receiver_id: data.receiver_id },
+        { sender_id: data.receiver_id, receiver_id: data.sender_id },
+      ],
+      
+      status: { in: ["pending", "accepted"] },
+    },
   });
 
-  if (countInv > 0) {
-    return "Ja existeix una sol·licitud amb aquestes característiques.";
+  if (existingInv) {
+    return existingInv.status === "pending"
+      ? "Ja hi ha una sol·licitud pendent."
+      : "Ja sou amics o formeu part d'aquest grup.";
   }
 
   const [sender, receiver, group] = await Promise.all([
