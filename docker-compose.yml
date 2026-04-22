@@ -23,10 +23,12 @@ services:
       - "${BACKEND_PORT:-3001}:3001"    
     depends_on:
       - db
+    env_file:
+      - .env
     command: >
       sh -c "
       echo 'Waiting for DB...';
-      until node -e \"require('mysql2/promise').createConnection({host:'db',user:'root',password:'root'}).then(c=>c.end())\"; do
+      until node -e \"require('mysql2/promise').createConnection({host:'db',user:'root',password: process.env.MYSQL_ROOT_PASSWORD}).then(c=>c.end())\"; do
         sleep 2;
       done;
       npx prisma generate &&
