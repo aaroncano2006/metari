@@ -9,7 +9,8 @@
     "migrate": "npx prisma migrate dev",
     "migrate:apply": "npx prisma migrate deploy",
     "migrate:reset": "npx prisma migrate reset",
-    "seed": "node ./seeders/seed.js"
+    "seed": "node ./seeders/seed.js",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",

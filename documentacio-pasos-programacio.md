@@ -4,6 +4,11 @@ Documentacio dels pasos de programacio
 # Backend
 
 ## Instal·lar prisma:
+Creem el package.json, que es la base del projecte:
+```bash
+npm init -y
+```
+
 Instal·lem prisma cli per les dev dependencies (--save-dev)
 ```bash
 npm install prisma --save-dev
@@ -14,63 +19,81 @@ Instal·lem prisma client per les dev dependencies
 npm install @prisma/client
 ```
 
+Creem la carpeta de prisma i l'arxiu de configuracio de prisma (schema.prisma)
 ```bash
 npx prisma init
 ```
-aixo ens crea la carpeta de prisma i un arxiu de configuracio del prisma
 
 
 
-Per generar package.json:
-```bash
-npm init -y
-```
 
 
 
 ## Instal·lar  express:
+
+Instala el servei web principal per crear la api:
 ```bash
 npm install express
 ```
 
 ## Instal·lar nodemon:
-Instal·lem nodemon per les dev dependencies (-D)
+Instal·lem nodemon per les dev dependencies (-D). S'utilitza per reiniciar el servidor automaticament cuan hi ha canvis en el projecte en desenvolupament:
 ```bash
 npm install nodemon -D
 ```
 
 ## Instal·lar .env:
+
+Se'utilitza per carregar variables d'entron des dels fitxers .env:
 ```bash
 npm i dotenv
 ```
 ## forçar la versio de Node.js:
 
-Creem l'arxiu .nvmrc ( node version manager run configuration/commands) per establir la versio de node que s'ha de tenir per utilitzar l'aplicacio durant el desenvolupament.
+Creem l'arxiu .nvmrc ( node version manager run configuration/commands) per establir la versio de node que s'ha de tenir instal·lada per utilitzar l'aplicacio durant el desenvolupament.
 
+
+Per instal·lar i utilitzar la versio definida al arxiu:
 ```bash
 nvm install && nvm use
 ```
 
 
+## bcrypt
 
-bcrypt :
+Instal·lem bcrypt, s'utilitza per fer hash de les contrasenyes:
+
 ```bash
 npm install bcrypt
 ```
 
+
 # Frontend
 
-
+Creem el projecte de l'aplicacio:
+```bash
 npm create vite@latest react-notes-app
-
+```
+Les opcions utilitzades per configurar el projecte:
 - React
 - Typescript
 - Install with npm and start now? -yes
 
-
+Instal·lem bootstrap:
+```bash
 npm install bootstrap
+```
+importem bootstrap al projecte:
 
+```bash
+// src/main.tsx
+import "bootstrap/dist/css/bootstrap.min.css";
+```
+
+Intal·lem llibreria per fer pagines amb react:
+```bash
 npm install react-router-dom
+```
 
 
 # executar projecte en desenvolupament
