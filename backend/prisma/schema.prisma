@@ -59,7 +59,7 @@ enum UserRole {
 model Group {
   id           Int           @id @default(autoincrement())
   name         String
-  description  String        @db.Text
+  description  String?        @db.Text
   owner_id     Int
   is_public    Boolean
   created_at   DateTime      @default(now())
@@ -79,7 +79,7 @@ model Group {
 model Meta {
   id           Int           @id @default(autoincrement())
   title        String
-  description  String        @db.Text
+  description  String?        @db.Text
   author_id    Int
   group_id     Int
   type         MetaType      @default(task)
@@ -97,7 +97,7 @@ model Meta {
 //enum tipus del model meta
 enum MetaType {
   task
-  challange
+  challenge
 }
 
 model Assignation {

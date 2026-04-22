@@ -17,6 +17,12 @@ const getCategoryById = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const category = await prisma.category.findUnique({
       where: { id },
     });
@@ -43,7 +49,7 @@ const createCategory = async (req, res, next) => {
 
     if (validate) {
       const error = new Error(validate);
-      error.statusCode = 404;
+      error.statusCode = 400;
       throw error;
     }
 
@@ -68,13 +74,19 @@ const updateCategory = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const data = req.body;
 
     const validate = await validateCategory(category);
 
     if (validate) {
       const error = new Error(validate);
-      error.statusCode = 404;
+      error.statusCode = 400;
       throw error;
     }
 
@@ -98,15 +110,19 @@ const deleteCategory = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
 
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const deleteCategory = await prisma.category.delete({
       where: {
         id,
       },
     });
 
-    res.status(204).json({
-      message: "Categoria eliminada correctament!",
-    });
+    res.status(204).end();
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);

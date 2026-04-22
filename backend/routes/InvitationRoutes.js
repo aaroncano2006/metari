@@ -5,7 +5,12 @@ const invitationController = require('../controllers/InvitationController');
 router.get('/:userid/:status', invitationController.getInvitations);
 router.post('/:senderid/:receiverid', invitationController.sendInvitations);
 router.post('/:senderid/:receiverid/:groupid', invitationController.sendInvitations);
-router.put('/:id', invitationController.acceptInvitation);
-router.delete('/:id', invitationController.rejectInvitation);
+router.put('/:receiverid/:id', invitationController.acceptInvitation);
+router.delete('/:userid/:id', invitationController.rejectInvitation);
+
+// userid pot ser tant la id de l'emissor com la del
+// receptor
+
+// Les rutes hauran de ser refactoritzades quan s'implementi el login amb JWT.
 
 module.exports = router;
