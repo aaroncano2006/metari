@@ -1,8 +1,8 @@
 const express = require("express");
-// require("dotenv").config();
-require("dotenv").config({
-  path: require("path").resolve(__dirname, "../.env")
-});
+require("dotenv").config();
+// require("dotenv").config({
+//   path: require("path").resolve(__dirname, "../.env")
+// });
 const app = express();
 const categoryRoutes = require("./routes/CategoryRoutes");
 const userRoutes = require("./routes/UserRoutes");

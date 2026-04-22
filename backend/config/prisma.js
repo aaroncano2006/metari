@@ -1,11 +1,11 @@
 const { PrismaClient } = require("@prisma/client");
 const { PrismaMariaDb } = require("@prisma/adapter-mariadb");
-// require("dotenv").config({
-//   path: require("path").resolve(__dirname, "../.env"),
-// });
 require("dotenv").config({
-  path: require("path").resolve(__dirname, "../../.env"),
+  path: require("path").resolve(__dirname, "../.env"),
 });
+// require("dotenv").config({
+//   path: require("path").resolve(__dirname, "../../.env"),
+// });
 
 const environment = process.env.ENVIRONMENT || "dev";
 
