@@ -6,32 +6,27 @@ services:
     container_name: metari-mariadb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: metari_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${DOCKER_ADAPTER_PASSWORD:-root}
+      MYSQL_DATABASE: ${DOCKER_ADAPTER_DATABASE:-metari_db}
+      # MYSQL_USER: 
+      # MYSQL_PASSWORD:
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3309:3306"
+      - "${DOCKER_ADAPTER_PORT:-3308}:3306"
 
   backend:
     build: ./backend
     container_name: metari-backend
     restart: always
     ports:
-      - "3008:3001"
-    environment:
-      DB_HOST: db
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: metari_db
+      - "${DOCKER_PORT:-3001}:3001"    
     depends_on:
       - db
     command: >
       sh -c "
       echo 'Waiting for DB...';
-      until node -e \"require('mysql2/promise').createConnection({host:'db',user:'user',password:'password'}).then(c=>c.end())\"; do
+      until node -e \"require('mysql2/promise').createConnection({host:'db',user:'root',password:'root'}).then(c=>c.end())\"; do
         sleep 2;
       done;
       npm run migrate:apply &&
