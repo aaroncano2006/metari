@@ -179,6 +179,7 @@ model Invitation {
   receiver    User     @relation("ReceivedInvitations", fields: [receiver_id], references: [id])
   //Autogenerades relacions bidireccionals
 
+  @@unique([sender_id, receiver_id, group_id])
   @@map("invitations")
 }
 

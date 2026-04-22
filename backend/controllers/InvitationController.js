@@ -158,6 +158,13 @@ const sendInvitations = async (req, res, next) => {
     return res.status(201).json(utils.handleBigInt(invitation));
   } catch (error) {
     console.error("Error en Prisma:", error);
+    if (error.code === "P2002") {
+      // return res.status(400).json({
+      //   error: "Ja existeix una amb aquestes característiques!",
+      // });
+      error = new Error("Ja existeix una invitació amb aquestes característiques!");
+      error.statusCode = 400;
+    }
     next(error);
   }
 };
