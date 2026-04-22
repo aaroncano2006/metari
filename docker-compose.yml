@@ -6,21 +6,21 @@ services:
     container_name: metari-mariadb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DOCKER_ADAPTER_PASSWORD:-root}
-      MYSQL_DATABASE: ${DOCKER_ADAPTER_DATABASE:-metari_db}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       # MYSQL_USER: 
       # MYSQL_PASSWORD:
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
 
   backend:
     build: ./backend
     container_name: metari-backend
     restart: always
     ports:
-      - "${DOCKER_PORT:-3001}:3001"    
+      - "${BACKEND_PORT:-3001}:3001"    
     depends_on:
       - db
     command: >
@@ -29,6 +29,7 @@ services:
       until node -e \"require('mysql2/promise').createConnection({host:'db',user:'root',password:'root'}).then(c=>c.end())\"; do
         sleep 2;
       done;
+      npx prisma generate &&
       npm run migrate:apply &&
       npm run seed &&
       npm start
@@ -39,20 +40,20 @@ services:
     container_name: metari-frontend
     restart: always
     ports:
-      - "8087:80"
+      - "${FRONTEND_PORT:-8087}:80"
     depends_on:
       - backend
 
   phpmyadmin:
     image: phpmyadmin:5.2.3-apache
-    container_name: metari_phpmyadmin
+    container_name: metari-phpmyadmin
     restart: always
     depends_on:
       - db
     environment:
       PMA_HOST: db
     ports:
-      - "8089:80"
+      - "${PHPMYADMIN_PORT:-8089}:80"
 
 volumes:
   db_data:
