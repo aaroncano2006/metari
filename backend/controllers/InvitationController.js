@@ -9,6 +9,7 @@ const getInvitations = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userid);
     const status = req.params.status;
+    const sentOrReceived = req.params.sentorreceived;
 
     if (isNaN(userId)) {
       const error = new Error("ID invàlida!");
@@ -17,7 +18,7 @@ const getInvitations = async (req, res, next) => {
     }
 
     const foundUser = await prisma.user.findUnique({
-      where: {id: userId}
+      where: { id: userId },
     });
     if (!foundUser) {
       const error = new Error("No s'ha trobat l'usuari!");
@@ -32,8 +33,20 @@ const getInvitations = async (req, res, next) => {
       throw error;
     }
 
+    const validQueries = ["sent", "received"];
+    if (!validQueries.includes(sentOrReceived)) {
+      const error = new Error(
+        "El valor especificat per consultar invitacions enviades o rebudes per part d'un usuari no és vàlid!",
+      );
+      error.statusCode = 400;
+      throw error;
+    }
+
     const invitations = await prisma.invitation.findMany({
-      where: { receiver_id: userId, status: status },
+      where:
+        sentOrReceived === "sent"
+          ? { sender_id: userId, status: status }
+          : { receiver_id: userId, status: status },
       include: { sender: true, receiver: true, group: true },
     });
 
@@ -87,15 +100,16 @@ const sendInvitations = async (req, res, next) => {
       },
     });
 
-    await nodemailer.sendMail({
-      from: "Metari",
-      to: receiver.email,
-      subject: !group
-        ? `${sender.name} (${sender.username}) t'ha enviat una sol·licitud d'amistat`
-        : `${sender.name} (${sender.username}) t'ha enviat una sol·licitud per unir-se al grup ${group.name}`,
+    await nodemailer
+      .sendMail({
+        from: "Metari",
+        to: receiver.email,
+        subject: !group
+          ? `${sender.name} (${sender.username}) t'ha enviat una sol·licitud d'amistat`
+          : `${sender.name} (${sender.username}) t'ha enviat una sol·licitud per unir-se al grup ${group.name}`,
 
-      html: !group
-        ? `
+        html: !group
+          ? `
         <div style="font-family: Arial, sans-serif; line-height: 1.5;">
           <h2>Nova sol·licitud d'amistat</h2>
 
@@ -116,7 +130,7 @@ const sendInvitations = async (req, res, next) => {
           </small>
         </div>
         `
-        : `
+          : `
         <div style="font-family: Arial, sans-serif; line-height: 1.5;">
           <h2>Nova invitació a grup</h2>
 
@@ -138,11 +152,19 @@ const sendInvitations = async (req, res, next) => {
           </small>
         </div>
         `,
-    }).catch(err => console.log("Error enviant correu: " + err));
+      })
+      .catch((err) => console.log("Error enviant correu: " + err));
 
     return res.status(201).json(utils.handleBigInt(invitation));
   } catch (error) {
     console.error("Error en Prisma:", error);
+    if (error.code === "P2002") {
+      // return res.status(400).json({
+      //   error: "Ja existeix una amb aquestes característiques!",
+      // });
+      error = new Error("Ja existeix una invitació amb aquestes característiques!");
+      error.statusCode = 400;
+    }
     next(error);
   }
 };
@@ -170,7 +192,9 @@ const acceptInvitation = async (req, res, next) => {
     }
 
     if (receiverId !== invitation.receiver.id) {
-      const error = new Error("No has rebut aquesta invitació! No pots acceptar-la!");
+      const error = new Error(
+        "No has rebut aquesta invitació! No pots acceptar-la!",
+      );
       error.statusCode = 400;
       throw error;
     }
@@ -244,7 +268,9 @@ const rejectInvitation = async (req, res, next) => {
     const receiver = invitation.receiver;
 
     if (userId !== sender.id && userId !== receiver.id) {
-      const error = new Error("No formes part d'aquest invitació! No pots rebutjar-la ni eliminar-la.");
+      const error = new Error(
+        "No formes part d'aquest invitació! No pots rebutjar-la ni eliminar-la.",
+      );
       error.statusCode = 400;
       throw error;
     }
@@ -259,14 +285,14 @@ const rejectInvitation = async (req, res, next) => {
     } else if (userId === receiver.id && invitation.status === "pending") {
       message = "Invitació rebutjada!";
     } else if (userId === sender.id) {
-      message = `${receiver.name} (${receiver.username}) i tu ja no sou amics!`
+      message = `${receiver.name} (${receiver.username}) i tu ja no sou amics!`;
     } else if (userId === receiver.id) {
       message = `${sender.name} (${sender.username}) i tu ja no sou amics!`;
     }
 
     res.status(200).json({
       ok: true,
-      message
+      message,
     });
   } catch (error) {
     console.error("Error en Prisma:", error);
