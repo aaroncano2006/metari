@@ -20,31 +20,6 @@ const getGroupUsers = async (req, res, next) => {
     }
 };
 
-
-const createGroupUser = async (req, res, next) => {
-    const reqBody = req.body;
-
-    try {
-        const groupUser = await prisma.groupUser.create({
-            data: {
-                group_id: parseInt(reqBody.group_id),
-                user_id: parseInt(reqBody.user_id),
-                role: reqBody.role ?? "member",
-            },
-            include: {
-                group: true, user: true
-            }
-        });
-
-        res.status(201).json(utils.handleBigInt(groupUser));
-    } catch (error) {
-        console.error("Error en Prisma:", error);
-        // res.status(500).json({ error: "Error al afegir usuari al grup" });
-        next(error);
-
-    }
-};
-
 const getGroupUser = async (req, res, next) => {
     try {
         const { group_id, user_id } = req.params;
@@ -70,6 +45,30 @@ const getGroupUser = async (req, res, next) => {
     } catch (error) {
         console.error("Error en Prisma:", error);
         // res.status(500).json({ error: "Error al carregar la relació" });
+        next(error);
+
+    }
+};
+
+const createGroupUser = async (req, res, next) => {
+    const reqBody = req.body;
+
+    try {
+        const groupUser = await prisma.groupUser.create({
+            data: {
+                group_id: parseInt(reqBody.group_id),
+                user_id: parseInt(reqBody.user_id),
+                role: reqBody.role ?? "member",
+            },
+            include: {
+                group: true, user: true
+            }
+        });
+
+        res.status(201).json(utils.handleBigInt(groupUser));
+    } catch (error) {
+        console.error("Error en Prisma:", error);
+        // res.status(500).json({ error: "Error al afegir usuari al grup" });
         next(error);
 
     }
