@@ -5,7 +5,11 @@ const utils = require("../helpers/Utils");
 
 const getGroupUsers = async (req, res, next) => {
     try {
-        const groupUsers = await prisma.groupUser.findMany();
+        const groupUsers = await prisma.groupUser.findMany({
+            include: {
+                group: true, user: true
+            }
+        });
 
         res.status(200).json(utils.handleBigInt(groupUsers));
     } catch (error) {
@@ -27,6 +31,9 @@ const createGroupUser = async (req, res, next) => {
                 user_id: parseInt(reqBody.user_id),
                 role: reqBody.role ?? "member",
             },
+            include: {
+                group: true, user: true
+            }
         });
 
         res.status(201).json(utils.handleBigInt(groupUser));
@@ -47,8 +54,12 @@ const getGroupUser = async (req, res, next) => {
                 group_id_user_id: {
                     group_id: parseInt(group_id),
                     user_id: parseInt(user_id),
+                    
                 },
             },
+            include: {
+                group: true, user: true
+            }
         });
 
         if (!groupUser) {
@@ -78,6 +89,9 @@ const updateGroupUser = async (req, res, next) => {
             data: {
                 role: reqBody.role,
             },
+            include: {
+                group: true, user: true
+            }
         });
 
         res.status(200).json(utils.handleBigInt(updatedGroupUser));
