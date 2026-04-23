@@ -3,13 +3,15 @@
 import "dotenv/config";
 import { defineConfig, env } from "prisma/config";
 
+const environment = process.env.ENVIRONMENT || "dev";
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: environment === "dev" ? env("LOCAL_DATABASE_URL") : env("DOCKER_DATABASE_URL"),
   },
 });
 

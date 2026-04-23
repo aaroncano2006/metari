@@ -1,5 +1,8 @@
-const express = require('express');
-require('dotenv').config();
+const express = require("express");
+require("dotenv").config();
+// require("dotenv").config({
+//   path: require("path").resolve(__dirname, "../.env")
+// });
 const app = express();
 const categoryRoutes = require('./routes/CategoryRoutes');
 const userRoutes = require('./routes/UserRoutes');
@@ -15,17 +18,19 @@ const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
 const helmet = require("helmet");
 
+const environment = process.env.ENVIRONMENT || "dev";
+
 app.use(express.json());
 
 app.use(helmet());
 
-app.get("/", (req, res) => {
-    return res.status(200).json({
-        message: "Hello world"
-    });
+app.get("/api", (req, res) => {
+  return res.status(200).json({
+    message: "Hello world",
+  });
 });
 
-// app.post("/test-email", async (req, res, next) => {
+// app.post("/api/test-email", async (req, res, next) => {
 //   const { to, subject, text } = req.body;
 
 //   try {
@@ -59,7 +64,9 @@ app.use('/api/grup-usuaris', groupUserRoutes );
 app.use('/api/indexa-metas', indexedMetaRoutes );
 
 app.use(errorHandler);
-const PORT = process.env.PORT || 3001;
+const PORT =
+  (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
+  3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
