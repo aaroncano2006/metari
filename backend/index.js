@@ -18,6 +18,8 @@ const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
 const helmet = require("helmet");
 
+const environment = process.env.ENVIRONMENT || "dev";
+
 app.use(express.json());
 
 app.use(helmet());
