@@ -18,17 +18,19 @@ const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
 const helmet = require("helmet");
 
+const environment = process.env.ENVIRONMENT || "dev";
+
 app.use(express.json());
 
 app.use(helmet());
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   return res.status(200).json({
     message: "Hello world",
   });
 });
 
-// app.post("/test-email", async (req, res, next) => {
+// app.post("/api/test-email", async (req, res, next) => {
 //   const { to, subject, text } = req.body;
 
 //   try {
