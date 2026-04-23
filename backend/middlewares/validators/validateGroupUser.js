@@ -23,6 +23,19 @@ const validateGroupUser = async (data) => {
         return "El rol especificat no és vàlid!";
     }
 
+    const existingEntrance = await prisma.groupUser.findUnique({
+        where: {
+            group_id_user_id: {
+                group_id: data.group_id,
+                user_id: data.user_id,
+            },
+        }
+    });
+
+    if (existingEntrance) {
+        return "Ja hi ha una relació amb aquestes característiques!";
+    }
+
     return null;
 };
 
