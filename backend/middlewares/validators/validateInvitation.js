@@ -22,6 +22,21 @@ const validateInvitation = async (data) => {
       : "Ja sou amics o formeu part d'aquest grup.";
   }
 
+  const receiverAlreadyInGroup = await prisma.groupUser.findFirst({
+    where: {
+      group: {
+        id: data.group_id
+      },
+      user: {
+        id: data.receiver_id
+      }
+    }
+  });
+
+  if (receiverAlreadyInGroup) {
+    return "L'usuari receptor ja forma part d'aquest grup!";
+  }
+
   const [sender, receiver, group] = await Promise.all([
     prisma.user.findUnique({ where: { id: data.sender_id } }),
     prisma.user.findUnique({ where: { id: data.receiver_id } }),
