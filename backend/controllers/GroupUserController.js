@@ -89,6 +89,9 @@ const updateGroupUser = async (req, res, next) => {
             data: {
                 role: reqBody.role,
             },
+            include: {
+                group: true, user: true
+            }
         });
 
         res.status(200).json(utils.handleBigInt(updatedGroupUser));
