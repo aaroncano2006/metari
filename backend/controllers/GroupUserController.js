@@ -5,7 +5,11 @@ const utils = require("../helpers/Utils");
 
 const getGroupUsers = async (req, res, next) => {
     try {
-        const groupUsers = await prisma.groupUser.findMany();
+        const groupUsers = await prisma.groupUser.findMany({
+            include: {
+                group: true, user: true
+            }
+        });
 
         res.status(200).json(utils.handleBigInt(groupUsers));
     } catch (error) {
