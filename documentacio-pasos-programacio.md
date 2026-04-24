@@ -24,7 +24,25 @@ Creem la carpeta de prisma i l'arxiu de configuracio de prisma (schema.prisma)
 npx prisma init
 ```
 
+Helmet:
+Helmet.js ens ajuda a millorar la seguretat d'aplicacions Node/Express, configura automaticament alguns "Headers" que ens protegeixen dels atacs mes comuns, com per exemple:
+- XSS (Cross-Site Scripting)
+- Clickjacking
+- MIME sniffing attacks
+- Injeccio de contingut malicios
 
+Helmet intercepta les respostes HTTP i afegeix capçaleres (Headers) de seguretat automaticament.
+
+Instal·lem helmet:
+
+```bash
+npm install helmet
+```
+
+Instalem cors:
+```bash
+npm install cors
+```
 
 
 
@@ -108,6 +126,10 @@ Intal·lem llibreria per fer pagines amb react:
 npm install react-router-dom
 ```
 
+Instal·lem axios:
+```bash
+npm install axios
+```
 
 # executar projecte en desenvolupament
 

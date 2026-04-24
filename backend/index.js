@@ -1,9 +1,51 @@
 const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+
 require("dotenv").config();
 // require("dotenv").config({
 //   path: require("path").resolve(__dirname, "../.env")
 // });
 const app = express();
+
+app.use(helmet())
+// app.use(helmet())
+// app.use(
+//   helmet({
+//     crossOriginResourcePolicy: false,
+//   })
+// )
+
+//avans de les rutes!! despes de helmet!!
+app.use(cors())
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173"
+//   })
+// );
+
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       const allowedOrigins = ["http://localhost:3001/", "http://localhost:5173/"]
+
+//       if (!origin) return callback(null, true);
+
+//       if (allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//   }),
+// );
+
+
+app.use(express.json());
+
+
+
 const categoryRoutes = require('./routes/CategoryRoutes');
 const userRoutes = require('./routes/UserRoutes');
 const invitationRoutes = require('./routes/InvitationRoutes');
@@ -16,15 +58,11 @@ const groupUserRoutes = require('./routes/GroupUserRoutes');
 const indexedMetaRoutes = require('./routes/IndexedMetaRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
-const helmet = require("helmet");
 
 const environment = process.env.ENVIRONMENT || "dev";
 
-app.use(express.json());
 
-app.use(helmet());
-
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
   return res.status(200).json({
     message: "Hello world",
   });
