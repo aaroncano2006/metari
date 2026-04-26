@@ -207,7 +207,7 @@ const deleteAssignation = async (req, res, next) => {
       where: { id: Number(id) },
     });
 
-    res.status(200).json({ message: "Assignació eliminada correctament" });
+    res.status(204).end();
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
