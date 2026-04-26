@@ -91,10 +91,15 @@ const createAssignation = async (req, res, next) => {
         start_date: reqBody.start_date
           ? new Date(reqBody.start_date)
           : new Date(),
-        due_date: reqBody.due_date ? new Date(reqBody.due_date) : new Date(),
+        due_date: reqBody.due_date ? new Date(reqBody.due_date) : null,
         priority: reqBody.priority ?? null,
         difficulty: reqBody.difficulty ?? "normal",
-        score: reqBody.score ? BigInt(reqBody.score) : null,
+        score:
+          reqBody.score !== undefined
+            ? reqBody.score !== null
+              ? BigInt(reqBody.score)
+              : null
+            : null,
         completed: reqBody.completed ?? false,
       },
       include: {
@@ -115,33 +120,62 @@ const createAssignation = async (req, res, next) => {
 };
 
 const updateAssignation = async (req, res, next) => {
-  const reqBody = req.body;
-  const { id } = req.params;
-
-  if (
-    (reqBody.group_id && reqBody.user_id) ||
-    (!reqBody.group_id && !reqBody.user_id)
-  ) {
-    return res.status(400).json({
-      error:
-        "You must provide either group_id or user_id, but not both or neither.",
-    });
-  }
-
   try {
+    const reqBody = req.body;
+    const id = parseInt(req.params.id);
+    const groupId = reqBody.group_id ? parseInt(reqBody.group_id) : undefined;
+    const userId = reqBody.user_id ? parseInt(reqBody.user_id) : undefined;
+    const metaId = reqBody.meta_id ? parseInt(reqBody.meta_id) : undefined;
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const existingAssignation = await prisma.assignation.findUnique({
+      where: { id },
+    });
+
+    if (!existingAssignation) {
+      const error = new Error("No s'ha trobat l'assignació a actualitzar!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const data = {
+      group_id: groupId !== undefined ? groupId : existingAssignation.group_id,
+      meta_id: metaId !== undefined ? metaId : existingAssignation.meta_id,
+      user_id: userId !== undefined ? userId : existingAssignation.user_id,
+      start_date:
+        reqBody.start_date !== undefined
+          ? new Date(reqBody.start_date)
+          : existingAssignation.start_date,
+      due_date:
+        reqBody.due_date !== undefined
+          ? new Date(reqBody.due_date)
+          : existingAssignation.due_date,
+      priority: reqBody.priority ?? existingAssignation.priority,
+      difficulty: reqBody.difficulty ?? existingAssignation.difficulty,
+      score:
+        reqBody.score !== undefined
+          ? reqBody.score !== null
+            ? BigInt(reqBody.score)
+            : null
+          : existingAssignation.score,
+      completed: reqBody.completed ?? existingAssignation.completed,
+    };
+
+    const validate = await validateAssignation(data, true);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const updatedAssignation = await prisma.assignation.update({
-      where: { id: Number(id) },
-      data: {
-        group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
-        meta_id: parseInt(reqBody.meta_id),
-        user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
-        start_date: reqBody.start_date,
-        due_date: reqBody.due_date,
-        priority: reqBody.priority,
-        difficulty: reqBody.difficulty ?? "normal",
-        score: reqBody.score ? BigInt(reqBody.score) : null,
-        completed: reqBody.completed ?? false,
-      },
+      where: { id },
+      data,
       include: {
         group: true,
         meta: true,
