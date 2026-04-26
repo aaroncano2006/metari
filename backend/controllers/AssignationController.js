@@ -1,6 +1,8 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
-const { validateAssignation } = require("../middlewares/validators/validateAssignation");
+const {
+  validateAssignation,
+} = require("../middlewares/validators/validateAssignation");
 
 // GET ALL
 const getAssignations = async (req, res, next) => {
@@ -11,8 +13,8 @@ const getAssignations = async (req, res, next) => {
         meta: true,
         user: true,
         comments: true,
-        proofs: true
-      }
+        proofs: true,
+      },
     });
     res.status(200).json(utils.handleBigInt(assignations));
   } catch (error) {
@@ -51,36 +53,27 @@ const getAssignationById = async (req, res, next) => {
 };
 
 const createAssignation = async (req, res, next) => {
-  // const reqBody = req.body;
-
-  // // si els 2 estan definits o ningun esta definit, error
-  // if (
-  //   (reqBody.group_id && reqBody.user_id) ||
-  //   (!reqBody.group_id && !reqBody.user_id)
-  // ) {
-  //   return res.status(400).json({
-  //     error:
-  //       "You must provide either group_id or user_id, but not both or neither.",
-  //   });
-  // }
-
   try {
     const reqBody = req.body;
     const groupId = reqBody.group_id ? parseInt(reqBody.group_id) : null;
     const userId = reqBody.user_id ? parseInt(reqBody.user_id) : null;
     const metaId = parseInt(reqBody.meta_id);
 
-    if ((groupId && isNaN(groupId)) || (userId && isNaN(userId)) || isNaN(metaId)) {
+    if (
+      (groupId && isNaN(groupId)) ||
+      (userId && isNaN(userId)) ||
+      isNaN(metaId)
+    ) {
       const error = new Error("IDs invàlides!");
       error.statusCode = 400;
       throw error;
     }
 
     const data = {
-      ...reqBody, 
-      group_id: groupId, 
-      meta_id: metaId, 
-      user_id: userId
+      ...reqBody,
+      group_id: groupId,
+      meta_id: metaId,
+      user_id: userId,
     };
 
     const validate = await validateAssignation(data);
@@ -95,12 +88,21 @@ const createAssignation = async (req, res, next) => {
         group_id: groupId ?? null,
         meta_id: metaId,
         user_id: userId ?? null,
-        start_date: reqBody.start_date ? new Date(reqBody.start_date) : new Date(),
+        start_date: reqBody.start_date
+          ? new Date(reqBody.start_date)
+          : new Date(),
         due_date: reqBody.due_date ? new Date(reqBody.due_date) : new Date(),
         priority: reqBody.priority ?? null,
         difficulty: reqBody.difficulty ?? "normal",
         score: reqBody.score ? BigInt(reqBody.score) : null,
         completed: reqBody.completed ?? false,
+      },
+      include: {
+        group: true,
+        meta: true,
+        user: true,
+        comments: true,
+        proofs: true,
       },
     });
 
