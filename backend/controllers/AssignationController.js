@@ -142,6 +142,13 @@ const updateAssignation = async (req, res, next) => {
         score: reqBody.score ? BigInt(reqBody.score) : null,
         completed: reqBody.completed ?? false,
       },
+      include: {
+        group: true,
+        meta: true,
+        user: true,
+        comments: true,
+        proofs: true,
+      },
     });
 
     res.status(200).json(utils.handleBigInt(updatedAssignation));
