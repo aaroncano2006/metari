@@ -1,4 +1,5 @@
 const prisma = require("../../config/prisma");
+const { normalizeDate } = require("../../helpers/Utils");
 
 const validateAssignation = async (data, isUpdating = false) => {
   if (data.group_id) {
@@ -47,11 +48,11 @@ const validateAssignation = async (data, isUpdating = false) => {
     }
   }
 
-  if (startDate && startDate < new Date() && !isUpdating) {
+  if (startDate && normalizeDate(startDate) < normalizeDate(new Date()) && !isUpdating) {
     return "La data d'inici no pot ser en el passat!";
   }
 
-  if (startDate && dueDate && dueDate < startDate) {
+  if (startDate && dueDate && normalizeDate(dueDate) < normalizeDate(startDate)) {
     return "La data límit no pot ser anterior a la data d'inici!";
   }
 
