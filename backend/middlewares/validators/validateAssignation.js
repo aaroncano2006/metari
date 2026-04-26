@@ -1,6 +1,6 @@
 const prisma = require("../../config/prisma");
 
-const validateAssignation = async (data) => {
+const validateAssignation = async (data, isUpdating = false) => {
   if (data.group_id) {
     const existingGroup = await prisma.group.findFirst({
       where: { id: data.group_id },
@@ -11,12 +11,14 @@ const validateAssignation = async (data) => {
     }
   }
 
-  const existingMeta = await prisma.meta.findFirst({
-    where: { id: data.meta_id },
-  });
+  if (data.meta_id) {
+    const existingMeta = await prisma.meta.findFirst({
+      where: { id: data.meta_id },
+    });
 
-  if (!existingMeta) {
-    return "La id de la meta no correspon a cap meta registrada en el sistema!";
+    if (!existingMeta) {
+      return "La id de la meta no correspon a cap meta registrada en el sistema!";
+    }
   }
 
   if (data.user_id) {
@@ -45,7 +47,7 @@ const validateAssignation = async (data) => {
     }
   }
 
-  if (startDate && startDate < new Date()) {
+  if (startDate && startDate < new Date() && !isUpdating) {
     return "La data d'inici no pot ser en el passat!";
   }
 
@@ -61,16 +63,18 @@ const validateAssignation = async (data) => {
     }
   }
 
-  if (!data.difficulty) {
+  if (!data.difficulty && !isUpdating) {
     return "La dificultat de l'assignació és obligatòria!";
   }
 
-  const validDifficulties = ["easy", "normal", "hard", "extreme"];
-  if (!validDifficulties.includes(data.difficulty)) {
-    return "La dificultat introduïda no és vàlida!";
+  if (data.difficulty) {
+    const validDifficulties = ["easy", "normal", "hard", "extreme"];
+    if (!validDifficulties.includes(data.difficulty)) {
+      return "La dificultat introduïda no és vàlida!";
+    }
   }
 
-  if (data.score) {
+  if (data.score !== undefined && data.score !== null) {
     if (isNaN(data.score)) {
       return "El score ha de ser un número!";
     }
