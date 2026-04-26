@@ -48,11 +48,19 @@ const validateAssignation = async (data, isUpdating = false) => {
     }
   }
 
-  if (startDate && normalizeDate(startDate) < normalizeDate(new Date()) && !isUpdating) {
+  if (
+    startDate &&
+    normalizeDate(startDate) < normalizeDate(new Date()) &&
+    !isUpdating
+  ) {
     return "La data d'inici no pot ser en el passat!";
   }
 
-  if (startDate && dueDate && normalizeDate(dueDate) < normalizeDate(startDate)) {
+  if (
+    startDate &&
+    dueDate &&
+    normalizeDate(dueDate) < normalizeDate(startDate)
+  ) {
     return "La data límit no pot ser anterior a la data d'inici!";
   }
 
@@ -76,15 +84,18 @@ const validateAssignation = async (data, isUpdating = false) => {
   }
 
   if (data.score !== undefined && data.score !== null) {
-    if (isNaN(data.score)) {
+    if (typeof data.score !== "bigint" && isNaN(data.score)) {
       return "El score ha de ser un número!";
     }
 
-    if (data.score < 0) {
+    const scoreNumber =
+      typeof data.score === "bigint" ? Number(data.score) : data.score;
+
+    if (scoreNumber < 0) {
       return "El score no pot ser negatiu!";
     }
 
-    if (data.score > 1000000) {
+    if (scoreNumber > 1000000) {
       return "El score és massa gran!";
     }
   }
