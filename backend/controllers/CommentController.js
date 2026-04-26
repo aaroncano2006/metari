@@ -58,7 +58,7 @@ const createComment = async (req, res, next) => {
     const assignationId = parseInt(reqBody.assignation_id);
     const userId = parseInt(reqBody.user_id);
 
-    if (isNaN(userId) || isNaN(userId)) {
+    if (isNaN(assignationId) || isNaN(userId)) {
       const error = new Error("IDs invàlides!");
       error.statusCode = 400;
       throw error;
@@ -94,18 +94,44 @@ const createComment = async (req, res, next) => {
 };
 
 const updateComment = async (req, res, next) => {
-  const reqBody = req.body;
-
   try {
+    const reqBody = req.body;
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const existingComment = await prisma.comment.findUnique({
+      where: {id}
+    });
+
+    if (!existingComment) {
+      const error = new Error("El comentari no existeix!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const data = {
+      body: reqBody.body ?? existingComment.body
+    };
+
+    const validate = await validateComment(data, true);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const updatedComment = await prisma.comment.update({
-      where: { id: parseInt(req.params.id) },
-      data: {
-        assignation_id: reqBody.assignation_id
-          ? parseInt(reqBody.assignation_id)
-          : undefined,
-        user_id: reqBody.user_id ? parseInt(reqBody.user_id) : undefined,
-        body: reqBody.body,
-      },
+      where: {id},
+      data,
+      include: {
+        assignation: true,
+        user: true
+      }
     });
 
     res.status(200).json(utils.handleBigInt(updatedComment));
