@@ -6,17 +6,20 @@ type UserListProps = {
 
 export function UserList({ users }: UserListProps) {
   return (
-    <div>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.username} - {user.email} - {user.role} - Score: {user.score}
-          </li>
-        ))}
-      </ul>
-          <div className="test">
-            holis
-          </div>
-    </div>
+    <>
+
+      <div className="userList ">
+        <div className="titolComponent text-center">Usuaris</div>
+        <hr className="my-2" />
+        <ul>
+          {users.map((user) => (
+            <li key={user.id} className="listEntry">
+              {user.username} - Punts: {user.score}
+            </li>
+          ))}
+        </ul>
+
+      </div>
+    </>
   )
 }
