@@ -1,13 +1,16 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
+const {
+  validateComment,
+} = require("../middlewares/validators/validateComment");
 
 const getComments = async (req, res, next) => {
   try {
     const comments = await prisma.comment.findMany({
-        include: {
-            assignation: true,
-            user: true
-        }
+      include: {
+        assignation: true,
+        user: true,
+      },
     });
 
     res.status(200).json(utils.handleBigInt(comments));
@@ -31,14 +34,14 @@ const getCommentById = async (req, res, next) => {
       where: { id },
       include: {
         assignation: true,
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!comment) {
-        const error = new Error("No s'ha trobat el comentari!");
-        error.statusCode = 404;
-        throw error;
+      const error = new Error("No s'ha trobat el comentari!");
+      error.statusCode = 404;
+      throw error;
     }
 
     res.status(200).json(utils.handleBigInt(comment));
@@ -50,15 +53,36 @@ const getCommentById = async (req, res, next) => {
 };
 
 const createComment = async (req, res, next) => {
-  const reqBody = req.body;
-
   try {
+    const reqBody = req.body;
+    const assignationId = parseInt(reqBody.assignation_id);
+    const userId = parseInt(reqBody.user_id);
+
+    if (isNaN(userId) || isNaN(userId)) {
+      const error = new Error("IDs invàlides!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const data = {
+      ...reqBody,
+      assignation_id: assignationId,
+      user_id: userId,
+    };
+
+    const validate = await validateComment(data);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
+    }
+
     const comment = await prisma.comment.create({
-      data: {
-        assignation_id: parseInt(reqBody.assignation_id),
-        user_id: parseInt(reqBody.user_id),
-        body: reqBody.body,
-      },
+      data,
+      include: {
+        assignation: true,
+        user: true
+      }
     });
 
     res.status(201).json(utils.handleBigInt(comment));
