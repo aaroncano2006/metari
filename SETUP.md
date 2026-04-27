@@ -8,7 +8,7 @@
 Per verificar que tens Docker instal·lat:
 ```bash
 docker --version
-docker-compose --version
+docker compose --version
 ```
 
 ---
@@ -54,8 +54,6 @@ Edita el fitxer `.env` de l'arrel del projecte i assigna valors:
 nano .env
 ```
 
-
-
 | Variable | Descripció | Exemple |
 |----------|------------|---------|
 | `MYSQL_ROOT_PASSWORD` | Password Root | `root` |
@@ -70,7 +68,7 @@ nano .env
 ### 2.1. Construir i iniciar els contenidors
 
 ```bash
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 Aquesta comanda:
@@ -81,7 +79,7 @@ Aquesta comanda:
 ### 2.2. Verificar que tot funciona
 
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 Tots els serveis haurien d'estar en estat **Up**:
@@ -103,8 +101,8 @@ Un cop desplegat, pots accedir a:
 
 | Servei | URL | Descripció |
 |--------|-----|------------|
-| **Frontend** | `http://localhost:8087` | Aplicació web |
-| **Backend API** | `http://localhost:3001` | API REST |
+| **Frontend** | `http://localhost` | Aplicació web (no hi ha connexió amb el backend de moment) |
+| **Backend API** | `http://localhost/api` | API REST |
 | **phpMyAdmin** | `http://localhost:8089` | Administració de la base de dades |
 
 ### 3.1. Credencials per defecte (phpMyAdmin)
@@ -117,17 +115,9 @@ Un cop desplegat, pots accedir a:
 
 ---
 
-## 4. Usuaris per defecte
+## 4. Seeders
 
-Després del primer desplegament, el seeder crea usuaris de prova:
-
-| Usuari | Contrasenya | Rol |
-|-------|-----------|-----|
-| `Naimus` | `123456` | Admin |
-| `Yesi` | `123456` | User |
-| `aaron` | `123456` | Admin |
-
-**Recomanació:** Canvia les contrasenyes abans de fer servir l'aplicació en producció.
+Després del primer desplegament, s'executaran seeders i la base de dades ja estarà poblada amb dades de prova.
 
 ---
 
@@ -136,7 +126,7 @@ Després del primer desplegament, el seeder crea usuaris de prova:
 ### 5.1. Aturar els contenidors
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### 5.2. Aturar i eliminar les dades
@@ -144,14 +134,14 @@ docker-compose down
 Si vols eliminar inclòs la base de dades:
 
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ### 5.3. Reconstruir des de zero
 
 ```bash
-docker-compose down -v
-docker-compose up --build -d
+docker compose down -v
+docker compose up --build -d
 ```
 
 ---
@@ -161,27 +151,27 @@ docker-compose up --build -d
 ### Veure logs
 ```bash
 # Tots els serveis
-docker-compose logs -f
+docker compose logs -f
 
 # Només un servei
-docker-compose logs -f backend
-docker-compose logs -f frontend
-docker-compose logs -f db
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f db
 ```
 
 ### Reiniciar un servei
 ```bash
-docker-compose restart backend
+docker compose restart backend
 ```
 
 ### Accedir al contenidor del backend
 ```bash
-docker-compose exec backend sh
+docker compose exec backend sh
 ```
 
 ### Accedir a la base de dades des de la línia de comandes
 ```bash
-docker-compose exec db mariadb -u root -p
+docker compose exec db mariadb -u root -p
 ```
 
 ---
@@ -192,7 +182,7 @@ docker-compose exec db mariadb -u root -p
 
 Esperar uns segons més i provar:
 ```bash
-docker-compose logs db
+docker compose logs db
 ```
 
 ### Error: Port en ús
@@ -216,7 +206,10 @@ metari/
 │   ├── config/         # Configuracions
 │   ├── prisma/         # Schema de la base de dades
 │   ├── routes/         # Rutes de l'API
-│   └── seeders/        # Dades inicials
+│   ├── seeders/        # Dades inicials
+│   ├── middlewares/    # Validacions i gestió d'errors
+│   ├── helpers/        # Utilitats varies
+│   └── .env        # Variables d'entorn (NO inclòs a git)
 ├── metari-app/         # Frontend (React)
 ├── docker-compose.yml # Definició dels serveis
 ├── .env               # Variables d'entorn (NO inclòs a git)
@@ -241,7 +234,6 @@ metari/
 
 ## 10. Més informació
 
-- **Documentació completa:** [README.md](./README.md)
 - **Docker:** https://docs.docker.com/
 - **Prisma:** https://www.prisma.io/docs
 - **React:** https://react.dev/
