@@ -80,9 +80,18 @@ const updateCategory = async (req, res, next) => {
       throw error;
     }
 
-    const data = req.body;
+    const reqBody = req.body;
 
-    const validate = await validateCategory(category);
+    const existingCategory = await prisma.category.findUnique({
+      where: {id}
+    });
+
+    const data = {
+       name: reqBody.name ?? existingCategory.name,
+       description: reqBody.description ?? existingCategory.description,
+    };
+
+    const validate = await validateCategory(data, true);
 
     if (validate) {
       const error = new Error(validate);
@@ -92,11 +101,7 @@ const updateCategory = async (req, res, next) => {
 
     const updatedData = await prisma.category.update({
       where: { id },
-      data: {
-        name: String(data.name),
-        description:
-          data?.description !== undefined ? String(data.description) : null,
-      },
+      data
     });
 
     res.status(200).json(updatedData);
