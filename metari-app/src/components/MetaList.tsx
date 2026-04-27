@@ -1,27 +1,59 @@
 import type { metaType } from "../types/metaType";
+import { useState } from "react"
 
 
 type MetaListProps = {
   metas: metaType[]
 }
 
-export function MetaList({ metas }: MetaListProps){
-
-    return (
+export function MetaList({ metas }: MetaListProps) {
+  const [openMetaId, setOpenMetaId] = useState<number | null>(null)
+  const toggleMeta = (id: number) => {
+    setOpenMetaId(prev => (prev === id ? null : id))
+  }
+  return (
     <>
 
-     <div className="userList ">
-      <div className="titolComponent text-center">Metas</div>
-      <hr className="my-2" />
-              <ul>
-                {metas.map((meta) => (
-                  <li key={meta.id}  className="listEntry">
-                    {meta.title}                    
-                  </li>
-                ))}
-              </ul>
 
-            </div>
+      <div className="metaList ">
+        <div className="titolComponent text-center">Metas</div>
+        <hr className="mt-2 mb-0" />
+
+        <div className="inline">
+          <ul className=" ps-4  m-0  py-2">
+            {metas.map((meta) => (
+              <li key={meta.id} className="m-0 p-0" >
+                <div className={`metaEntry mt-1 me-3 ps-2 ${openMetaId === meta.id ? "mb-0" : "mb-1"} ${meta.type === "task" ? "meta-task" : "meta-challenge"}`}
+                  onClick={() => toggleMeta(meta.id)}>
+
+                  <div className="d-flex py-1 ps-2 pe-3 align-items-center">
+                    {meta.title}
+                    <button className="  btn btn-warning p-1  me-2  ms-auto"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                      }}>Edita</button>
+                    <button className="  btn btn-danger p-1   "
+                      onClick={(event) => {
+                        event.stopPropagation()
+                      }}>X</button>
+                  </div>
+                </div>
+                <div className=" metaDetailsBox  my-0 me-3">
+                  {openMetaId === meta.id && (
+                    <div className="metaDetails ps-2 py-2">
+                      {/* Replace with real fields */}
+                      <div>ID: {meta.id}</div>
+                      <div>Tipus: {meta.type}</div>
+                      <div>Descripcio: {meta.description}</div>
+                    </div>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
     </>
   );
 }
