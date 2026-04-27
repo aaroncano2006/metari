@@ -66,20 +66,101 @@ const PORT =
 const HOST = (environment === "dev" ? process.env.LOCALHOST : process.env.DOCKERHOST) || "http://localhost"
 const BASE_URL = `${HOST}:${PORT}`;
 
-
 app.get("/api", (req, res) => {
   res.json({
     ok: true,
+    message: "Metari API - Documentation for security audit",
     endpoints: {
-      categories: `${BASE_URL}/api/categories`,
-      usuaris: `${BASE_URL}/api/usuaris`,
-      metas: `${BASE_URL}/api/metas`,
-      grups: `${BASE_URL}/api/grups`,
-      assignacions: `${BASE_URL}/api/assignacions`,
-      comentaris: `${BASE_URL}/api/comentaris`,
-      proves: `${BASE_URL}/api/proves`,
-      grups_usuaris: `${BASE_URL}/api/grups-usuaris`,
-      indexa_metas: `${BASE_URL}/api/indexa-metas`
+      categories: {
+        base: `${BASE_URL}/api/categories`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      usuaris: {
+        base: `${BASE_URL}/api/usuaris`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      invitacions: {
+        base: `${BASE_URL}/api/invitacions`,
+        methods: {
+          GET: ["/:userid/:sentorreceived/:status"],
+          POST: ["/:senderid/:receiverid", "/:senderid/:receiverid/:groupid"],
+          PUT: ["/:receiverid/:id"],
+          DELETE: ["/:userid/:id"]
+        }
+      },
+      metas: {
+        base: `${BASE_URL}/api/metas`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      grups: {
+        base: `${BASE_URL}/api/grups`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      assignacions: {
+        base: `${BASE_URL}/api/assignacions`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      comentaris: {
+        base: `${BASE_URL}/api/comentaris`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      proves: {
+        base: `${BASE_URL}/api/proves`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      },
+      grups_usuaris: {
+        base: `${BASE_URL}/api/grups-usuaris`,
+        methods: {
+          GET: ["/", "/:group_id/:user_id"],
+          POST: ["/"],
+          PUT: ["/:group_id/:user_id"],
+          DELETE: ["/:group_id/:user_id"]
+        }
+      },
+      indexa_metas: {
+        base: `${BASE_URL}/api/indexa-metas`,
+        methods: {
+          GET: ["/", "/:id"],
+          POST: ["/"],
+          PUT: ["/:id"],
+          DELETE: ["/:id"]
+        }
+      }
     }
   });
 });
