@@ -49,6 +49,14 @@ const validateAssignation = async (data, isUpdating = false) => {
     }
   }
 
+  if (data.group_id && data.user_id) {
+    return "L'assignació només pot estar assignada a un grup o a un usuari!";
+  }
+
+  // if (existingMeta.group_id !== data.group_id) {
+  //   return "La meta no pertany al grup al que es vol assignar!";
+  // }
+
   let startDate = null;
   let dueDate = null;
   if (data.start_date) {
