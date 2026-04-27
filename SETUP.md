@@ -17,7 +17,7 @@ docker-compose --version
 
 ### 1.1. Crear el fitxer `.env`
 
-El projecte necessita dos fitxers `.env` amb les variables d'entorn. Copia els arxius d'exemple, al directory backend i a l'arrel del projecte:
+El projecte necessita dos fitxers `.env` amb les variables d'entorn.Fes una copia dels arxius d'exemple, al directory backend i a l'arrel del projecte:
 
 ```bash
 cp .env.example .env
@@ -54,11 +54,12 @@ Edita el fitxer `.env` de l'arrel del projecte i assigna valors:
 nano .env
 ```
 
+
+
 | Variable | Descripció | Exemple |
 |----------|------------|---------|
-| `DOCKER_HOST` | Localhost (no cal canviar) | `http://localhost` |
-| `DOCKER_PORT` | Port que utilitzara prisma (no cal canviar) | `3001` |
-
+| `` | sdfsd | `` |
+| `` | dsdfs | `` |
 
 
 **Ports per dels serveis per defecte ( Al docker-compose.yml no cal canviar si no vols):**
