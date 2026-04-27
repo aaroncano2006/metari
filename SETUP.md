@@ -17,29 +17,51 @@ docker-compose --version
 
 ### 1.1. Crear el fitxer `.env`
 
-El projecte necessita un fitxer `.env` amb les variables d'entorn. Copia l'arxiu d'exemple:
+El projecte necessita dos fitxers `.env` amb les variables d'entorn. Copia els arxius d'exemple, al directory backend i a l'arrel del projecte:
 
 ```bash
 cp .env.example .env
 ```
 
-### 1.2. Configurar les variables d'entorn
+### 1.2. Configurar les variables d'entorn del backend
 
-Edita el fitxer `.env` i assigna_valors a les contrasenyes i ports:
+Edita el fitxer `.env` de la carpeta backend i assigna valors a les contrasenyes i ports:
 
 ```bash
 nano .env
 ```
 
-**Variables mínimes necessàries:**
+**Variables:**
 
 | Variable | Descripció | Exemple |
 |----------|------------|---------|
-| `MYSQL_ROOT_PASSWORD` | Contrasenya de root per MariaDB | `Canvi@2024` |
-| `MYSQL_DATABASE` | Nom de la base de dades | `metari_db` |
-| `PHPMYADMIN_PORT` | Port per phpMyAdmin (opcional) | `8089` |
+| `DOCKER_HOST` | Localhost (no cal canviar) | `http://localhost` |
+| `DOCKER_PORT` | Port que utilitzara prisma (no cal canviar) | `3001` |
+| `DOCKER_DATABASE_URL` | Credencials per prisma, conexio a la bbdd | `mysql://root:root_password@db:3306/nom_de_la_teva_database"` |
 
-**Ports per defecte (no cal canviar si no vols):**
+| `DOCKER_ADAPTER_HOST` | Nom del servei de la bbdd (No cal canviar) | `bd` |
+| `DOCKER_ADAPTER_PORT` | Port per phpMyAdmin (opcional) | `8089` |
+| `DOCKER_ADAPTER_USER` | Usuari de la base de dades | `root` |
+| `DOCKER_ADAPTER_PASSWORD` | Contrasenya de root per MariaDB | `Canvi@2024` |
+| `DOCKER_ADAPTER_DATABASE` | Nom de la base de dades | `metari_db` |
+
+
+### 1.3. Configurar les variables d'entorn de l'arrel del projecte
+
+Edita el fitxer `.env` de l'arrel del projecte i assigna valors:
+
+```bash
+nano .env
+```
+
+| Variable | Descripció | Exemple |
+|----------|------------|---------|
+| `DOCKER_HOST` | Localhost (no cal canviar) | `http://localhost` |
+| `DOCKER_PORT` | Port que utilitzara prisma (no cal canviar) | `3001` |
+
+
+
+**Ports per dels serveis per defecte ( Al docker-compose.yml no cal canviar si no vols):**
 - Backend: `3001`
 - Frontend: `8087`
 - phpMyAdmin: `8089`
@@ -54,7 +76,7 @@ nano .env
 docker-compose up --build -d
 ```
 
-Aquest comando:
+Aquesta comanda:
 - Construeix les imatges del backend i frontend
 - Crea els contenidors de MariaDB, Backend, Frontend i phpMyAdmin
 - Inicia la base de dades i executa les migracions automàticament
