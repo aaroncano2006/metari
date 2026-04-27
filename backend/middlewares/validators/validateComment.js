@@ -1,8 +1,10 @@
 const prisma = require("../../config/prisma");
 
 const validateComment = async (data, isUpdating = false) => {
+  let existingAssignation = null;
+  let existingUser = null;
   if (data.assignation_id && !isUpdating) {
-    const existingAssignation = await prisma.assignation.findFirst({
+    existingAssignation = await prisma.assignation.findUnique({
       where: { id: data.assignation_id },
     });
 
@@ -12,12 +14,57 @@ const validateComment = async (data, isUpdating = false) => {
   }
 
   if (data.user_id && !isUpdating) {
-    const existingUser = await prisma.user.findFirst({
+    existingUser = await prisma.user.findUnique({
       where: { id: data.user_id },
     });
 
     if (!existingUser) {
       return "La id de l'usuari no correspon a cap usuari registrat en el sistema!";
+    }
+  }
+
+  if (!isUpdating) {
+    const assignationMetaId = existingAssignation.meta_id;
+    const assignationGroupId = existingAssignation.group_id;
+
+    const assignationMeta = await prisma.meta.findUnique({
+      where: { id: assignationMetaId },
+    });
+
+    if (!assignationMeta) {
+      return "No s'ha trobat la meta assignada a l'assignació!";
+    }
+
+    const metaAuthorId = assignationMeta.author_id;
+
+    const isUserInGroup = await prisma.groupUser.findUnique({
+      where: {
+        group_id_user_id: {
+          group_id: assignationGroupId,
+          user_id: existingUser.id,
+        },
+      },
+    });
+
+    const existingGroup = await prisma.group.findUnique({
+      where: {
+        id: existingAssignation.group_id,
+      },
+    });
+
+    const isGroupOwner = existingGroup?.owner_id === existingUser.id;
+
+    const isGroupModerator = isUserInGroup?.role === "moderator";
+
+    if (
+      existingAssignation.user_id !== existingUser.id &&
+      existingUser.id !== metaAuthorId &&
+      !isUserInGroup &&
+      !isGroupOwner &&
+      !isGroupModerator &&
+      existingUser.role !== "admin"
+    ) {
+      return "L'usuari no està vinculat a aquesta assignació!";
     }
   }
 
