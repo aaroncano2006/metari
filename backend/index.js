@@ -60,11 +60,27 @@ const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
 
 const environment = process.env.ENVIRONMENT || "dev";
+const PORT =
+  (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
+  3001;
+const HOST = (environment === "dev" ? process.env.LOCALHOST : process.env.DOCKERHOST) || "http://localhost"
+const BASE_URL = `${HOST}:${PORT}`;
 
 
-app.get("/", (req, res) => {
-  return res.status(200).json({
-    message: "Hello world",
+app.get("/api", (req, res) => {
+  res.json({
+    ok: true,
+    endpoints: {
+      categories: `${BASE_URL}/api/categories`,
+      usuaris: `${BASE_URL}/api/usuaris`,
+      metas: `${BASE_URL}/api/metas`,
+      grups: `${BASE_URL}/api/grups`,
+      assignacions: `${BASE_URL}/api/assignacions`,
+      comentaris: `${BASE_URL}/api/comentaris`,
+      proves: `${BASE_URL}/api/proves`,
+      grups_usuaris: `${BASE_URL}/api/grups-usuaris`,
+      indexa_metas: `${BASE_URL}/api/indexa-metas`
+    }
   });
 });
 
@@ -98,13 +114,10 @@ app.use('/api/grups', grupRoutes);
 app.use('/api/assignacions', assignationRoutes );
 app.use('/api/comentaris', commentRoutes );
 app.use('/api/proves', proofRoutes );
-app.use('/api/grup-usuaris', groupUserRoutes );
+app.use('/api/grups-usuaris', groupUserRoutes );
 app.use('/api/indexa-metas', indexedMetaRoutes );
 
 app.use(errorHandler);
-const PORT =
-  (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
-  3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
