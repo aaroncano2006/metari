@@ -1,6 +1,6 @@
-const validateCategory = async (data) => {
+const validateCategory = async (data, isUpdating = false) => {
 
-    if (!data.name) {
+    if (!data.name && !isUpdating) {
         return "El nom de la categoria és obligatori!";
     }
 
