@@ -2,6 +2,9 @@ import type { metaType } from "../types/metaType";
 import { useState } from "react"
 
 
+import { deleteMeta } from "../services/metaService";
+
+
 type MetaListProps = {
   metas: metaType[]
 }
@@ -33,8 +36,9 @@ export function MetaList({ metas }: MetaListProps) {
                         event.stopPropagation()
                       }}>Edita</button>
                     <button className="  btn btn-danger p-1   "
-                      onClick={(event) => {
+                      onClick={ async (event) => {
                         event.stopPropagation()
+                         await deleteMeta(meta.id)
                       }}>X</button>
                   </div>
                 </div>
