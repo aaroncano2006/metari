@@ -49,7 +49,15 @@ const seedUsers = async () => {
           completed_tasks: 0,
           score: 0,
         },
-        
+        {
+          name: "Arnau",
+          username: "Arnau",
+          email: "arnau@test.com",
+          password: await utils.hash("123456"),
+          role: "user",
+          completed_tasks: 5,
+          score: 123,
+        },
       ],
       skipDuplicates: true,
     });
