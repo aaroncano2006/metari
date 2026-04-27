@@ -2,8 +2,12 @@ const prisma = require("../../config/prisma");
 const { normalizeDate } = require("../../helpers/Utils");
 
 const validateAssignation = async (data, isUpdating = false) => {
+  let existingGroup = null;
+  let existingMeta = null;
+  let existingUser = null;
+
   if (data.group_id) {
-    const existingGroup = await prisma.group.findFirst({
+    existingGroup = await prisma.group.findFirst({
       where: { id: data.group_id },
     });
 
@@ -13,7 +17,7 @@ const validateAssignation = async (data, isUpdating = false) => {
   }
 
   if (data.meta_id) {
-    const existingMeta = await prisma.meta.findFirst({
+    existingMeta = await prisma.meta.findFirst({
       where: { id: data.meta_id },
     });
 
@@ -23,12 +27,25 @@ const validateAssignation = async (data, isUpdating = false) => {
   }
 
   if (data.user_id) {
-    const existingUser = await prisma.user.findFirst({
+    existingUser = await prisma.user.findFirst({
       where: { id: data.user_id },
     });
 
     if (!existingUser) {
       return "La id de l'usuari no correspon a cap usuari registrat en el sistema!";
+    }
+
+    const isUserInGroup = await prisma.groupUser.findUnique({
+      where: {
+        group_id_user_id: {
+          group_id: existingMeta.group_id,
+          user_id: existingUser.id,
+        },
+      },
+    });
+
+    if (!isUserInGroup) {
+      return "L'usuari al qual es vol assignar aquesta meta no està en el grup on està aquesta meta!";
     }
   }
 
