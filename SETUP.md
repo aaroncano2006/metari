@@ -58,14 +58,10 @@ nano .env
 
 | Variable | Descripció | Exemple |
 |----------|------------|---------|
-| `` | sdfsd | `` |
-| `` | dsdfs | `` |
+| `MYSQL_ROOT_PASSWORD` | Password Root | `root` |
+| `MYSQL_DATABASE` | Nom de la base de dades | `metari_db` |
+| `PHPMYADMIN_PORT` | Port per accedir al php my admin | `8089` |
 
-
-**Ports per dels serveis per defecte ( Al docker-compose.yml no cal canviar si no vols):**
-- Backend: `3001`
-- Frontend: `8087`
-- phpMyAdmin: `8089`
 
 ---
 
