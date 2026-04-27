@@ -1,24 +1,25 @@
 const validateCategory = async (data, isUpdating = false) => {
+  if (!data.name && !isUpdating) {
+    return "El nom de la categoria és obligatori!";
+  }
 
-    if (!data.name && !isUpdating) {
-        return "El nom de la categoria és obligatori!";
-    }
-
-    if (typeof(data.name) !== "string") {
-        return "El nom enviat no és vàlid! Ha de ser un text";
+  if (data.name) {
+    if (typeof data.name !== "string") {
+      return "El nom enviat no és vàlid! Ha de ser un text";
     }
 
     if (data.name.trim() === "") {
-        return "El nom enviat està buit.";
+      return "El nom enviat està buit.";
     }
+  }
 
-    if (data.description && typeof(data.description) !== "string") {
-        return "La descripció enviada no és vàlida! Ha de ser un text";
-    }
+  if (data.description !== undefined && data.description !== null && typeof data.description !== "string") {
+    return "La descripció enviada no és vàlida! Ha de ser un text";
+  }
 
-    return null;
+  return null;
 };
 
 module.exports = {
-    validateCategory
+  validateCategory,
 };
