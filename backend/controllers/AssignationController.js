@@ -76,10 +76,22 @@ const createAssignation = async (req, res, next) => {
     }
 
     const data = {
-      ...reqBody,
-      group_id: groupId,
+      group_id: groupId ?? null,
       meta_id: metaId,
-      user_id: userId,
+      user_id: userId ?? null,
+      start_date: reqBody.start_date
+        ? new Date(reqBody.start_date)
+        : new Date(),
+      due_date: reqBody.due_date ? new Date(reqBody.due_date) : null,
+      priority: reqBody.priority ?? null,
+      difficulty: reqBody.difficulty ?? "normal",
+      score:
+        reqBody.score !== undefined
+          ? reqBody.score !== null
+            ? BigInt(reqBody.score)
+            : null
+          : null,
+      completed: reqBody.completed ?? false,
     };
 
     const validate = await validateAssignation(data);
@@ -90,24 +102,7 @@ const createAssignation = async (req, res, next) => {
     }
 
     const assignation = await prisma.assignation.create({
-      data: {
-        group_id: groupId ?? null,
-        meta_id: metaId,
-        user_id: userId ?? null,
-        start_date: reqBody.start_date
-          ? new Date(reqBody.start_date)
-          : new Date(),
-        due_date: reqBody.due_date ? new Date(reqBody.due_date) : null,
-        priority: reqBody.priority ?? null,
-        difficulty: reqBody.difficulty ?? "normal",
-        score:
-          reqBody.score !== undefined
-            ? reqBody.score !== null
-              ? BigInt(reqBody.score)
-              : null
-            : null,
-        completed: reqBody.completed ?? false,
-      },
+      data,
       include: {
         group: true,
         meta: true,
