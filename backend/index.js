@@ -7,25 +7,28 @@ app.use(helmet());
 //avans de les rutes!! despes de helmet!!
 app.use(cors());
 app.use(express.json());
-app.set('trusty proxy', true);
+app.set("trusty proxy", true);
 
-const categoryRoutes = require('./routes/CategoryRoutes');
-const userRoutes = require('./routes/UserRoutes');
-const invitationRoutes = require('./routes/InvitationRoutes');
-const metaRoutes = require('./routes/MetaRoutes');
-const grupRoutes = require('./routes/GroupRoutes');
-const assignationRoutes = require('./routes/AssignationRoutes');
-const commentRoutes = require('./routes/CommentRoutes');
-const proofRoutes = require('./routes/ProofRoutes');
-const groupUserRoutes = require('./routes/GroupUserRoutes');
-const indexedMetaRoutes = require('./routes/IndexedMetaRoutes');
-const errorHandler = require('./middlewares/errors/errorHandler');
-const nodemailer = require('./config/nodemailer');
+const categoryRoutes = require("./routes/CategoryRoutes");
+const userRoutes = require("./routes/UserRoutes");
+const invitationRoutes = require("./routes/InvitationRoutes");
+const metaRoutes = require("./routes/MetaRoutes");
+const grupRoutes = require("./routes/GroupRoutes");
+const assignationRoutes = require("./routes/AssignationRoutes");
+const commentRoutes = require("./routes/CommentRoutes");
+const proofRoutes = require("./routes/ProofRoutes");
+const groupUserRoutes = require("./routes/GroupUserRoutes");
+const indexedMetaRoutes = require("./routes/IndexedMetaRoutes");
+const errorHandler = require("./middlewares/errors/errorHandler");
+const nodemailer = require("./config/nodemailer");
 
 const environment = process.env.ENVIRONMENT || "dev";
+const PORT =
+  (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
+  3001;
 
 app.get("/api", (req, res) => {
-  const BASE_URL = `${req.protocol}://${req.get('host')}`;
+  const BASE_URL = `${req.protocol}://${req.get("host")}`;
   res.json({
     ok: true,
     message: "Metari API - Documentation for security audit",
@@ -36,8 +39,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       usuaris: {
         base: `${BASE_URL}/api/usuaris`,
@@ -45,8 +48,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       invitacions: {
         base: `${BASE_URL}/api/invitacions`,
@@ -54,8 +57,8 @@ app.get("/api", (req, res) => {
           GET: ["/:userid/:sentorreceived/:status"],
           POST: ["/:senderid/:receiverid", "/:senderid/:receiverid/:groupid"],
           PUT: ["/:receiverid/:id"],
-          DELETE: ["/:userid/:id"]
-        }
+          DELETE: ["/:userid/:id"],
+        },
       },
       metas: {
         base: `${BASE_URL}/api/metas`,
@@ -63,8 +66,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       grups: {
         base: `${BASE_URL}/api/grups`,
@@ -72,8 +75,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       assignacions: {
         base: `${BASE_URL}/api/assignacions`,
@@ -81,8 +84,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       comentaris: {
         base: `${BASE_URL}/api/comentaris`,
@@ -90,8 +93,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       proves: {
         base: `${BASE_URL}/api/proves`,
@@ -99,8 +102,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
+          DELETE: ["/:id"],
+        },
       },
       grups_usuaris: {
         base: `${BASE_URL}/api/grups-usuaris`,
@@ -108,8 +111,8 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:group_id/:user_id"],
           POST: ["/"],
           PUT: ["/:group_id/:user_id"],
-          DELETE: ["/:group_id/:user_id"]
-        }
+          DELETE: ["/:group_id/:user_id"],
+        },
       },
       indexa_metas: {
         base: `${BASE_URL}/api/indexa-metas`,
@@ -117,10 +120,10 @@ app.get("/api", (req, res) => {
           GET: ["/", "/:id"],
           POST: ["/"],
           PUT: ["/:id"],
-          DELETE: ["/:id"]
-        }
-      }
-    }
+          DELETE: ["/:id"],
+        },
+      },
+    },
   });
 });
 
@@ -146,16 +149,16 @@ app.get("/api", (req, res) => {
 //   }
 // });
 
-app.use('/api/categories', categoryRoutes);
-app.use('/api/usuaris', userRoutes);
-app.use('/api/invitacions', invitationRoutes);
-app.use('/api/metas', metaRoutes);
-app.use('/api/grups', grupRoutes);
-app.use('/api/assignacions', assignationRoutes );
-app.use('/api/comentaris', commentRoutes );
-app.use('/api/proves', proofRoutes );
-app.use('/api/grups-usuaris', groupUserRoutes );
-app.use('/api/indexa-metas', indexedMetaRoutes );
+app.use("/api/categories", categoryRoutes);
+app.use("/api/usuaris", userRoutes);
+app.use("/api/invitacions", invitationRoutes);
+app.use("/api/metas", metaRoutes);
+app.use("/api/grups", grupRoutes);
+app.use("/api/assignacions", assignationRoutes);
+app.use("/api/comentaris", commentRoutes);
+app.use("/api/proves", proofRoutes);
+app.use("/api/grups-usuaris", groupUserRoutes);
+app.use("/api/indexa-metas", indexedMetaRoutes);
 
 app.use(errorHandler);
 app.listen(PORT, () => {
