@@ -49,14 +49,14 @@ const createMeta = async (req, res, next) => {
       description: reqBody.description ?? undefined,
       author_id: parseInt(reqBody.author_id),
       group_id: parseInt(reqBody.group_id),
-      type: reqBody.type ?? "task"
-    }
+      type: reqBody.type ?? "task",
+    };
 
     const validate = await validateMeta(data);
     if (validate) {
-        const error = new Error(validate);
-        error.statusCode = 400;
-        throw error;
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
     }
 
     const meta = await prisma.meta.create({
@@ -81,35 +81,33 @@ const updateMeta = async (req, res, next) => {
     }
 
     const foundMeta = await prisma.meta.findUnique({
-        where: {id}
+      where: { id },
     });
 
     if (!foundMeta) {
-        const error = new Error("No d'ha trobat la meta per actualitzar!");
-        error.statusCode = 404;
-        throw error;
+      const error = new Error("No d'ha trobat la meta per actualitzar!");
+      error.statusCode = 404;
+      throw error;
     }
 
-    const validate = await validateMeta(reqBody);
+    const data = {
+      title: reqBody.title ?? foundMeta.title,
+      description: reqBody.description ?? foundMeta.description,
+      author_id: reqBody.author_id ? parseInt(reqBody.author_id) : foundMeta.author_id,
+      group_id: reqBody.group_id ? parseInt(reqBody.group_id) : foundMeta.group_id,
+      type: reqBody.type ?? foundMeta.type,
+    };
+
+    const validate = await validateMeta(data, true);
     if (validate) {
-        const error = new Error(validate);
-        error.statusCode = 400;
-        throw error;
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
     }
 
     const meta = await prisma.meta.update({
       where: { id },
-      data: {
-        title: reqBody.title,
-        description: reqBody.description ?? foundMeta.description,
-        author: {
-            connect: {id: reqBody.author_id !== undefined ? parseInt(reqBody.author_id) : parseInt(foundMeta.author_id)}
-        },
-        group: {
-            connect: {id: reqBody.group_id !== undefined ? parseInt(reqBody.group_id) : parseInt(foundMeta.group_id)}
-        },
-        type: reqBody.type ?? foundMeta.type,
-      },
+      data,
     });
     res.status(200).json(utils.handleBigInt(meta));
   } catch (error) {
