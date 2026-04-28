@@ -4,8 +4,6 @@ services:
   db:
     image: mariadb:11
     container_name: metari-mariadb
-    security_opt:
-      - apparmor=unconfined
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -25,8 +23,6 @@ services:
   backend:
     build: ./backend
     container_name: metari-backend
-    security_opt:
-      - apparmor=unconfined
     restart: always
     #ports:
       #- "${BACKEND_PORT:-3001}:3001"    
@@ -42,8 +38,6 @@ services:
   frontend:
     build: ./metari-app
     container_name: metari-frontend
-    security_opt:
-      - apparmor=unconfined
     restart: always
     # ports:
     #   - "${FRONTEND_PORT:-8087}:80"
@@ -53,8 +47,6 @@ services:
   phpmyadmin:
     image: phpmyadmin:5.2.3-apache
     container_name: metari-phpmyadmin
-    security_opt:
-      - apparmor=unconfined
     restart: always
     depends_on:
       - db
@@ -66,8 +58,6 @@ services:
   nginx:
     image: nginx:latest
     container_name: metari-nginx
-    security_opt:
-      - apparmor=unconfined
     restart: always
     ports:
       - "80:80"
