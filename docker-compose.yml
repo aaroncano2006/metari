@@ -24,8 +24,8 @@ services:
     build: ./backend
     container_name: metari-backend
     restart: always
-    ports:
-      - "${BACKEND_PORT:-3001}:3001"    
+    #ports:
+      #- "${BACKEND_PORT:-3001}:3001"    
     depends_on:
       - db
     env_file:
