@@ -19,6 +19,9 @@ const nodemailer = require('./config/nodemailer');
 const helmet = require("helmet");
 
 const environment = process.env.ENVIRONMENT || "dev";
+const BASE_URL = environment === "dev" 
+  ? `${process.env.LOCALHOST}:${process.env.LOCAL_PORT}`
+  : `${process.env.DOCKER_HOST}:${process.env.DOCKER_PORT}`;
 
 app.use(express.json());
 
