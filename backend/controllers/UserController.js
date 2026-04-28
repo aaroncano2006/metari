@@ -16,10 +16,6 @@ const getUsuaris = async (req, res, next) => {
 // Get by id (/api/users/1)
 const getUsuariById = async (req, res, next) => {
   try {
-    // // Si el parametre de la busqueda is NaN, error  exemple: (/api/users/asdas)
-    // if (isNaN(id)) {
-    //     return res.status(400).json({ error: "ID invàlid" });
-    // }
     const id = parseInt(req.params.id);
 
     // Evita errors per peticions amb identificadors no vàlids /api/usuaris/xd
@@ -49,7 +45,6 @@ const getUsuariById = async (req, res, next) => {
 
 //Crea un usuari
 const createUsuari = async (req, res, next) => {
-  // const { name, userName, password, email } = req.body;.
 
   try {
     const reqBody = req.body;

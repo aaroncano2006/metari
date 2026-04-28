@@ -1,9 +1,14 @@
 const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
 require("dotenv").config();
-// require("dotenv").config({
-//   path: require("path").resolve(__dirname, "../.env")
-// });
 const app = express();
+app.use(helmet());
+//avans de les rutes!! despes de helmet!!
+app.use(cors());
+app.use(express.json());
+app.set('trusty proxy', true);
+
 const categoryRoutes = require('./routes/CategoryRoutes');
 const userRoutes = require('./routes/UserRoutes');
 const invitationRoutes = require('./routes/InvitationRoutes');
@@ -16,18 +21,8 @@ const groupUserRoutes = require('./routes/GroupUserRoutes');
 const indexedMetaRoutes = require('./routes/IndexedMetaRoutes');
 const errorHandler = require('./middlewares/errors/errorHandler');
 const nodemailer = require('./config/nodemailer');
-const helmet = require("helmet");
 
 const environment = process.env.ENVIRONMENT || "dev";
-// const BASE_URL = environment === "dev" 
-//   ? `${process.env.LOCALHOST}:${process.env.LOCAL_PORT}`
-//   : `${process.env.DOCKER_HOST}:${process.env.DOCKER_PORT}`;
-
-app.use(express.json());
-
-app.use(helmet());
-
-app.set('trusty proxy', true);
 
 app.get("/api", (req, res) => {
   const BASE_URL = `${req.protocol}://${req.get('host')}`;
@@ -163,9 +158,6 @@ app.use('/api/grups-usuaris', groupUserRoutes );
 app.use('/api/indexa-metas', indexedMetaRoutes );
 
 app.use(errorHandler);
-const PORT =
-  (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
-  3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
