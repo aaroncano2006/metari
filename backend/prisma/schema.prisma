@@ -20,6 +20,7 @@ model Category {
   updated_at  DateTime? @updatedAt
 
   @@map("categories")
+  metas Meta[]
 }
 
 model User {
@@ -81,12 +82,14 @@ model Meta {
   title        String
   description  String?        @db.Text
   author_id    Int
-  group_id     Int
+  group_id     Int? // Decidir fa falta o no
+  category_id  Int?
   type         MetaType      @default(task)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   author       User          @relation(fields: [author_id], references: [id])
-  group        Group         @relation(fields: [group_id], references: [id])
+  group        Group?         @relation(fields: [group_id], references: [id])
+  category     Category?      @relation(fields: [category_id], references: [id])
   //Autogenerades relacions bidireccionals
   assignations Assignation[]
   indexedMetas IndexedMeta[]
@@ -114,7 +117,7 @@ model Assignation {
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
   group      Group?     @relation(fields: [group_id], references: [id])
-  meta       Meta?      @relation(fields: [meta_id], references: [id])
+  meta       Meta      @relation(fields: [meta_id], references: [id])
   user       User?      @relation(fields: [user_id], references: [id])
   //Autogenerades relacions bidireccionals
   comments   Comment[]

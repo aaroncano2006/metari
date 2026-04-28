@@ -50,7 +50,15 @@ const getGroupById = async (req, res, next) => {
 const createGroup = async (req, res, next) => {
   try {
     const reqBody = req.body;
-    const validate = await validateGroup(reqBody);
+
+    const data = {
+      name: reqBody.name,
+      description: reqBody.description ?? undefined,
+      is_public: reqBody.is_public ?? true,
+      owner_id: parseInt(reqBody.owner_id),
+    };
+
+    const validate = await validateGroup(data);
     if (validate) {
       const error = new Error(validate);
       error.statusCode = 400;
@@ -58,14 +66,7 @@ const createGroup = async (req, res, next) => {
     }
 
     const group = await prisma.group.create({
-      data: {
-        name: reqBody.name,
-        description: reqBody.description ?? undefined,
-        is_public: reqBody.is_public ?? true,
-        owner: {
-          connect: { id: parseInt(reqBody.owner_id) },
-        },
-      },
+      data,
     });
     res.status(201).json(utils.handleBigInt(group));
   } catch (error) {
@@ -95,7 +96,17 @@ const updateGroup = async (req, res, next) => {
       throw error;
     }
 
-    const validate = await validateGroup(reqBody);
+    const data = {
+      name: reqBody.name ?? foundGroup.name,
+      description: reqBody.description ?? foundGroup.description,
+      is_public: reqBody.is_public ?? foundGroup.is_public,
+      owner_id:
+        reqBody.owner_id !== undefined
+          ? parseInt(reqBody.owner_id)
+          : foundGroup.owner_id,
+    };
+
+    const validate = await validateGroup(reqBody, true);
     if (validate) {
       const error = new Error(validate);
       error.statusCode = 400;
@@ -104,19 +115,7 @@ const updateGroup = async (req, res, next) => {
 
     const group = await prisma.group.update({
       where: { id },
-      data: {
-        name: reqBody.name ?? foundGroup.name,
-        description: reqBody.description ?? foundGroup.description,
-        is_public: reqBody.is_public ?? foundGroup.is_public,
-        owner: {
-          connect: {
-            id:
-              reqBody.owner_id !== undefined
-                ? parseInt(reqBody.owner_id)
-                : foundGroup.owner_id,
-          },
-        },
-      },
+      data,
     });
     res.status(200).json(utils.handleBigInt(group));
   } catch (error) {

@@ -43,9 +43,15 @@ const getCategoryById = async (req, res, next) => {
 
 const createCategory = async (req, res, next) => {
   try {
-    const category = req.body;
+    const reqBody = req.body;
 
-    const validate = await validateCategory(category);
+    const data = {
+      name: reqBody.name,
+      description:
+        reqBody?.description !== undefined ? reqBody.description : null,
+    };
+
+    const validate = await validateCategory(data);
 
     if (validate) {
       const error = new Error(validate);
@@ -53,17 +59,11 @@ const createCategory = async (req, res, next) => {
       throw error;
     }
 
-    const newCategory = await prisma.category.create({
-      data: {
-        name: String(category.name),
-        description:
-          category?.description !== undefined
-            ? String(category.description)
-            : null,
-      },
+    const category = await prisma.category.create({
+      data
     });
 
-    res.status(201).json(newCategory);
+    res.status(201).json(category);
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
@@ -80,9 +80,18 @@ const updateCategory = async (req, res, next) => {
       throw error;
     }
 
-    const data = req.body;
+    const reqBody = req.body;
 
-    const validate = await validateCategory(category);
+    const existingCategory = await prisma.category.findUnique({
+      where: {id}
+    });
+
+    const data = {
+       name: reqBody.name ?? existingCategory.name,
+       description: reqBody.description ?? existingCategory.description,
+    };
+
+    const validate = await validateCategory(data, true);
 
     if (validate) {
       const error = new Error(validate);
@@ -92,11 +101,7 @@ const updateCategory = async (req, res, next) => {
 
     const updatedData = await prisma.category.update({
       where: { id },
-      data: {
-        name: String(data.name),
-        description:
-          data?.description !== undefined ? String(data.description) : null,
-      },
+      data
     });
 
     res.status(200).json(updatedData);
