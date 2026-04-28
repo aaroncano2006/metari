@@ -17,10 +17,17 @@ const hash = async (strToHash) => {
 
 const compareHash = async (txtToCompare, hashToCompare) => {
   return await bcrypt.compare(txtToCompare, hashToCompare);
-}
+};
+
+const normalizeDate = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
 
 module.exports = {
     handleBigInt,
     hash,
-    compareHash
+    compareHash,
+    normalizeDate
 };
