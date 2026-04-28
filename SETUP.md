@@ -90,8 +90,9 @@ nano .env
 | `PHPMYADMIN_PORT` | Port per accedir al php my admin | `8089` |
 
 
- ### 1.3 Important"
- Hi ha una carpeta anomenada `db` que tambe conte un arxiu `.env.default`. IGNORAR-LA,
+ ### 1.3 Important!
+ Hi ha una carpeta anomenada `db` que tambe conte un arxiu `.env.exemple`.   
+ IGNORAR-LA.  
  Nomes s'utilitza en el process de desenvolupament de l'aplicació.
 
 
@@ -245,11 +246,12 @@ metari/
 │   ├── seeders/        # Dades inicials
 │   ├── middlewares/    # Validacions i gestió d'errors
 │   ├── helpers/        # Utilitats varies
-│   └── .env        # Variables d'entorn (NO inclòs a git)
+│   ├── .env        # Variables d'entorn (NO inclòs a git)
+│   └── .env.example        # Variables d'entorn (A editar)
 ├── metari-app/         # Frontend (React)
 ├── docker-compose.yml # Definició dels serveis
 ├── .env               # Variables d'entorn (NO inclòs a git)
-└── .env.example       # Plantilla d'entorn
+└── .env.example       # Plantilla d'entorn (A editar)
 ```
 
 ---
@@ -259,8 +261,8 @@ metari/
 **Abans de l'auditoria:**
 
 1. Canvia les contrasenyes per defecte
-2. Revisa els fitxers `.env` per credencials hardcoded
-3. Desactiva el mode `dev` si cal: `ENVIRONMENT=production`
+2. Revisa els fitxers `.env` per credencials per defecte
+3. Desactiva el mode `dev` si fes falta: `ENVIRONMENT=production` (Per defecte ha d'estar en production)
 
 **Fitxers sensibles:**
 - `.env` - Conté contrasenyes i claus API
