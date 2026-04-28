@@ -100,14 +100,10 @@ const updateGroup = async (req, res, next) => {
       name: reqBody.name ?? foundGroup.name,
       description: reqBody.description ?? foundGroup.description,
       is_public: reqBody.is_public ?? foundGroup.is_public,
-      owner: {
-        connect: {
-          id:
-            reqBody.owner_id !== undefined
-              ? parseInt(reqBody.owner_id)
-              : foundGroup.owner_id,
-        },
-      },
+      owner_id:
+        reqBody.owner_id !== undefined
+          ? parseInt(reqBody.owner_id)
+          : foundGroup.owner_id,
     };
 
     const validate = await validateGroup(reqBody, true);
