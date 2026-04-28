@@ -1,6 +1,9 @@
 const prisma = require("../../config/prisma");
 
 const validateMeta = async (data, isUpdating = false) => {
+  let existingAuthor = null;
+  let existingGroup = null;
+
   if (!data.title && !isUpdating) {
     return "El títol de la meta és obligatori";
   }
@@ -32,7 +35,7 @@ const validateMeta = async (data, isUpdating = false) => {
       return "La id de l'autor de la meta no és vàlida";
     }
 
-    const existingAuthor = await prisma.user.findUnique({
+    existingAuthor = await prisma.user.findUnique({
       where: { id: parseInt(data.author_id) },
     });
 
@@ -50,12 +53,31 @@ const validateMeta = async (data, isUpdating = false) => {
       return "La id del grup de la meta no és vàlida";
     }
 
-    const existingGroup = await prisma.group.findUnique({
+    existingGroup = await prisma.group.findUnique({
       where: { id: parseInt(data.group_id) },
     });
 
     if (!existingGroup) {
       return "La id del grup enviada no correspon a cap grup registrat en el sistema.";
+    }
+  }
+
+  if (data.author_id && data.group_id) {
+    let isAuthorInGroup = await prisma.groupUser.findUnique({
+        where: {
+            group_id_user_id: {
+                group_id: existingGroup.id,
+                user_id: existingAuthor.id
+            }
+        }
+    });
+
+    if (!isAuthorInGroup) {
+        isAuthorInGroup = existingGroup.owner_id === existingAuthor.id
+
+        if (!isAuthorInGroup) {
+            return "L'autor de la meta no pertany al grup!";
+        }
     }
   }
 
