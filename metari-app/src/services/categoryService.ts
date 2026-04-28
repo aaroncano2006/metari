@@ -1,8 +1,21 @@
 import { axiosConnection } from "./axiosConnection"
 import type { categoryType } from "../types/categoryType"
+import { useEffect, useState } from "react"
 
-export async function fetchCategories(): Promise<categoryType[]> {
-  const { data } = await axiosConnection.get<categoryType[]>("/categories");
 
-  return data;
+
+export function useCategories() {
+  const [category, setCategory] = useState<categoryType[]>([])
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await axiosConnection.get<categoryType[]>("/categories")
+      setCategory(data)
+    }
+
+    load()
+  }, [])
+
+  return category
 }
+

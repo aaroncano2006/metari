@@ -1,10 +1,28 @@
 import { axiosConnection } from "./axiosConnection"
+import { useEffect, useState } from "react"
+
 import type { metaType } from "../types/metaType"
 
-export async function fetchMetas(): Promise<metaType[]> {
-  const { data } = await axiosConnection.get<metaType[]>("/metas");
+// export async function fetchMetas(): Promise<metaType[]> {
+//   const { data } = await axiosConnection.get<metaType[]>("/metas");
 
-  return data;
+//   return data;
+// }
+
+
+export function useMetas() {
+  const [metas, setMetas] = useState<metaType[]>([])
+
+  useEffect(() => {
+    async function load() {
+      const { data } = await axiosConnection.get<metaType[]>("/metas")
+      setMetas(data)
+    }
+
+    load()
+  }, [])
+
+  return metas
 }
 
 export async function fetchMetaById(id: number): Promise<metaType> {

@@ -1,37 +1,43 @@
 import { MetaList } from "../components/MetaList"
-import { fetchMetas } from "../services/metaService"
-import { useEffect, useState } from "react"
-import type { metaType } from "../types/metaType"
-
-
-
-
+import { useState } from "react"
+import { useMetas } from "../services/metaService"
+import { useCategories } from "../services/categoryService"
+import { CategoryList } from "../components/CategoryList";
 
 export default function AdminPanel() {
 
-    const [metas, setMetas] = useState<metaType[]>([])
-  
-    useEffect(() => {
-        fetchMetas().then(setMetas)
-    
-      }, [])
-  return(
+  const metas = useMetas();
+  const categories = useCategories();
+  const [menuSelection, setMenuSelection] = useState<string>("metas")
+
+  return (
     <>
-     <h1>Panell Admin</h1>
+      <h1>Panell Admin</h1>
+      <div className="selectionMenu mt-5 d-flex justify-content-center gap-3">
+        <div className="btn btn-primary"
+          onClick={() => setMenuSelection("metas")}>Metas</div>
+        <div className="btn btn-primary"
+          onClick={() => setMenuSelection("categories")}>Categories</div>
+        <div className="btn btn-primary"
+          onClick={() => setMenuSelection("usuaris")}>Usuaris</div>
+        <div className="btn btn-primary"
+          onClick={() => setMenuSelection("grups")}>Grups</div>
+      </div>
+      <div className="container-fluid">
+        <div className="row mt-4">
+
+          <div className="col-3">
             
-           <div className="container-fluid">
-            <div className="row mt-5">
-              
-              <div className="col-3">
-              </div>
-              <div className="col">
-                <MetaList metas={metas} />
-              </div>
-              <div className="col-3">
-              </div>
-            </div>
           </div>
-          
-        </>
-    )
+          <div className="col">
+            {menuSelection === "metas" && <MetaList metas={metas} />}
+            {menuSelection === "categories" && <CategoryList categories={categories}/>}
+          </div>
+          <div className="col-3">
+          </div>
+        </div>
+      </div>
+
+    </>
+  )
 }

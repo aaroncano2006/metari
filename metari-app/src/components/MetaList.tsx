@@ -10,24 +10,24 @@ type MetaListProps = {
 }
 
 export function MetaList({ metas }: MetaListProps) {
-  const [openMetaId, setOpenMetaId] = useState<number | null>(null)
-  const toggleMeta = (id: number) => {
-    setOpenMetaId(prev => (prev === id ? null : id))
+  const [openEntityId, setOpenEntityId] = useState<number | null>(null)
+  const toggleEntity = (id: number) => {
+    setOpenEntityId(prev => (prev === id ? null : id))
   }
   return (
     <>
 
 
       <div className="metaList ">
-        <div className="titolComponent text-center">Metas</div>
-        <hr className="mt-2 mb-0" />
+        <div className="titolComponent  text-center my-2">Llista de metas</div>
+        <hr className="m-0" />
 
         <div className="inline">
           <ul className=" ps-4  m-0  py-2">
             {metas.map((meta) => (
               <li key={meta.id} className="m-0 p-0" >
-                <div className={`metaEntry mt-1 me-3 ps-2 ${openMetaId === meta.id ? "mb-0" : "mb-1"} ${meta.type === "task" ? "meta-task" : "meta-challenge"}`}
-                  onClick={() => toggleMeta(meta.id)}>
+                <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === meta.id ? "mb-0" : "mb-1"} ${meta.type === "task" ? "meta-task" : "meta-challenge"}`}
+                  onClick={() => toggleEntity(meta.id)}>
 
                   <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                     {meta.title}
@@ -43,7 +43,7 @@ export function MetaList({ metas }: MetaListProps) {
                   </div>
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
-                  {openMetaId === meta.id && (
+                  {openEntityId === meta.id && (
                     <div className="metaDetails ps-2 py-2">
                       {/* Replace with real fields */}
                       <div>ID: {meta.id}</div>
