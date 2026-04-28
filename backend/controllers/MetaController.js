@@ -44,7 +44,15 @@ const createMeta = async (req, res, next) => {
   try {
     const reqBody = req.body;
 
-    const validate = await validateMeta(reqBody);
+    const data = {
+      title: reqBody.title,
+      description: reqBody.description ?? undefined,
+      author_id: parseInt(reqBody.author_id),
+      group_id: parseInt(reqBody.group_id),
+      type: reqBody.type ?? "task"
+    }
+
+    const validate = await validateMeta(data);
     if (validate) {
         const error = new Error(validate);
         error.statusCode = 400;
@@ -52,17 +60,7 @@ const createMeta = async (req, res, next) => {
     }
 
     const meta = await prisma.meta.create({
-      data: {
-        title: reqBody.title,
-        description: reqBody.description ?? undefined,
-        author: {
-          connect: { id: parseInt(reqBody.author_id) },
-        },
-        group: {
-          connect: { id: parseInt(reqBody.group_id) },
-        },
-        type: reqBody.type ?? "task",
-      },
+      data,
     });
     res.status(201).json(utils.handleBigInt(meta));
   } catch (error) {
@@ -110,7 +108,7 @@ const updateMeta = async (req, res, next) => {
         group: {
             connect: {id: reqBody.group_id !== undefined ? parseInt(reqBody.group_id) : parseInt(foundMeta.group_id)}
         },
-        type: reqBody.type ?? foundMeta.description,
+        type: reqBody.type ?? foundMeta.type,
       },
     });
     res.status(200).json(utils.handleBigInt(meta));
