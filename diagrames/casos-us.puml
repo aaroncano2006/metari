@@ -1,0 +1,69 @@
+@startuml
+title Casos d'ús METARI (RBAC) (Role Based Access Control)
+
+left to right direction
+
+actor "Usuari Convidat" as UC
+actor "Usuari Registrat" as UR
+actor "Admin" as Admin
+
+' Herencia de rols: L'usuari registrat pot fer el mateix que el convidat i acumulant
+UC --|> UR
+UR --|> Admin
+
+package "Plataforma METARI" {
+    
+    ' Convidat
+    usecase "Cercar Grups/Categories" as UC1
+    usecase "Consultar Rankings" as UC2
+    usecase "Registrar-se" as UC3
+    
+    ' Usuari registrat
+    usecase "Iniciar Sessió" as UR1
+    usecase "Crear Grups" as UR2
+    usecase "Crear Reptes/Tasques/Categories" as UR3
+    usecase "Afegir Proves" as UR4
+    usecase "Fer Comentaris" as UR5
+    usecase "Inscriures a un Grup" as UR6
+    usecase "Sortir d'un grup" as UR7
+    usecase "Afegir Amics" as UR8
+    usecase "Personalitzar Perfil" as UR9
+    
+    ' Propietari/Moderador de grup
+    usecase "Administrar Tasques/Reptes" as URP1
+    usecase "Administrar Grups Propis" as URP2
+
+    ' Admin
+    usecase "Administrar Reptes/Tasques Publiques" as A1
+    usecase "Administrar Categories" as A2
+    usecase "Administrar Usuaris" as A3
+    usecase "Administrar Tots els Grups" as A4
+}
+
+' Casos d'ús Convidat
+UC --> UC1
+UC --> UC2
+UC --> UC3
+
+' Casos d'ús Registrat
+UR --> UR1
+UR --> UR2
+UR --> UR3
+UR --> UR4
+UR --> UR5
+UR --> UR6
+UR --> UR7
+UR --> UR8
+UR --> UR9
+
+' Registrat (Propietari/Admin Grup)
+UR --> URP1 : "propietari/moderador grup"
+UR --> URP2 : "propietari/moderador grup"
+
+' Admin
+Admin --> A1
+Admin --> A2
+Admin --> A3
+Admin --> A4
+
+@enduml
