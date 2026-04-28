@@ -27,6 +27,8 @@ app.use(express.json());
 
 app.use(helmet());
 
+app.set('trusty proxy', true);
+
 app.get("/api", (req, res) => {
   const BASE_URL = `${req.protocol}://${req.get('host')}`;
   res.json({
