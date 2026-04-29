@@ -19,6 +19,7 @@ const commentRoutes = require("./routes/CommentRoutes");
 const proofRoutes = require("./routes/ProofRoutes");
 const groupUserRoutes = require("./routes/GroupUserRoutes");
 const indexedMetaRoutes = require("./routes/IndexedMetaRoutes");
+const loginRoutes = require("./routes/auth/LoginRoutes");
 const errorHandler = require("./middlewares/errors/errorHandler");
 const nodemailer = require("./config/nodemailer");
 
@@ -159,6 +160,7 @@ app.use("/api/comentaris", commentRoutes);
 app.use("/api/proves", proofRoutes);
 app.use("/api/grups-usuaris", groupUserRoutes);
 app.use("/api/indexa-metas", indexedMetaRoutes);
+app.use("/api/login", loginRoutes);
 
 app.use(errorHandler);
 app.listen(PORT, () => {
