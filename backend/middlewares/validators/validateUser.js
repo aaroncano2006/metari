@@ -24,6 +24,10 @@ const validateUser = async (data, id = null) => {
   if (data.username.trim() === "") {
     return "El nom d'usuari enviat està buit!";
   }
+  
+  if (!/[a-zA-Z0-9]+$/.test(data.username)) {
+    return "El nom d'usuari només pot contenir lletres i números!";
+  }
 
   if (data.username.length < 5) {
     return "El nom d'usuari ha de contenir almenys 5 caràcters!";
