@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useMetas } from "../services/metaService"
 import { fetchCategories } from "../services/categoryService"
 import { CategoryList } from "../components/CategoryList";
+import { CreateBtn } from "../components/Buttons/CreateBtn";
 
 import type { categoryType } from "../types/categoryType"
 
@@ -35,6 +36,11 @@ export default function AdminPanel() {
         <div className="btn btn-primary"
           onClick={() => setMenuSelection("grups")}>Grups</div>
       </div>
+
+      <div className="mt-4 text-center">
+        <CreateBtn menuSelection={menuSelection} />
+      </div>
+
       <div className="container-fluid">
         <div className="row mt-4">
 

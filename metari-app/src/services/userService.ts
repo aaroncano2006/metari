@@ -19,3 +19,9 @@ export function useUsers() {
   return users
 }
 
+
+export async function fetchUserById(id: number): Promise<userTypeFrontend> {
+  const { data } = await axiosConnection.get<userTypeFrontend>(`/usuaris/${id}`);
+  return data;
+}
+
