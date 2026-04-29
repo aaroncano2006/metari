@@ -41,6 +41,22 @@ const validateUser = async (data, id = null) => {
     return "Ja existeix un usuari amb aquest nom!";
   }
 
+  if (!data.email) {
+    return "L'email de l'usuari és obligatori!";
+  }
+
+  if (typeof data.email !== "string") {
+    return "L'email de l'usuari enviat no és vàlid! Ha de ser un text!";
+  }
+
+  if (data.email.trim() === "") {
+    return "L'email enviat està buit!";
+  }
+
+  if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
+    return "El format de l'email no és vàlid!";
+  }
+
   if (!id && !data.password) {
     return "La contrasenya és obligatòria";
   }
