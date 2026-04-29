@@ -1,5 +1,6 @@
 import type { categoryType } from "../types/categoryType"
 import { useState } from "react"
+import { ModalEdit } from "./modals/ModalEdit"
 
 type CategoryListProps = {
   categories: categoryType[]
@@ -7,16 +8,13 @@ type CategoryListProps = {
 
 export function CategoryList({ categories }: CategoryListProps) {
 
-  const [openEntityId, setOpenEntityId] = useState<number | null>(null)
+  const [openEntitySelected, setOpenEntitySelected] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
-    setOpenEntityId(prev => (prev === id ? null : id))
+    setOpenEntitySelected(prev => (prev === id ? null : id))
   }
-  
-  const [editCategory, setEditCategory] = useState<categoryType | null>(null)
-  const [formData, setFormData] = useState({
-    name: "",
-    description: ""
-  })
+
+  const [categoryToEdit, setCategoryToEdit] = useState<categoryType | null>(null)
+ 
 
 
   return (
@@ -30,7 +28,7 @@ export function CategoryList({ categories }: CategoryListProps) {
           <ul className=" ps-4  m-0  py-2">
             {categories.map((category) => (
               <li key={category.id} className="m-0 p-0" >
-                <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === category.id ? "mb-0" : "mb-1"}`}
+                <div className={`metaEntry mt-1 me-3 ps-2 ${openEntitySelected === category.id ? "mb-0" : "mb-1"}`}
                   onClick={() => toggleEntity(category.id)}>
 
                   <div className="d-flex py-1 ps-2 pe-3 align-items-center">
@@ -38,11 +36,8 @@ export function CategoryList({ categories }: CategoryListProps) {
                     <button className="  btn btn-warning p-1  me-2  ms-auto"
                       onClick={(event) => {
                         event.stopPropagation()
-                        setEditCategory(category)
-                        setFormData({
-                          name: category.name,
-                          description: category.description
-                        })
+                        setCategoryToEdit(category)
+                        
                       }}>Edita</button>
                     <button className="  btn btn-danger p-1   "
                       onClick={async (event) => {
@@ -51,9 +46,8 @@ export function CategoryList({ categories }: CategoryListProps) {
                   </div>
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
-                  {openEntityId === category.id && (
+                  {openEntitySelected === category.id && (
                     <div className="metaDetails ps-2 py-2">
-                      {/* Replace with real fields */}
                       <div>ID: {category.id}</div>
                       <div>Descripcio: {category.description}</div>
                     </div>
@@ -66,39 +60,9 @@ export function CategoryList({ categories }: CategoryListProps) {
 
       </div>
 
-      {editCategory && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <h5>Edit Category</h5>
-
-            <form onSubmit={(event) => {
-                event.preventDefault()
-                setEditCategory(null)
-              }}
-            >
-              <input className="form-control mb-2"
-                type="text" value={formData.name}
-              />
-
-              <textarea className="form-control mb-2"
-                value={formData.description}
-              />
-
-              <div className="d-flex justify-content-end gap-2">
-                <button className="btn btn-secondary"
-                  type="button"                  
-                  onClick={() => setEditCategory(null)}
-                >
-                  Cancela
-                </button>
-
-                <button type="submit" className="btn btn-primary">
-                  Actualitza
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+      {/* modal editar */}
+      {categoryToEdit && (
+        <ModalEdit category={categoryToEdit} setEditCategory={setCategoryToEdit}/>
       )}
     </>
 

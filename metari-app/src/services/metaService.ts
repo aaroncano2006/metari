@@ -9,7 +9,6 @@ import type { metaType } from "../types/metaType"
 //   return data;
 // }
 
-
 export function useMetas() {
   const [metas, setMetas] = useState<metaType[]>([])
 
@@ -27,7 +26,6 @@ export function useMetas() {
 
 export async function fetchMetaById(id: number): Promise<metaType> {
   const { data } = await axiosConnection.get<metaType>(`/metas/${id}`);
-
   return data;
 }
 
@@ -41,6 +39,17 @@ export async function createMeta(newMeta: Partial<metaType>): Promise<metaType> 
     throw error;
   }
 
+}
+
+export async function updateMeta(id: number, updatedData: Partial<metaType>): Promise<metaType> {
+  try {
+    const { data } = await axiosConnection.put<metaType>(`/metas/${id}`, updatedData)
+    return data
+
+  } catch (error) {
+    console.error("Error actualitzant meta:", error)
+    throw error
+  }
 }
 
 export async function deleteMeta(id: number): Promise<void> {

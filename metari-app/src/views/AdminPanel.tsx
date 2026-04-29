@@ -6,8 +6,11 @@ import { CategoryList } from "../components/CategoryList";
 
 export default function AdminPanel() {
 
+
+  //posar useffect aqui i passar a usemetas metas i setmetas al service?
   const metas = useMetas();
   const categories = useCategories();
+
   const [menuSelection, setMenuSelection] = useState<string>("metas")
 
   return (
@@ -29,7 +32,7 @@ export default function AdminPanel() {
           <div className="col-3">
             
           </div>
-          <div className="col">
+          <div className="col-6">
             {menuSelection === "metas" && <MetaList metas={metas} />}
             {menuSelection === "categories" && <CategoryList categories={categories}/>}
           </div>
