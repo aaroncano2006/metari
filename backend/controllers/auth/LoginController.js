@@ -53,3 +53,7 @@ const login = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports = {
+    login
+};
