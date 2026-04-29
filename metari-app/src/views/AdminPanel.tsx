@@ -1,17 +1,26 @@
 import { MetaList } from "../components/MetaList"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useMetas } from "../services/metaService"
-import { useCategories } from "../services/categoryService"
+import { fetchCategories } from "../services/categoryService"
 import { CategoryList } from "../components/CategoryList";
+
+import type { categoryType } from "../types/categoryType"
+
 
 export default function AdminPanel() {
 
-
-  //posar useffect aqui i passar a usemetas metas i setmetas al service?
-  const metas = useMetas();
-  const categories = useCategories();
-
   const [menuSelection, setMenuSelection] = useState<string>("metas")
+  const [categories, setCategories] = useState<categoryType[]>([])
+
+  useEffect(() => {    
+    fetchCategories().then(setCategories)
+
+  }, [])
+
+
+  //need to refactor again
+  const metas = useMetas();
+
 
   return (
     <>
@@ -30,11 +39,11 @@ export default function AdminPanel() {
         <div className="row mt-4">
 
           <div className="col-3">
-            
+
           </div>
           <div className="col-6">
             {menuSelection === "metas" && <MetaList metas={metas} />}
-            {menuSelection === "categories" && <CategoryList categories={categories}/>}
+            {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories}/>}
           </div>
           <div className="col-3">
           </div>

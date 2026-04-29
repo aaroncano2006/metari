@@ -1,14 +1,16 @@
 import type { categoryType } from "../../types/categoryType"
 import { useState } from "react"
 
+import { updateCategory } from "../../services/categoryService"
+
 
 type ModalEditProps = {
   category: categoryType
-  //generalitzar (setter)
   setEditCategory: React.Dispatch<React.SetStateAction<categoryType | null>>
+  setter: React.Dispatch<React.SetStateAction<categoryType[]>>
 }
 
-export function ModalEdit({ category, setEditCategory }: ModalEditProps) {
+export function ModalEdit({ category, setEditCategory, setter }: ModalEditProps) {
 
   //fer-lo generalitzat
   const [formData, setFormData] = useState({
@@ -24,9 +26,21 @@ export function ModalEdit({ category, setEditCategory }: ModalEditProps) {
               <div className="modalWindow">
                 <h5>Edit Category</h5>
 
-                <form onSubmit={(event) => {
+                <form onSubmit={async (event) => {
                   event.preventDefault()
+
+                  const updatedCategory = await updateCategory(category.id, formData)
+
+                  setter(prev =>
+                    prev.map(categories =>
+                      categories.id === category.id
+                        ? updatedCategory
+                        : categories
+                    )
+                  )
+
                   setEditCategory(null)
+
                 }}
                 >
                   <input className="form-control mb-2"

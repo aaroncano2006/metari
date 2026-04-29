@@ -11,14 +11,14 @@ import { useUsers } from "../services/userService"
 import type { categoryType } from "../types/categoryType"
 import type { metaType } from "../types/metaType"
 import { useMetas } from "../services/metaService"
-import { useCategories } from "../services/categoryService"
+// import { useCategories } from "../services/categoryService"
 
 
 export default function Home() {
   // const [users, setUsers] = useState<userTypeFrontend[]>([])
   const users = useUsers()
   const metas = useMetas()
-  const categories = useCategories()
+  // const categories = useCategories()
   
   // const [metas, setMetas] = useState<metaType[]>([])
 
@@ -36,7 +36,7 @@ export default function Home() {
         <div className="row mt-5">
           
           <div className="col-3">
-            <CategoryList categories={categories} />
+            {/* <CategoryList categories={categories} /> */}
           </div>
           <div className="col">
             <MetaList metas={metas} />

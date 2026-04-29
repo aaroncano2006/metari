@@ -4,9 +4,10 @@ import { ModalEdit } from "./modals/ModalEdit"
 
 type CategoryListProps = {
   categories: categoryType[]
+  setter: React.Dispatch<React.SetStateAction<categoryType[]>>
 }
 
-export function CategoryList({ categories }: CategoryListProps) {
+export function CategoryList({ categories, setter }: CategoryListProps) {
 
   const [openEntitySelected, setOpenEntitySelected] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
@@ -36,6 +37,7 @@ export function CategoryList({ categories }: CategoryListProps) {
                     <button className="  btn btn-warning p-1  me-2  ms-auto"
                       onClick={(event) => {
                         event.stopPropagation()
+                        //indica quina categoria estem editant, si hi ha una, obra el modal.
                         setCategoryToEdit(category)
                         
                       }}>Edita</button>
@@ -62,7 +64,7 @@ export function CategoryList({ categories }: CategoryListProps) {
 
       {/* modal editar */}
       {categoryToEdit && (
-        <ModalEdit category={categoryToEdit} setEditCategory={setCategoryToEdit}/>
+        <ModalEdit category={categoryToEdit} setEditCategory={setCategoryToEdit} setter={setter}/>
       )}
     </>
 
