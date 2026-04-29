@@ -214,7 +214,7 @@ model IndexedMeta {
   user_id               Int?
   meta_id               Int
   group_id              Int?
-  is_public             Boolean  @default(false)
+  is_public             Boolean  @default(false) // És possible que aquest camp es mogui al model Meta en un futur.
   is_approved           Boolean?
   is_community_approved Boolean?
   user                  User?    @relation(fields: [user_id], references: [id])
