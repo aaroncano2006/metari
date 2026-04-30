@@ -13,7 +13,7 @@ export default function AdminPanel() {
   const [menuSelection, setMenuSelection] = useState<string>("metas")
   const [categories, setCategories] = useState<categoryType[]>([])
 
-  useEffect(() => {    
+  useEffect(() => {
     fetchCategories().then(setCategories)
 
   }, [])
@@ -38,7 +38,9 @@ export default function AdminPanel() {
       </div>
 
       <div className="mt-4 text-center">
-        <CreateBtn menuSelection={menuSelection} />
+        {(menuSelection === "metas" || menuSelection === "categories") && (
+          <CreateBtn menuSelection={menuSelection} />
+        )}
       </div>
 
       <div className="container-fluid">
@@ -49,7 +51,7 @@ export default function AdminPanel() {
           </div>
           <div className="col-6">
             {menuSelection === "metas" && <MetaList metas={metas} />}
-            {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories}/>}
+            {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
           </div>
           <div className="col-3">
           </div>

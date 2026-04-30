@@ -1,6 +1,7 @@
 import type { categoryType } from "../types/categoryType"
 import { useState } from "react"
 import { ModalEdit } from "./modals/ModalEdit"
+import { deleteCategory } from "../services/categoryService"
 
 type CategoryListProps = {
   categories: categoryType[]
@@ -44,6 +45,7 @@ export function CategoryList({ categories, setter }: CategoryListProps) {
                     <button className="  btn btn-danger p-1   "
                       onClick={async (event) => {
                         event.stopPropagation()
+                        await deleteCategory(category.id)
                       }}>X</button>
                   </div>
                 </div>

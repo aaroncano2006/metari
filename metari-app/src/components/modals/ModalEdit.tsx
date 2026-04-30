@@ -17,6 +17,21 @@ export function ModalEdit({ category, setEditCategory, setter }: ModalEditProps)
     name: category.name,
     description: category.description
   })
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
   return (
     <>
       <div className="modalOverlay h-100 w-100">

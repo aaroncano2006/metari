@@ -13,7 +13,7 @@ export function CreateBtn({menuSelection}: CreateBtnProps){
     <>
      <button className="btn btn-warning"
      onClick={() => setCreatingEntry(menuSelection)}>
-     Crea nova entrada</button>
+     Crea {menuSelection}</button>
 
 
       {creatingEntry && (

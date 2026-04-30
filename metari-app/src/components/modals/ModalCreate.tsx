@@ -79,8 +79,11 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
 
   const inputsFormulari = () => {
     if (creatingEntry === "metas") {
+      
       //indexed access type
       const metaTypeOptions: metaType["type"][] = ["task", "challenge"];
+
+
       return (
         <>
           <div className="d-flex flex-column">
