@@ -270,6 +270,7 @@ Si l'autenticació passa, retorna el missatge i les dades de l'usuari:
         "iat": 1777556479,
         "exp": 1777560079
     }
+}
 ```
 
 `iat` (Issued At): Timestamp en segons del moment en que s'ha creat el token.
