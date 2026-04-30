@@ -1,36 +1,21 @@
-import type { categoryType } from "../../types/categoryType"
+import type { metaType } from "../../types/metaType"
 import { useState } from "react"
 
-import { updateCategory } from "../../services/categoryService"
+import { updateMeta } from "../../services/metaService"
 
 
 type ModalEditProps = {
-  category: categoryType
-  setEditCategory: React.Dispatch<React.SetStateAction<categoryType | null>>
-  setter: React.Dispatch<React.SetStateAction<categoryType[]>>
+  meta: metaType
+  setEditMeta: React.Dispatch<React.SetStateAction<metaType | null>>
+  setter: React.Dispatch<React.SetStateAction<metaType[]>>
 }
 
-export function ModalEdit({ category, setEditCategory, setter }: ModalEditProps) {
+export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
 
-  //fer-lo generalitzat
   const [formData, setFormData] = useState({
-    name: category.name,
-    description: category.description
+    title: meta.title,
+    description: meta.description
   })
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 
   return (
     <>
@@ -44,24 +29,24 @@ export function ModalEdit({ category, setEditCategory, setter }: ModalEditProps)
                 <form onSubmit={async (event) => {
                   event.preventDefault()
 
-                  const updatedCategory = await updateCategory(category.id, formData)
+                  const updatedMeta = await updateMeta(meta.id, formData)
 
                   setter(prev =>
-                    prev.map(categories =>
-                      categories.id === category.id
-                        ? updatedCategory
-                        : categories
+                    prev.map(metas =>
+                      metas.id === meta.id
+                        ? updatedMeta
+                        : metas
                     )
                   )
 
-                  setEditCategory(null)
+                  setEditMeta(null)
 
                 }}
                 >
                   <input className="form-control mb-2"
-                    type="text" value={formData.name}
+                    type="text" value={formData.title}
                     onChange={(event) =>
-                      setFormData({ ...formData, name: event.target.value })
+                      setFormData({ ...formData, title: event.target.value })
                     }
                   />
 
@@ -75,7 +60,7 @@ export function ModalEdit({ category, setEditCategory, setter }: ModalEditProps)
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"
                       type="button"
-                      onClick={() => setEditCategory(null)}
+                      onClick={() => setEditMeta(null)}
                     >
                       Cancela
                     </button>

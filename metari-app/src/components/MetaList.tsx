@@ -1,19 +1,22 @@
 import type { metaType } from "../types/metaType";
 import { useState } from "react"
-
-
+import { ModalEditMeta } from "./modals/ModalEditMeta";
 import { deleteMeta } from "../services/metaService";
 
 
 type MetaListProps = {
   metas: metaType[]
+  setter: React.Dispatch<React.SetStateAction<metaType[]>>
 }
 
-export function MetaList({ metas }: MetaListProps) {
+export function MetaList({ metas, setter }: MetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
   }
+
+    const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
+  
   return (
     <>
 
@@ -34,18 +37,18 @@ export function MetaList({ metas }: MetaListProps) {
                     <button className="  btn btn-warning p-1  me-2  ms-auto"
                       onClick={(event) => {
                         event.stopPropagation()
+                        setMetaToEdit(meta)
                       }}>Edita</button>
                     <button className="  btn btn-danger p-1   "
-                      onClick={ async (event) => {
+                      onClick={async (event) => {
                         event.stopPropagation()
-                         await deleteMeta(meta.id)
+                        await deleteMeta(meta.id)
                       }}>X</button>
                   </div>
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntityId === meta.id && (
                     <div className="metaDetails ps-2 py-2">
-                      {/* Replace with real fields */}
                       <div>ID: {meta.id}</div>
                       <div>Tipus: {meta.type}</div>
                       <div>Descripcio: {meta.description}</div>
@@ -58,6 +61,10 @@ export function MetaList({ metas }: MetaListProps) {
         </div>
 
       </div>
+      {/* modal editar */}
+      {metaToEdit && (
+        <ModalEditMeta meta={metaToEdit} setEditMeta={setMetaToEdit} setter={setter} />
+      )}
     </>
   );
 }

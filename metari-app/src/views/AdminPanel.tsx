@@ -1,26 +1,29 @@
 import { MetaList } from "../components/MetaList"
 import { useEffect, useState } from "react"
-import { useMetas } from "../services/metaService"
+// import { useMetas } from "../services/metaService"
 import { fetchCategories } from "../services/categoryService"
+import { fetchMetas } from "../services/metaService"
 import { CategoryList } from "../components/CategoryList";
 import { CreateBtn } from "../components/Buttons/CreateBtn";
 
 import type { categoryType } from "../types/categoryType"
+import type { metaType } from "../types/metaType";
 
 
 export default function AdminPanel() {
 
   const [menuSelection, setMenuSelection] = useState<string>("metas")
   const [categories, setCategories] = useState<categoryType[]>([])
+  const [metas, setMetas] = useState<metaType[]>([])
 
   useEffect(() => {
     fetchCategories().then(setCategories)
+    fetchMetas().then(setMetas)
 
   }, [])
 
-
   //need to refactor again
-  const metas = useMetas();
+  // const metas = useMetas();
 
 
   return (
@@ -50,7 +53,7 @@ export default function AdminPanel() {
 
           </div>
           <div className="col-6">
-            {menuSelection === "metas" && <MetaList metas={metas} />}
+            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
           </div>
           <div className="col-3">

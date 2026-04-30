@@ -1,6 +1,6 @@
 import type { categoryType } from "../types/categoryType"
 import { useState } from "react"
-import { ModalEdit } from "./modals/ModalEdit"
+import { ModalEditCategory } from "./modals/ModalEditCategory"
 import { deleteCategory } from "../services/categoryService"
 
 type CategoryListProps = {
@@ -66,7 +66,7 @@ export function CategoryList({ categories, setter }: CategoryListProps) {
 
       {/* modal editar */}
       {categoryToEdit && (
-        <ModalEdit category={categoryToEdit} setEditCategory={setCategoryToEdit} setter={setter}/>
+        <ModalEditCategory category={categoryToEdit} setEditCategory={setCategoryToEdit} setter={setter}/>
       )}
     </>
 
