@@ -43,4 +43,4 @@ html *{
 
 /* Categories components */
 
-
+.form-card{background-color: var(--color-3) !important;}
