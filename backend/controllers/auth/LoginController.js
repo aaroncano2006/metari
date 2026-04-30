@@ -9,10 +9,10 @@ const login = async (req, res, next) => {
 
     const data = {
       email_or_username: reqBody.email_or_username,
-      password: reqBody.password,
+      password: String(reqBody.password),
     };
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
           {
