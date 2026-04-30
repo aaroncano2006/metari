@@ -19,7 +19,7 @@ const login = async (req, res, next) => {
             email: data.email_or_username,
           },
           {
-            user: data.email_or_username,
+            username: data.email_or_username,
           },
         ],
       },
