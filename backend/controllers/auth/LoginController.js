@@ -43,6 +43,7 @@ const login = async (req, res, next) => {
         id: existingUser.id,
         email: existingUser.email,
         username: existingUser.username,
+        role: existingUser.role
       },
       SECRET,
       { expiresIn: "1h" },
