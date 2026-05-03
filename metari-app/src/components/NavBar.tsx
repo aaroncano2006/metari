@@ -24,6 +24,13 @@ export function NavBar() {
             Registra't
           </Link>
         )}
+        {
+          token && (
+          <Link to="/Logout" className="nav-btn">
+            Logout
+          </Link>
+          )
+        }
         <Link to="/Admin" className="nav-btn">
           Panell Admin
         </Link>

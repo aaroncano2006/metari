@@ -8,6 +8,7 @@ import Profile from './views/Profile'
 import Login from './views/Login'
 import Register from './views/Register'
 import AdminPanel from './views/AdminPanel'
+import Logout from "./views/Logut";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/logout" element={<Logout/>}/>
       </Routes>
     </>
   )
