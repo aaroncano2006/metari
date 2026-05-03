@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { getUserRole } from "../services/auth/loginService";
 
 export function NavBar() {
   const token = localStorage.getItem("token");
+  const role = getUserRole();
 
   return (
     <>
@@ -24,16 +26,16 @@ export function NavBar() {
             Registra't
           </Link>
         )}
-        {
-          token && (
+        {token && (
           <Link to="/Logout" className="nav-btn">
             Logout
           </Link>
-          )
-        }
-        <Link to="/Admin" className="nav-btn">
-          Panell Admin
-        </Link>
+        )}
+        {token && role === "admin" && (
+          <Link to="/Admin" className="nav-btn">
+            Panell Admin
+          </Link>
+        )}
       </div>
     </>
   );
