@@ -9,7 +9,7 @@ export default function LoginForm() {
   const [formData, setFormData] = useState<loginType>({
     email_or_username: "",
     password: "",
-    remember_password: false
+    remember_password: false,
   });
 
   const navigate = useNavigate();
@@ -39,7 +39,6 @@ export default function LoginForm() {
       }
 
       navigate("/");
-
     } catch (error: any) {
       setError("Credencials incorrectes o error del servidor");
       localStorage.removeItem("token");
@@ -65,7 +64,6 @@ export default function LoginForm() {
       </header>
 
       <div className="mt-4">
-
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form
@@ -91,7 +89,7 @@ export default function LoginForm() {
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  email_or_username: e.target.value
+                  email_or_username: e.target.value,
                 })
               }
             />
@@ -111,7 +109,7 @@ export default function LoginForm() {
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  password: e.target.value
+                  password: e.target.value,
                 })
               }
             />
@@ -131,18 +129,17 @@ export default function LoginForm() {
                 name="remember_password"
                 id="remember_password"
                 value={formData.password}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  remember_password: Boolean(e.target.value)
-                })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    remember_password: Boolean(e.target.value),
+                  })
+                }
               />
             </div>
 
             <div className="col-5">
-              <label
-                className="form-check-label"
-                htmlFor="remember_password"
-              >
+              <label className="form-check-label" htmlFor="remember_password">
                 Recordar contrasenya
               </label>
             </div>
