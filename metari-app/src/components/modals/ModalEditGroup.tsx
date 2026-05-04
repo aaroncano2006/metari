@@ -3,6 +3,10 @@ import { useState } from "react"
 import { updateUser } from "../../services/userService"
 import type { groupType } from "../../types/groupType"
 import { updateGroup } from "../../services/groupService"
+// import { fetchUsers } from "../../services/userService"
+
+
+
 
 
 type ModalEditProps = {
@@ -12,6 +16,9 @@ type ModalEditProps = {
 }
 
 export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) {
+
+  //  const usersGroup = fetchUsers()
+
 
   const [formData, setFormData] = useState({
     name: group.name,
@@ -62,7 +69,7 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
-                  <label htmlFor="owner_id">Autor grup</label>
+                  <label htmlFor="owner_id">Autor del grup</label>
 
                   <input className="form-control mb-2"
                     type="number" value={formData.owner_id} id="owner_id"
@@ -71,9 +78,19 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                     }
                   />
 
-                 
+                  <label htmlFor="is_public">El grup es public?</label>
+                  <input className=" form-check mb-2"
+                    type="checkbox" id="is_public" checked={formData.is_public}
+                    onChange={(event) =>
+                      setFormData({ ...formData, is_public: event.target.checked })
+                    }
+                  />
 
-                  
+
+
+
+
+
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"

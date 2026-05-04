@@ -85,6 +85,13 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                       setFormData({ ...formData, completed_tasks: Number(event.target.value) })
                     }
                   />
+                  <label htmlFor="score">Puntuacio de challanges</label>
+                  <input className="form-control mb-2"
+                    type="number" value={formData.score} id="score"
+                    onChange={(event) =>
+                      setFormData({ ...formData, score: Number(event.target.value) })
+                    }
+                  />
 
 
                   <div className="d-flex justify-content-end gap-2">
