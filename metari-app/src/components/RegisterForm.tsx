@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchRegister } from "../services/auth/registerService";
 import type { registerType } from "../types/auth/registerType";
-import { usernameExists } from "../services/userService";
+import { emailExists, usernameExists } from "../services/userService";
 
 export default function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +72,12 @@ export default function RegisterForm() {
         !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)
       ) {
         return setError("El format de l'email no és vàlid!");
+      }
+
+      const existingEmail = await emailExists(data.email);
+
+      if (existingEmail) {
+        return setError("L'email introduït ja està registrat!");
       }
     }
 
