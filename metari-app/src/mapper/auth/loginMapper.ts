@@ -5,6 +5,6 @@ export function mapLogin(register: registerType): loginType {
   return {
     email_or_username: register.email,
     password: register.password,
-    remember_password: false,
+    remember_password: register.remember_password,
   }
 }
