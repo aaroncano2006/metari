@@ -31,6 +31,10 @@ export default function LoginForm() {
       localStorage.setItem("password", data.password);
     }
 
+    if (!data.remember_password && rememberedPassword) {
+      localStorage.removeItem("password");
+    }
+
     try {
       const response = await fetchLogin(data);
 
@@ -44,7 +48,9 @@ export default function LoginForm() {
     } catch (error: any) {
       setError("Credencials incorrectes o error del servidor");
       localStorage.removeItem("token");
-      localStorage.removeItem("password");
+      if (!rememberedPassword) {
+        localStorage.removeItem("password");
+      }
     }
   };
 
@@ -130,7 +136,7 @@ export default function LoginForm() {
                 type="checkbox"
                 name="remember_password"
                 id="remember_password"
-                value={formData.password}
+                checked={formData.remember_password}
                 onChange={(e) =>
                   setFormData({
                     ...formData,

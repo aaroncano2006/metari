@@ -223,7 +223,6 @@ export default function RegisterForm() {
                 type="checkbox"
                 name="remember_password"
                 id="remember_password"
-                value={formData.password}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
