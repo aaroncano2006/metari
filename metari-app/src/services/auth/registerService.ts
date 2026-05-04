@@ -12,5 +12,5 @@ export async function fetchRegister(data: registerType): Promise<any> {
         response = await fetchLogin(loginData);
     }
 
-    return response?.data;
+    return response;
 }
