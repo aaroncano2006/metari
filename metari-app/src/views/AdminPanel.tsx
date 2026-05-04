@@ -27,7 +27,7 @@ export default function AdminPanel() {
 
     const userRole = getUserRole();
 
-    if (!userRole && userRole !== "admin") {
+    if (!userRole || userRole !== "admin") {
       navigate("/");
     }
   }, []);
