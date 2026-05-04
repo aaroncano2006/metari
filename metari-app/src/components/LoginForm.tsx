@@ -6,10 +6,12 @@ import type { loginType } from "../types/auth/loginType";
 export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
+  const rememberedPassword = localStorage.getItem("password");
+
   const [formData, setFormData] = useState<loginType>({
     email_or_username: "",
-    password: "",
-    remember_password: false,
+    password: rememberedPassword ?? "",
+    remember_password: rememberedPassword ? true : false,
   });
 
   const navigate = useNavigate();
