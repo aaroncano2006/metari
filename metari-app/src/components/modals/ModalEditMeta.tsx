@@ -14,7 +14,11 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
 
   const [formData, setFormData] = useState({
     title: meta.title,
-    description: meta.description
+    description: meta.description,
+    author_id: meta.author_id,
+    group_id: meta.group_id,
+    category_id: meta.category_id,
+    type: meta.type,
   })
 
   return (
@@ -24,7 +28,7 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
           <div className="row justify-content-center">
             <div className="col-12 col-sm-6">
               <div className="modalWindow">
-                <h5>Edit Category</h5>
+                <h5>Edita Meta</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
@@ -43,19 +47,38 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
 
                 }}
                 >
+                  <label htmlFor="title">Titol</label>
                   <input className="form-control mb-2"
-                    type="text" value={formData.title}
+                    type="text" value={formData.title} id="title"
                     onChange={(event) =>
                       setFormData({ ...formData, title: event.target.value })
                     }
                   />
 
+                  <label htmlFor="description">Descripcio</label>
                   <textarea className="form-control mb-2"
-                    value={formData.description}
+                    value={formData.description} id="description"
                     onChange={(event) =>
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
+                  <label htmlFor="type">Tipus</label>
+                  <input className="form-control mb-2"
+                    type="text" value={formData.type} id="type"
+                    onChange={(event) =>
+                      setFormData({ ...formData, type: event.target.value as "task" | "challenge"  })
+                    }
+                  />
+                  <label htmlFor="author_id">Autor</label>
+
+                  <input className="form-control mb-2"
+                    type="number" value={formData.author_id} id="author_id"
+                    onChange={(event) =>
+                      setFormData({ ...formData, author_id: Number(event.target.value) })
+                    }
+                  />
+
+
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"

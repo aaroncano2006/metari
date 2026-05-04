@@ -52,6 +52,7 @@ export function MetaList({ metas, setter }: MetaListProps) {
                       <div>ID: {meta.id}</div>
                       <div>Tipus: {meta.type}</div>
                       <div>Descripcio: {meta.description}</div>
+                      <div>Autor: {meta.author_id}</div>
                     </div>
                   )}
                 </div>

@@ -44,15 +44,17 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
 
                 }}
                 >
+                  <label htmlFor="name">Nom</label>
+
                   <input className="form-control mb-2"
-                    type="text" value={formData.name}
+                    type="text" value={formData.name} id="name"
                     onChange={(event) =>
                       setFormData({ ...formData, name: event.target.value })
                     }
                   />
-
+                  <label htmlFor="description">Descripcio</label>
                   <textarea className="form-control mb-2"
-                    value={formData.description}
+                    value={formData.description} id="description"
                     onChange={(event) =>
                       setFormData({ ...formData, description: event.target.value })
                     }

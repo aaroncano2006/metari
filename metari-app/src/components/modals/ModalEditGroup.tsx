@@ -47,22 +47,25 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
 
                 }}
                 >
+                  <label htmlFor="name">Nom</label>
                   <input className="form-control mb-2"
-                    type="text" value={formData.name}
+                    type="text" value={formData.name} id="name"
                     onChange={(event) =>
                       setFormData({ ...formData, name: event.target.value })
                     }
                   />
+                  <label htmlFor="description">Descripcio</label>
 
                   <textarea className="form-control mb-2"
-                    value={formData.description}
+                    value={formData.description} id="description"
                     onChange={(event) =>
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
+                  <label htmlFor="owner_id">Autor grup</label>
 
                   <input className="form-control mb-2"
-                    type="number" value={formData.owner_id}
+                    type="number" value={formData.owner_id} id="owner_id"
                     onChange={(event) =>
                       setFormData({ ...formData, owner_id: Number(event.target.value) })
                     }
