@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { getUserRole } from "../services/auth/loginService";
 
 export function NavBar() {
-  const [recharge, setRecharge] = useState(0);
+  const [_recharge, setRecharge] = useState(0);
   const token = localStorage.getItem("token");
   const role = getUserRole();
 
