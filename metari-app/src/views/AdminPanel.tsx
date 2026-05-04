@@ -1,13 +1,21 @@
-import { MetaList } from "../components/MetaList"
+//llibreries
 import { useEffect, useState } from "react"
-// import { useMetas } from "../services/metaService"
+
+//services 
 import { fetchCategories } from "../services/categoryService"
 import { fetchMetas } from "../services/metaService"
-import { CategoryList } from "../components/CategoryList";
-import { CreateBtn } from "../components/Buttons/CreateBtn";
+import { fetchUsers } from "../services/userService";
 
+//components
+import { CreateBtn } from "../components/Buttons/CreateBtn";
+import { MetaList } from "../components/MetaList"
+import { CategoryList } from "../components/CategoryList";
+import { UserList } from "../components/UserList";
+
+//types
 import type { categoryType } from "../types/categoryType"
 import type { metaType } from "../types/metaType";
+import type { userTypeFrontend } from "../types/userTypeFrontend";
 
 
 export default function AdminPanel() {
@@ -15,10 +23,12 @@ export default function AdminPanel() {
   const [menuSelection, setMenuSelection] = useState<string>("metas")
   const [categories, setCategories] = useState<categoryType[]>([])
   const [metas, setMetas] = useState<metaType[]>([])
+  const [users, setUsers] = useState<userTypeFrontend[]>([])
 
   useEffect(() => {
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
+    fetchUsers().then(setUsers)
 
   }, [])
 
@@ -40,7 +50,7 @@ export default function AdminPanel() {
           onClick={() => setMenuSelection("grups")}>Grups</div>
       </div>
 
-      <div className="mt-4 text-center">
+      <div className="createBtn mt-4 text-center">
         {(menuSelection === "metas" || menuSelection === "categories") && (
           <CreateBtn menuSelection={menuSelection} />
         )}
@@ -55,6 +65,7 @@ export default function AdminPanel() {
           <div className="col-6">
             {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
+            {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
           </div>
           <div className="col-3">
           </div>
