@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 import { getUserRole } from "../services/auth/loginService";
 
 export function NavBar() {
+  const [recharge, setRecharge] = useState(0);
   const token = localStorage.getItem("token");
   const role = getUserRole();
+
+  useEffect(() => {
+    const handleRecharge = () => setRecharge(cur => cur + 1);
+    window.addEventListener("authChange", handleRecharge);
+    return () => window.removeEventListener("authChange", handleRecharge);
+  }, []);
 
   return (
     <>

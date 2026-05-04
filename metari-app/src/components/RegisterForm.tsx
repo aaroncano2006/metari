@@ -102,6 +102,8 @@ export default function RegisterForm() {
         localStorage.setItem("token", response.token);
       }
 
+      window.dispatchEvent(new Event("authChange"));
+
       navigate("/");
     } catch (error: any) {
       setError("Error al registrar-se: " + error);

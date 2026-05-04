@@ -44,6 +44,8 @@ export default function LoginForm() {
         localStorage.setItem("token", response.token);
       }
 
+      window.dispatchEvent(new Event("authChange"));
+
       navigate("/");
     } catch (error: any) {
       setError("Credencials incorrectes o error del servidor");
