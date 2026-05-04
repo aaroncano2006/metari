@@ -19,3 +19,16 @@ export function useUsers() {
   return users
 }
 
+export async function usernameExists(username: string): Promise<boolean> {
+  const response = await axiosConnection.get<userTypeDTO[]>("/usuaris");
+  const userWithUsername = response.data.find((el) => el.username === username);
+
+  return !!userWithUsername;
+}
+
+export async function emailExists(email: string): Promise<boolean> {
+  const response = await axiosConnection.get<userTypeDTO[]>("/usuaris");
+  const userWithEmail = response.data.find((el) => el.username === email);
+
+  return !!userWithEmail;
+}
