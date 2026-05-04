@@ -1,11 +1,22 @@
 import { useState } from "react";
+import { getUserEmail, getUserFullName, getUserName } from "../services/auth/loginService";
+import type { profileType } from "../types/auth/profileType";
 
 export default function UserProfileForm() {
   const [error, setError] = useState<string | null>(null);
 
   const rememberedPassword = localStorage.getItem("password");
 
-  const [formData, setFormData] = useState<any>({});
+  const fullName = getUserFullName() ?? "";
+  const username = getUserName() ?? "";
+  const email = getUserEmail() ?? "";
+
+  const [formData, setFormData] = useState<profileType>({
+    name: fullName,
+    username,
+    email,
+    password: rememberedPassword ?? ""
+  });
 
   const handleSubmit = () => {};
 
