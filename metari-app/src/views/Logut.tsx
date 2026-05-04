@@ -11,6 +11,8 @@ export default function Logout() {
       localStorage.removeItem("token");
     }
 
+    window.dispatchEvent(new Event("authChange"));
+
     navigate("/");
   }, []);
 
