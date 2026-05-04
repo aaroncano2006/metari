@@ -134,7 +134,7 @@ export default function LoginForm() {
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    remember_password: Boolean(e.target.value),
+                    remember_password: e.target.checked,
                   })
                 }
               />
