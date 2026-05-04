@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react"
 import { axiosConnection } from "./axiosConnection"
-import type { userTypeDTO } from "../types/userTypeDTO"
 import type { userTypeFrontend } from "../types/userTypeFrontend"
-import { mapUser } from "../mapper/userMapper"
 
 
 

@@ -5,17 +5,20 @@ import { useEffect, useState } from "react"
 import { fetchCategories } from "../services/categoryService"
 import { fetchMetas } from "../services/metaService"
 import { fetchUsers } from "../services/userService";
+import { fetchGroups } from "../services/groupService";
 
 //components
 import { CreateBtn } from "../components/Buttons/CreateBtn";
 import { MetaList } from "../components/MetaList"
 import { CategoryList } from "../components/CategoryList";
 import { UserList } from "../components/UserList";
+import { GroupList } from "../components/GroupList";
 
 //types
 import type { categoryType } from "../types/categoryType"
 import type { metaType } from "../types/metaType";
 import type { userTypeFrontend } from "../types/userTypeFrontend";
+import type { groupType } from "../types/groupType";
 
 
 export default function AdminPanel() {
@@ -24,11 +27,14 @@ export default function AdminPanel() {
   const [categories, setCategories] = useState<categoryType[]>([])
   const [metas, setMetas] = useState<metaType[]>([])
   const [users, setUsers] = useState<userTypeFrontend[]>([])
+  const [groups, setGroups] = useState<groupType[]>([])
 
   useEffect(() => {
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
     fetchUsers().then(setUsers)
+    fetchGroups().then(setGroups)
+    
 
   }, [])
 
@@ -66,6 +72,7 @@ export default function AdminPanel() {
             {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
             {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
+            {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}
           </div>
           <div className="col-3">
           </div>
