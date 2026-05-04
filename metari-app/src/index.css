@@ -48,3 +48,4 @@ html *{
 
 /*Profile*/
 #userProfilePictureFromPage{max-width: 296px; max-height: 296px;}
+.user-profile-form-row{width: 70%;}
