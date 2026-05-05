@@ -46,3 +46,13 @@ html *{
 /* Panell admin */
 
 .createBtn{height:38px;}
+/*Login and Register*/
+.form-card{background-color: var(--color-3) !important;}
+
+/*Profile*/
+#userProfilePictureFromPage{max-width: 296px; max-height: 296px;}
+.user-profile-form-row{width: 70%;}
+.alert-profile{width: 70%;}
+.userProfileStats{ display: flex; flex-direction: column; background-color: var(--color-1); padding-bottom: 1px; border-radius: 10px 10px 20px 10px; resize: vertical; overflow: hidden;
+  min-height: 150px;
+  max-height: 400px;}
