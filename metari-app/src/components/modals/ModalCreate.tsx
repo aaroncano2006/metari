@@ -7,31 +7,12 @@ import type { metaType } from "../../types/metaType"
 import type { userTypeFrontend } from "../../types/userTypeFrontend"
 
 
-// export const formEditSchemas = {
-//   categories: { name: "", description: "" },
-//   metas: { title:"", description:"", type: "", category_id:""},
-//   users: { username: "", email: "", role: "" }
-// };
-
 type ModalEditProps = {
   setCreatingEntry: React.Dispatch<React.SetStateAction<string | null>>
   creatingEntry: string
 }
 
 export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps) {
-
-  // const formSchema = formEditSchemas[creatingEntry as keyof typeof formEditSchemas];
-
-  // const [formData, setFormData] = useState(() =>
-  //   Object.fromEntries(
-  //     Object.entries(formSchema).map(([key]) => [key, ""])
-  //   )
-  // );
-  //fer-lo generalitzat
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   description: "category.description"
-  // })
 
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -101,7 +82,6 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
           </div>
           <div className="d-flex flex-column">
             <label htmlFor="type">Tipus</label>
-            {/* <input className="form-control mb-2" type="text" name="type" id="type" /> */}
             <select className="form-select mb-2" name="type" id="type">
 
               {metaTypeOptions.map((option) => (

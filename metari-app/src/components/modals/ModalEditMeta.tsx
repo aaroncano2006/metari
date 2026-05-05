@@ -1,7 +1,10 @@
 import type { metaType } from "../../types/metaType"
 import { useState } from "react"
 
+
+
 import { updateMeta } from "../../services/metaService"
+import { metaSchema } from "../../schemas/metaSchema"
 
 
 type ModalEditProps = {
@@ -12,6 +15,9 @@ type ModalEditProps = {
 
 export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
 
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const metaTypeOptions: metaType["type"][] = ["task", "challenge"];
+
   const [formData, setFormData] = useState({
     title: meta.title,
     description: meta.description,
@@ -20,6 +26,7 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
     category_id: meta.category_id,
     type: meta.type,
   })
+
 
   return (
     <>
@@ -32,6 +39,22 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
+
+                  const result = metaSchema.safeParse(formData)
+
+                  if (!result.success) {
+                    const errors: Record<string, string> = {}
+
+                    result.error.issues.forEach((issue) => {
+                      const field = issue.path[0] as string
+                      errors[field] = issue.message
+                    })
+
+                    setErrors(errors)
+                    return
+                  }
+                  // netejem errors si no hi ha
+                  setErrors({})
 
                   const updatedMeta = await updateMeta(meta.id, formData)
 
@@ -48,39 +71,41 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                 }}
                 >
                   <label htmlFor="title">Titol</label>
-                  <input className="form-control mb-2"
+                  <input className="form-control "
                     type="text" value={formData.title} id="title"
                     onChange={(event) =>
                       setFormData({ ...formData, title: event.target.value })
                     }
                   />
+                  {errors.title && (
+                    <small className="text-danger d-flex mb-2">{errors.title}</small>
+                  )}
 
                   <label htmlFor="description">Descripcio</label>
-                  <textarea className="form-control mb-2"
+                  <textarea className="form-control "
                     value={formData.description} id="description"
                     onChange={(event) =>
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
-                  <label htmlFor="type">Tipus</label>
-                  <input className="form-control mb-2"
-                    type="text" value={formData.type} id="type"
-                    onChange={(event) =>
-                      setFormData({ ...formData, type: event.target.value as "task" | "challenge"  })
-                    }
-                  />
+                  {errors.description && (
+                  <small className="text-danger d-flex mb-2">{errors.description}</small>
+                )}
 
-                  
-                  {/* <label htmlFor="author_id">Autor</label>
+                  <div className="d-flex flex-column">
+                    <label htmlFor="type">Tipus</label>
+                    <select className="form-select mb-2" name="type" id="type">
 
-                  <input className="form-control mb-2"
-                    type="number" value={formData.author_id} id="author_id"
-                    onChange={(event) =>
-                      setFormData({ ...formData, author_id: Number(event.target.value) })
-                    }
-                  /> */}
-
-
+                      {metaTypeOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                     {errors.type && (
+                    <small className="text-danger d-flex mb-2">{errors.type}</small>
+                  )}
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"
