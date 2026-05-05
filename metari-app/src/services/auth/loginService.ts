@@ -14,7 +14,7 @@ export function getUserRole(): string | null {
   return payload.role;
 }
 
-export function getUserName() : string | null {
+export function getUserName(): string | null {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
@@ -22,7 +22,7 @@ export function getUserName() : string | null {
   return payload.username;
 }
 
-export function getUserFullName() : string | null {
+export function getUserFullName(): string | null {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
@@ -44,4 +44,15 @@ export function getUserEmail(): string | null {
 
   const payload = JSON.parse(atob(token.split(".")[1]));
   return payload.email;
+}
+
+export function getUserStats(): any {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  return {
+    completed_tasks: payload.completed_tasks,
+    score: payload.score
+  }
 }

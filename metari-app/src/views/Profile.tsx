@@ -1,13 +1,15 @@
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { UserProfilePicture } from "../components/UserProfilePicture";
-import { getUserFullName, getUserName } from "../services/auth/loginService";
+import { getUserFullName, getUserName, getUserStats } from "../services/auth/loginService";
 import UserProfileForm from "../components/UserProfileForm";
+import UserProfileStats from "../components/UserProfileStats";
 
 export default function Profile() {
   const navigate = useNavigate();
   const name = getUserFullName();
   const username = getUserName();
+  const stats = getUserStats();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,8 +34,11 @@ export default function Profile() {
               <h3>{username}</h3>
             </div>
           </div>
-          <div className="col-md-8">
+          <div className="col-md-5">
             <UserProfileForm></UserProfileForm>
+          </div>
+          <div className="col-md-2">
+            <UserProfileStats completed_tasks={stats?.completed_tasks} score={stats?.score} ></UserProfileStats>
           </div>
         </div>
       </div>
