@@ -44,7 +44,9 @@ const login = async (req, res, next) => {
         name: existingUser.name,
         email: existingUser.email,
         username: existingUser.username,
-        role: existingUser.role
+        role: existingUser.role,
+        completed_tasks: existingUser.completed_tasks,
+        score: existingUser.score
       },
       SECRET,
       { expiresIn: "1h" },
