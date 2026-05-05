@@ -19,20 +19,10 @@ import type { categoryType } from "../types/categoryType"
 import type { metaType } from "../types/metaType";
 import type { userTypeFrontend } from "../types/userTypeFrontend";
 import type { groupType } from "../types/groupType";
-
-//import { MetaList } from "../components/MetaList";
-//import { useEffect, useState } from "react";
-import { useMetas } from "../services/metaService";
-//import { fetchCategories } from "../services/categoryService";
-//import { CategoryList } from "../components/CategoryList";
 import { useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/loginService";
 
-//import type { categoryType } from "../types/categoryType";
-
 export default function AdminPanel() {
-  const [menuSelection, setMenuSelection] = useState<string>("metas");
-  const [categories, setCategories] = useState<categoryType[]>([]);
 
   const navigate = useNavigate();
 
