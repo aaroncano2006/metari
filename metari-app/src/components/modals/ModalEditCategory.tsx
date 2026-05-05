@@ -25,7 +25,7 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
           <div className="row justify-content-center">
             <div className="col-12 col-sm-6">
               <div className="modalWindow">
-                <h5>Edit Category</h5>
+                <h5>Edita categoria</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()

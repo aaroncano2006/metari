@@ -1,11 +1,11 @@
 import { axiosConnection } from "./axiosConnection"
-import type { userTypeFrontend } from "../types/userTypeFrontend"
+
+import type { groupUserType } from "../types/groupUserType";
 
 
 
-
-export async function fetchGroupUsers(): Promise<userTypeFrontend[]> {
-  const { data } = await axiosConnection.get<userTypeFrontend[]>("/grups-usuaris");
+export async function fetchGroupUsers(): Promise<groupUserType[]> {
+  const { data } = await axiosConnection.get<groupUserType[]>("/grups-usuaris");
 
   return data;
 }

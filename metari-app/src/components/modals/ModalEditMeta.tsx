@@ -69,14 +69,16 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                       setFormData({ ...formData, type: event.target.value as "task" | "challenge"  })
                     }
                   />
-                  <label htmlFor="author_id">Autor</label>
+
+                  
+                  {/* <label htmlFor="author_id">Autor</label>
 
                   <input className="form-control mb-2"
                     type="number" value={formData.author_id} id="author_id"
                     onChange={(event) =>
                       setFormData({ ...formData, author_id: Number(event.target.value) })
                     }
-                  />
+                  /> */}
 
 
 

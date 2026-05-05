@@ -1,9 +1,11 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import { updateUser } from "../../services/userService"
 import type { groupType } from "../../types/groupType"
 import { updateGroup } from "../../services/groupService"
 // import { fetchUsers } from "../../services/userService"
+import { fetchGroupById } from "../../services/groupService"
+import type { groupUserType } from "../../types/groupUserType"
 
 
 
@@ -15,18 +17,33 @@ type ModalEditProps = {
   setter: React.Dispatch<React.SetStateAction<groupType[]>>
 }
 
+
+
+
 export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) {
 
-  //  const usersGroup = fetchUsers()
-
-
+  
   const [formData, setFormData] = useState({
     name: group.name,
     description: group.description,
     owner_id: group.owner_id,
     is_public: group.is_public,
-
+    
   })
+  
+    const [usersGroup, setUsersGroup] = useState<any>(null)
+
+  
+  useEffect(() => {
+    const loadGroup = async () => {
+      const data = await fetchGroupById(group.id)
+      setUsersGroup(data)
+    }
+
+    loadGroup()
+  }, [])
+
+  const users = usersGroup?.groupUsers?.map((groupUsers: groupUserType) => groupUsers.user) ?? []
 
   return (
     <>
@@ -35,7 +52,7 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
           <div className="row justify-content-center">
             <div className="col-12 col-sm-6">
               <div className="modalWindow">
-                <h5>Edita Usuari</h5>
+                <h5>Edita el Grup</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
@@ -69,14 +86,25 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
-                  <label htmlFor="owner_id">Autor del grup</label>
 
-                  <input className="form-control mb-2"
-                    type="number" value={formData.owner_id} id="owner_id"
-                    onChange={(event) =>
-                      setFormData({ ...formData, owner_id: Number(event.target.value) })
-                    }
-                  />
+
+                     <label htmlFor="owner">Autor del grup</label>
+                <select
+                  className="form-select mb-2"
+                  value={formData.owner_id}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      owner_id: Number(e.target.value),
+                    })
+                  }
+                >
+                  {users.map((user: any) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  ))}
+                </select>
 
                   <label htmlFor="is_public">El grup es public?</label>
                   <input className=" form-check mb-2"
@@ -85,12 +113,6 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                       setFormData({ ...formData, is_public: event.target.checked })
                     }
                   />
-
-
-
-
-
-
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"
