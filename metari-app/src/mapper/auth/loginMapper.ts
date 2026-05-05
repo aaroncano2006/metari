@@ -1,10 +1,12 @@
-import type { loginType } from "../../types/auth/loginType"
-import type { registerType } from "../../types/auth/registerType"
+import type { loginType } from "../../types/auth/loginType";
+import type { profileType } from "../../types/auth/profileType";
+import type { registerType } from "../../types/auth/registerType";
 
-export function mapLogin(register: registerType): loginType {
+export function mapLogin(data: registerType | profileType): loginType {
   return {
-    email_or_username: register.email,
-    password: register.password,
-    remember_password: register.remember_password,
-  }
+    email_or_username: data.email ?? data.username ?? "",
+    password: data.password ?? "",
+    remember_password:
+      "remember_password" in data ? (data.remember_password ?? false) : false,
+  };
 }
