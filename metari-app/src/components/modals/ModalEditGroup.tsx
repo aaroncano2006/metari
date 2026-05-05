@@ -6,6 +6,7 @@ import { updateGroup } from "../../services/groupService"
 // import { fetchUsers } from "../../services/userService"
 import { fetchGroupById } from "../../services/groupService"
 import type { groupUserType } from "../../types/groupUserType"
+import { groupSchema } from "../../schemas/groupSchema"
 
 
 
@@ -21,19 +22,20 @@ type ModalEditProps = {
 
 
 export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) {
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  
+
   const [formData, setFormData] = useState({
     name: group.name,
     description: group.description,
     owner_id: group.owner_id,
     is_public: group.is_public,
-    
-  })
-  
-    const [usersGroup, setUsersGroup] = useState<any>(null)
 
-  
+  })
+
+  const [usersGroup, setUsersGroup] = useState<any>(null)
+
+
   useEffect(() => {
     const loadGroup = async () => {
       const data = await fetchGroupById(group.id)
@@ -57,6 +59,21 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
 
+                  const validation = groupSchema.safeParse(formData)
+
+                  if (!validation.success) {
+                    const errors: Record<string, string> = {}
+
+                    validation.error.issues.forEach((issue) => {
+                      const field = issue.path[0] as string
+                      errors[field] = issue.message
+                    })
+
+                    setErrors(errors)
+                    return
+                  }
+                  setErrors({})
+
                   const updatedGroup = await updateGroup(group.id, formData)
 
                   setter(prev =>
@@ -78,33 +95,38 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                       setFormData({ ...formData, name: event.target.value })
                     }
                   />
-                  <label htmlFor="description">Descripcio</label>
+                  {errors.name && (
+                    <small className="text-danger d-flex mb-2">{errors.name}</small>
+                  )}
 
+                  <label htmlFor="description">Descripcio</label>
                   <textarea className="form-control mb-2"
                     value={formData.description} id="description"
                     onChange={(event) =>
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
+                  {errors.description && (
+                    <small className="text-danger d-flex mb-2">{errors.description}</small>
+                  )}
 
-
-                     <label htmlFor="owner">Autor del grup</label>
-                <select
-                  className="form-select mb-2"
-                  value={formData.owner_id}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      owner_id: Number(e.target.value),
-                    })
-                  }
-                >
-                  {users.map((user: any) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name}
-                    </option>
-                  ))}
-                </select>
+                  <label htmlFor="owner">Autor del grup</label>
+                  <select
+                    className="form-select mb-2"
+                    value={formData.owner_id}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        owner_id: Number(e.target.value),
+                      })
+                    }
+                  >
+                    {users.map((user: any) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name}
+                      </option>
+                    ))}
+                  </select>
 
                   <label htmlFor="is_public">El grup es public?</label>
                   <input className=" form-check mb-2"
