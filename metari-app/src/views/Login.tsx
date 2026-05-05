@@ -1,7 +1,27 @@
+import LoginForm from "../components/LoginForm";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
-  return(
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/");
+    }
+  }, []);
+
+  return (
     <>
-      <h1>Login Page</h1>
+      <div className="container-fluid">
+        <div className="row mt-5 d-flex justify-content-center">
+          <div className="col-5">
+            <LoginForm></LoginForm>
+          </div>
+        </div>
+      </div>
     </>
-    )
+  );
 }
