@@ -45,8 +45,8 @@ const login = async (req, res, next) => {
         email: existingUser.email,
         username: existingUser.username,
         role: existingUser.role,
-        completed_tasks: existingUser.completed_tasks,
-        score: existingUser.score
+        completed_tasks: utils.handleBigInt(existingUser.completed_tasks),
+        score: utils.handleBigInt(existingUser.score)
       },
       SECRET,
       { expiresIn: "1h" },
