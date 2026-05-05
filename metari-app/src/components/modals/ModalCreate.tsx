@@ -1,10 +1,18 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { createCategory } from "../../services/categoryService"
 import { createMeta } from "../../services/metaService"
+import { fetchCategories } from "../../services/categoryService"
 
 import type { categoryType } from "../../types/categoryType"
 import type { metaType } from "../../types/metaType"
 import type { userTypeFrontend } from "../../types/userTypeFrontend"
+
+
+//schemas for zod
+import { metaSchema } from "../../schemas/metaSchema"
+import { categorySchema } from "../../schemas/categorySchema"
+import { userSchema } from "../../schemas/userSchema"
+import { groupSchema } from "../../schemas/groupSchema"
 
 
 type ModalEditProps = {
@@ -14,53 +22,102 @@ type ModalEditProps = {
 
 export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps) {
 
+  const [categories, setCategories] = useState<any[]>([])
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      const data = await fetchCategories()
+      setCategories(data)
+    }
+
+    loadCategories()
+  }, [])
+
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // seleccionem schema segons el cas
+  function getSchema() {
+    switch (creatingEntry) {
+      case "metas":
+        return metaSchema
+      case "categories":
+        return categorySchema
+      case "usuaris":
+        return userSchema
+      case "grups":
+        return groupSchema
+      default:
+        return null
+    }
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    event.preventDefault()
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget)
+    const schema = getSchema()
+    if (!schema) {
+      return
+    }
 
-    let data: any = {};
+    if (creatingEntry === "metas") {
+      const data = {
+        title: formData.get("title"),
+        description: formData.get("description"),
+        category_id: Number(formData.get("category_id")),
+        type: formData.get("type"),
+      }
+
+      const validation = metaSchema.safeParse(data)
+
+      if (!validation.success) {
+        const fieldErrors: Record<string, string> = {}
+
+        validation.error.issues.forEach((issue) => {
+          const field = issue.path[0] as string
+          fieldErrors[field] = issue.message
+        })
+
+        setErrors(fieldErrors)
+        return
+      }
+
+      setErrors({})
+
+      await createMeta(validation.data)
+    }
 
     if (creatingEntry === "categories") {
-      data = {
-        name: formData.get("name") as string,
-        description: formData.get("description") as string
-      };
-      await createCategory(data);
+      const data = {
+        name: formData.get("name"),
+        description: formData.get("description"),
+      }
 
-    }
-    if (creatingEntry === "metas") {
-      data = {
-        title: formData.get("title") as string,
-        description: formData.get("description") as string,
-        author_id: 1, //agafar segons usuari logejat
-        group_id: 2, // select dels grups del usuari logejat
-        category_id: formData.get("category_id") ? Number(formData.get("category_id")) : null,
-        // type: ""
-        // type: formData.get("type")?.toString().trim() ? formData.get("type") : undefined
-        type: formData.get("type")
-      };
-      await createMeta(data);
+      const validation = categorySchema.safeParse(data)
+      if (!validation.success) {
+        const fieldErrors: Record<string, string> = {}
 
-    }
-    if (creatingEntry === "usuaris") {
-      data = {
+        validation.error.issues.forEach((issue) => {
+          const field = issue.path[0] as string
+          fieldErrors[field] = issue.message
+        })
 
-      };
-    }
-    if (creatingEntry === "grups") {
-      data = {
+        setErrors(fieldErrors)
+        return
+      }
 
-      };
+      setErrors({})
+
+      await createCategory(validation.data)
     }
+
     setCreatingEntry(null)
   }
 
 
   const inputsFormulari = () => {
     if (creatingEntry === "metas") {
-      
+
       //indexed access type
       const metaTypeOptions: metaType["type"][] = ["task", "challenge"];
 
@@ -71,15 +128,39 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
             <label htmlFor="title">Títol</label>
             <input className="form-control mb-2" type="text" name="title" id="title" />
           </div>
+          {errors.title && (
+            <small className="text-danger d-block mb-2">
+              {errors.title}
+            </small>
+          )}
 
           <div className="d-flex flex-column">
             <label htmlFor="description">Descripció</label>
             <textarea className="form-control mb-2" name="description" id="description" />
           </div>
+          {errors.description && (
+            <small className="text-danger d-block mb-2">
+              {errors.description}
+            </small>
+          )}
+
+
           <div className="d-flex flex-column">
-            <label htmlFor="category_id">Categoria</label>
-            <input className="form-control mb-2" type="text" name="category_id" id="category_id" />
+            <label htmlFor="category">Categoria</label>
+            <select className="form-select mb-2" name="category" id="category"
+            >
+              {categories.map((category: any) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </div>
+
+
+
+
+
           <div className="d-flex flex-column">
             <label htmlFor="type">Tipus</label>
             <select className="form-select mb-2" name="type" id="type">
@@ -102,11 +183,21 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
             <label htmlFor="name">Nom</label>
             <input className="form-control mb-2" type="text" name="name" id="name" />
           </div>
+          {errors.name && (
+            <small className="text-danger d-block mb-2">
+              {errors.name}
+            </small>
+          )}
 
           <div className="d-flex flex-column">
             <label htmlFor="description">Descripcio</label>
             <textarea className="form-control mb-2" name="description" id="description" />
           </div>
+          {errors.description && (
+            <small className="text-danger d-block mb-2">
+              {errors.description}
+            </small>
+          )}
         </>
       );
     }
@@ -160,13 +251,6 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
                 >
                   {inputsFormulari()}
 
-                  {/* <input className="form-control mb-2"
-                    type="text" value={formData.name}
-                    onChange={(event) =>
-                      setFormData({ ...formData, name: event.target.value })
-                    }
-                  />*/}
-
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"
                       type="button"
@@ -176,7 +260,7 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
                     </button>
 
                     <button type="submit" className="btn btn-primary">
-                      Actualitza
+                      Crea
                     </button>
                   </div>
                 </form>

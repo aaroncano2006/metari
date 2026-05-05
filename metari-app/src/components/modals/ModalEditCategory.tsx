@@ -2,6 +2,7 @@ import type { categoryType } from "../../types/categoryType"
 import { useState } from "react"
 
 import { updateCategory } from "../../services/categoryService"
+import { categorySchema } from "../../schemas/categorySchema"
 
 
 type ModalEditProps = {
@@ -11,6 +12,8 @@ type ModalEditProps = {
 }
 
 export function ModalEditCategory({ category, setEditCategory, setter }: ModalEditProps) {
+
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const [formData, setFormData] = useState({
     name: category.name,
@@ -29,6 +32,21 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
+
+                  const validation = categorySchema.safeParse(formData)
+
+                  if (!validation.success) {
+                    const errors: Record<string, string> = {}
+
+                    validation.error.issues.forEach((issue) => {
+                      const field = issue.path[0] as string
+                      errors[field] = issue.message
+                    })
+
+                    setErrors(errors)
+                    return
+                  }
+                  setErrors({})
 
                   const updatedCategory = await updateCategory(category.id, formData)
 
@@ -52,6 +70,9 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
                       setFormData({ ...formData, name: event.target.value })
                     }
                   />
+                  {errors.name && (
+                    <small className="text-danger d-flex mb-2">{errors.name}</small>
+                  )}
                   <label htmlFor="description">Descripcio</label>
                   <textarea className="form-control mb-2"
                     value={formData.description} id="description"
@@ -59,6 +80,9 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
                       setFormData({ ...formData, description: event.target.value })
                     }
                   />
+                  {errors.description && (
+                    <small className="text-danger d-flex mb-2">{errors.description}</small>
+                  )}
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"

@@ -2,6 +2,7 @@ import { useState } from "react"
 
 import type { userTypeFrontend } from "../../types/userTypeFrontend"
 import { updateUser } from "../../services/userService"
+import { userSchema } from "../../schemas/userSchema"
 
 
 type ModalEditProps = {
@@ -11,6 +12,8 @@ type ModalEditProps = {
 }
 
 export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const userTypeOptions: userTypeFrontend["role"][] = ["user", "admin"];
 
   const [formData, setFormData] = useState({
     name: user.name,
@@ -33,6 +36,22 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                 <form onSubmit={async (event) => {
                   event.preventDefault()
 
+
+                  const validation = userSchema.safeParse(formData)
+
+                  if (!validation.success) {
+                    const errors: Record<string, string> = {}
+
+                    validation.error.issues.forEach((issue) => {
+                      const field = issue.path[0] as string
+                      errors[field] = issue.message
+                    })
+
+                    setErrors(errors)
+                    return
+                  }
+                  setErrors({})
+
                   const updatedUser = await updateUser(user.id, formData)
 
                   setter(prev =>
@@ -54,6 +73,9 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                       setFormData({ ...formData, name: event.target.value })
                     }
                   />
+                  {errors.name && (
+                    <small className="text-danger d-flex mb-2">{errors.name}</small>
+                  )}
 
                   <label htmlFor="username">Nom usuari</label>
                   <input className="form-control mb-2"
@@ -62,22 +84,40 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                       setFormData({ ...formData, username: event.target.value })
                     }
                   />
-                  <label htmlFor="email">Email</label>
+                  {errors.username && (
+                    <small className="text-danger d-flex mb-2">{errors.username}</small>
+                  )}
 
+                  <label htmlFor="email">Email</label>
                   <input className="form-control mb-2"
                     type="text" value={formData.email} id="email"
                     onChange={(event) =>
                       setFormData({ ...formData, email: event.target.value })
                     }
                   />
-                  <label htmlFor="role">Rol</label>
+                  {errors.email && (
+                    <small className="text-danger d-flex mb-2">{errors.email}</small>
+                  )}
 
-                  <input className="form-control mb-2"
-                    type="text" value={formData.role} id="role"
-                    onChange={(event) =>
-                      setFormData({ ...formData, role: event.target.value as "user" | "admin" })
-                    }
-                  />
+
+                  <div className="d-flex flex-column">
+                    <label htmlFor="type">Tipus</label>
+                    <select className="form-select mb-2" value={formData.role} name="type" id="type"
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          role: event.target.value as "user" | "admin",
+                        })
+                      }>
+
+                      {userTypeOptions.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   <label htmlFor="completed_tasks">Tasques completades</label>
                   <input className="form-control mb-2"
                     type="number" value={formData.completed_tasks} id="completed_tasks"
@@ -85,6 +125,10 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                       setFormData({ ...formData, completed_tasks: Number(event.target.value) })
                     }
                   />
+                  {errors.completed_tasks && (
+                    <small className="text-danger d-flex mb-2">{errors.completed_tasks}</small>
+                  )}
+
                   <label htmlFor="score">Puntuacio de challanges</label>
                   <input className="form-control mb-2"
                     type="number" value={formData.score} id="score"
@@ -92,7 +136,9 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                       setFormData({ ...formData, score: Number(event.target.value) })
                     }
                   />
-
+                  {errors.score && (
+                    <small className="text-danger d-flex mb-2">{errors.score}</small>
+                  )}
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"

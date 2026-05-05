@@ -5,6 +5,6 @@ export const metaSchema = z.object({
   description: z.string().min(5, "La descripcio ha de tenir minim 5 caracters"),
   author_id: z.number().int().positive(),
   group_id: z.number().int().positive(),
-  category_id: z.number().int().positive(),
+  // category_id: z.number().int().positive(),
   type: z.enum(["task", "challenge"]),
 })
