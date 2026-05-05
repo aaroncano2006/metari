@@ -7,17 +7,17 @@ import { CategoryList } from "../components/CategoryList"
 // import { fetchUsers } from "../services/userService"
 // import type { userTypeFrontend } from "../types/userTypeFrontend"
 // import { allUsers } from "../hooks/useUsers"
-import { useUsers } from "../services/userService"
+// import { useUsers } from "../services/userService"
 import type { categoryType } from "../types/categoryType"
 import type { metaType } from "../types/metaType"
-import { useMetas } from "../services/metaService"
+// import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
 
 
 export default function Home() {
   // const [users, setUsers] = useState<userTypeFrontend[]>([])
-  const users = useUsers()
-  const metas = useMetas()
+  // const users = useUsers()
+  // const metas = useMetas()
   // const categories = useCategories()
   
   // const [metas, setMetas] = useState<metaType[]>([])
@@ -39,10 +39,10 @@ export default function Home() {
             {/* <CategoryList categories={categories} /> */}
           </div>
           <div className="col">
-            <MetaList metas={metas} />
+            {/* <MetaList metas={metas} /> */}
           </div>
           <div className="col-3">
-            <UserList users={users} />
+            {/* <UserList users={users} /> */}
           </div>
         </div>
       </div>

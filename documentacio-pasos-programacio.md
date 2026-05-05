@@ -317,6 +317,11 @@ Instal·lem axios:
 ```bash
 npm install axios
 ```
+Instal·lem zod:
+```bash
+npm install zod
+```
+
 
 # executar projecte en desenvolupament
 

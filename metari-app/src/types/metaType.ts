@@ -4,6 +4,7 @@ export type metaType = {
   description:string 
   author_id: number
   group_id: number 
+  category_id: number
   type: "task" | "challenge"
   
 }

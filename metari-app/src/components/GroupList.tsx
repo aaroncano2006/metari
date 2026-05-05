@@ -1,60 +1,63 @@
 import type { userTypeFrontend } from "../types/userTypeFrontend"
 import { useState } from "react"
 import { ModalEditUser } from "./modals/ModalEditUser"
+import { ModalEditGroup } from "./modals/ModalEditGroup";
+import type { groupType } from "../types/groupType";
 
 
-type UserListProps = {
-  users: userTypeFrontend[]
-  setter: React.Dispatch<React.SetStateAction<userTypeFrontend[]>>
+
+type GroupListProps = {
+  groups: groupType[]
+  setter: React.Dispatch<React.SetStateAction<groupType[]>>
   
 }
 
-export function UserList({ users, setter }: UserListProps) {
+
+export function GroupList({ groups, setter }: GroupListProps) {
 
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
     const toggleEntity = (id: number) => {
       setOpenEntityId(prev => (prev === id ? null : id))
     }
   
-      const [userToEdit, setUserToEdit] = useState<userTypeFrontend | null>(null)
+      const [groupToEdit, setGroupToEdit] = useState<groupType | null>(null)
   return (
     <>
 
       <div className="metaList ">
-              <div className="titolComponent  text-center my-2">Llista d'usuaris</div>
+              <div className="titolComponent  text-center my-2">Llista de grups</div>
               <hr className="m-0" />
       
               <div className="inline">
                 <ul className=" ps-4  m-0  py-2">
-                  {users.map((user) => (
-                    <li key={user.id} className="m-0 p-0" >
-                      <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === user.id ? "mb-0" : "mb-1"}`}
-                        onClick={() => toggleEntity(user.id)}>
+                  {groups.map((group) => (
+                    <li key={group.id} className="m-0 p-0" >
+                      <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
+                        onClick={() => toggleEntity(group.id)}>
       
                         <div className="d-flex py-1 ps-2 pe-3 align-items-center">
-                          {user.username}
+                          {group.name}
                           <button className="  btn btn-warning p-1  me-2  ms-auto"
                             onClick={(event) => {
                               event.stopPropagation()
-                              setUserToEdit(user)
+                              setGroupToEdit(group)
                             }}>Edita</button>
                           <button className="  btn btn-danger p-1   "
                             onClick={async (event) => {
                               event.stopPropagation()
-                              // await deleteUser(user.id)
+                              // await deleteGroup(group.id)
                             }}>X</button>
                         </div>
                       </div>
                       <div className=" metaDetailsBox  my-0 me-3">
-                        {openEntityId === user.id && (
+                        {openEntityId === group.id && (
                           <div className="metaDetails ps-2 py-2">
-                            <div>ID: {user.id}</div>
-                            <div>Nom: {user.name}</div>
-                            <div>e-mail: {user.email}</div>
-                            <div>Rol: {user.role}</div>
-                            <div>completed_tasks: {user.completed_tasks}</div>
-                            <div>Puntuacio: {user.score}</div>
-                            <div>Rol: {user.role}</div>
+                            <div>ID: {group.id}</div>
+                            <div>Nom: {group.name}</div>
+                            <div>Descripcio: {group.description}</div>
+                            <div>owner_id: {group.owner_id}</div>
+                            {/* <div>is_public: {group.is_public}</div> */}
+                            <div>Public: {group.is_public ? "Sí" : "No"}</div>
                           </div>
                         )}
                       </div>
@@ -65,8 +68,8 @@ export function UserList({ users, setter }: UserListProps) {
       
             </div>
             {/* modal editar */}
-                  {userToEdit && (
-                    <ModalEditUser user={userToEdit} setEditUser={setUserToEdit} setter={setter} />
+                  {groupToEdit && (
+                    <ModalEditGroup group={groupToEdit} setEditGroup={setGroupToEdit} setter={setter} />
                   )}
     </>
   )
