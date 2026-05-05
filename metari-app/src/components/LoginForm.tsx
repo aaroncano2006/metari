@@ -156,8 +156,8 @@ export default function LoginForm() {
           </div>
 
           <div className="d-flex justify-content-end gap-5 mt-3">
-            <a href="#" className="text-start">
-              Has oblidat la teva contrasenya?
+            <a href="/register" className="text-start">
+              No tens compte? Registra't
             </a>
 
             <button type="submit" className="btn btn-dark">
