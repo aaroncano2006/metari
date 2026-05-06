@@ -38,11 +38,14 @@ html *{
   
 /* Modal edit components */
 
-.modalOverlay{position: fixed; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.767); padding-top: 20vh;}
+.modalOverlay{z-index: 100; position: fixed; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.767); padding-top: 20vh;}
 .modalWindow{background-color: var(--color-1); padding: 10px; border-radius: 20px;}
 
 /* Categories components */
 
+/* Panell admin */
+
+.createBtn{height:38px;}
 /*Login and Register*/
 .form-card{background-color: var(--color-3) !important;}
 
