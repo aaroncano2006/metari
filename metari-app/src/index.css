@@ -30,6 +30,7 @@ html *{
 .metaEntry { position: relative;  background-color: var(--color-3);  border: 1px solid black;  border-radius: 5px;}  
 .metaEntry:hover{background-color:  var(--color-1);}
 .inline{background-color: var(--color-2); border-radius: 10px 0 0 10px; margin: 10px; padding: 0px; display: flex; flex: 1; flex-direction: column;overflow: auto}
+.inline ul{ list-style-type: none;}
 .metaDetailsBox{ padding: 0 10px; }
 .metaDetails{border:solid 1px black; box-sizing: border-box; border-top: 0px; background-color: var(--color-3); border-radius: 0 0 5px 5px;}
 /* colors for meta types */

@@ -15,8 +15,6 @@ function App() {
   return (
     <>
       <NavBar />
-
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
@@ -24,6 +22,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/logout" element={<Logout/>}/>
+
       </Routes>
     </>
   )
