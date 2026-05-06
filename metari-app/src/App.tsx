@@ -10,6 +10,7 @@ import Register from './views/Register'
 import AdminPanel from './views/AdminPanel'
 import Logout from "./views/Logut";
 import ForgotPassword from "./views/ForgotPassword";
+import RestorePassword from "./views/RestorePassword";
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/logout" element={<Logout/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
+        <Route path="/restore-password" element={<RestorePassword/>}/>
       </Routes>
     </>
   )
