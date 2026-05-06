@@ -1,7 +1,6 @@
 import { axiosConnection } from "./axiosConnection"
 import type { userTypeFrontend } from "../types/userTypeFrontend"
-
-
+import type { userTypeDTO } from "../types/userTypeDTO";
 
 
 export async function fetchUsers(): Promise<userTypeFrontend[]> {
@@ -46,6 +45,7 @@ export async function deleteUser(id: number): Promise<void> {
   } catch (error) {
     console.error("Error eliminant usuari:", error);
   }
+}
   
 export async function usernameExists(username: string, currentUserId?: number): Promise<boolean> {
   const response = await axiosConnection.get<userTypeDTO[]>("/usuaris");
