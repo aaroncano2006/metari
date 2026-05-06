@@ -14,7 +14,7 @@ const forgotPassword = async (req, res, next) => {
       throw error;
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
           {
@@ -67,14 +67,7 @@ const forgotPassword = async (req, res, next) => {
 
       const updatedUser = await prisma.user.update({
         where: {
-          OR: [
-            {
-              email: email_or_username,
-            },
-            {
-              username: email_or_username,
-            },
-          ],
+          id: existingUser.id
         },
         data: {
           restore_token: token,
