@@ -41,23 +41,50 @@ const forgotPassword = async (req, res, next) => {
       { expiresIn: "1h" },
     );
 
-    const updatedUser = await prisma.user.update({
-      where: {
-        OR: [
-          {
-            email: email_or_username,
-          },
-          {
-            username: email_or_username,
-          },
-        ],
-      },
-      data: {
-        restore_token: token
-      }
-    });
+    try {
+      await nodemailer.sendMail({
+        from: "Metari",
+        to: existingUser.email,
+        subject: "Recupera l'accés a Metari!",
 
-    res.json({ token });
+        html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+          <h2>Recupera l'accés a Metari!</h2>
+
+          <p>Hola, <strong>${existingUser.name}</strong>!</p>
+
+          <p>
+            Clica en <a href="#">el següent enllaç</a> per restaurar la teva contrasenya!
+          </p>
+
+          <hr />
+          <small style="color: #666;">
+            Metari - Comunitats, objectius i connexions
+          </small>
+        </div>
+        `,
+      });
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          OR: [
+            {
+              email: email_or_username,
+            },
+            {
+              username: email_or_username,
+            },
+          ],
+        },
+        data: {
+          restore_token: token,
+        },
+      });
+    } catch (err) {
+        throw err;
+    }
+
+    return res.status(200).json({ token });
   } catch (error) {
     next(error);
   }
@@ -66,6 +93,6 @@ const forgotPassword = async (req, res, next) => {
 const restorePassword = async (req, res, next) => {};
 
 module.exports = {
-    forgotPassword,
-    restorePassword
-}
+  forgotPassword,
+  restorePassword,
+};
