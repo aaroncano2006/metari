@@ -126,7 +126,7 @@ export default function LoginForm() {
           </div>
 
           <div className="row mb-4">
-            <a href="#" className="text-start">
+            <a href="/forgot-password" className="text-start">
               Has oblidat la teva contrasenya?
             </a>
           </div>
