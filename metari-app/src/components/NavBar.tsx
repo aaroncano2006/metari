@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getUserRole } from "../services/auth/loginService";
+import { getUserRole, getUserName } from "../services/auth/loginService";
 
 export function NavBar() {
   const [_recharge, setRecharge] = useState(0);
   const token = localStorage.getItem("token");
   const role = getUserRole();
+  const username = getUserName();
+  const vistaActual = useLocation().pathname;
 
   useEffect(() => {
     const handleRecharge = () => setRecharge(cur => cur + 1);
@@ -16,15 +18,11 @@ export function NavBar() {
 
   return (
     <>
-      <div className="navBar">
-        <Link to="/" className="nav-btn">
-          Home
+      <div className="navBar ps-4 pe-4">
+        <Link to="/" className="nav-btn me-auto">
+          Home 
         </Link>
-        {token && (
-          <Link to="/Profile" className="nav-btn">
-            Perfil
-          </Link>
-        )}
+
         {!token && (
           <Link to="/Login" className="nav-btn">
             Login
@@ -35,15 +33,42 @@ export function NavBar() {
             Registra't
           </Link>
         )}
-        {token && (
-          <Link to="/Logout" className="nav-btn">
-            Logout
+        
+        {/* {token && (
+          <Link to="/Profile" className="nav-btn ">
+            Els meus grups
           </Link>
         )}
-        {token && role === "admin" && (
-          <Link to="/Admin" className="nav-btn">
-            Panell Admin
+        {token && (
+          <Link to="/Profile" className="nav-btn  ">
+            Amics
           </Link>
+        )} */}
+
+        {token && (
+          <div className="btn-group">
+            <button type="button" className="text-white btn color dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              {username}
+            </button>
+            <ul className="dropdown-menu dropdown-menu-end">
+              <li>
+                <Link to="/Profile" className="dropdown-item">
+                  Perfil
+                </Link>
+              </li>
+              <li>
+                <Link to="/Logout" className="dropdown-item">
+                  Logout
+                </Link>
+              </li>
+              {token && role === "admin" && (
+                <li><Link to="/Admin" className="dropdown-item">
+                  Panell Admin
+                </Link>
+                </li>
+              )}
+            </ul>
+          </div>
         )}
       </div>
     </>
