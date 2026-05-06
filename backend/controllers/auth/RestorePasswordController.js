@@ -64,3 +64,8 @@ const forgotPassword = async (req, res, next) => {
 };
 
 const restorePassword = async (req, res, next) => {};
+
+module.exports = {
+    forgotPassword,
+    restorePassword
+}
