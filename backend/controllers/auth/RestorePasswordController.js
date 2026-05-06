@@ -3,6 +3,7 @@ const nodemailer = require("../../config/nodemailer");
 const prisma = require("../../config/prisma");
 const jwt = require("jsonwebtoken");
 const SECRET = require("../../config/auth").SECRET;
+const { hash } = require("../../helpers/Utils");
 
 const forgotPassword = async (req, res, next) => {
   try {
@@ -54,7 +55,7 @@ const forgotPassword = async (req, res, next) => {
           <p>Hola, <strong>${existingUser.name}</strong>!</p>
 
           <p>
-            Clica en <a href="#">el següent enllaç</a> per restaurar la teva contrasenya!
+            Clica en <a href="https://localhost:5173/restore-password?token=${token}">el següent enllaç</a> per restaurar la teva contrasenya!
           </p>
 
           <hr />
@@ -83,7 +84,70 @@ const forgotPassword = async (req, res, next) => {
   }
 };
 
-const restorePassword = async (req, res, next) => {};
+const restorePassword = async (req, res, next) => {
+    try {
+        const reqBody = req.body;
+        const token = reqBody.token;
+        const newPassword = reqBody.new_password;
+        const confirmPassword = reqBody.confirm_password;
+
+        if (!token || !newPassword || !confirmPassword) {
+            const error = new Error("Tots els camps són obligatoris!");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        if (newPassword !== confirmPassword) {
+            const error = new Error("Les contrasenyes no coincideixen!");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        if (newPassword.length < 8) {
+            const error = new Error("La contrasenya ha de tenir almenys 6 caràcters!");
+            error.statusCode = 400;
+            throw error;
+        }
+
+        let payload = null;
+        try {
+            payload = jwt.verify(token, SECRET);
+        } catch (err) {
+            throw err;
+        }
+
+        const existingUser = await primsa.user.findFirst({
+            where: {
+                id: payload.id,
+                restore_token: token
+            }
+        });
+
+        if (!existingUser) {
+            const error = new Error("L'usuari al qual pertany el token no existeix!");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const hashedPassword = hash(newPassword);
+
+        await prisma.user.update({
+            where: {
+                id: existingUser.id
+            },
+            data: {
+                password: hashedPassword,
+                restore_token: null
+            }
+        });
+
+        return res.status(200).json({
+            message: "Contrasenya actualitzada correctament!"
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 module.exports = {
   forgotPassword,
