@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { forgotPasswordType } from "../types/auth/forgotPasswordType";
 import { fetchForgotPassword } from "../services/auth/forgotPasswordService";
 
-export default function LoginForm() {
+export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
@@ -22,19 +22,13 @@ export default function LoginForm() {
       return setError("El username o email és obligatori!");
     }
 
+    let response = null;
     try {
-      const response = await fetchForgotPassword(data);
-
-      console.log(response);
-
-      if (response.token) {
-        sessionStorage.setItem("restore-token", response.token);
-      }
+      response = await fetchForgotPassword(data);
 
       setSuccess(true);
     } catch (error: any) {
       setError(`${error}`);
-      sessionStorage.removeItem("restore-token");
     }
   };
 

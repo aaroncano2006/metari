@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
 
-export default function Login() {
+export default function ForgotPassword() {
   const navigate = useNavigate();
   
   useEffect(() => {
