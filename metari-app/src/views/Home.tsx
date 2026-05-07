@@ -22,6 +22,9 @@ export default function Home() {
   const [categories, setCategories] = useState<categoryType[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
 
+  const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
+
+
   useEffect(() => {
     fetchUsers().then(setUsers)
     fetchCategories().then(setCategories)
@@ -37,10 +40,15 @@ export default function Home() {
         <div className="row mt-5">
 
           <div className="col-12 col-md-3">
-            <CategoryList categories={categories} setter={setCategories} />
+            <CategoryList 
+            categories={categories} 
+            setter={setCategories} 
+            filteredCategory={filteredCategory}
+            setFilteredCategory={setFilteredCategory}
+            />
           </div>
           <div className="col-12 col-md">
-            <MetaList metas={metas} setter={setMetas}/>
+            <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory}/>
           </div>
           <div className="col-12 col-md-3">
             <UserList users={users} setter={setUsers} />

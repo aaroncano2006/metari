@@ -10,17 +10,20 @@ import { useLocation } from "react-router-dom";
 type CategoryListProps = {
   categories: categoryType[]
   setter: React.Dispatch<React.SetStateAction<categoryType[]>>
+  filteredCategory: number | null
+  setFilteredCategory: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 
-export function CategoryList({ categories, setter }: CategoryListProps) {
-  
+export function CategoryList({ categories, setter, filteredCategory, setFilteredCategory }: CategoryListProps) {
+
   const [openEntitySelected, setOpenEntitySelected] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntitySelected(prev => (prev === id ? null : id))
   }
-  
+
   const [categoryToEdit, setCategoryToEdit] = useState<categoryType | null>(null)
+  // const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
 
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
@@ -43,7 +46,20 @@ export function CategoryList({ categories, setter }: CategoryListProps) {
                   onClick={() => toggleEntity(category.id)}>
 
                   <div className="d-flex py-1 ps-2 pe-2 align-items-center">
-                    {category.name}
+                    <div className="me-auto">{category.name}</div>
+                    {vistaActual === "/" &&
+                      <input
+                        type="checkbox"
+                        checked={filteredCategory === category.id}
+                        onClick={(event) => {
+                          event.stopPropagation()                          
+                          setFilteredCategory(prev =>
+                            prev === category.id ? null : category.id
+                          )
+                        }}
+                        
+                      />
+                    }
                     {canEdit &&
                       <button className="  btn btn-warning p-1  me-2  ms-auto"
                         onClick={(event) => {
@@ -52,7 +68,7 @@ export function CategoryList({ categories, setter }: CategoryListProps) {
                           setCategoryToEdit(category)
                         }}>Edita</button>
                     }
-                    {canEdit  &&  
+                    {canEdit &&
                       <button className="  btn btn-danger p-1   "
                         onClick={async (event) => {
                           event.stopPropagation()

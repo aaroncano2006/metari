@@ -9,9 +9,10 @@ import { useLocation } from "react-router-dom";
 type MetaListProps = {
   metas: metaType[]
   setter: React.Dispatch<React.SetStateAction<metaType[]>>
+  filteredCategory?: number | null
 }
 
-export function MetaList({ metas, setter }: MetaListProps) {
+export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
@@ -23,6 +24,11 @@ export function MetaList({ metas, setter }: MetaListProps) {
   const vistaActual = useLocation().pathname;
   const canEdit = vistaActual !== "/" && role === "admin";
 
+  //si filteredCategory es null
+  const filteredMetas = metas.filter(meta =>
+    !filteredCategory || meta.category_id === filteredCategory
+  )
+
   return (
     <>
 
@@ -33,7 +39,7 @@ export function MetaList({ metas, setter }: MetaListProps) {
 
         <div className="inline">
           <ul className=" ps-2  m-0  py-2">
-            {metas.map((meta) => (
+            {filteredMetas.map((meta) => (
               <li key={meta.id} className="m-0 p-0" >
                 <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === meta.id ? "mb-0" : "mb-1"} ${meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                   onClick={() => toggleEntity(meta.id)}>
