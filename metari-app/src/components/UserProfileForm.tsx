@@ -114,6 +114,8 @@ export default function UserProfileForm() {
         localStorage.setItem("token", response.token);
       }
 
+      window.dispatchEvent(new Event("profileChange"));
+
       setSuccess(true);
     } catch (error: any) {
       setError("Error: " + error);
