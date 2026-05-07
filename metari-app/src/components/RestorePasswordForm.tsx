@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import type { restorePasswordType } from "../types/auth/restorePasswordType";
+import { fetchRestorePassword } from "../services/auth/restorePasswordService";
 
 export default function RestorePasswordForm() {
   const [error, setError] = useState<string | null>(null);
@@ -20,24 +21,56 @@ export default function RestorePasswordForm() {
   });
 
   const handleSubmit = async (data: restorePasswordType) => {
-    // setError(null);
-    // setSuccess(false);
-    // if (!data.email_or_username.trim()) {
-    //   return setError("El username o email és obligatori!");
-    // }
-    // let response = null;
-    // try {
-    //   response = await fetchForgotPassword(data);
-    //   setSuccess(true);
-    // } catch (error: any) {
-    //   setError(`${error}`);
-    // }
+    setError(null);
+    setSuccess(false);
+
+    if (!data.new_password.trim()) {
+      return setError("La contrasenya és obligatòria");
+    }
+
+    if (data.new_password) {
+      if (typeof data.new_password !== "string") {
+        return setError(
+          "La contrasenya introduïda no és vàlida! Ha de ser un text!",
+        );
+      }
+
+      if (data.new_password.length < 8) {
+        return setError("La contrasenya ha de contenir almenys 8 caràcters!");
+      }
+    }
+
+    if (!data.confirm_password.trim()) {
+      return setError("La contrasenya és obligatòria");
+    }
+
+    if (data.confirm_password) {
+      if (typeof data.confirm_password !== "string") {
+        return setError(
+          "La contrasenya introduïda no és vàlida! Ha de ser un text!",
+        );
+      }
+
+      if (data.confirm_password.length < 8) {
+        return setError("La contrasenya ha de contenir almenys 8 caràcters!");
+      }
+    }
+
+    if (data.new_password !== data.confirm_password) {
+      return setError("Les contrasenyes no coincideixen!");
+    }
+
+    let response = null;
+    try {
+      response = await fetchRestorePassword(data);
+      setSuccess(true);
+    } catch (error: any) {
+      setError(`${error}`);
+    }
   };
 
   if (!token) {
-    return (
-      <div className="alert alert-danger">Token no trobat a la URL</div>
-    );
+    return <div className="alert alert-danger">Token no trobat a la URL</div>;
   }
 
   return (
