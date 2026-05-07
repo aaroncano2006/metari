@@ -300,9 +300,48 @@ const rejectInvitation = async (req, res, next) => {
   }
 };
 
+
+
+
+const getFriendsByID = async (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.userid);
+
+    if (isNaN(userId)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+    const invitations = await prisma.invitation.findMany({
+      where: {
+        status: "accepted",
+        group_id: null,
+        OR: [
+          { sender_id: userId },
+          { receiver_id: userId },
+        ],
+      },
+      include: { sender: true, receiver: true },
+    });
+
+    const friendMap = new Map()
+    invitations.forEach(inv => {
+      const friend = inv.sender_id === userId ? inv.receiver : inv.sender
+      friendMap.set(friend.id, friend)
+    })
+    const friends = [...friendMap.values()]
+    res.status(200).json(utils.handleBigInt(friends));
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    next(error);
+  }
+};
+
 module.exports = {
   getInvitations,
   sendInvitations,
   acceptInvitation,
   rejectInvitation,
+  getFriendsByID,
+
 };

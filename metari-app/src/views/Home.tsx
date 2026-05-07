@@ -5,12 +5,16 @@ import { UserList } from "../components/UserList"
 import { MetaList } from "../components/MetaList"
 import { CategoryList } from "../components/CategoryList"
 import { GroupList } from "../components/GroupList"
+import { FriendList } from "../components/FriendList"
 import { fetchUsers } from "../services/userService"
 import type { userTypeFrontend } from "../types/userTypeFrontend"
 import type { categoryType } from "../types/categoryType"
 import type { groupType } from "../types/groupType"
 import type { metaType } from "../types/metaType"
 import { fetchGroups } from "../services/groupService"
+import { getUserId } from "../services/auth/loginService"
+import { fetchFriends } from "../services/invitationService";
+
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
 
@@ -21,6 +25,8 @@ export default function Home() {
   const [metas, setMetas] = useState<metaType[]>([])
   const [categories, setCategories] = useState<categoryType[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
+  const [friends, setFriends] = useState<userTypeFrontend[]>([])
+
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
 
@@ -30,6 +36,7 @@ export default function Home() {
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
     fetchGroups().then(setGroups)
+    fetchFriends(getUserId()!).then(setFriends)
 
   }, [])
 
@@ -51,6 +58,7 @@ export default function Home() {
             <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory}/>
           </div>
           <div className="col-12 col-md-3">
+            <FriendList users={friends} setter={setFriends} />
             <UserList users={users} setter={setUsers} />
             <GroupList groups={groups} setter={setGroups} />
           </div>

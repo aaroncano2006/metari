@@ -8,6 +8,8 @@ router.post('/:senderid/:receiverid/:groupid', invitationController.sendInvitati
 router.put('/:receiverid/:id', invitationController.acceptInvitation);
 router.delete('/:userid/:id', invitationController.rejectInvitation);
 
+router.get('/friends/:userid', invitationController.getFriendsByID);
+
 // userid pot ser tant la id de l'emissor com la del
 // receptor
 
