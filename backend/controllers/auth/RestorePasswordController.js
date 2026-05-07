@@ -55,7 +55,7 @@ const forgotPassword = async (req, res, next) => {
           <p>Hola, <strong>${existingUser.name}</strong>!</p>
 
           <p>
-            Clica en <a href="https://localhost:5173/restore-password?token=${token}">el següent enllaç</a> per restaurar la teva contrasenya!
+            Clica en <a href="http://localhost:5173/restore-password?token=${token}">el següent enllaç</a> per restaurar la teva contrasenya!
           </p>
 
           <hr />
@@ -129,7 +129,7 @@ const restorePassword = async (req, res, next) => {
             throw error;
         }
 
-        const hashedPassword = hash(newPassword);
+        const hashedPassword = await hash(newPassword);
 
         await prisma.user.update({
             where: {
