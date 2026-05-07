@@ -70,7 +70,8 @@ export function GroupList({ groups, setter }: GroupListProps) {
                       }
                       <div>Nom: {group.name}</div>
                       <div>Descripcio: {group.description}</div>
-                      <div>owner_id: {group.owner_id}</div>
+                      {/* <div>owner_id: {group.owner_id}</div> */}
+                      <div>Creador: {group.owner.username}</div>
                     </div>
                   )}
                 </div>

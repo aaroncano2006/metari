@@ -74,8 +74,8 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                         }
                           <div>Tipus: {meta.type}</div>
                           <div>Descripcio: {meta.description}</div>
-                          <div>Categoria: {meta.category_id}</div>
-                          <div>Autor: {meta.author_id}</div>
+                          <div>Categoria: {meta.category.name}</div>
+                          <div>Autor: {meta.author.username}</div>
                       {canAddToGroup &&
                         <div className="d-flex">
                           <button className="  btn btn-primary p-1  me-2  ms-auto"

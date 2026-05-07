@@ -1,4 +1,5 @@
 import type { groupUserType } from "./groupUserType"
+import type { userTypeFrontend } from "./userTypeFrontend"
 
 export type groupType = {
   id: number
@@ -11,5 +12,6 @@ export type groupType = {
 
   
   groupUsers: groupUserType
+  owner: userTypeFrontend
   
 }
