@@ -19,8 +19,8 @@ const seedUsers = async () => {
           email: "naimus@test.com",
           password: await utils.hash("123456"),
           role: "admin",
-          completed_tasks: 0,
-          score: 0,
+          completed_tasks: 13,
+          score: 500,
         },
         {
           name: "Bruno Oro",
@@ -46,8 +46,8 @@ const seedUsers = async () => {
           email: "aaron@test.com",
           password: await utils.hash("123456"),
           role: "admin",
-          completed_tasks: 0,
-          score: 0,
+          completed_tasks: 50,
+          score: 99,
         },
         
       ],

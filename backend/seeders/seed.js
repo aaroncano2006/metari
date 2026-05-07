@@ -20,7 +20,7 @@ const seed = async () => {
         await seedProofs();
         await seedComments();
         await seedGroupsUsers();
-        await seedIndexedMetas();
+        // await seedIndexedMetas();
         
     } catch (error) {
         console.log("Error seeding database! " + error);

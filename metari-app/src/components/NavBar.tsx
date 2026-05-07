@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getUserRole, getUserName } from "../services/auth/loginService";

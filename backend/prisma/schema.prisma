@@ -18,9 +18,9 @@ model Category {
   description String?
   created_at  DateTime? @default(now())
   updated_at  DateTime? @updatedAt
+  metas       Meta[]
 
   @@map("categories")
-  metas Meta[]
 }
 
 model User {
@@ -60,7 +60,7 @@ enum UserRole {
 model Group {
   id           Int           @id @default(autoincrement())
   name         String
-  description  String?        @db.Text
+  description  String?       @db.Text
   owner_id     Int
   is_public    Boolean
   created_at   DateTime      @default(now())
@@ -72,24 +72,26 @@ model Group {
   assignations Assignation[]
   invitations  Invitation[]
   groupUsers   GroupUser[]
-  indexedMetas IndexedMeta[]
+  // indexedMetas IndexedMeta[]
 
   @@map("groups")
 }
 
 model Meta {
-  id           Int           @id @default(autoincrement())
-  title        String
-  description  String?        @db.Text
-  author_id    Int
-  group_id     Int? // Decidir fa falta o no
-  category_id  Int?
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String? @db.Text
+  author_id   Int
+  group_id    Int? // Decidir fa falta o no
+  category_id Int?
+
   type         MetaType      @default(task)
+  is_public    Boolean       @default(false)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   author       User          @relation(fields: [author_id], references: [id])
-  group        Group?         @relation(fields: [group_id], references: [id])
-  category     Category?      @relation(fields: [category_id], references: [id])
+  group        Group?        @relation(fields: [group_id], references: [id])
+  category     Category?     @relation(fields: [category_id], references: [id])
   //Autogenerades relacions bidireccionals
   assignations Assignation[]
   indexedMetas IndexedMeta[]
@@ -108,7 +110,7 @@ model Assignation {
   group_id   Int?
   meta_id    Int
   user_id    Int?
-  start_date DateTime?  @db.Date @default(now())
+  start_date DateTime?  @default(now()) @db.Date
   due_date   DateTime?  @db.Date
   priority   Priority?
   difficulty Difficulty @default(normal)
@@ -117,7 +119,7 @@ model Assignation {
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
   group      Group?     @relation(fields: [group_id], references: [id])
-  meta       Meta      @relation(fields: [meta_id], references: [id])
+  meta       Meta       @relation(fields: [meta_id], references: [id])
   user       User?      @relation(fields: [user_id], references: [id])
   //Autogenerades relacions bidireccionals
   comments   Comment[]
@@ -162,7 +164,7 @@ model Proof {
   is_valid       Boolean     @default(false)
   created_at     DateTime    @default(now())
   assignation    Assignation @relation(fields: [assignation_id], references: [id])
-  user           User?        @relation(fields: [user_id], references: [id])
+  user           User?       @relation(fields: [user_id], references: [id])
   //Autogenerades relacions bidireccionals
 
   @@map("proofs")
@@ -176,7 +178,7 @@ model Invitation {
   group_id    Int?
   status      Status   @default(pending)
   created_at  DateTime @default(now())
-  group       Group?    @relation(fields: [group_id], references: [id])
+  group       Group?   @relation(fields: [group_id], references: [id])
   //Dues relacions al mateix model, s'ha d'especificar un nom per cada una de les relacions
   sender      User     @relation("SentInvitations", fields: [sender_id], references: [id])
   receiver    User     @relation("ReceivedInvitations", fields: [receiver_id], references: [id])
@@ -211,15 +213,13 @@ enum GroupUserRole {
 
 model IndexedMeta {
   id                    Int      @id @default(autoincrement())
-  user_id               Int?
+  user_id               Int? // el que afegeix la meta al grup
   meta_id               Int
-  group_id              Int?
-  is_public             Boolean  @default(false) // És possible que aquest camp es mogui al model Meta en un futur.
   is_approved           Boolean?
   is_community_approved Boolean?
   user                  User?    @relation(fields: [user_id], references: [id])
   meta                  Meta     @relation(fields: [meta_id], references: [id])
-  group                 Group?   @relation(fields: [group_id], references: [id])
+  // group                 Group?   @relation(fields: [group_id], references: [id])
 
   @@map("index")
 }
