@@ -4,6 +4,7 @@ import { ModalEditMeta } from "./modals/ModalEditMeta";
 import { deleteMeta } from "../services/metaService";
 import { getUserRole } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
+import { ModalAddMetaToGroup } from "./modals/ModalAddMetaToGroup";
 
 
 type MetaListProps = {
@@ -20,6 +21,7 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
 
 
   const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
+  const [metaToAdd, setMetaToAdd] = useState<metaType | null>(null)
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit = vistaActual !== "/" && role === "admin";
@@ -29,6 +31,10 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
   const filteredMetas = metas.filter(meta =>
     !filteredCategory || meta.category_id === filteredCategory
   )
+
+  // function handleAddToGroup(metaid){
+
+  // }
 
   return (
     <>
@@ -81,6 +87,7 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                           <button className="  btn btn-primary p-1  me-2  ms-auto"
                             onClick={(event) => {
                               // event.stopPropagation()
+                              setMetaToAdd(meta);
                             }}>Afegeix al grup</button>
                         </div>
                       }
@@ -96,6 +103,10 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
       {/* modal editar */}
       {metaToEdit && (
         <ModalEditMeta meta={metaToEdit} setEditMeta={setMetaToEdit} setter={setter} />
+      )}
+      {/* modal afegir meta a grup */}
+      {metaToAdd && (
+        <ModalAddMetaToGroup meta={metaToAdd} setMetaToAdd={setMetaToAdd} />
       )}
     </>
   );
