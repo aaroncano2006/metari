@@ -31,16 +31,8 @@ export default function UserProfileForm() {
     setError(null);
     setSuccess(false);
 
-    if (!data.name.trim()) {
-      return setError("El nom és obligatori!");
-    }
-
     if (data.name && typeof data.name !== "string") {
       return setError("El nom enviat no és vàlid! Ha de ser un text");
-    }
-
-    if (!data.username.trim()) {
-      return setError("El nom d'usuari és obligatori!");
     }
 
     if (data.username) {
@@ -67,10 +59,6 @@ export default function UserProfileForm() {
       }
     }
 
-    if (!data.email.trim()) {
-      return setError("L'email és obligatori!");
-    }
-
     if (data.email) {
       if (typeof data.email !== "string") {
         return setError("L'email de l'usuari no és vàlid! Ha de ser un text");
@@ -87,10 +75,6 @@ export default function UserProfileForm() {
       if (existingEmail) {
         return setError("L'email introduït ja està registrat!");
       }
-    }
-
-    if (!data.password?.trim()) {
-      return setError("La contrasenya és obligatòria");
     }
 
     if (data.password) {
