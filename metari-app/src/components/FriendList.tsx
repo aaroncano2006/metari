@@ -69,25 +69,9 @@ export function FriendList({ users, setter }: UserListProps) {
                 ))}
               </ul>
             }
-            {!token &&
-              <div className="text-center">
-                Fes <Link to="/Profile" className=" p-1 ">
-                  LogIn
-                </Link>
-                o <Link to="/Register" className=" p-1 ">
-                  Registra't
-                </Link>
-                per participar amb la comunitat
-              </div>
-            }
           </div>
-
         </div>
       }
-      {/* modal editar */}
-      {userToEdit && (
-        <ModalEditUser user={userToEdit} setEditUser={setUserToEdit} setter={setter} />
-      )}
     </>
   )
 }

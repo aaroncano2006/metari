@@ -5,6 +5,7 @@ import { UserList } from "../components/UserList"
 import { MetaList } from "../components/MetaList"
 import { CategoryList } from "../components/CategoryList"
 import { GroupList } from "../components/GroupList"
+import { MyGroupsList } from "../components/MyGroupsList"
 import { FriendList } from "../components/FriendList"
 import { fetchUsers } from "../services/userService"
 import type { userTypeFrontend } from "../types/userTypeFrontend"
@@ -59,6 +60,7 @@ export default function Home() {
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
+            <MyGroupsList groups={groups} />
             <UserList users={users} setter={setUsers} />
             <GroupList groups={groups} setter={setGroups} />
           </div>
