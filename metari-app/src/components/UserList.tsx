@@ -70,7 +70,6 @@ export function UserList({ users, setter }: UserListProps) {
                           <div>Nom: {user.name}</div>
                           <div>e-mail: {user.email}</div>
                           <div>Rol: {user.role}</div>
-                          <div>Rol: {user.role}</div>
                         </>
                       }
 

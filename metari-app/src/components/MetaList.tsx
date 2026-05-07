@@ -23,8 +23,9 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit = vistaActual !== "/" && role === "admin";
+  const canAddToGroup = vistaActual === "/" //falta comprobar que esta logejat
 
-  //si filteredCategory es null
+  //Si alguna de les condicions es true, es guarda la meta a la variable
   const filteredMetas = metas.filter(meta =>
     !filteredCategory || meta.category_id === filteredCategory
   )
@@ -45,7 +46,8 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                   onClick={() => toggleEntity(meta.id)}>
 
                   <div className="d-flex py-1 ps-2 pe-3 align-items-center">
-                    {meta.title}
+                    <div>{meta.title}</div>
+
                     {canEdit &&
                       <button className="  btn btn-warning p-1  me-2  ms-auto"
                         onClick={(event) => {
@@ -65,10 +67,23 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntityId === meta.id && (
                     <div className="metaDetails ps-2 py-2">
-                      <div>ID: {meta.id}</div>
-                      <div>Tipus: {meta.type}</div>
-                      <div>Descripcio: {meta.description}</div>
-                      <div>Autor: {meta.author_id}</div>
+                      {vistaActual !== "/" &&
+                        <>
+                          <div>ID: {meta.id}</div>
+                        </>
+                        }
+                          <div>Tipus: {meta.type}</div>
+                          <div>Descripcio: {meta.description}</div>
+                          <div>Categoria: {meta.category_id}</div>
+                          <div>Autor: {meta.author_id}</div>
+                      {canAddToGroup &&
+                        <div className="d-flex">
+                          <button className="  btn btn-primary p-1  me-2  ms-auto"
+                            onClick={(event) => {
+                              // event.stopPropagation()
+                            }}>Afegeix al grup</button>
+                        </div>
+                      }
                     </div>
                   )}
                 </div>

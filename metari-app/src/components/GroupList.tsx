@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 
 
 
+
 type GroupListProps = {
   groups: groupType[]
   setter: React.Dispatch<React.SetStateAction<groupType[]>>
@@ -43,30 +44,33 @@ export function GroupList({ groups, setter }: GroupListProps) {
                   <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                     {group.name}
                     {canEdit &&
-                    <button className="  btn btn-warning p-1  me-2  ms-auto"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        setGroupToEdit(group)
-                      }}>Edita</button>
+                      <button className="  btn btn-warning p-1  me-2  ms-auto"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setGroupToEdit(group)
+                        }}>Edita</button>
                     }
                     {canEdit &&
-                    <button className="  btn btn-danger p-1   "
-                      onClick={async (event) => {
-                        event.stopPropagation()
-                        // await deleteGroup(group.id)
-                      }}>X</button>
+                      <button className="  btn btn-danger p-1   "
+                        onClick={async (event) => {
+                          event.stopPropagation()
+                          // await deleteGroup(group.id)
+                        }}>X</button>
                     }
                   </div>
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntityId === group.id && (
                     <div className="metaDetails ps-2 py-2">
-                      <div>ID: {group.id}</div>
+                      {vistaActual !== "/" &&
+                        <>
+                          <div>ID: {group.id}</div>
+                          <div>Public: {group.is_public ? "Sí" : "No"}</div>
+                        </>
+                      }
                       <div>Nom: {group.name}</div>
                       <div>Descripcio: {group.description}</div>
                       <div>owner_id: {group.owner_id}</div>
-                      {/* <div>is_public: {group.is_public}</div> */}
-                      <div>Public: {group.is_public ? "Sí" : "No"}</div>
                     </div>
                   )}
                 </div>

@@ -8,7 +8,7 @@ export function NavBar() {
   const token = localStorage.getItem("token");
   const role = getUserRole();
   const username = getUserName();
-  const vistaActual = useLocation().pathname;
+  // const vistaActual = useLocation().pathname;
 
   useEffect(() => {
     const handleRecharge = () => setRecharge(cur => cur + 1);
