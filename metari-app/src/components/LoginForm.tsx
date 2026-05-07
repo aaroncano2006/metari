@@ -7,11 +7,12 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   const rememberedPassword = localStorage.getItem("password");
+  const rememberedEmail = localStorage.getItem("email_or_username");
 
   const [formData, setFormData] = useState<loginType>({
-    email_or_username: "",
+    email_or_username: rememberedEmail ?? "",
     password: rememberedPassword ?? "",
-    remember_password: rememberedPassword ? true : false,
+    remember: !!(rememberedPassword || rememberedEmail),
   });
 
   const navigate = useNavigate();
@@ -27,11 +28,13 @@ export default function LoginForm() {
       return setError("La contrasenya és obligatòria!");
     }
 
-    if (data.remember_password) {
+    if (data.remember) {
+      localStorage.setItem("email_or_username", data.email_or_username);
       localStorage.setItem("password", data.password);
     }
 
-    if (!data.remember_password && rememberedPassword) {
+    if (!data.remember && (rememberedPassword || rememberedEmail)) {
+      localStorage.removeItem("email_or_username");
       localStorage.removeItem("password");
     }
 
@@ -136,21 +139,21 @@ export default function LoginForm() {
               <input
                 className="form-check-input"
                 type="checkbox"
-                name="remember_password"
-                id="remember_password"
-                checked={formData.remember_password}
+                name="remember"
+                id="remember"
+                checked={formData.remember}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    remember_password: e.target.checked,
+                    remember: e.target.checked,
                   })
                 }
               />
             </div>
 
             <div className="col-5">
-              <label className="form-check-label" htmlFor="remember_password">
-                Recordar contrasenya
+              <label className="form-check-label" htmlFor="remember">
+                Recordar credencials
               </label>
             </div>
           </div>
