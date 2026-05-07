@@ -96,7 +96,7 @@ export default function AdminPanel() {
       </div>
 
       <div className="container-fluid">
-        <div className="row mt-4">
+        <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
             {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}

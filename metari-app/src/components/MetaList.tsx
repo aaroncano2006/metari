@@ -2,57 +2,88 @@ import type { metaType } from "../types/metaType";
 import { useState } from "react"
 import { ModalEditMeta } from "./modals/ModalEditMeta";
 import { deleteMeta } from "../services/metaService";
+import { getUserRole } from "../services/auth/loginService"
+import { useLocation } from "react-router-dom";
 
 
 type MetaListProps = {
   metas: metaType[]
   setter: React.Dispatch<React.SetStateAction<metaType[]>>
+  filteredCategory?: number | null
 }
 
-export function MetaList({ metas, setter }: MetaListProps) {
+export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
   }
 
-    const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
-  
+
+  const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
+  const role = getUserRole()
+  const vistaActual = useLocation().pathname;
+  const canEdit = vistaActual !== "/" && role === "admin";
+  const canAddToGroup = vistaActual === "/" //falta comprobar que esta logejat
+
+  //Si alguna de les condicions es true, es guarda la meta a la variable
+  const filteredMetas = metas.filter(meta =>
+    !filteredCategory || meta.category_id === filteredCategory
+  )
+
   return (
     <>
 
 
-      <div className="metaList ">
+      <div className="metaList mt-4">
         <div className="titolComponent  text-center my-2">Llista de metas</div>
         <hr className="m-0" />
 
         <div className="inline">
-          <ul className=" ps-4  m-0  py-2">
-            {metas.map((meta) => (
+          <ul className=" ps-2  m-0  py-2">
+            {filteredMetas.map((meta) => (
               <li key={meta.id} className="m-0 p-0" >
                 <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === meta.id ? "mb-0" : "mb-1"} ${meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                   onClick={() => toggleEntity(meta.id)}>
 
                   <div className="d-flex py-1 ps-2 pe-3 align-items-center">
-                    {meta.title}
-                    <button className="  btn btn-warning p-1  me-2  ms-auto"
-                      onClick={(event) => {
-                        event.stopPropagation()
-                        setMetaToEdit(meta)
-                      }}>Edita</button>
-                    <button className="  btn btn-danger p-1   "
-                      onClick={async (event) => {
-                        event.stopPropagation()
-                        await deleteMeta(meta.id)
-                      }}>X</button>
+                    <div>{meta.title}</div>
+
+                    {canEdit &&
+                      <button className="  btn btn-warning p-1  me-2  ms-auto"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setMetaToEdit(meta)
+                        }}>Edita</button>
+                    }
+                    {canEdit &&
+                      <button className="  btn btn-danger p-1   "
+                        onClick={async (event) => {
+                          event.stopPropagation()
+                          await deleteMeta(meta.id)
+                        }}>X</button>
+                    }
                   </div>
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntityId === meta.id && (
                     <div className="metaDetails ps-2 py-2">
-                      <div>ID: {meta.id}</div>
-                      <div>Tipus: {meta.type}</div>
-                      <div>Descripcio: {meta.description}</div>
-                      <div>Autor: {meta.author_id}</div>
+                      {vistaActual !== "/" &&
+                        <>
+                          <div>ID: {meta.id}</div>
+                        </>
+                        }
+                          <div>Tipus: {meta.type}</div>
+                          <div>Descripcio: {meta.description}</div>
+                          <div>Categoria: {meta.category.name}</div>
+                          <div>Autor: {meta.author.username}</div>
+                      {canAddToGroup &&
+                        <div className="d-flex">
+                          <button className="  btn btn-primary p-1  me-2  ms-auto"
+                            onClick={(event) => {
+                              // event.stopPropagation()
+                            }}>Afegeix al grup</button>
+                        </div>
+                      }
                     </div>
                   )}
                 </div>
