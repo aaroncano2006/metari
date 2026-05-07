@@ -3,7 +3,7 @@ const utils = require("../helpers/Utils");
 const seedAssignations = async () => {
   try {
     const assignations = await prisma.assignation.findMany();
-    const overrideDB = true;
+    const overrideDB = false;
 
     if (assignations.length > 0 && !overrideDB) {
       console.log("Existing Assignations found! Aborting database seeding!");
