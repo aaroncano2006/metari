@@ -22,19 +22,17 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
 
   const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
   const [metaToAdd, setMetaToAdd] = useState<metaType | null>(null)
+  const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit = vistaActual !== "/" && role === "admin";
-  const canAddToGroup = vistaActual === "/" //falta comprobar que esta logejat
+  const canAddMeta = vistaActual === "/" && token
 
   //Si alguna de les condicions es true, es guarda la meta a la variable
   const filteredMetas = metas.filter(meta =>
     !filteredCategory || meta.category_id === filteredCategory
   )
 
-  // function handleAddToGroup(metaid){
-
-  // }
 
   return (
     <>
@@ -77,19 +75,31 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                         <>
                           <div>ID: {meta.id}</div>
                         </>
-                        }
-                          <div>Tipus: {meta.type}</div>
-                          <div>Descripcio: {meta.description}</div>
-                          <div>Categoria: {meta.category.name}</div>
-                          <div>Autor: {meta.author.username}</div>
-                      {canAddToGroup &&
-                        <div className="d-flex">
-                          <button className="  btn btn-primary p-1  me-2  ms-auto"
-                            onClick={(event) => {
-                              // event.stopPropagation()
-                              setMetaToAdd(meta);
-                            }}>Afegeix al grup</button>
-                        </div>
+                      }
+                      <div>Tipus: {meta.type}</div>
+                      <div>Descripcio: {meta.description}</div>
+                      <div>Categoria: {meta.category.name}</div>
+                      <div>Autor: {meta.author.username}</div>
+                      {canAddMeta &&
+                        <>
+                          <div className="d-flex mt-2 justify-content-end">
+                            <div className="">
+                              <button className="  btn btn-primary p-1  me-2  ms-auto"
+                                onClick={(event) => {
+                                  // event.stopPropagation()
+                                  setMetaToAdd(meta);
+                                }}>Afegir a la meva llista</button>
+                            </div>
+                            <div className="">
+                              <button className="  btn btn-primary p-1  me-2  ms-auto"
+                                onClick={(event) => {
+                                  // event.stopPropagation()
+                                  setMetaToAdd(meta);
+                                }}>Afegeix al grup</button>
+                            </div>
+                            
+                          </div>
+                        </>
                       }
                     </div>
                   )}
