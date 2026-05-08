@@ -87,8 +87,15 @@ export default function UserProfileForm() {
       }
     }
 
+    const updateData: profileType = {
+      name: data.name || fullName,
+      username: data.username || username,
+      email: data.email || email,
+    };
+    if (data.password) updateData.password = data.password;
+
     try {
-      const response = await updateProfile(data);
+      const response = await updateProfile(updateData);
 
       console.log(response);
 
