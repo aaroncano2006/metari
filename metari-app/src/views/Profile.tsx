@@ -48,7 +48,7 @@ export default function Profile() {
               <h3>{username}</h3>
             </div>
           </div>
-          <div className="col-md-5">
+          <div className="col-md-5 mb-2">
             <UserProfileForm></UserProfileForm>
           </div>
           <div className="col-md-2">

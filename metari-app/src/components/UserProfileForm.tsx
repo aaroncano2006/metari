@@ -13,8 +13,6 @@ export default function UserProfileForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const rememberedPassword = localStorage.getItem("password");
-
   const fullName = getUserFullName() ?? "";
   const username = getUserName() ?? "";
   const email = getUserEmail() ?? "";
@@ -24,7 +22,7 @@ export default function UserProfileForm() {
     name: fullName,
     username,
     email,
-    password: rememberedPassword ?? "",
+    password: "",
   });
 
   const handleSubmit = async (data: profileType) => {
@@ -94,7 +92,7 @@ export default function UserProfileForm() {
 
       console.log(response);
 
-      if (response.token) {
+      if (response?.token) {
         localStorage.setItem("token", response.token);
       }
 
@@ -125,7 +123,7 @@ export default function UserProfileForm() {
       >
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="name">
-            Nom <span className="text-danger">*</span>
+            Nom
           </label>
 
           <input
@@ -145,7 +143,7 @@ export default function UserProfileForm() {
 
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="username">
-            Username <span className="text-danger">*</span>
+            Username
           </label>
 
           <input
@@ -165,7 +163,7 @@ export default function UserProfileForm() {
 
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="username">
-            Email <span className="text-danger">*</span>
+            Email
           </label>
 
           <input
@@ -185,7 +183,7 @@ export default function UserProfileForm() {
 
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="password">
-            Contrasenya <span className="text-danger">*</span>
+            Contrasenya
           </label>
 
           <input

@@ -1,5 +1,7 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
+const jwt = require("jsonwebtoken");
+const SECRET = require("../config/auth").SECRET;
 const { validateUser } = require("../middlewares/validators/validateUser");
 
 //Get all
@@ -133,7 +135,22 @@ const updateUsuari = async (req, res, next) => {
       where: { id },
       data: dataToUpdate,
     });
-    res.status(200).json(utils.handleBigInt(user));
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        completed_tasks: utils.handleBigInt(user.completed_tasks),
+        score: utils.handleBigInt(user.score),
+      },
+      SECRET,
+      { expiresIn: "1h" },
+    );
+
+    res.status(200).json({ user: utils.handleBigInt(user), token });
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);
