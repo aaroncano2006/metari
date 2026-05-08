@@ -6,7 +6,12 @@ const getGroups = async (req, res, next) => {
   try {
     const groups = await prisma.group.findMany({
       include: {
-        owner:true
+        owner:true,
+        groupUsers: {
+          include:{
+            user: true
+          }
+        }
       }
   });
     res.status(200).json(utils.handleBigInt(groups));

@@ -11,7 +11,8 @@ export type groupType = {
   updated_at: string
 
   
-  groupUsers: groupUserType
+  groupUsers: groupUserType[]
+  user: userTypeFrontend
   owner: userTypeFrontend
   
 }

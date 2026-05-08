@@ -10,8 +10,8 @@ import { useLocation } from "react-router-dom";
 type CategoryListProps = {
   categories: categoryType[]
   setter: React.Dispatch<React.SetStateAction<categoryType[]>>
-  filteredCategory: number | null
-  setFilteredCategory: React.Dispatch<React.SetStateAction<number | null>>
+  filteredCategory?: number | null
+  setFilteredCategory?: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 
@@ -47,7 +47,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
 
                   <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                     <div className="me-auto">{category.name}</div>
-                    {vistaActual === "/" &&
+                    {vistaActual === "/" && setFilteredCategory &&  
                       <input
                         type="checkbox"
                         checked={filteredCategory === category.id}

@@ -61,8 +61,8 @@ export default function AdminPanel() {
 
   return (
     <>
-      <h1>Panell Admin</h1>
-      <div className="selectionMenu mt-5 d-flex justify-content-center gap-3">
+      <h1 className="text-center mt-4">Panell Admin</h1>
+      <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div
           className="btn btn-primary"
           onClick={() => setMenuSelection("metas")}
