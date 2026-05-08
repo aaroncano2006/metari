@@ -1,16 +1,14 @@
 import { axiosConnection } from "../axiosConnection";
 import type { profileType } from "../../types/auth/profileType";
-import { fetchLogin, getUserId } from "./loginService";
-import { mapLogin } from "../../mapper/auth/loginMapper";
+import { getUserId } from "./loginService";
 
 export async function updateProfile (data: profileType): Promise<any> {
     const loggedUserId = getUserId();
     const updateUser = await axiosConnection.put(`/usuaris/${loggedUserId}`, data);
     let response = null;
 
-    if (updateUser) {
-        const loginData = mapLogin(data);
-        response = await fetchLogin(loginData);
+    if (updateUser?.data?.token) {
+        response = { token: updateUser.data.token };
     }
 
     return response;

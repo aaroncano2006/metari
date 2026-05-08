@@ -15,7 +15,7 @@ export default function RegisterForm() {
     username: "",
     email: "",
     password: "",
-    remember_password: false,
+    remember: false,
   });
 
   const navigate = useNavigate();
@@ -95,7 +95,8 @@ export default function RegisterForm() {
       }
     }
 
-    if (data.remember_password) {
+    if (data.remember) {
+      localStorage.setItem("email_or_username", data.email);
       localStorage.setItem("password", data.password);
     }
 
@@ -114,6 +115,7 @@ export default function RegisterForm() {
     } catch (error: any) {
       setError("Error al registrar-se: " + error);
       localStorage.removeItem("token");
+      localStorage.removeItem("email_or_username");
       localStorage.removeItem("password");
     }
   };
@@ -229,20 +231,20 @@ export default function RegisterForm() {
               <input
                 className="form-check-input"
                 type="checkbox"
-                name="remember_password"
-                id="remember_password"
+                name="remember"
+                id="remember"
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    remember_password: e.target.checked,
+                    remember: e.target.checked,
                   })
                 }
               />
             </div>
 
             <div className="col-5">
-              <label className="form-check-label" htmlFor="remember_password">
-                Recordar contrasenya
+              <label className="form-check-label" htmlFor="remember">
+                Recordar credencials
               </label>
             </div>
           </div>
@@ -253,7 +255,7 @@ export default function RegisterForm() {
             </a>
 
             <button type="submit" className="btn btn-dark">
-              Inicia sessió
+              Registra't
             </button>
           </div>
         </form>
