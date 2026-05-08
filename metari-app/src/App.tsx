@@ -4,6 +4,8 @@ import { NavBar } from "./components/NavBar";
 import './App.css'
 import { Routes, Route} from 'react-router-dom'
 import Home from './views/Home'
+import MyGroups from './views/MyGroups'
+import MyMetas from './views/MyMetas'
 import Profile from './views/Profile'
 import Login from './views/Login'
 import Register from './views/Register'
@@ -19,6 +21,8 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/mygroups" element={<MyGroups />} />
+        <Route path="/mymetas" element={<MyMetas />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

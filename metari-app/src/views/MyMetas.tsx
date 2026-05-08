@@ -24,7 +24,7 @@ import type { assignationType } from "../types/assignationType"
 
 
 
-export default function Home() {
+export default function MyMetas() {
   const [users, setUsers] = useState<userTypeFrontend[]>([])
   const [metas, setMetas] = useState<metaType[]>([])
   const [categories, setCategories] = useState<categoryType[]>([])
@@ -61,8 +61,7 @@ export default function Home() {
             />
           </div>
           <div className="col-12 col-md">
-            <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory}/>
-            {/* <MyMetaList assignations={assignations}/> */}
+            <MyMetaList assignations={assignations}/>
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
