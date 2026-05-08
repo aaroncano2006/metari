@@ -91,14 +91,7 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
                   </li>
                 ))}
             </ul>
-            <div className="d-flex ps-3 pe-3 mt-2">
-              <div className="me-auto">Metes de grup</div>
-              {/* <div className=" me-2">Mostrar completades</div>
-              <input type="checkbox" name="showCompleted" id="showCompleted"
-                checked={showCompleted}
-                onChange={(event) =>
-                  setShowCompleted(event.target.checked)} /> */}
-            </div>
+            
           </div>
 
         </div>
