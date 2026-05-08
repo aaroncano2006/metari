@@ -20,6 +20,7 @@ const proofRoutes = require("./routes/ProofRoutes");
 const groupUserRoutes = require("./routes/GroupUserRoutes");
 const indexedMetaRoutes = require("./routes/IndexedMetaRoutes");
 const loginRoutes = require("./routes/auth/LoginRoutes");
+const restorePasswordRoutes = require("./routes/auth/RestorePasswordRoutes");
 const errorHandler = require("./middlewares/errors/errorHandler");
 const nodemailer = require("./config/nodemailer");
 const { verifyToken } = require("./middlewares/auth/verifyToken");
@@ -164,6 +165,7 @@ app.use("/api/proves", proofRoutes);
 app.use("/api/grups-usuaris", groupUserRoutes);
 app.use("/api/indexa-metas", indexedMetaRoutes);
 app.use("/api/login", loginRoutes);
+app.use("/api/restore-password", restorePasswordRoutes);
 
 app.get("/api/dashboard", verifyToken, (req, res) => {
   res.json({

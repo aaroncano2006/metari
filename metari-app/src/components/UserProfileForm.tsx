@@ -13,8 +13,6 @@ export default function UserProfileForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const rememberedPassword = localStorage.getItem("password");
-
   const fullName = getUserFullName() ?? "";
   const username = getUserName() ?? "";
   const email = getUserEmail() ?? "";
@@ -24,23 +22,15 @@ export default function UserProfileForm() {
     name: fullName,
     username,
     email,
-    password: rememberedPassword ?? "",
+    password: "",
   });
 
   const handleSubmit = async (data: profileType) => {
     setError(null);
     setSuccess(false);
 
-    if (!data.name.trim()) {
-      return setError("El nom és obligatori!");
-    }
-
     if (data.name && typeof data.name !== "string") {
       return setError("El nom enviat no és vàlid! Ha de ser un text");
-    }
-
-    if (!data.username.trim()) {
-      return setError("El nom d'usuari és obligatori!");
     }
 
     if (data.username) {
@@ -67,10 +57,6 @@ export default function UserProfileForm() {
       }
     }
 
-    if (!data.email.trim()) {
-      return setError("L'email és obligatori!");
-    }
-
     if (data.email) {
       if (typeof data.email !== "string") {
         return setError("L'email de l'usuari no és vàlid! Ha de ser un text");
@@ -89,10 +75,6 @@ export default function UserProfileForm() {
       }
     }
 
-    if (!data.password?.trim()) {
-      return setError("La contrasenya és obligatòria");
-    }
-
     if (data.password) {
       if (typeof data.password !== "string") {
         return setError(
@@ -105,14 +87,23 @@ export default function UserProfileForm() {
       }
     }
 
+    const updateData: profileType = {
+      name: data.name || fullName,
+      username: data.username || username,
+      email: data.email || email,
+    };
+    if (data.password) updateData.password = data.password;
+
     try {
-      const response = await updateProfile(data);
+      const response = await updateProfile(updateData);
 
       console.log(response);
 
-      if (response.token) {
+      if (response?.token) {
         localStorage.setItem("token", response.token);
       }
+
+      window.dispatchEvent(new Event("profileChange"));
 
       setSuccess(true);
     } catch (error: any) {
@@ -139,7 +130,7 @@ export default function UserProfileForm() {
       >
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="name">
-            Nom <span className="text-danger">*</span>
+            Nom
           </label>
 
           <input
@@ -159,7 +150,7 @@ export default function UserProfileForm() {
 
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="username">
-            Username <span className="text-danger">*</span>
+            Username
           </label>
 
           <input
@@ -179,7 +170,7 @@ export default function UserProfileForm() {
 
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="username">
-            Email <span className="text-danger">*</span>
+            Email
           </label>
 
           <input
@@ -199,7 +190,7 @@ export default function UserProfileForm() {
 
         <div className="row mb-2 user-profile-form-row">
           <label className="form-label text-start" htmlFor="password">
-            Contrasenya <span className="text-danger">*</span>
+            Contrasenya
           </label>
 
           <input

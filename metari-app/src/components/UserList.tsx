@@ -99,7 +99,7 @@ export function UserList({ users, setter }: UserListProps) {
           }
           {!token &&
             <div className="text-center">
-              Fes <Link to="/Profile" className=" p-1 ">
+              Fes <Link to="/login" className=" p-1 ">
                 LogIn
               </Link> 
               o <Link to="/Register" className=" p-1 ">
