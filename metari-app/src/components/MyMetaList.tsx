@@ -37,7 +37,7 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
         <div className="metaList mt-4">
           <div className="d-flex align-items-center my-2 ps-4 pe-4 position-relative">
 
-            <div className="titolComponent position-absolute start-50 translate-middle-x">
+            <div className="titolComponent ">
               Les meves metas
             </div>
 
@@ -66,7 +66,8 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
                       onClick={() => toggleEntity(assignation.id)}>
 
                       <div className="d-flex py-1 ps-2 pe-3 align-items-center">
-                        <div>{assignation.meta.title}</div>
+                        <div className="me-auto">{assignation.meta.title}</div>
+                        <div className="">{assignation.completed === true ? "completa" : ""}</div>
                       </div>
 
                     </div>
