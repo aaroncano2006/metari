@@ -35,27 +35,23 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
       {token &&
 
         <div className="metaList mt-4">
-          <div className="d-flex align-items-center my-2 ps-4 pe-4 position-relative">
-
-            <div className="titolComponent ">
+          <div className="my-2 ps-4 pe-4">
+            <div className="titolComponent text-center ">
               Les meves metas
             </div>
-
-            <div className="ms-auto d-flex align-items-center">
-              <label htmlFor="showCompleted" className="me-2">Mostrar completades</label>
-              <input type="checkbox" id="showCompleted"
-                checked={showCompleted}
-                onChange={(e) => setShowCompleted(e.target.checked)}
-              />
-            </div>
-
           </div>
           <hr className="m-0" />
 
           <div className="inline">
             <div className="d-flex ps-3 pe-3 mt-2">
               <div className="me-auto">Metes individuals</div>
-
+              <div className="ms-auto d-flex align-items-center">
+                <label htmlFor="showCompleted" className="me-2">Mostrar completades</label>
+                <input type="checkbox" id="showCompleted"
+                  checked={showCompleted}
+                  onChange={(e) => setShowCompleted(e.target.checked)}
+                />
+              </div>
             </div>
             <ul className=" ps-2  m-0  py-2">
               {myAssignations
@@ -91,7 +87,7 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
                   </li>
                 ))}
             </ul>
-            
+
           </div>
 
         </div>

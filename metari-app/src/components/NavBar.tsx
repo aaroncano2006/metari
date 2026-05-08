@@ -20,7 +20,7 @@ export function NavBar() {
     <>
       <div className="navBar ps-4 pe-4">
         <Link to="/" className="nav-btn me-auto">
-          Home 
+          Home
         </Link>
 
         {!token && (
@@ -33,7 +33,17 @@ export function NavBar() {
             Registra't
           </Link>
         )}
-        
+        {token &&
+          <>
+            <Link to="/myMetas" className="nav-btn">
+              Les meves metas
+            </Link>
+            <Link to="/myGroups" className="nav-btn">
+              Els meus grups
+            </Link>
+          </>
+        }
+
         {/* {token && (
           <Link to="/Profile" className="nav-btn ">
             Els meus grups
