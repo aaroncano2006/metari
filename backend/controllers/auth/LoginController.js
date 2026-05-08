@@ -26,7 +26,7 @@ const login = async (req, res, next) => {
     });
 
     if (!existingUser) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Usuari no trobat!" });
     }
 
     const isSamePassword = await utils.compareHash(
@@ -35,7 +35,7 @@ const login = async (req, res, next) => {
     );
 
     if (!isSamePassword) {
-      return res.status(400).json({ message: "Contraseña incorrecta" });
+      return res.status(400).json({ message: "Contrasenya incorrecta!" });
     }
 
     const token = jwt.sign(
