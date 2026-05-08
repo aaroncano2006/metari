@@ -3,74 +3,144 @@ import { useState } from "react"
 import { ModalEditUser } from "./modals/ModalEditUser"
 import { ModalEditGroup } from "./modals/ModalEditGroup";
 import type { groupType } from "../types/groupType";
+import { getUserRole } from "../services/auth/loginService"
+import { Link, useLocation } from "react-router-dom";
+
+
 
 
 
 type GroupListProps = {
   groups: groupType[]
   setter: React.Dispatch<React.SetStateAction<groupType[]>>
-  
+
 }
 
 
 export function GroupList({ groups, setter }: GroupListProps) {
 
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
-    const toggleEntity = (id: number) => {
-      setOpenEntityId(prev => (prev === id ? null : id))
-    }
-  
-      const [groupToEdit, setGroupToEdit] = useState<groupType | null>(null)
+  const toggleEntity = (id: number) => {
+    setOpenEntityId(prev => (prev === id ? null : id))
+  }
+
+  const [groupToEdit, setGroupToEdit] = useState<groupType | null>(null)
+  const token = localStorage.getItem("token");
+  const role = getUserRole()
+  const vistaActual = useLocation().pathname;
+  const canEdit = vistaActual !== "/" && role === "admin";
+
+  //suma el total de punts del grup
+  const groupScores = new Map(
+    groups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
+  )
+
+  const top10 = [...groups].sort((a, b) => {
+    const scoreA = a.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)
+    const scoreB = b.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)
+    return scoreB - scoreA
+  }).slice(0, 10)
+
+
+  let groupsToShow = top10;
+  if (vistaActual === "/") {
+    groupsToShow = top10;
+  } else {
+    groupsToShow = groups;
+  }
+
   return (
     <>
 
-      <div className="metaList ">
-              <div className="titolComponent  text-center my-2">Llista de grups</div>
-              <hr className="m-0" />
-      
-              <div className="inline">
-                <ul className=" ps-4  m-0  py-2">
-                  {groups.map((group) => (
-                    <li key={group.id} className="m-0 p-0" >
-                      <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
-                        onClick={() => toggleEntity(group.id)}>
-      
-                        <div className="d-flex py-1 ps-2 pe-3 align-items-center">
-                          {group.name}
-                          <button className="  btn btn-warning p-1  me-2  ms-auto"
-                            onClick={(event) => {
-                              event.stopPropagation()
-                              setGroupToEdit(group)
-                            }}>Edita</button>
-                          <button className="  btn btn-danger p-1   "
-                            onClick={async (event) => {
-                              event.stopPropagation()
-                              // await deleteGroup(group.id)
-                            }}>X</button>
-                        </div>
-                      </div>
-                      <div className=" metaDetailsBox  my-0 me-3">
-                        {openEntityId === group.id && (
-                          <div className="metaDetails ps-2 py-2">
+      <div className="metaList mt-4">
+        <div className="titolComponent  text-center my-2">{vistaActual === "/" ? "Top 10 Grups" : "Llista de grups"}</div>
+        <hr className="m-0" />
+
+        <div className="inline">
+          {token &&
+            <ul className=" ps-2  m-0  py-2">
+              {groupsToShow.map((group) => (
+                <li key={group.id} className="m-0 p-0" >
+                  <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
+                    onClick={() => toggleEntity(group.id)}>
+
+                    <div className="d-flex py-1 ps-2 pe-2 align-items-center">
+                      <div>{group.name}</div>
+                      {canEdit &&
+                        <button className="  btn btn-warning p-1  me-2  ms-auto"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            setGroupToEdit(group)
+                          }}>Edita</button>
+                      }
+                      {canEdit &&
+                        <button className="  btn btn-danger p-1   "
+                          onClick={async (event) => {
+                            event.stopPropagation()
+                            // await deleteGroup(group.id)
+                          }}>X</button>
+                      }
+                    </div>
+                  </div>
+                  <div className=" metaDetailsBox  my-0 me-3">
+                    {openEntityId === group.id && (
+                      <div className="metaDetails ps-2 py-2">
+                        {vistaActual !== "/" &&
+                          <>
                             <div>ID: {group.id}</div>
-                            <div>Nom: {group.name}</div>
-                            <div>Descripcio: {group.description}</div>
-                            <div>owner_id: {group.owner_id}</div>
-                            {/* <div>is_public: {group.is_public}</div> */}
                             <div>Public: {group.is_public ? "Sí" : "No"}</div>
-                          </div>
-                        )}
+                          </>
+                        }
+                        <div>Nom: {group.name}</div>
+                        <div>Puntuacio del grup: {groupScores.get(group.id)}</div>
+                        <div>Descripcio: {group.description}</div>
+                        {/* <div>owner_id: {group.owner_id}</div> */}
+                        <div>Creador: {group.owner.username}</div>
+                        {/* {vistaActual !== "/" && */}
+                        <div className="llistaUsuaris">
+                          <div className="fw-bold mb-1">Membres del grup:</div>
+                          {group.groupUsers.map((groupUser) => (
+                            <div key={groupUser.user_id} className="d-flex  mb-1">
+                              <div className="me-2">
+                                {groupUser.user.username}
+                              </div>
+                              {groupUser.role === "moderator" && (
+                                <div className="badge bg-warning text-black">
+                                  <i className="bi bi-star-fill text-black"></i>
+                                </div>
+                              )}
+                              {/* <div className="badge bg-warning text-black">
+                                {groupUser.role}
+                              </div> */}
+                            </div>
+                          ))}
+                        </div>
+                        {/* } */}
                       </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-      
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          }
+          {!token &&
+            <div className="text-center">
+              Fes <Link to="/Profile" className=" p-1 ">
+                LogIn
+              </Link>
+              o <Link to="/Register" className=" p-1 ">
+                Registra't
+              </Link>
+              per participar amb la comunitat
             </div>
-            {/* modal editar */}
-                  {groupToEdit && (
-                    <ModalEditGroup group={groupToEdit} setEditGroup={setGroupToEdit} setter={setter} />
-                  )}
+          }
+        </div>
+
+      </div>
+      {/* modal editar */}
+      {groupToEdit && (
+        <ModalEditGroup group={groupToEdit} setEditGroup={setGroupToEdit} setter={setter} />
+      )}
     </>
   )
 }

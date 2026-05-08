@@ -17,8 +17,6 @@ function App() {
   return (
     <>
       <NavBar />
-
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
@@ -28,6 +26,7 @@ function App() {
         <Route path="/logout" element={<Logout/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/restore-password" element={<RestorePassword/>}/>
+
       </Routes>
     </>
   )

@@ -61,8 +61,8 @@ export default function AdminPanel() {
 
   return (
     <>
-      <h1>Panell Admin</h1>
-      <div className="selectionMenu mt-5 d-flex justify-content-center gap-3">
+      <h1 className="text-center mt-4">Panell Admin</h1>
+      <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div
           className="btn btn-primary"
           onClick={() => setMenuSelection("metas")}
@@ -96,7 +96,7 @@ export default function AdminPanel() {
       </div>
 
       <div className="container-fluid">
-        <div className="row mt-4">
+        <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
             {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}

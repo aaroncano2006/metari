@@ -4,9 +4,16 @@ const { validateGroup } = require("../middlewares/validators/validateGroup");
 
 const getGroups = async (req, res, next) => {
   try {
-    const groups = await prisma.group.findMany(
-      
-    );
+    const groups = await prisma.group.findMany({
+      include: {
+        owner:true,
+        groupUsers: {
+          include:{
+            user: true
+          }
+        }
+      }
+  });
     res.status(200).json(utils.handleBigInt(groups));
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -27,7 +34,7 @@ const getGroupById = async (req, res, next) => {
     const group = await prisma.group.findUnique({
       where: { id },
       include: {
-      //     owner: true,
+          owner: true,
       //     metas: true,
       //     assignations: true,
       //     invitations: true,
