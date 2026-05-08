@@ -99,13 +99,6 @@ const updateUsuari = async (req, res, next) => {
       throw error;
     }
 
-    const validate = await validateUser(reqBody, id);
-    if (validate) {
-      const error = new Error(validate);
-      error.statusCode = 400;
-      throw error;
-    }
-
     const dataToUpdate = {
       name: reqBody.name ?? foundUser.name,
       username: reqBody.username ?? foundUser.username,
@@ -129,6 +122,13 @@ const updateUsuari = async (req, res, next) => {
 
       if (!isSamePass)
         dataToUpdate.password = await utils.hash(reqBody.password);
+    }
+
+    const validate = await validateUser(dataToUpdate, id);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
     }
 
     const user = await prisma.user.update({
