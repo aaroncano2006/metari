@@ -57,7 +57,7 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
               {myAssignations
                 .filter(assignation => showCompleted || !Boolean(assignation.completed))
                 .map((assignation) => (
-                  <li key={assignation.meta.id} className="m-0 p-0" >
+                  <li key={assignation.id} className="m-0 p-0" >
                     <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                       onClick={() => toggleEntity(assignation.id)}>
 
