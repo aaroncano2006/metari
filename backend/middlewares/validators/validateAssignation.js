@@ -53,9 +53,9 @@ const validateAssignation = async (data, isUpdating = false) => {
     return "L'assignació només pot estar assignada a un grup o a un usuari!";
   }
 
-  if (existingMeta.group_id !== data.group_id) {
-    return "La meta no pertany al grup al que es vol assignar!";
-  }
+  // if (existingMeta.group_id !== data.group_id) {
+  //   return "La meta no pertany al grup al que es vol assignar!";
+  // }
 
   let startDate = null;
   let dueDate = null;

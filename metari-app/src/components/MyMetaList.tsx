@@ -44,7 +44,7 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
 
           <div className="inline">
             <div className="d-flex ps-3 pe-3 mt-2">
-              <div className="me-auto">Metes individuals</div>
+              <div className="me-auto">Metes personals</div>
               <div className="ms-auto d-flex align-items-center">
                 <label htmlFor="showCompleted" className="me-2">Mostrar completades</label>
                 <input type="checkbox" id="showCompleted"
@@ -73,9 +73,10 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
                           {/* <div>ID: {assignation.id}</div> */}
                           <div>Tipus: {assignation.meta.type}</div>
                           <div>Descripcio: {assignation.meta.description}</div>
-                          <div>Comensar el: {assignation.start_date}</div>
-                          <div>Acabar avans del: {assignation.due_date}</div>
+                          <div>Comensar el: {assignation.start_date?.split("T")[0]}</div>
+                          <div>Acabar avans del: {assignation.due_date?.split("T")[0]}</div>
                           <div>prioritat: {assignation.priority}</div>
+                          <div>dificultat: {assignation.difficulty}</div>
                           <div>completada: {assignation.completed ? "si" : "no"}</div>
                           <div>Creada el: {assignation.created_at}</div>
                           <div>Actualitzada el: {assignation.updated_at}</div>
