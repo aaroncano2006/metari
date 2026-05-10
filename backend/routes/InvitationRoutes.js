@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const invitationController = require('../controllers/InvitationController');
 
+router.get('/', invitationController.getAllInvitations);
 router.get('/:userid/:sentorreceived/:status', invitationController.getInvitations); // segon param "sent" o "received"
 router.post('/:senderid/:receiverid', invitationController.sendInvitations);
 router.post('/:senderid/:receiverid/:groupid', invitationController.sendInvitations);
