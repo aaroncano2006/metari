@@ -49,8 +49,10 @@ export default function Profile() {
 
     if (usernameSearchParam) {
       loadProfile();
+    } else {
+      setUserData(null);
     }
-  }, []);
+  }, [usernameSearchParam]);
 
   useEffect(() => {
     const handleRecharge = () => setRecharge((cur) => cur + 1);
