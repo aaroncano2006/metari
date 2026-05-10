@@ -25,44 +25,6 @@ export async function sendInvitation(
   return data;
 }
 
-// export async function fetchPendingInvitations(
-//   senderId: number | null,
-//   receiverId: number | null,
-//   groupId: number | null = null,
-// ): Promise<any> {
-//   const { data } = await axiosConnection.get(`/invitacions`);
-
-//   let findInvitation = null;
-
-//   if (senderId && receiverId && !groupId) {
-//     findInvitation = data.find(
-//       (el: invitationType) =>
-//         (el.sender_id === senderId &&
-//           el.receiver_id === receiverId &&
-//           el.group_id === null &&
-//           el.status === "pending") ||
-//         (el.sender_id === receiverId &&
-//           el.receiver_id === senderId &&
-//           el.group_id === null &&
-//           el.status === "pending"),
-//     );
-//   } else if (senderId && receiverId && groupId) {
-//     findInvitation = data.find(
-//       (el: invitationType) =>
-//         (el.sender_id === senderId &&
-//           el.receiver_id === receiverId &&
-//           el.group_id === groupId &&
-//           el.status === "pending") ||
-//         (el.sender_id === receiverId &&
-//           el.receiver_id === senderId &&
-//           el.group_id === groupId &&
-//           el.status === "pending"),
-//     );
-//   }
-
-//   return !findInvitation ? data : findInvitation;
-// }
-
 export async function fetchPendingInvitations(
   userId: number,
   otherUserId: number,
