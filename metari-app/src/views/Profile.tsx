@@ -9,6 +9,7 @@ import {
 import UserProfileForm from "../components/UserProfileForm";
 import UserProfileStats from "../components/UserProfileStats";
 import { getUserProfileData } from "../services/auth/profileService";
+import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
@@ -70,8 +71,17 @@ export default function Profile() {
       <div className="container-fluid p-3">
         {!error && (
           <>
-            <header className="ms-5 p-5">
-              <h1>Profile</h1>
+            <header className="row ms-5 p-5">
+              <div className="col-9">
+                <h1>Profile</h1>
+              </div>
+              <div className="col pt-2">
+                {userData && (
+                  <SendFriendInvitationButton
+                    receiverId={userData?.id}
+                  ></SendFriendInvitationButton>
+                )}
+              </div>
             </header>
 
             <div className="row ms-5">
@@ -99,7 +109,10 @@ export default function Profile() {
         )}
         {error && (
           <>
-            <div className="alert alert-danger">{error}<strong>{usernameSearchParam}</strong></div>
+            <div className="alert alert-danger">
+              {error}
+              <strong>{usernameSearchParam}</strong>
+            </div>
           </>
         )}
       </div>
