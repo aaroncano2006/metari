@@ -14,7 +14,7 @@ export async function fetchFriends(
 export async function sendInvitation(
   senderId: number,
   receiverId: number,
-  groupId: number | null,
+  groupId: number | null = null,
 ): Promise<any> {
   let BASE_URL = `/invitacions/${senderId}/${receiverId}`;
   if (groupId) {
