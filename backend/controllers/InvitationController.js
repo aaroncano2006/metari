@@ -5,19 +5,6 @@ const {
   validateInvitation,
 } = require("../middlewares/validators/validateInvitation");
 
-// const getAllInvitations = async (req, res, next) => {
-//   try {
-//     const invitations = await prisma.invitation.findMany({
-//       include: { sender: true, receiver: true, group: true },
-//     });
-
-//     res.status(200).json(utils.handleBigInt(invitations));
-//   } catch (error) {
-//     console.error("Error en Prisma:", error);
-//     next(error);
-//   }
-// };
-
 const getInvitations = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userid);
@@ -347,7 +334,6 @@ const getFriendsByID = async (req, res, next) => {
 };
 
 module.exports = {
-  // getAllInvitations,
   getInvitations,
   sendInvitations,
   acceptInvitation,
