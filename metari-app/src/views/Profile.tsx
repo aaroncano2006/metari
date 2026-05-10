@@ -94,7 +94,7 @@ export default function Profile() {
                 />
                 <div className="mt-3">
                   <h2>{name}</h2>
-                  <h3>{username}</h3>
+                  <h3 className="text-muted">{username}</h3>
                 </div>
               </div>
               <div className="col-md-5 mb-2">
