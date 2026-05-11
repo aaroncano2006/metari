@@ -87,9 +87,10 @@ export default function Profile() {
       loadProfile();
     } else {
       setUserData(null);
-      loadFriendsList();
-      loadGroupsList();
     }
+
+    loadFriendsList();
+    loadGroupsList();
   }, [usernameSearchParam]);
 
   useEffect(() => {
