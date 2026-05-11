@@ -57,3 +57,8 @@ export async function rejectOrDeleteInvitation(userId: number, otherUserId: numb
 
   return deletePending;
 }
+
+export async function acceptInvitation(receiverId: number, invitationId: number): Promise<any> {
+  const { data } = await axiosConnection.put(`/invitacions/${receiverId}/${invitationId}`);
+  return data;
+}
