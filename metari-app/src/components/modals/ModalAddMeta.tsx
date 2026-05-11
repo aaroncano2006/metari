@@ -47,29 +47,16 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
-    // const data = {
-    //   meta_id: Number(formData.get("meta_id")),
-    //   group_id: Number(formData.get("group_id")) ?? undefined,
-    //   // user_id: meta[1] === "assign" ? Number(formData.get("userToAssign")) : Number(formData.get("user_id")) , 
-    //   user_id: meta[1] === "assign" ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
-    //     : Number(formData.get("user_id")),
-    //   assigner_id: Number(formData.get("assigner_id")) ?? undefined,
-    //   needs_proofs: formData.get("needs_proofs") ?? undefined,
-    //   start_date: formData.get("start_date") ,
-    //   due_date: formData.get("due_date"),
-    //   priority: (formData.get("priority")) || undefined,
-    //   difficulty: formData.get("difficulty"),
-    // }
-
+    
     const data = {
       meta_id: Number(formData.get("meta_id")),
       group_id: formData.get("group_id") ? Number(formData.get("group_id")) || undefined : undefined,
-      user_id: formData.get("user_id") ? Number(formData.get("user_id")) : undefined,
-      // user_id: meta[1] === "assign"
-      //   ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
-      //   : Number(formData.get("user_id")) || undefined,
-      // assigner_id: Number(formData.get("assigner_id")) || undefined,
-      // needs_proofs: formData.get("needs_proofs") || undefined,
+      // user_id: formData.get("user_id") ? Number(formData.get("user_id")) : undefined,
+      user_id: meta[1] === "assign"
+        ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
+        : Number(formData.get("user_id")) || undefined,
+      assigner_id: Number(formData.get("assigner_id")) || undefined,
+      needs_proofs: formData.get("needs_proofs") || undefined,
       start_date: formData.get("start_date"),
       due_date: formData.get("due_date"),
       priority: formData.get("priority") || undefined,
