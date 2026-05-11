@@ -5,6 +5,7 @@ import type { assignationType } from "../../types/assignationType";
 import { createAssignation } from "../../services/assignationService";
 import { getUserId } from "../../services/auth/loginService";
 import { assignationSchema } from "../../schemas/assignationSchema"
+import type { groupType } from "../../types/groupType";
 
 
 
@@ -12,52 +13,64 @@ import { assignationSchema } from "../../schemas/assignationSchema"
 type ModalAddMetaProps = {
   meta: [metaType | null, string]
   setMetaToAdd: React.Dispatch<React.SetStateAction<[metaType | null, string]>>
+  groups: groupType[]
 
 }
 
-export function ModalAddMeta({ meta, setMetaToAdd }: ModalAddMetaProps) {
+export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) {
 
   const difficultyOptions: assignationType["difficulty"][] = ["easy", "normal", "hard", "extreme"];
   const priorityOptions: assignationType["priority"][] = ["high", "low"];
 
-// const [formData, setFormData] = useState({
-//   meta_id: meta[0]?.id,
-//   user_id: getUserId() ?? undefined,
-//   start_date: new Date().toISOString().split("T")[0],
-//   due_date: new Date().toISOString().split("T")[0],
-//   priority:  formData.get("priority"),
-//   difficulty: "",
-// });
+  // const [formData, setFormData] = useState({
+  //   meta_id: meta[0]?.id,
+  //   user_id: getUserId() ?? undefined,
+  //   start_date: new Date().toISOString().split("T")[0],
+  //   due_date: new Date().toISOString().split("T")[0],
+  //   priority:  formData.get("priority"),
+  //   difficulty: "",
+  // });
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault()
-  const formData = new FormData(event.currentTarget)
-  const data = {
-  meta_id: Number(formData.get("meta_id")),
-  user_id: Number(formData.get("user_id")),
-  start_date: formData.get("start_date") as string,
-  due_date: formData.get("due_date") as string,
-  priority: (formData.get("priority") as string) || undefined,
-  difficulty: formData.get("difficulty") as assignationType["difficulty"],
-}
-const validation = assignationSchema.safeParse(data)
-if (!validation.success) {
-  const fieldErrors: Record<string, string> = {}
+  const loggedInUserId = getUserId()
+  const myGroups = groups.filter(group =>
+    group.owner_id === loggedInUserId ||
+    group.groupUsers.some(gu => gu.user_id === loggedInUserId)
+  )
+  const [selectedGroupId, setSelectedGroupId] = useState<number | "">("")
 
-        validation.error.issues.forEach((issue) => {
-          const field = issue.path[0] as string
-          fieldErrors[field] = issue.message
-        })
+  const selectedGroupUsers = selectedGroupId !== ""
+    ? myGroups.find(group => group.id === Number(selectedGroupId))?.groupUsers ?? []
+    : []
 
-        setErrors(fieldErrors)
-  return
-}
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const data = {
+      meta_id: Number(formData.get("meta_id")),
+      user_id: Number(formData.get("user_id")),
+      start_date: formData.get("start_date") as string,
+      due_date: formData.get("due_date") as string,
+      priority: (formData.get("priority") as string) || undefined,
+      difficulty: formData.get("difficulty") as assignationType["difficulty"],
+    }
+    const validation = assignationSchema.safeParse(data)
+    if (!validation.success) {
+      const fieldErrors: Record<string, string> = {}
 
-  // await createAssignation(data)
-  await createAssignation(validation.data)
-  setMetaToAdd([null, ""])
-}
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string
+        fieldErrors[field] = issue.message
+      })
+
+      setErrors(fieldErrors)
+      return
+    }
+
+    // await createAssignation(data)
+    await createAssignation(validation.data)
+    setMetaToAdd([null, ""])
+  }
 
 
   return (
@@ -73,6 +86,8 @@ if (!validation.success) {
 
                     <div></div>
                   }
+
+
                   {meta[1] === "autoassign" &&
                     <>
                       <h5>Personalitza la teva meta</h5>
@@ -96,15 +111,15 @@ if (!validation.success) {
                         <div>
                           <label htmlFor="due_date">⏳ Data límit</label>
 
-                          <input className="form-control" type="date" name="due_date" 
+                          <input className="form-control" type="date" name="due_date"
                           // defaultValue={new Date().toISOString().split("T")[0]}
                           />
                         </div>
                         <div>
                           <label htmlFor="priority">🔥 Prioritat:</label>
                           <select className="form-select mb-2" name="priority" id="priority"
-                            
-                            >
+
+                          >
                             <option key={"empty"} value={""}>
                               {"Sense prioritat"}
                             </option>
@@ -119,7 +134,105 @@ if (!validation.success) {
                         <div>
                           <label htmlFor="difficulty">🎯 Dificultat</label>
                           <select className="form-select mb-2" defaultValue="normal" name="difficulty" id="difficulty"
+                          >
+                            {difficultyOptions.map((difficulty) => (
+                              <option key={difficulty} value={difficulty}>
+                                {difficulty}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+
+
+                    </>
+                  }
+                  {meta[1] === "assign" &&
+                    <>
+                      <h5>Personalitza la meta a assignar</h5>
+
+                      <div className="">
+                        <div>Titol:{meta[0]?.title}</div>
+                        {meta[0]?.description &&
+                          <div>Descripcio:{meta[0]?.description}</div>
+                        }
+                        <input type="hidden" name="userMakesAssignation" value={loggedInUserId ?? ""} />
+                        <input type="hidden" name="meta_id" value={meta[0]?.id} />
+
+
+                        <div>
+                          <label htmlFor="priority">grup:</label>
+                          <select className="form-select mb-2" name="grup" id="grup"
+                            onChange={(e) => setSelectedGroupId(e.target.value ? Number(e.target.value) : "")}
+                          >
+                            <option key={"empty"} value={"empry"}>
+                              Tria un grup
+                            </option>
+                            {myGroups.map((group) => (
+                              <option key={group.id} value={group.id}>
+                                {group.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {meta[0]?.type === "task" &&
+                          <div>
+                            <label htmlFor="usuaris">usuari del grup:</label>
+                            <select className="form-select mb-2" name="usuaris" id="usuaris"
                             >
+                              <option key={"empty"} value={""}>Assignar a tot el grup</option>
+                              {selectedGroupUsers.map((gu) => (
+                                <option key={gu.user_id} value={gu.user_id}>
+                                  {gu.user.username}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                        }
+                        <label className="me-5 my-2" htmlFor="isRestrictive">Proves necessaries?</label>
+                        <input type="checkbox" name="isRestrictive" id="isRestrictive" />
+
+
+
+                        <div>
+                          <label htmlFor="start_date">📅 Inici:</label>
+                          <input
+                            className="form-control"
+                            type="date"
+                            name="start_date"
+                            defaultValue={new Date().toISOString().split("T")[0]}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="due_date">⏳ Data límit</label>
+
+                          <input className="form-control" type="date" name="due_date"
+                          // defaultValue={new Date().toISOString().split("T")[0]}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="priority">🔥 Prioritat:</label>
+                          <select className="form-select mb-2" name="priority" id="priority"
+
+                          >
+                            <option key={"empty"} value={""}>
+                              {"Sense prioritat"}
+                            </option>
+                            {priorityOptions.map((priority) => (
+                              <option key={priority} value={priority}>
+                                {priority}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label htmlFor="difficulty">🎯 Dificultat</label>
+                          <select className="form-select mb-2" defaultValue="normal" name="difficulty" id="difficulty"
+                          >
                             {difficultyOptions.map((difficulty) => (
                               <option key={difficulty} value={difficulty}>
                                 {difficulty}

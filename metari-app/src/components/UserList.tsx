@@ -80,7 +80,7 @@ export function UserList({ users, setter }: UserListProps) {
                   <div className=" metaDetailsBox  my-0 me-3">
                     {openEntityId === user.id && (
                       <div className="metaDetails ps-2 py-2">
-                        {vistaActual !== "/" &&
+                        {vistaActual === "/Admin" &&
                           <>
                             <div>ID: {user.id}</div>
                             <div>Nom: {user.name}</div>

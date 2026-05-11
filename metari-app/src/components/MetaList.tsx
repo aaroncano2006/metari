@@ -5,15 +5,17 @@ import { deleteMeta } from "../services/metaService";
 import { getUserRole } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
 import { ModalAddMeta } from "./modals/ModalAddMeta";
+import type { groupType } from "../types/groupType";
 
 
 type MetaListProps = {
   metas: metaType[]
   setter: React.Dispatch<React.SetStateAction<metaType[]>>
   filteredCategory?: number | null
+  groups: groupType[]
 }
 
-export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
+export function MetaList({ metas, setter, filteredCategory, groups }: MetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
@@ -100,7 +102,7 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                               <button className="  btn btn-primary p-1  me-2  ms-auto"
                                 onClick={() => {
                                   setMetaToAdd([meta, "assign"]);
-                                }}>{meta.type === "task" ? "Assigna a membre de grup" : "Assigna a un grup"}</button>
+                                }}>{/* {meta.type === "task" ? "Assigna a membre de grup" : "Assigna a un grup"} */}Assigna a un grup </button>
                             </div>
                           </>
                         }
@@ -120,7 +122,7 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
       )}
       {/* modal afegir meta a grup */}
       {metaToAdd[0] && (
-        <ModalAddMeta meta={metaToAdd} setMetaToAdd={setMetaToAdd} />
+        <ModalAddMeta meta={metaToAdd} setMetaToAdd={setMetaToAdd} groups={groups} />
       )}
     </>
   );

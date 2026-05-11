@@ -61,7 +61,7 @@ export default function Home() {
             />
           </div>
           <div className="col-12 col-md">
-            <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory}/>
+            <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory} groups={groups}/>
             {/* <MyMetaList assignations={assignations}/> */}
           </div>
           <div className="col-12 col-md-3">
