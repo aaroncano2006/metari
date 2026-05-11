@@ -3,6 +3,7 @@ import { getUserId } from "../../services/auth/loginService";
 import {
   fetchFriends,
   fetchPendingInvitations,
+  rejectOrDeleteInvitation,
   sendInvitation,
 } from "../../services/invitationService";
 
@@ -90,14 +91,33 @@ export default function SendFriendInvitationButton({
     }
   };
 
+  const handleRejectOrDelete = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
+
+      const rejectOrDelete = await rejectOrDeleteInvitation(userId, receiverId);
+
+      if (!rejectOrDelete) {
+        throw new Error("Error rebutjant o eliminant la invitació!");
+      }
+
+      setPendingInvitation(false);
+      setInvitationSenderId(null);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
+
   return (
     <>
       {!alreadyFriends && !pendingInvitation && (
         <button
           className="btn btn-success"
-          onClick={async () => {
-            await sendInvitationToUser();
-          }}
+          onClick={async () => await sendInvitationToUser()}
         >
           <i className="bi bi-person-fill-add me-2"></i>
           Afegir amic
@@ -107,9 +127,7 @@ export default function SendFriendInvitationButton({
         (pendingInvitation && (
           <button
             className="btn btn-danger"
-            onClick={async () =>
-              console.log("Eliminar invitació o eliminar amic")
-            }
+            onClick={async () => await handleRejectOrDelete()}
           >
             <i className="bi bi-person-fill-dash me-2"></i>
             {alreadyFriends
