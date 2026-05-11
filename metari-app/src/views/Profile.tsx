@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { UserProfilePicture } from "../components/UserProfilePicture";
 import {
   getUserFullName,
+  getUserId,
   getUserName,
   getUserStats,
 } from "../services/auth/loginService";
@@ -10,6 +11,9 @@ import UserProfileForm from "../components/UserProfileForm";
 import UserProfileStats from "../components/UserProfileStats";
 import { getUserProfileData } from "../services/auth/profileService";
 import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
+import { FriendList } from "../components/FriendList";
+import { fetchFriends } from "../services/invitationService";
+import type { userTypeFrontend } from "../types/userTypeFrontend";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
@@ -22,8 +26,10 @@ export default function Profile() {
   const [searchParams] = useSearchParams();
   const usernameSearchParam = searchParams.get("username") || "";
   const [userData, setUserData] = useState<any>(null);
+  const id = userData?.id || getUserId();
   const name = userData?.name || getUserFullName();
   const username = userData?.username || getUserName();
+  const [friendsList, setFriendsList] = useState<userTypeFrontend[]>([]);
   const stats = userData
     ? {
         score: userData.score,
@@ -47,10 +53,24 @@ export default function Profile() {
       }
     };
 
+    const loadFriendsList = async () => {
+      try {
+        const friends = await fetchFriends(id);
+        if (friends) {
+          setFriendsList(friends);
+        } else {
+          throw new Error("Error carregant el llistat d'amics!");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
     if (usernameSearchParam) {
       loadProfile();
     } else {
       setUserData(null);
+      loadFriendsList();
     }
   }, [usernameSearchParam]);
 
@@ -107,6 +127,7 @@ export default function Profile() {
                 ></UserProfileStats>
               </div>
             </div>
+            <div className="row p-5">{!userData && <FriendList users={friendsList}></FriendList>}</div>
           </>
         )}
         {error && (

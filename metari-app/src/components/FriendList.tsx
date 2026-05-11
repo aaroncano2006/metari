@@ -8,7 +8,7 @@ import { Link, useLocation } from "react-router-dom";
 
 type UserListProps = {
   users: userTypeFrontend[]
-  setter: React.Dispatch<React.SetStateAction<userTypeFrontend[]>>
+  setter?: React.Dispatch<React.SetStateAction<userTypeFrontend[]>>
 
 }
 
