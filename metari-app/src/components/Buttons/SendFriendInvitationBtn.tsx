@@ -3,7 +3,7 @@ import { getUserId } from "../../services/auth/loginService";
 import {
   acceptInvitation,
   fetchFriends,
-  fetchPendingInvitations,
+  fetchInvitations,
   rejectOrDeleteInvitation,
   sendInvitation,
 } from "../../services/invitationService";
@@ -37,7 +37,7 @@ export default function SendFriendInvitationButton({
     };
 
     const isPendingInvitation = async () => {
-      const data = await fetchPendingInvitations(userId, receiverId);
+      const data = await fetchInvitations(userId, receiverId, "pending");
 
       return setPendingInvitation(data);
     };
@@ -63,7 +63,7 @@ export default function SendFriendInvitationButton({
         throw new Error("Error enviant la invitació");
       }
 
-      const pending = await fetchPendingInvitations(userId, receiverId);
+      const pending = await fetchInvitations(userId, receiverId, "pending");
       setPendingInvitation(pending);
       window.dispatchEvent(new Event("buttonChange"));
       setSuccess(true);

@@ -25,22 +25,24 @@ export async function sendInvitation(
   return data;
 }
 
-export async function fetchPendingInvitations(
+export async function fetchInvitations(
   userId: number,
   otherUserId: number,
+  status: "pending" | "accepted"
+
 ): Promise<any> {
   const [sent, received] = await Promise.all([
     axiosConnection.get<invitationType[]>(
-      `/invitacions/${userId}/sent/pending`,
+      `/invitacions/${userId}/sent/${status}`,
     ),
     axiosConnection.get<invitationType[]>(
-      `/invitacions/${userId}/received/pending`,
+      `/invitacions/${userId}/received/${status}`,
     ),
   ]);
   const pending = [...sent.data, ...received.data].find(
     (el) =>
       el.group_id === null &&
-      el.status === "pending" &&
+      el.status === status &&
       ((el.sender_id === userId && el.receiver_id === otherUserId) ||
         (el.sender_id === otherUserId && el.receiver_id === userId)),
   );
@@ -48,14 +50,18 @@ export async function fetchPendingInvitations(
 }
 
 export async function rejectOrDeleteInvitation(userId: number, otherUserId: number): Promise<any> {
-  const pending = await fetchPendingInvitations(userId, otherUserId);
+  const pending = await fetchInvitations(userId, otherUserId, "pending");
+  const accepted = await fetchInvitations(userId, otherUserId, "accepted");
 
   let deletePending = null;
-  if (pending) {
+  let deleteAccepted = null;
+  if (pending && !accepted) {
     deletePending = await axiosConnection.delete(`/invitacions/${userId}/${pending.id}`);
+  } else if (!pending && accepted) {
+    deleteAccepted = await axiosConnection.delete(`/invitacions/${userId}/${accepted.id}`);
   }
 
-  return deletePending;
+  return pending ? deletePending : deleteAccepted;
 }
 
 export async function acceptInvitation(receiverId: number, invitationId: number): Promise<any> {
