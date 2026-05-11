@@ -124,7 +124,7 @@ export default function Profile() {
               </div>
             </header>
 
-            <div className="row ms-5">
+            <div className="row ms-5 mb-4">
               <div className="col-md-4">
                 <UserProfilePicture
                   url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwo8eJYb8h6_V7THlADVmoSbVkJQw6k08Liw&s"
