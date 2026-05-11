@@ -14,6 +14,9 @@ import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitati
 import { FriendList } from "../components/FriendList";
 import { fetchFriends } from "../services/invitationService";
 import type { userTypeFrontend } from "../types/userTypeFrontend";
+import { MyGroupsList } from "../components/MyGroupsList";
+import type { groupType } from "../types/groupType";
+import { fetchGroups } from "../services/groupService";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
@@ -30,6 +33,7 @@ export default function Profile() {
   const name = userData?.name || getUserFullName();
   const username = userData?.username || getUserName();
   const [friendsList, setFriendsList] = useState<userTypeFrontend[]>([]);
+  const [myGroupsList, setMyGroupsList] = useState<groupType[]>([]);
   const stats = userData
     ? {
         score: userData.score,
@@ -66,11 +70,25 @@ export default function Profile() {
       }
     };
 
+    const loadMyGroupsList = async () => {
+      try {
+        const groups = await fetchGroups();
+        if (groups) {
+          setMyGroupsList(groups);
+        } else {
+          throw new Error("Error carregant el llistat dels meus grups!");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      }
+    }
+
     if (usernameSearchParam) {
       loadProfile();
     } else {
       setUserData(null);
       loadFriendsList();
+      loadMyGroupsList();
     }
   }, [usernameSearchParam]);
 
@@ -127,7 +145,16 @@ export default function Profile() {
                 ></UserProfileStats>
               </div>
             </div>
-            <div className="row p-5">{!userData && <FriendList users={friendsList}></FriendList>}</div>
+            {!userData && (
+              <>
+                <div className="row ps-5 pe-5 mb-5">
+                  <FriendList users={friendsList}></FriendList>
+                </div>
+                <div className="row ps-5 pe-5">
+                    <MyGroupsList groups={myGroupsList}></MyGroupsList>
+                </div>
+              </>
+            )}
           </>
         )}
         {error && (
