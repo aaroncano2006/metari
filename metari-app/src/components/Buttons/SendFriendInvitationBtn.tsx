@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
 import { getUserId } from "../../services/auth/loginService";
 import {
+  acceptInvitation,
   fetchFriends,
   fetchPendingInvitations,
   rejectOrDeleteInvitation,
   sendInvitation,
 } from "../../services/invitationService";
+import type { invitationType } from "../../types/invitationType";
 
 type SendInvitationButtonProps = {
   receiverId: number;
+  userData: any;
 };
 
 export default function SendFriendInvitationButton({
   receiverId,
+  userData = null
 }: SendInvitationButtonProps) {
   const [_error, setError] = useState<boolean>(false);
   const [_success, setSuccess] = useState<boolean>(false);
   const [alreadyFriends, setAlreadyFriends] = useState<boolean>(false);
-  const [pendingInvitation, setPendingInvitation] = useState<boolean>(false);
-  const [invitationSenderId, setInvitationSenderId] = useState<number | null>(
-    null,
-  );
+  const [pendingInvitation, setPendingInvitation] = useState<invitationType | null>(null);
   const [recharge, setRecharge] = useState(0);
   const userId = getUserId() ?? 0;
 
@@ -37,31 +38,16 @@ export default function SendFriendInvitationButton({
     };
 
     const isPendingInvitation = async () => {
-      const pendingInvitation = await fetchPendingInvitations(
+      const data = await fetchPendingInvitations(
         userId,
         receiverId,
       );
 
-      return setPendingInvitation(pendingInvitation ? true : false);
-    };
-
-    const getPendingInvitationSender = async () => {
-      const pendingInvitation = await fetchPendingInvitations(
-        userId,
-        receiverId,
-      );
-
-      if (!pendingInvitation) {
-        return setInvitationSenderId(null);
-      }
-
-      console.log(pendingInvitation.sender_id);
-      return setInvitationSenderId(pendingInvitation.sender_id);
+      return setPendingInvitation(data);
     };
 
     areAlreadyFriends();
     isPendingInvitation();
-    getPendingInvitationSender();
   }, [recharge]);
 
   useEffect(() => {
@@ -81,8 +67,8 @@ export default function SendFriendInvitationButton({
         throw new Error("Error enviant la invitació");
       }
 
-      setPendingInvitation(true);
-      setInvitationSenderId(userId);
+      const pending = await fetchPendingInvitations(userId, receiverId);
+      setPendingInvitation(pending);
       window.dispatchEvent(new Event("buttonChange"));
       setSuccess(true);
     } catch (err: any) {
@@ -102,8 +88,30 @@ export default function SendFriendInvitationButton({
         throw new Error("Error rebutjant o eliminant la invitació!");
       }
 
-      setPendingInvitation(false);
-      setInvitationSenderId(null);
+      setPendingInvitation(null);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
+
+  const handleAcceptInvitation = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
+
+      if (!pendingInvitation) return;
+
+      const accepted = await acceptInvitation(userId, pendingInvitation.id);
+
+      if (!accepted) {
+        throw new Error("Error acceptant la invitació");
+      }
+
+      setAlreadyFriends(true);
+      setPendingInvitation(null);
       window.dispatchEvent(new Event("buttonChange"));
       setSuccess(true);
     } catch (err: any) {
@@ -123,6 +131,15 @@ export default function SendFriendInvitationButton({
           Afegir amic
         </button>
       )}
+      {!alreadyFriends && pendingInvitation && pendingInvitation.sender_id !== userId && (
+        <button
+          className="btn btn-success me-3"
+          onClick={async () => await handleAcceptInvitation()}
+        >
+          <i className="bi bi-person-fill-add me-2"></i>
+          Acceptar invitació
+        </button>
+      )}
       {alreadyFriends ||
         (pendingInvitation && (
           <button
@@ -132,7 +149,7 @@ export default function SendFriendInvitationButton({
             <i className="bi bi-person-fill-dash me-2"></i>
             {alreadyFriends
               ? "Eliminar amic"
-              : invitationSenderId === userId
+              : pendingInvitation.sender_id === userId
                 ? "Eliminar invitació"
                 : "Rebutjar invitació"}
           </button>
