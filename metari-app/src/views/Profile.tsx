@@ -81,7 +81,6 @@ export default function Profile() {
                 {userData && (
                   <SendFriendInvitationButton
                     receiverId={userData?.id}
-                    userData={userData}
                   ></SendFriendInvitationButton>
                 )}
               </div>

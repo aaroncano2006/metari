@@ -11,12 +11,10 @@ import type { invitationType } from "../../types/invitationType";
 
 type SendInvitationButtonProps = {
   receiverId: number;
-  userData: any;
 };
 
 export default function SendFriendInvitationButton({
-  receiverId,
-  userData = null
+  receiverId
 }: SendInvitationButtonProps) {
   const [_error, setError] = useState<boolean>(false);
   const [_success, setSuccess] = useState<boolean>(false);
