@@ -33,7 +33,7 @@ export default function Profile() {
   const name = userData?.name || getUserFullName();
   const username = userData?.username || getUserName();
   const [friendsList, setFriendsList] = useState<userTypeFrontend[]>([]);
-  const [myGroupsList, setMyGroupsList] = useState<groupType[]>([]);
+  const [groupsList, setGroupsList] = useState<groupType[]>([]);
   const stats = userData
     ? {
         score: userData.score,
@@ -70,25 +70,25 @@ export default function Profile() {
       }
     };
 
-    const loadMyGroupsList = async () => {
+    const loadGroupsList = async () => {
       try {
         const groups = await fetchGroups();
         if (groups) {
-          setMyGroupsList(groups);
+          setGroupsList(groups);
         } else {
           throw new Error("Error carregant el llistat dels meus grups!");
         }
       } catch (err: any) {
         setError(err.message);
       }
-    }
+    };
 
     if (usernameSearchParam) {
       loadProfile();
     } else {
       setUserData(null);
       loadFriendsList();
-      loadMyGroupsList();
+      loadGroupsList();
     }
   }, [usernameSearchParam]);
 
@@ -125,7 +125,7 @@ export default function Profile() {
             </header>
 
             <div className="row ms-5 mb-4">
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <UserProfilePicture
                   url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwo8eJYb8h6_V7THlADVmoSbVkJQw6k08Liw&s"
                   id="userProfilePictureFromPage"
@@ -135,8 +135,22 @@ export default function Profile() {
                   <h3 className="text-muted">{username}</h3>
                 </div>
               </div>
-              <div className="col-md-5 mb-2">
-                {!userData && <UserProfileForm></UserProfileForm>}
+              <div className="col-md-6 mb-2">
+                {!userData && (
+                  <>
+                    <div className="ps-5">
+                      <UserProfileForm></UserProfileForm>
+                    </div>
+                  </>
+                )}
+                {userData && (
+                  <>
+                    <div className="me-5 mb-4">
+                      <FriendList users={friendsList}></FriendList>
+                      <MyGroupsList groups={groupsList}></MyGroupsList>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="col-md-2">
                 <UserProfileStats
@@ -151,7 +165,7 @@ export default function Profile() {
                   <FriendList users={friendsList}></FriendList>
                 </div>
                 <div className="row ps-5 pe-5">
-                    <MyGroupsList groups={myGroupsList}></MyGroupsList>
+                  <MyGroupsList groups={groupsList}></MyGroupsList>
                 </div>
               </>
             )}
