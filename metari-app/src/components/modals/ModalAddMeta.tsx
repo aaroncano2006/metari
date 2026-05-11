@@ -46,14 +46,38 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
+
+    // const data = {
+    //   meta_id: Number(formData.get("meta_id")),
+    //   group_id: Number(formData.get("group_id")) ?? undefined,
+    //   // user_id: meta[1] === "assign" ? Number(formData.get("userToAssign")) : Number(formData.get("user_id")) , 
+    //   user_id: meta[1] === "assign" ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
+    //     : Number(formData.get("user_id")),
+    //   assigner_id: Number(formData.get("assigner_id")) ?? undefined,
+    //   needs_proofs: formData.get("needs_proofs") ?? undefined,
+    //   start_date: formData.get("start_date") ,
+    //   due_date: formData.get("due_date"),
+    //   priority: (formData.get("priority")) || undefined,
+    //   difficulty: formData.get("difficulty"),
+    // }
+
     const data = {
       meta_id: Number(formData.get("meta_id")),
-      user_id: Number(formData.get("user_id")),
-      start_date: formData.get("start_date") as string,
-      due_date: formData.get("due_date") as string,
-      priority: (formData.get("priority") as string) || undefined,
-      difficulty: formData.get("difficulty") as assignationType["difficulty"],
+      group_id: formData.get("group_id") ? Number(formData.get("group_id")) || undefined : undefined,
+      user_id: formData.get("user_id") ? Number(formData.get("user_id")) : undefined,
+      // user_id: meta[1] === "assign"
+      //   ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
+      //   : Number(formData.get("user_id")) || undefined,
+      // assigner_id: Number(formData.get("assigner_id")) || undefined,
+      // needs_proofs: formData.get("needs_proofs") || undefined,
+      start_date: formData.get("start_date"),
+      due_date: formData.get("due_date"),
+      priority: formData.get("priority") || undefined,
+      difficulty: formData.get("difficulty"),
     }
+
+
+
     const validation = assignationSchema.safeParse(data)
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
@@ -64,10 +88,10 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
       })
 
       setErrors(fieldErrors)
+      console.log("Zod validation errors:", validation.error.issues)
       return
     }
 
-    // await createAssignation(data)
     await createAssignation(validation.data)
     setMetaToAdd([null, ""])
   }
@@ -82,10 +106,6 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
               <div className="modalWindow">
 
                 <form onSubmit={handleSubmit}>
-                  {meta[1] === "assign" &&
-
-                    <div></div>
-                  }
 
 
                   {meta[1] === "autoassign" &&
@@ -121,7 +141,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
                           >
                             <option key={"empty"} value={""}>
-                              {"Sense prioritat"}
+                              {"Sense prioritat/Normal"}
                             </option>
                             {priorityOptions.map((priority) => (
                               <option key={priority} value={priority}>
@@ -157,16 +177,17 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                         {meta[0]?.description &&
                           <div>Descripcio:{meta[0]?.description}</div>
                         }
-                        <input type="hidden" name="userMakesAssignation" value={loggedInUserId ?? ""} />
+                        <input type="hidden" name="user_id" value={getUserId() ?? ""} />
+                        <input type="hidden" name="assigner_id" value={loggedInUserId ?? ""} />
                         <input type="hidden" name="meta_id" value={meta[0]?.id} />
 
 
                         <div>
-                          <label htmlFor="priority">grup:</label>
-                          <select className="form-select mb-2" name="grup" id="grup"
+                          <label htmlFor="group_id">grup:</label>
+                          <select className="form-select mb-2" name="group_id" id="group_id"
                             onChange={(e) => setSelectedGroupId(e.target.value ? Number(e.target.value) : "")}
                           >
-                            <option key={"empty"} value={"empry"}>
+                            <option key={"empty"} value={""}>
                               Tria un grup
                             </option>
                             {myGroups.map((group) => (
@@ -179,21 +200,21 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
                         {meta[0]?.type === "task" &&
                           <div>
-                            <label htmlFor="usuaris">usuari del grup:</label>
-                            <select className="form-select mb-2" name="usuaris" id="usuaris"
+                            <label htmlFor="userToAssign">usuari del grup:</label>
+                            <select className="form-select mb-2" name="userToAssign" id="userToAssign"
                             >
                               <option key={"empty"} value={""}>Assignar a tot el grup</option>
-                              {selectedGroupUsers.map((gu) => (
-                                <option key={gu.user_id} value={gu.user_id}>
-                                  {gu.user.username}
+                              {selectedGroupUsers.map((grupUser) => (
+                                <option key={grupUser.user_id} value={grupUser.user_id}>
+                                  {grupUser.user.username}
                                 </option>
                               ))}
                             </select>
                           </div>
 
                         }
-                        <label className="me-5 my-2" htmlFor="isRestrictive">Proves necessaries?</label>
-                        <input type="checkbox" name="isRestrictive" id="isRestrictive" />
+                        <label className="me-5 my-2" htmlFor="needs_proofs">Proves necessaries?</label>
+                        <input type="checkbox" name="needs_proofs" id="needs_proofs" />
 
 
 

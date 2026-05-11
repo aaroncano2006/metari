@@ -7,9 +7,11 @@ export type assignationType = {
   group_id?: number
   meta_id: number
   user_id?: number
+  assigner_id? : number
+  needs_proofs?: Boolean
   start_date?: string
   due_date?: string
-  priority: string
+  priority?: string
   difficulty: "easy" | "normal" | "hard" | "extreme"
   score?: number
   completed: boolean
