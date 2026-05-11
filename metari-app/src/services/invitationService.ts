@@ -46,3 +46,14 @@ export async function fetchPendingInvitations(
   );
   return pending ?? null;
 }
+
+export async function rejectOrDeleteInvitation(userId: number, otherUserId: number): Promise<any> {
+  const pending = await fetchPendingInvitations(userId, otherUserId);
+
+  let deletePending = null;
+  if (pending) {
+    deletePending = await axiosConnection.delete(`/invitacions/${userId}/${pending.id}`);
+  }
+
+  return deletePending;
+}
