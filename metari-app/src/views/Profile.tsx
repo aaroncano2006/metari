@@ -16,7 +16,7 @@ import { fetchFriends } from "../services/invitationService";
 import type { userTypeFrontend } from "../types/userTypeFrontend";
 import { MyGroupsList } from "../components/MyGroupsList";
 import type { groupType } from "../types/groupType";
-import { fetchGroups } from "../services/groupService";
+import { fetchGroupsByUserId } from "../services/groupService";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
@@ -29,7 +29,6 @@ export default function Profile() {
   const [searchParams] = useSearchParams();
   const usernameSearchParam = searchParams.get("username") || "";
   const [userData, setUserData] = useState<any>(null);
-  const id = userData?.id || getUserId();
   const name = userData?.name || getUserFullName();
   const username = userData?.username || getUserName();
   const [friendsList, setFriendsList] = useState<userTypeFrontend[]>([]);
@@ -45,38 +44,18 @@ export default function Profile() {
       try {
         const user = await getUserProfileData(usernameSearchParam);
         if (user) {
-          if (user.username === username) {
+          if (user.username === getUserName()) {
             return navigate("/profile");
           }
           setUserData(user);
-        } else {
-          throw new Error(`No s'ha trobat cap usuari amb el username: `);
-        }
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-
-    const loadFriendsList = async () => {
-      try {
-        const friends = await fetchFriends(id);
-        if (friends) {
+          const [friends, groups] = await Promise.all([
+            fetchFriends(user.id),
+            fetchGroupsByUserId(user.id),
+          ]);
           setFriendsList(friends);
-        } else {
-          throw new Error("Error carregant el llistat d'amics!");
-        }
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-
-    const loadGroupsList = async () => {
-      try {
-        const groups = await fetchGroups();
-        if (groups) {
           setGroupsList(groups);
         } else {
-          throw new Error("Error carregant el llistat dels meus grups!");
+          throw new Error(`No s'ha trobat cap usuari amb el username: `);
         }
       } catch (err: any) {
         setError(err.message);
@@ -87,10 +66,16 @@ export default function Profile() {
       loadProfile();
     } else {
       setUserData(null);
+      const loadOwnData = async () => {
+        const [friends, groups] = await Promise.all([
+          fetchFriends(getUserId()!),
+          fetchGroupsByUserId(getUserId()!),
+        ]);
+        setFriendsList(friends);
+        setGroupsList(groups);
+      };
+      loadOwnData();
     }
-
-    loadFriendsList();
-    loadGroupsList();
   }, [usernameSearchParam]);
 
   useEffect(() => {
@@ -148,7 +133,7 @@ export default function Profile() {
                   <>
                     <div className="me-5 mb-4">
                       <FriendList users={friendsList}></FriendList>
-                      <MyGroupsList groups={groupsList}></MyGroupsList>
+                      <MyGroupsList groups={groupsList} viewedUserId={userData.id}></MyGroupsList>
                     </div>
                   </>
                 )}

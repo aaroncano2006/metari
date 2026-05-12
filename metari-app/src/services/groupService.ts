@@ -9,6 +9,11 @@ export async function fetchGroups(): Promise<groupType[]> {
   return data;
 }
 
+export async function fetchGroupsByUserId(userId: number): Promise<groupType[]> {
+  const { data } = await axiosConnection.get<groupType[]>(`/grups/user/${userId}`);
+  return data;
+}
+
 export async function fetchGroupById(id: number): Promise<groupType> {
   const { data } = await axiosConnection.get<groupType>(`/grups/${id}`);
   return data;
