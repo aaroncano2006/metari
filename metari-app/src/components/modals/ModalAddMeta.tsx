@@ -61,6 +61,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
       due_date: formData.get("due_date"),
       priority: formData.get("priority") || undefined,
       difficulty: formData.get("difficulty"),
+      type: meta[0]?.type,
     }
 
 
@@ -183,6 +184,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                               </option>
                             ))}
                           </select>
+                          {errors.group_id && <div className="text-danger small">{errors.group_id}</div>}
                         </div>
 
                         {meta[0]?.type === "task" &&
@@ -190,13 +192,14 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                             <label htmlFor="userToAssign">usuari del grup:</label>
                             <select className="form-select mb-2" name="userToAssign" id="userToAssign"
                             >
-                              <option key={"empty"} value={""}>Assignar a tot el grup</option>
+                              <option key={"empty"} value={""}>Tria un usuari</option>
                               {selectedGroupUsers.map((grupUser) => (
                                 <option key={grupUser.user_id} value={grupUser.user_id}>
                                   {grupUser.user.username}
                                 </option>
                               ))}
                             </select>
+                             {errors.user_id && <div className="text-danger small">{errors.user_id}</div>}
                           </div>
 
                         }
