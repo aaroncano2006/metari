@@ -28,7 +28,9 @@ export function GroupList({ groups, setter }: GroupListProps) {
   const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
-  const canEdit = vistaActual !== "/" && role === "admin";
+  const canEdit =
+    (vistaActual !== "/" && vistaActual !== "/myGroups" && vistaActual !== "/myMetas") &&
+    role === "admin";
 
   //suma el total de punts del grup
   const groupScores = new Map(
@@ -53,7 +55,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/" ? "Top 10 Grups" : "Llista de grups"}</div>
+        <div className="titolComponent  text-center my-2">{vistaActual === "/Admin" ? "Llista de grups" : "Top 10 Grups"}</div>
         <hr className="m-0" />
 
         <div className="inline">

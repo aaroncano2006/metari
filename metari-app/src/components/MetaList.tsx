@@ -4,16 +4,18 @@ import { ModalEditMeta } from "./modals/ModalEditMeta";
 import { deleteMeta } from "../services/metaService";
 import { getUserRole } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
-import { ModalAddMetaToGroup } from "./modals/ModalAddMetaToGroup";
+import { ModalAddMeta } from "./modals/ModalAddMeta";
+import type { groupType } from "../types/groupType";
 
 
 type MetaListProps = {
   metas: metaType[]
   setter: React.Dispatch<React.SetStateAction<metaType[]>>
   filteredCategory?: number | null
+  groups: groupType[]
 }
 
-export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
+export function MetaList({ metas, setter, filteredCategory, groups }: MetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
@@ -21,12 +23,15 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
 
 
   const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
-  const [metaToAdd, setMetaToAdd] = useState<metaType | null>(null)
+  // const [metaToAdd, setMetaToAdd] = useState<metaType | null>(null)
+  const [metaToAdd, setMetaToAdd] = useState<[metaType | null, string]>([null, ""])
+
   const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit = vistaActual !== "/" && role === "admin";
   const canAddMeta = vistaActual === "/" && token
+
 
   //Si alguna de les condicions es true, es guarda la meta a la variable
   const filteredMetas = metas.filter(meta =>
@@ -80,27 +85,28 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
                       <div>Descripcio: {meta.description}</div>
                       <div>Categoria: {meta.category.name}</div>
                       <div>Autor: {meta.author.username}</div>
-                      {canAddMeta &&
-                        <>
-                          <div className="d-flex mt-2 justify-content-end">
+                      <div className="d-flex mt-2 justify-content-end">
+                        {canAddMeta && meta.type === "task" &&
+                          <>
                             <div className="">
                               <button className="  btn btn-primary p-1  me-2  ms-auto"
-                                onClick={(event) => {
-                                  // event.stopPropagation()
-                                  setMetaToAdd(meta);
+                                onClick={() => {
+                                  setMetaToAdd([meta, "autoassign"]);
                                 }}>Afegir a la meva llista</button>
                             </div>
+                          </>
+                        }
+                        {canAddMeta &&
+                          <>
                             <div className="">
                               <button className="  btn btn-primary p-1  me-2  ms-auto"
-                                onClick={(event) => {
-                                  // event.stopPropagation()
-                                  setMetaToAdd(meta);
-                                }}>Afegeix al grup</button>
+                                onClick={() => {
+                                  setMetaToAdd([meta, "assign"]);
+                                }}>{/* {meta.type === "task" ? "Assigna a membre de grup" : "Assigna a un grup"} */}Assigna a un grup </button>
                             </div>
-                            
-                          </div>
-                        </>
-                      }
+                          </>
+                        }
+                      </div>
                     </div>
                   )}
                 </div>
@@ -115,8 +121,8 @@ export function MetaList({ metas, setter, filteredCategory }: MetaListProps) {
         <ModalEditMeta meta={metaToEdit} setEditMeta={setMetaToEdit} setter={setter} />
       )}
       {/* modal afegir meta a grup */}
-      {metaToAdd && (
-        <ModalAddMetaToGroup meta={metaToAdd} setMetaToAdd={setMetaToAdd} />
+      {metaToAdd[0] && (
+        <ModalAddMeta meta={metaToAdd} setMetaToAdd={setMetaToAdd} groups={groups} />
       )}
     </>
   );

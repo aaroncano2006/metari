@@ -27,7 +27,9 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
 
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
-  const canEdit = vistaActual !== "/" && role === "admin";
+ const canEdit =
+  (vistaActual !== "/" && vistaActual !== "/myGroups" && vistaActual !== "/myMetas") &&
+  role === "admin";
 
 
 
