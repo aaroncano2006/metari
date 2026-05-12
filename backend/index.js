@@ -58,9 +58,11 @@ app.get("/api", (req, res) => {
         base: `${BASE_URL}/api/invitacions`,
         methods: {
           GET: ["/:userid/:sentorreceived/:status"],
+          GET: ["/friends/:userid"],
           POST: ["/:senderid/:receiverid", "/:senderid/:receiverid/:groupid"],
           PUT: ["/:receiverid/:id"],
           DELETE: ["/:userid/:id"],
+
         },
       },
       metas: {

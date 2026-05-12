@@ -23,21 +23,23 @@ export function UserList({ users, setter }: UserListProps) {
   const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
-  const canEdit = vistaActual !== "/" && role === "admin";
+  const canEdit =
+    (vistaActual !== "/" && vistaActual !== "/myGroups" && vistaActual !== "/myMetas") &&
+    role === "admin";
 
   const top10 = [...users].sort((a, b) => b.score - a.score).slice(0, 10)
   let usersToShow = top10;
   if (vistaActual === "/") {
-     usersToShow = top10;
-  }else{
-     usersToShow = users;
+    usersToShow = top10;
+  } else {
+    usersToShow = users;
   }
 
   return (
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/" ? "Top 10 Usuaris" : "Llista d'usuaris"}</div>
+        <div className="titolComponent  text-center my-2">{vistaActual === "/Admin" ? "Llista d'usuaris" : "Top 10 Usuaris"}</div>
         <hr className="m-0" />
 
         <div className="inline">
@@ -78,7 +80,7 @@ export function UserList({ users, setter }: UserListProps) {
                   <div className=" metaDetailsBox  my-0 me-3">
                     {openEntityId === user.id && (
                       <div className="metaDetails ps-2 py-2">
-                        {vistaActual !== "/" &&
+                        {vistaActual === "/Admin" &&
                           <>
                             <div>ID: {user.id}</div>
                             <div>Nom: {user.name}</div>
@@ -101,7 +103,7 @@ export function UserList({ users, setter }: UserListProps) {
             <div className="text-center">
               Fes <Link to="/login" className=" p-1 ">
                 LogIn
-              </Link> 
+              </Link>
               o <Link to="/Register" className=" p-1 ">
                 Registra't
               </Link>

@@ -35,27 +35,30 @@ const validateAssignation = async (data, isUpdating = false) => {
       return "La id de l'usuari no correspon a cap usuari registrat en el sistema!";
     }
 
-    const isUserInGroup = await prisma.groupUser.findUnique({
-      where: {
-        group_id_user_id: {
-          group_id: existingMeta.group_id,
-          user_id: existingUser.id,
-        },
-      },
-    });
 
-    if (!isUserInGroup) {
-      return "L'usuari al qual es vol assignar aquesta meta no està en el grup on està aquesta meta!";
-    }
+    // no s'utilitza groupID a la meta, sino a l'assignacio
+
+    // const isUserInGroup = await prisma.groupUser.findUnique({
+    //   where: {
+    //     group_id_user_id: {
+    //       group_id: existingMeta.group_id,
+    //       user_id: existingUser.id,
+    //     },
+    //   },
+    // });
+
+    // if (!isUserInGroup) {
+    //   return "L'usuari al qual es vol assignar aquesta meta no està en el grup on està aquesta meta!";
+    // }
   }
 
-  if (data.group_id && data.user_id) {
-    return "L'assignació només pot estar assignada a un grup o a un usuari!";
-  }
+  // if (data.group_id && data.user_id) {
+  //   return "L'assignació només pot estar assignada a un grup o a un usuari!";
+  // }
 
-  if (existingMeta.group_id !== data.group_id) {
-    return "La meta no pertany al grup al que es vol assignar!";
-  }
+  // if (existingMeta.group_id !== data.group_id) {
+  //   return "La meta no pertany al grup al que es vol assignar!";
+  // }
 
   let startDate = null;
   let dueDate = null;

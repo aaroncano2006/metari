@@ -24,28 +24,29 @@ model Category {
 }
 
 model User {
-  id                  Int           @id @default(autoincrement())
-  name                String //VARCHAR(191) es el valor per defecte  mariadb si no s'especifica
-  username            String        @unique
-  email               String        @unique
-  password            String
-  role                UserRole      @default(user)
-  completed_tasks     BigInt        @default(0)
-  score               BigInt        @default(0)
-  restore_token       String?       @db.Text
-  created_at          DateTime      @default(now())
-  updated_at          DateTime      @updatedAt //Actualitza cada vegada que es fa un canvi a la taula
+  id                     Int                      @id @default(autoincrement())
+  name                   String //VARCHAR(191) es el valor per defecte  mariadb si no s'especifica
+  username               String                   @unique
+  email                  String                   @unique
+  password               String
+  role                   UserRole                 @default(user)
+  completed_tasks        BigInt                   @default(0)
+  score                  BigInt                   @default(0)
+  restore_token          String?                  @db.Text
+  created_at             DateTime                 @default(now())
+  updated_at             DateTime                 @updatedAt //Actualitza cada vegada que es fa un canvi a la taula
   //Autogenerades relacions  bidireccionals
-  groups              Group[]
-  metas               Meta[]
-  assignations        Assignation[]
-  comments            Comment[]
-  proofs              Proof[]
+  groups                 Group[]
+  metas                  Meta[]
+  assignations           Assignation[]
+  comments               Comment[]
+  proofs                 Proof[]
   //Aquestes dues relacions de retorn venen del mateix model aixi que s'han d'anomenar amb diferents noms (definits a les relacions del model invitation)
-  sentInvitations     Invitation[]  @relation("SentInvitations")
-  receivedInvitations Invitation[]  @relation("ReceivedInvitations")
-  groupUsers          GroupUser[]
-  indexedMetas        IndexedMeta[]
+  sentInvitations        Invitation[]             @relation("SentInvitations")
+  receivedInvitations    Invitation[]             @relation("ReceivedInvitations")
+  groupUsers             GroupUser[]
+  indexedMetas           IndexedMeta[]
+  assignationCompletions AssignationCompletions[]
 
   //El nom de la taula a la bbdd
   @@map("users")
@@ -82,11 +83,11 @@ model Meta {
   title       String
   description String? @db.Text
   author_id   Int
-  group_id    Int? // Decidir fa falta o no
+  group_id    Int? // no s'utilitza
   category_id Int?
 
   type         MetaType      @default(task)
-  is_public    Boolean       @default(false)
+  is_public    Boolean       @default(true)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   author       User          @relation(fields: [author_id], references: [id])
@@ -106,24 +107,28 @@ enum MetaType {
 }
 
 model Assignation {
-  id         Int        @id @default(autoincrement())
-  group_id   Int?
-  meta_id    Int
-  user_id    Int?
-  start_date DateTime?  @default(now()) @db.Date
-  due_date   DateTime?  @db.Date
-  priority   Priority?
-  difficulty Difficulty @default(normal)
-  score      BigInt?    @db.UnsignedBigInt
-  completed  Boolean    @default(false)
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
-  group      Group?     @relation(fields: [group_id], references: [id])
-  meta       Meta       @relation(fields: [meta_id], references: [id])
-  user       User?      @relation(fields: [user_id], references: [id])
+  id           Int        @id @default(autoincrement())
+  group_id     Int?
+  meta_id      Int
+  user_id      Int?
+  assigner_id  Int?
+  needs_proofs Boolean?
+  start_date   DateTime?  @default(now()) @db.Date
+  due_date     DateTime?  @db.Date
+  priority     Priority?
+  difficulty   Difficulty @default(normal)
+  score        BigInt?    @db.UnsignedBigInt
+  completed    Boolean    @default(false)
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  group        Group?     @relation(fields: [group_id], references: [id])
+  meta         Meta       @relation(fields: [meta_id], references: [id])
+  user         User?      @relation(fields: [user_id], references: [id])
   //Autogenerades relacions bidireccionals
-  comments   Comment[]
-  proofs     Proof[]
+
+  comments               Comment[]
+  proofs                 Proof[]
+  assignationCompletions AssignationCompletions[]
 
   @@map("assignations")
 }
@@ -222,4 +227,16 @@ model IndexedMeta {
   // group                 Group?   @relation(fields: [group_id], references: [id])
 
   @@map("index")
+}
+
+model AssignationCompletions {
+  id             Int     @id @default(autoincrement())
+  assignation_id Int
+  user_id        Int
+  is_Completed   Boolean @default(false)
+
+  user         User        @relation(fields: [user_id], references: [id])
+  assignations Assignation @relation(fields: [assignation_id], references: [id])
+
+  @@map("assignation_completions")
 }
