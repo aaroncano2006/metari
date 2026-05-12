@@ -4,6 +4,7 @@ import { getUserRole, getUserId } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
 import type { assignationType } from "../types/assignationType";
 import type { groupType } from "../types/groupType";
+import { ModalAddComment } from "./modals/ModalAddComment";
 
 
 type MyMetaListProps = {
@@ -26,6 +27,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
   const loggedInUserId = getUserId()
   const [showCompleted, setShowCompleted] = useState(false)
   const [showCompletedByGroup, setShowCompletedByGroup] = useState<Record<number, boolean>>({})
+  const [assignationToAddComment, setAssignationToAddComment] = useState<assignationType | null>(null)
 
   //filtrar assignacions del usuari
   // const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId)
@@ -78,12 +80,14 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                           onClick={() => toggleEntity(assignation.id)}>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
-                            <div className="">{assignation.completed === true ? "completada" : ""}</div>
+                            <div className="me-2">{assignation.completed === true ? "completada" : ""}</div>
+
                           </div>
                         </div>
-                        <div className="metaDetailsBox my-0 me-3">
+                        <div className="metaDetailsBox my-0 me-3 ">
                           {openEntityId === assignation.id && (
-                            <div className="metaDetails ps-2 py-2">
+
+                            <div className="metaDetails ps-2 py-2 d-flex flex-column">
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
@@ -95,12 +99,19 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
+                              <div className="btn btn-primary align-self-end me-2"
+                              onClick={() => {
+                                  setAssignationToAddComment(assignation);
+                                }}>Afegir comentari</div>
                             </div>
+
                           )}
                         </div>
                       </li>
                     ))}
                 </ul>
+
+
                 <div className="me-auto ms-3">Metes dels integrants del grup</div>
                 <ul className="ps-2 m-0 py-2">
                   {assignations
@@ -140,6 +151,9 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
           ))}
         </>
       }
+      {assignationToAddComment && (
+              <ModalAddComment assignation={assignationToAddComment} assignationSetter={setAssignationToAddComment}/>
+            )}
     </>
   );
 }
