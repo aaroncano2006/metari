@@ -4,6 +4,7 @@ const groupController = require('../controllers/GroupController');
 
 
 router.get('/', groupController.getGroups);
+router.get('/user/:userId', groupController.getGroupsByUserId);
 router.get('/:id', groupController.getGroupById);
 router.post('/', groupController.createGroup);
 router.put('/:id', groupController.updateGroup);

@@ -58,6 +58,37 @@ const getGroupById = async (req, res, next) => {
   }
 };
 
+const getGroupsByUserId = async (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.userId);
+
+    if (isNaN(userId)) {
+      const error = new Error("ID d'usuari invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const groups = await prisma.group.findMany({
+      where: {
+        OR: [
+          { owner_id: userId },
+          { groupUsers: { some: { user_id: userId } } },
+        ],
+      },
+      include: {
+        owner: true,
+        groupUsers: {
+          include: { user: true },
+        },
+      },
+    });
+    res.status(200).json(utils.handleBigInt(groups));
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    next(error);
+  }
+};
+
 const createGroup = async (req, res, next) => {
   try {
     const reqBody = req.body;
@@ -158,6 +189,7 @@ const deleteGroup = async (req, res, next) => {
 module.exports = {
   getGroups,
   getGroupById,
+  getGroupsByUserId,
   createGroup,
   updateGroup,
   deleteGroup,
