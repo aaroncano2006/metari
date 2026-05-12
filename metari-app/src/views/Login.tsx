@@ -17,7 +17,7 @@ export default function Login() {
     <>
       <div className="container-fluid">
         <div className="row mt-5 d-flex justify-content-center">
-          <div className="col-5">
+          <div className="col-5 mb-5">
             <LoginForm></LoginForm>
           </div>
         </div>

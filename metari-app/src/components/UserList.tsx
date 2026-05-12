@@ -55,7 +55,7 @@ export function UserList({ users, setter }: UserListProps) {
                     <div className="d-flex py-1 ps-2 pe-2  align-items-center">
                       <div className="me-auto">{user.username}</div>
                       {token &&
-                        <Link to="/Profile" className="btn btn-primary p-1 ">
+                        <Link to={`/Profile?username=${user.username}`} className="btn btn-primary p-1 ">
                           <i className="bi bi-person-fill"></i>
                         </Link>
                       }

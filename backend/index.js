@@ -77,7 +77,7 @@ app.get("/api", (req, res) => {
       grups: {
         base: `${BASE_URL}/api/grups`,
         methods: {
-          GET: ["/", "/:id"],
+          GET: ["/", "/:id", "/user/:userId"],
           POST: ["/"],
           PUT: ["/:id"],
           DELETE: ["/:id"],

@@ -5,7 +5,7 @@ const invitationController = require('../controllers/InvitationController');
 router.get('/:userid/:sentorreceived/:status', invitationController.getInvitations); // segon param "sent" o "received"
 router.post('/:senderid/:receiverid', invitationController.sendInvitations);
 router.post('/:senderid/:receiverid/:groupid', invitationController.sendInvitations);
-router.put('/:receiverid/:id', invitationController.acceptInvitation);
+router.put('/:receiverid/:id', invitationController.acceptInvitation); // id: id de la invitació
 router.delete('/:userid/:id', invitationController.rejectInvitation);
 
 router.get('/friends/:userid', invitationController.getFriendsByID);

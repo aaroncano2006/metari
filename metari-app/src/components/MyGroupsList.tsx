@@ -11,10 +11,11 @@ import { fetchGroupById } from "../services/groupService";
 
 type MyGroupListProps = {
   groups: groupType[]
+  viewedUserId?: number
 }
 
 
-export function MyGroupsList({ groups }: MyGroupListProps) {
+export function MyGroupsList({ groups, viewedUserId }: MyGroupListProps) {
 
   const loggedInUserId = getUserId()
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
@@ -31,9 +32,10 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
     groups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
   )
 
+  const targetUserId = viewedUserId ?? loggedInUserId;
   const myGroups = groups.filter(group =>
-    group.owner_id === loggedInUserId ||
-    group.groupUsers.some(gu => gu.user_id === loggedInUserId)
+    group.owner_id === targetUserId ||
+    group.groupUsers.some(gu => gu.user_id === targetUserId)
   )
 
 

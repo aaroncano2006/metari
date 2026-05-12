@@ -8,9 +8,6 @@ export default function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<registerType>({
-    // email_or_username: "",
-    // password: "",
-    // remember_password: false,
     name: "",
     username: "",
     email: "",
@@ -187,7 +184,7 @@ export default function RegisterForm() {
           </div>
 
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="username">
+            <label className="form-label text-start" htmlFor="email">
               Email <span className="text-danger">*</span>
             </label>
 
