@@ -11,7 +11,7 @@ const validateInvitation = async (data) => {
         { sender_id: data.sender_id, receiver_id: data.receiver_id },
         { sender_id: data.receiver_id, receiver_id: data.sender_id },
       ],
-      
+
       status: { in: ["pending", "accepted"] },
     },
   });
@@ -22,19 +22,23 @@ const validateInvitation = async (data) => {
       : "Ja sou amics o formeu part d'aquest grup.";
   }
 
-  const receiverAlreadyInGroup = await prisma.groupUser.findFirst({
-    where: {
-      group: {
-        id: data.group_id
-      },
-      user: {
-        id: data.receiver_id
-      }
-    }
-  });
+  let receiverAlreadyInGroup = null;
 
-  if (receiverAlreadyInGroup) {
-    return "L'usuari receptor ja forma part d'aquest grup!";
+  if (data.group_id) {
+    receiverAlreadyInGroup = await prisma.groupUser.findFirst({
+      where: {
+        group: {
+          id: data.group_id,
+        },
+        user: {
+          id: data.receiver_id,
+        },
+      },
+    });
+
+    if (receiverAlreadyInGroup) {
+      return "L'usuari receptor ja forma part d'aquest grup!";
+    }
   }
 
   const [sender, receiver, group] = await Promise.all([

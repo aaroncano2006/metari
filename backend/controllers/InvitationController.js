@@ -162,7 +162,9 @@ const sendInvitations = async (req, res, next) => {
       // return res.status(400).json({
       //   error: "Ja existeix una amb aquestes característiques!",
       // });
-      error = new Error("Ja existeix una invitació amb aquestes característiques!");
+      error = new Error(
+        "Ja existeix una invitació amb aquestes característiques!",
+      );
       error.statusCode = 400;
     }
     next(error);
@@ -300,9 +302,6 @@ const rejectInvitation = async (req, res, next) => {
   }
 };
 
-
-
-
 const getFriendsByID = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userid);
@@ -316,20 +315,17 @@ const getFriendsByID = async (req, res, next) => {
       where: {
         status: "accepted",
         group_id: null,
-        OR: [
-          { sender_id: userId },
-          { receiver_id: userId },
-        ],
+        OR: [{ sender_id: userId }, { receiver_id: userId }],
       },
       include: { sender: true, receiver: true },
     });
 
-    const friendMap = new Map()
-    invitations.forEach(inv => {
-      const friend = inv.sender_id === userId ? inv.receiver : inv.sender
-      friendMap.set(friend.id, friend)
-    })
-    const friends = [...friendMap.values()]
+    const friendMap = new Map();
+    invitations.forEach((inv) => {
+      const friend = inv.sender_id === userId ? inv.receiver : inv.sender;
+      friendMap.set(friend.id, friend);
+    });
+    const friends = [...friendMap.values()];
     res.status(200).json(utils.handleBigInt(friends));
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -343,5 +339,4 @@ module.exports = {
   acceptInvitation,
   rejectInvitation,
   getFriendsByID,
-
 };
