@@ -35,8 +35,8 @@ export function ModalAddComment({ assignation, assignationSetter }: ModalProps) 
                 >
                   <label htmlFor="body">Comentari</label>
 
-                  <input className="form-control mb-2"
-                    type="text" id="body"
+                  <textarea className="form-control mb-2"
+                    id="body"
                     onChange={(event) =>
                       setFormData({ ...formData, body: event.target.value })
                     }

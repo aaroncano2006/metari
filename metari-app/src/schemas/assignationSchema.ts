@@ -24,16 +24,16 @@ export const assignationSchema = z.object({
   due_date: z.string().optional(),
   priority: z.enum(["high", "low"]).optional(),
   difficulty: z.enum(["easy", "normal", "hard", "extreme"]),
-}).superRefine((data, ctx) => {
+}).superRefine((data, context) => {
   if (data.type === "task" && !data.user_id) {
-    ctx.addIssue({
+    context.addIssue({
       code: z.ZodIssueCode.custom,
       message: "L'usuari del grup és obligatori per tasques assignades",
       path: ["user_id"],
     })
   }
   if (data.assigner_id && !data.group_id) {
-    ctx.addIssue({
+    context.addIssue({
       code: z.ZodIssueCode.custom,
       message: "Selecciona un grup",
       path: ["group_id"],
