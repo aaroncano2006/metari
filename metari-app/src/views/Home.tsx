@@ -6,7 +6,6 @@ import { MetaList } from "../components/MetaList"
 import { CategoryList } from "../components/CategoryList"
 import { GroupList } from "../components/GroupList"
 import { MyGroupsList } from "../components/MyGroupsList"
-import { MyMetaList } from "../components/MyMetaList"
 import { FriendList } from "../components/FriendList"
 import { fetchUsers } from "../services/userService"
 import type { userTypeFrontend } from "../types/userTypeFrontend"
@@ -30,7 +29,7 @@ export default function Home() {
   const [categories, setCategories] = useState<categoryType[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
   const [friends, setFriends] = useState<userTypeFrontend[]>([])
-  const [assignations, setAssignations] = useState<assignationType[]>([])
+  const [_assignations, setAssignations] = useState<assignationType[]>([])
 
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
