@@ -24,6 +24,7 @@ const seedGroupsUsers = async () => {
         {
           user_id:2,          
           group_id:2,
+          role:"moderator",
         },
         {
           user_id:2,          
