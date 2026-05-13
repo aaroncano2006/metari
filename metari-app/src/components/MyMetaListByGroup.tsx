@@ -60,11 +60,22 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
   // .filter(item => item.assignations.length > 0)
 
 
+  const groupAssignations = assignationsByGroup.map(({ group, assignations }) => ({
+    group,
+    assignations,
+    myAssignations: assignations
+      .filter(a => a.user_id === loggedInUserId || a.meta.type === "challenge")
+      .filter(a => showCompletedByGroup[group.id] || !a.completed),
+    memberAssignations: assignations
+      .filter(a => a.user_id !== loggedInUserId && a.meta.type === "task")
+      .filter(a => showCompletedByGroup[group.id] || !a.completed)
+  }))
+
   return (
     <>
       {token &&
         <>
-          {assignationsByGroup.map(({ group, assignations }) => (
+          {groupAssignations.map(({ group, myAssignations, memberAssignations }) => (
             <div className="metaList mt-4" key={group.id}>
               <div className="d-flex align-items-center my-2 ps-4 pe-4 position-relative">
                 <div className="titolComponent">
@@ -83,13 +94,10 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                     />
                   </div>
                 </div>
-                <ul className="ps-2 m-0 py-2">
-                  {assignations
-                    //filtrem per les del usuari i challenges
-                    .filter(assignation => assignation.user_id === loggedInUserId || assignation.meta.type === "challenge")
-                    //filtrem si amaguem les completades
-                    .filter(assignation => showCompletedByGroup[group.id] || !Boolean(assignation.completed))
-                    .map((assignation) => (
+                {myAssignations.length === 0
+                  ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
+                  : <ul className="ps-2 m-0 py-2">
+                    {myAssignations.map((assignation) => (
                       <li key={assignation.meta.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                           onClick={() => {
@@ -107,6 +115,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                           {openEntityId === assignation.id && (
 
                             <div className="metaDetails ps-2 py-2 d-flex flex-column">
+                              {/* <div>📌 id:{assignation.meta.id}</div> */}
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
@@ -180,15 +189,15 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                         </div>
                       </li>
                     ))}
-                </ul>
+                  </ul>
+                }
 
 
                 <div className="me-auto ms-3">Metes dels integrants del grup</div>
-                <ul className="ps-2 m-0 py-2">
-                  {assignations
-                    .filter(a => (a.user_id !== loggedInUserId && a.meta.type === "task"))
-                    .filter(assignation => showCompletedByGroup[group.id] || !Boolean(assignation.completed))
-                    .map((assignation) => (
+                {memberAssignations.length === 0
+                  ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
+                  : <ul className="ps-2 m-0 py-2">
+                    {memberAssignations.map((assignation) => (
                       <li key={assignation.meta.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                           onClick={() => toggleEntity(assignation.id)}>
@@ -200,6 +209,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                         <div className="metaDetailsBox my-0 me-3">
                           {openEntityId === assignation.id && (
                             <div className="metaDetails ps-2 py-2">
+                              <div>📌 id:{assignation.meta.id}</div>
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
@@ -216,7 +226,8 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                         </div>
                       </li>
                     ))}
-                </ul>
+                  </ul>
+                }
               </div>
             </div>
           ))}
