@@ -11,8 +11,6 @@ import type { userTypeFrontend } from "../../types/userTypeFrontend"
 //schemas for zod
 import { metaSchema } from "../../schemas/metaSchema"
 import { categorySchema } from "../../schemas/categorySchema"
-import { userSchema } from "../../schemas/userSchema"
-import { groupSchema } from "../../schemas/groupSchema"
 
 
 type ModalEditProps = {
@@ -42,10 +40,6 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
         return metaSchema
       case "categories":
         return categorySchema
-      case "usuaris":
-        return userSchema
-      case "grups":
-        return groupSchema
       default:
         return null
     }
