@@ -9,6 +9,10 @@ export async function fetchComments(): Promise<commentType[]> {
   const { data } = await axiosConnection.get<commentType[]>("/comentaris")
   return data
 }
+export async function fetchCommentById(id: number): Promise<commentType> {
+  const { data } = await axiosConnection.get<commentType>(`/comentaris/${id}`);
+  return data;
+}
 
 
 export async function createComment(newComment: Partial<commentType>): Promise<commentType> {

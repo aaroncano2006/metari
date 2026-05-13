@@ -33,6 +33,10 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
 
   const [showComments, setShowComments] = useState(false)
   const [comments, setComments] = useState<commentType[]>([])
+  const [comment, setcomment] = useState<commentType>()
+
+  const [commentFormType, setcommentFormType] = useState<string | null>(null)
+
 
   useEffect(() => {
     const loadComments = async () => {
@@ -89,8 +93,8 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                       <li key={assignation.meta.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                           onClick={() => {
-                          toggleEntity(assignation.id)
-                          setShowComments(false)
+                            toggleEntity(assignation.id)
+                            setShowComments(false)
                           }
                           }>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
@@ -125,6 +129,8 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                                 <div className="btn btn-primary align-self-end me-2 "
                                   onClick={() => {
                                     setAssignationToAddComment(assignation);
+                                    setcommentFormType("create")
+
                                   }}>Nou comentari</div>
                               </div>
 
@@ -148,12 +154,15 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                                             <div className="btn btn-warning align-self-end me-2 "
                                               onClick={() => {
                                                 //edit
+                                                setcomment(comment);
+                                                setAssignationToAddComment(assignation);
+                                                setcommentFormType("edit")
                                               }}>edita</div>
 
                                           }
                                           {(comment.user_id === getUserId() || group.owner_id === getUserId()) &&
                                             <div className="btn btn-danger align-self-end me-2 "
-                                              onClick={async() => {
+                                              onClick={async () => {
                                                 await deleteComment(comment.id)
                                                 setComments(prev => prev.filter(c => c.id !== comment.id))
                                               }}>Elimina</div>
@@ -218,6 +227,8 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
           assignation={assignationToAddComment}
           assignationSetter={setAssignationToAddComment}
           commentSetter={setComments}
+          commentFormType={commentFormType}
+          comment={comment}
         />
       )}
     </>
