@@ -28,7 +28,9 @@ export default function ForgotPasswordForm() {
 
       setSuccess(true);
     } catch (error: any) {
-      setError(`${error}`);
+      const message = error.request.responseText; 
+      const JSONmessage = JSON.parse(message);
+      setError(`${JSONmessage.message}`);
     }
   };
 

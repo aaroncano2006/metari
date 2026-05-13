@@ -29,7 +29,7 @@ const forgotPassword = async (req, res, next) => {
     });
 
     if (!existingUser) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+      return res.status(404).json({ message: "Usuari no trobat!" });
     }
 
     const token = jwt.sign(
