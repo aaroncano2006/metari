@@ -67,6 +67,9 @@ export default function UserProfileForm() {
       }, 5000);
     } catch (error: any) {
       setErrors({ form: "Error: " + error });
+      setTimeout(() => {
+        setErrors({})
+      }, 5000);
     }
   };
 

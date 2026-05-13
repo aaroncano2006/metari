@@ -66,6 +66,9 @@ export default function LoginForm() {
       if (!rememberedEmail) {
         localStorage.removeItem("email_or_username");
       }
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
