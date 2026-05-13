@@ -47,8 +47,6 @@ export default function RegisterForm() {
     try {
       const response = await fetchRegister(data);
 
-      console.log(response);
-
       if (response.token) {
         localStorage.setItem("token", response.token);
       }
