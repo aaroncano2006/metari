@@ -11,24 +11,22 @@ export const registerSchema = z.object({
       (el) => !el || el.length >= 5,
       "El nom d'usuari ha de ser com a mínim 5 caràcters!",
     )
-    .refine((el) => {
-      if (!el) return false;
-      return /^[a-zA-Z0-9]+$/.test(el);
-    }, "El nom d'usuari només pot contenir lletres i números!")
+    .refine(
+      (el) => !el || /^[a-zA-Z0-9]+$/.test(el),
+      "El nom d'usuari només pot contenir lletres i números!",
+    )
     .refine(async (el) => {
-        const users = await fetchUsers();
-        const user = users.find((u) => u.username === el);
-        return user ? true : false;
+      const users = await fetchUsers();
+      const user = users.find((u) => u.username === el);
+      return user ? true : false;
     }, "El nom d'usuari introduït ja està registrat al sistema."),
   email: z
     .string()
-    .refine((el) => {
-      return z.string().email().safeParse(el).success;
-    }, "L'email introduït no és vàlid!")
+    .email("L'email introduït no és vàlid!")
     .refine(async (el) => {
-        const users = await fetchUsers();
-        const user = users.find((u) => u.email === el);
-        return user ? true : false;
+      const users = await fetchUsers();
+      const user = users.find((u) => u.email === el);
+      return user ? true : false;
     }, "L'email introduït ja està registrat al sistema."),
   password: z
     .string()
