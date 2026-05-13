@@ -1,10 +1,12 @@
 import type { metaType } from "../types/metaType";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { getUserRole, getUserId } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
 import type { assignationType } from "../types/assignationType";
 import type { groupType } from "../types/groupType";
 import { ModalAddComment } from "./modals/ModalAddComment";
+import { fetchComments } from "../services/commentService";
+import type { commentType } from "../types/commentType";
 
 
 type MyMetaListProps = {
@@ -30,8 +32,16 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
   const [assignationToAddComment, setAssignationToAddComment] = useState<assignationType | null>(null)
 
   const [showComments, setShowComments] = useState(false)
-  //filtrar assignacions del usuari
-  // const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId)
+  const [comments, setComments] = useState<commentType[]>([])
+
+  useEffect(() => {
+    const loadComments = async () => {
+      const data = await fetchComments()
+      setComments(data)
+    }
+    loadComments()
+  }, [])
+
 
   //filtrar grups del usuari owner i membre
   const myGroups = groups.filter(group =>
@@ -105,7 +115,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                                 <div className="btn btn-primary d-flex align-self-end me-2 mt-2 "
                                   onClick={() => {
                                     // setShowComments(true);
-                                    setShowComments(prev => !prev );
+                                    setShowComments(prev => !prev);
                                     //canviar variable al contrari del prev
                                   }}>Mostrar comentaris</div>
                                 <div className="btn btn-primary align-self-end me-2 mt-2"
@@ -115,11 +125,20 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                               </div>
 
 
-                                  {showComments === true &&
-                                  <div>
-                                    comentaris
-                                  </div>
-                                  }
+                              {showComments === true && (() => {
+                                const filteredComments = comments
+                                  .filter(c => c.assignation_id === assignation.id)
+                                  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                return filteredComments.length > 0
+                                  ? filteredComments.map(comment => (
+                                    <div key={comment.id} className="border rounded p-2 mb-1 bg-white">
+                                      {comment.user?.name ?? comment.user_id}:
+                                      <p className="mb-0">{comment.body}</p>
+                                      <small>{new Date(comment.created_at).toLocaleString("ca-ES")}</small>
+                                    </div>
+                                  ))
+                                  : <p className="text-muted">No hi ha comentaris</p>
+                              })()}
                             </div>
 
                           )}
@@ -169,7 +188,11 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
         </>
       }
       {assignationToAddComment && (
-        <ModalAddComment assignation={assignationToAddComment} assignationSetter={setAssignationToAddComment} />
+        <ModalAddComment
+          assignation={assignationToAddComment}
+          assignationSetter={setAssignationToAddComment}
+          commentsSetter={setComments}
+        />
       )}
     </>
   );
