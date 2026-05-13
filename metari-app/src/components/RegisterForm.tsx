@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { fetchRegister } from "../services/auth/registerService";
 import type { registerType } from "../types/auth/registerType";
 import { emailExists, usernameExists } from "../services/userService";
+import { registerSchema } from "../schemas/auth/registerSchema";
 
 export default function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState<registerType>({
     name: "",
@@ -21,77 +23,90 @@ export default function RegisterForm() {
   const handleSubmit = async (data: registerType) => {
     setError(null);
 
-    if (!data.name.trim()) {
-      return setError("El nom és obligatori!");
+    const validation = await registerSchema.safeParseAsync(data);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        errors[field] = issue.message;
+      });
+
+      return setErrors(errors);
     }
+    setErrors({});
 
-    if (data.name && typeof data.name !== "string") {
-      return setError("El nom enviat no és vàlid! Ha de ser un text");
-    }
+    // if (!data.name.trim()) {
+    //   return setError("El nom és obligatori!");
+    // }
 
-    if (!data.username.trim()) {
-      return setError("El nom d'usuari és obligatori!");
-    }
+    // if (data.name && typeof data.name !== "string") {
+    //   return setError("El nom enviat no és vàlid! Ha de ser un text");
+    // }
 
-    if (data.username) {
-      if (typeof data.username !== "string") {
-        return setError(
-          "El nom d'usuari enviat no és vàlid! Ha de ser un text",
-        );
-      }
+    // if (!data.username.trim()) {
+    //   return setError("El nom d'usuari és obligatori!");
+    // }
 
-      if (!/[a-zA-Z0-9]+$/.test(data.username)) {
-        return setError(
-          "El nom d'usuari només pot contenir lletres i números!",
-        );
-      }
+    // if (data.username) {
+    //   if (typeof data.username !== "string") {
+    //     return setError(
+    //       "El nom d'usuari enviat no és vàlid! Ha de ser un text",
+    //     );
+    //   }
 
-      if (data.username.length < 5) {
-        return setError("El nom d'usuari ha de contenir almenys 5 caràcters!");
-      }
+    //   if (!/[a-zA-Z0-9]+$/.test(data.username)) {
+    //     return setError(
+    //       "El nom d'usuari només pot contenir lletres i números!",
+    //     );
+    //   }
 
-      const existingUsername = await usernameExists(data.username);
+    //   if (data.username.length < 5) {
+    //     return setError("El nom d'usuari ha de contenir almenys 5 caràcters!");
+    //   }
 
-      if (existingUsername) {
-        return setError("El nom d'usuari introduït ja està registrat!");
-      }
-    }
+    //   const existingUsername = await usernameExists(data.username);
 
-    if (!data.email.trim()) {
-      return setError("L'email és obligatori!");
-    }
+    //   if (existingUsername) {
+    //     return setError("El nom d'usuari introduït ja està registrat!");
+    //   }
+    // }
 
-    if (data.email) {
-      if (typeof data.email !== "string") {
-        return setError("L'email de l'usuari no és vàlid! Ha de ser un text");
-      }
+    // if (!data.email.trim()) {
+    //   return setError("L'email és obligatori!");
+    // }
 
-      if (
-        !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)
-      ) {
-        return setError("El format de l'email no és vàlid!");
-      }
+    // if (data.email) {
+    //   if (typeof data.email !== "string") {
+    //     return setError("L'email de l'usuari no és vàlid! Ha de ser un text");
+    //   }
 
-      const existingEmail = await emailExists(data.email);
+    //   if (
+    //     !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)
+    //   ) {
+    //     return setError("El format de l'email no és vàlid!");
+    //   }
 
-      if (existingEmail) {
-        return setError("L'email introduït ja està registrat!");
-      }
-    }
+    //   const existingEmail = await emailExists(data.email);
 
-    if (!data.password.trim()) {
-      return setError("La contrasenya és obligatòria");
-    }
+    //   if (existingEmail) {
+    //     return setError("L'email introduït ja està registrat!");
+    //   }
+    // }
 
-    if (data.password) {
-      if (typeof data.password !== "string") {
-        return setError("La contrasenya introduïda no és vàlida! Ha de ser un text!");
-      }
+    // if (!data.password.trim()) {
+    //   return setError("La contrasenya és obligatòria");
+    // }
 
-      if (data.password.length < 8) {
-        return setError("La contrasenya ha de contenir almenys 8 caràcters!");
-      }
-    }
+    // if (data.password) {
+    //   if (typeof data.password !== "string") {
+    //     return setError("La contrasenya introduïda no és vàlida! Ha de ser un text!");
+    //   }
+
+    //   if (data.password.length < 8) {
+    //     return setError("La contrasenya ha de contenir almenys 8 caràcters!");
+    //   }
+    // }
 
     if (data.password !== data.repeat_password) {
       return setError("Les contrasenyes no coincideixen!");
@@ -166,6 +181,9 @@ export default function RegisterForm() {
                 })
               }
             />
+            {errors.name && (
+              <small className="text-danger d-flex mb-2">{errors.name}</small>
+            )}
           </div>
 
           <div className="row mb-2">
@@ -186,6 +204,11 @@ export default function RegisterForm() {
                 })
               }
             />
+            {errors.username && (
+              <small className="text-danger d-flex mb-2">
+                {errors.username}
+              </small>
+            )}
           </div>
 
           <div className="row mb-2">
@@ -206,6 +229,11 @@ export default function RegisterForm() {
                 })
               }
             />
+            {errors.email && (
+              <small className="text-danger d-flex mb-2">
+                {errors.email}
+              </small>
+            )}
           </div>
 
           <div className="row mb-2">
@@ -226,6 +254,11 @@ export default function RegisterForm() {
                 })
               }
             />
+            {errors.password && (
+              <small className="text-danger d-flex mb-2">
+                {errors.password}
+              </small>
+            )}
           </div>
 
           <div className="row mb-2">
@@ -246,6 +279,11 @@ export default function RegisterForm() {
                 })
               }
             />
+            {errors.repeat_password && (
+              <small className="text-danger d-flex mb-2">
+                {errors.repeat_password}
+              </small>
+            )}
           </div>
 
           <div className="row mb-2 text-start">

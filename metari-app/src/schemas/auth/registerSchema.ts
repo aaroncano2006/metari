@@ -4,7 +4,7 @@ import { fetchUsers } from "../../services/userService";
 export const registerSchema = z.object({
   name: z
     .string()
-    .refine((el) => !el || el.trim().length > 0, "El nom no pot estar buit!"),
+    .min(1, {error: "El nom no pot estar buit!"}),
   username: z
     .string()
     .refine(
@@ -18,7 +18,7 @@ export const registerSchema = z.object({
     .refine(async (el) => {
       const users = await fetchUsers();
       const user = users.find((u) => u.username === el);
-      return user ? true : false;
+      return !user ? true : false;
     }, "El nom d'usuari introduït ja està registrat al sistema."),
   email: z
     .string()
@@ -26,18 +26,12 @@ export const registerSchema = z.object({
     .refine(async (el) => {
       const users = await fetchUsers();
       const user = users.find((u) => u.email === el);
-      return user ? true : false;
+      return !user ? true : false;
     }, "L'email introduït ja està registrat al sistema."),
   password: z
     .string()
-    .refine(
-      (el) => !el || el.length >= 8,
-      "La contrasenya ha de tenir almenys 8 caràcters!",
-    ),
+    .min(8, {error: "La contrasenya ha de tenir com a mínim 8 caràcters!"}),
   repeat_password: z
     .string()
-    .refine(
-      (el) => !el || el.length >= 8,
-      "La contrasenya ha de tenir almenys 8 caràcters!",
-    ),
+    .min(8, {error: "La contrasenya ha de tenir com a mínim 8 caràcters!"}),
 });
