@@ -6,14 +6,14 @@ const getGroups = async (req, res, next) => {
   try {
     const groups = await prisma.group.findMany({
       include: {
-        owner:true,
+        owner: true,
         groupUsers: {
-          include:{
+          include: {
             user: true
           }
         }
       }
-  });
+    });
     res.status(200).json(utils.handleBigInt(groups));
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -34,14 +34,14 @@ const getGroupById = async (req, res, next) => {
     const group = await prisma.group.findUnique({
       where: { id },
       include: {
-          owner: true,
-      //     metas: true,
-      //     assignations: true,
-      //     invitations: true,
-          groupUsers: {
-            include:{ user: true}
-          },
-      //     indexedMetas: true,
+        owner: true,
+        //     metas: true,
+        //     assignations: true,
+        //     invitations: true,
+        groupUsers: {
+          include: { user: true }
+        },
+        //     indexedMetas: true,
       },
     });
 
@@ -158,6 +158,12 @@ const updateGroup = async (req, res, next) => {
     const group = await prisma.group.update({
       where: { id },
       data,
+      include: {
+        owner: true,
+        groupUsers: {
+          include: { user: true }
+        }
+      },
     });
     res.status(200).json(utils.handleBigInt(group));
   } catch (error) {

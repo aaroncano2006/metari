@@ -37,8 +37,8 @@ export default function AdminPanel() {
     fetchMetas().then(setMetas)
     fetchUsers().then(setUsers)
     fetchGroups().then(setGroups)
-    
-  //useEffect(() => {
+
+    //useEffect(() => {
     //fetchCategories().then(setCategories);
   }, []);
 
@@ -90,8 +90,11 @@ export default function AdminPanel() {
       </div>
 
       <div className="createBtn mt-4 text-center">
-        {(menuSelection === "metas" || menuSelection === "categories") && (
-          <CreateBtn menuSelection={menuSelection} setter={setMetas}/>
+        {menuSelection === "metas" && (
+          <CreateBtn menuSelection={menuSelection} setter={setMetas} />
+        )}
+        {menuSelection === "categories" && (
+          <CreateBtn menuSelection={menuSelection} setter={setCategories} />
         )}
       </div>
 
@@ -99,7 +102,7 @@ export default function AdminPanel() {
         <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
-            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas} groups={groups}/>}
+            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas} groups={groups} />}
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
             {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
             {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}

@@ -114,7 +114,11 @@ export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEd
 
       setErrors({})
 
-      await createCategory(validation.data)
+      // await createCategory(validation.data)
+      const newCategory = await createCategory(validation.data)
+      if (setter) {
+        setter(prev => [...prev, newCategory])
+      }
     }
 
     setCreatingEntry(null)
