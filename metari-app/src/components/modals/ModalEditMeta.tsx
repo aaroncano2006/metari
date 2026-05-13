@@ -30,13 +30,13 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
     }, [])
 
   const [formData, setFormData] = useState({
-    title: meta.title,
-    description: meta.description,
-    author_id: meta.author_id,
-    group_id: meta.group_id,
-    category_id: meta.category_id,
-    type: meta.type,
-  })
+  title: meta.title,
+  description: meta.description ?? undefined,
+  author_id: meta.author_id,
+  group_id: meta.group_id ?? undefined,
+  category_id: meta.category_id ?? undefined,
+  type: meta.type,
+})
 
 
   return (
@@ -68,7 +68,7 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                   // netejem errors de les validacions, si no hi ha.
                   setErrors({})
 
-                  const updatedMeta = await updateMeta(meta.id, formData)
+                  const updatedMeta = await updateMeta(meta.id, validation.data)
 
                   setter(prev =>
                     prev.map(metas =>

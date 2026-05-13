@@ -57,6 +57,7 @@ const createMeta = async (req, res, next) => {
       description: reqBody.description ?? undefined,
       author_id: parseInt(reqBody.author_id),
       group_id: parseInt(reqBody.group_id),
+      category_id: reqBody.category_id ? parseInt(reqBody.category_id) : undefined,
       type: reqBody.type ?? "task",
     };
 
@@ -69,6 +70,7 @@ const createMeta = async (req, res, next) => {
 
     const meta = await prisma.meta.create({
       data,
+      include: { category: true, author: true },
     });
     res.status(201).json(utils.handleBigInt(meta));
   } catch (error) {
@@ -103,6 +105,7 @@ const updateMeta = async (req, res, next) => {
       description: reqBody.description ?? foundMeta.description,
       author_id: reqBody.author_id ? parseInt(reqBody.author_id) : foundMeta.author_id,
       group_id: reqBody.group_id ? parseInt(reqBody.group_id) : foundMeta.group_id,
+      category_id: reqBody.category_id ? parseInt(reqBody.category_id) : foundMeta.category_id,
       type: reqBody.type ?? foundMeta.type,
     };
 
@@ -116,6 +119,7 @@ const updateMeta = async (req, res, next) => {
     const meta = await prisma.meta.update({
       where: { id },
       data,
+      include: { category: true, author: true },
     });
     res.status(200).json(utils.handleBigInt(meta));
   } catch (error) {

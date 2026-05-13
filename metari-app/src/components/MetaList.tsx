@@ -69,6 +69,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         onClick={async (event) => {
                           event.stopPropagation()
                           await deleteMeta(meta.id)
+                          setter(prev => prev.filter(prevMeta => prevMeta.id !== meta.id))
                         }}>X</button>
                     }
                   </div>

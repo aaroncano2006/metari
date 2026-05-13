@@ -13,14 +13,16 @@ import { metaSchema } from "../../schemas/metaSchema"
 import { categorySchema } from "../../schemas/categorySchema"
 import { userSchema } from "../../schemas/userSchema"
 import { groupSchema } from "../../schemas/groupSchema"
+import { getUserId } from "../../services/auth/loginService"
 
 
 type ModalEditProps = {
   setCreatingEntry: React.Dispatch<React.SetStateAction<string | null>>
   creatingEntry: string
+  setter?: React.Dispatch<React.SetStateAction<any[]>>
 }
 
-export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps) {
+export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEditProps) {
 
   const [categories, setCategories] = useState<any[]>([])
 
@@ -66,6 +68,7 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
         description: formData.get("description"),
         category_id: Number(formData.get("category_id")),
         type: formData.get("type"),
+        author_id: getUserId(),
       }
 
       const validation = metaSchema.safeParse(data)
@@ -84,7 +87,10 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
 
       setErrors({})
 
-      await createMeta(validation.data)
+      const newMeta = await createMeta(validation.data)
+      if (setter) {
+        setter(prev => [...prev, newMeta])
+      }
     }
 
     if (creatingEntry === "categories") {
@@ -146,8 +152,8 @@ export function ModalCreate({ setCreatingEntry, creatingEntry }: ModalEditProps)
 
 
           <div className="d-flex flex-column">
-            <label htmlFor="category">Categoria</label>
-            <select className="form-select mb-2" name="category" id="category"
+            <label htmlFor="category_id">Categoria</label>
+            <select className="form-select mb-2" name="category_id" id="category_id"
             >
               {categories.map((category: any) => (
                 <option key={category.id} value={category.id}>

@@ -91,7 +91,7 @@ export default function AdminPanel() {
 
       <div className="createBtn mt-4 text-center">
         {(menuSelection === "metas" || menuSelection === "categories") && (
-          <CreateBtn menuSelection={menuSelection} />
+          <CreateBtn menuSelection={menuSelection} setter={setMetas}/>
         )}
       </div>
 
@@ -99,7 +99,7 @@ export default function AdminPanel() {
         <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
-            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}
+            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas} groups={groups}/>}
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
             {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
             {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}
