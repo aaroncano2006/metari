@@ -48,8 +48,6 @@ export default function LoginForm() {
     try {
       const response = await fetchLogin(data);
 
-      console.log(response);
-
       if (response.token) {
         localStorage.setItem("token", response.token);
       }
