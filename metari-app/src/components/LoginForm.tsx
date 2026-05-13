@@ -35,14 +35,6 @@ export default function LoginForm() {
     }
     setErrors({});
 
-    // if (!data.email_or_username.trim()) {
-    //   return setError("El username o email és obligatori!");
-    // }
-
-    // if (!data.password.trim()) {
-    //   return setError("La contrasenya és obligatòria!");
-    // }
-
     if (data.remember) {
       localStorage.setItem("email_or_username", data.email_or_username);
       localStorage.setItem("password", data.password);
