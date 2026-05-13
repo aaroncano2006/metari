@@ -99,7 +99,7 @@ export default function AdminPanel() {
         <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
-            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas}/>}
+            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas} groups={groups}/>}
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
             {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
             {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}
