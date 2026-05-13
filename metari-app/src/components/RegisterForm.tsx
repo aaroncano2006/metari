@@ -12,6 +12,7 @@ export default function RegisterForm() {
     username: "",
     email: "",
     password: "",
+    repeat_password: "",
     remember: false,
   });
 
@@ -92,6 +93,10 @@ export default function RegisterForm() {
       }
     }
 
+    if (data.password !== data.repeat_password) {
+      return setError("Les contrasenyes no coincideixen!");
+    }
+
     if (data.remember) {
       localStorage.setItem("email_or_username", data.email);
       localStorage.setItem("password", data.password);
@@ -118,7 +123,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="card form-card text-center p-5">
+    <div className="card form-card text-center p-5 mb-5">
       <figure>
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png"
@@ -218,6 +223,26 @@ export default function RegisterForm() {
                 setFormData({
                   ...formData,
                   password: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          <div className="row mb-2">
+            <label className="form-label text-start" htmlFor="repeat_password">
+              Repeteix la contrasenya <span className="text-danger">*</span>
+            </label>
+
+            <input
+              className="form-control mb-2"
+              type="password"
+              name="repeat_password"
+              id="repeat_password"
+              value={formData.repeat_password}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  repeat_password: e.target.value,
                 })
               }
             />
