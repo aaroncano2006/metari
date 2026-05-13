@@ -2,7 +2,7 @@ import { useState } from "react"
 
 import type { userTypeFrontend } from "../../types/userTypeFrontend"
 import { updateUser } from "../../services/userService"
-import { userSchema } from "../../schemas/userSchema"
+import { createUserSchema } from "../../schemas/userSchema"
 
 
 type ModalEditProps = {
@@ -36,8 +36,8 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                 <form onSubmit={async (event) => {
                   event.preventDefault()
 
-
-                  const validation = userSchema.safeParse(formData)
+                  const userSchema = createUserSchema(user.id);
+                  const validation = await userSchema.safeParseAsync(formData)
 
                   if (!validation.success) {
                     const errors: Record<string, string> = {}
