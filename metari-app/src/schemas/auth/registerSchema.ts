@@ -7,10 +7,8 @@ export const registerSchema = z.object({
     .min(1, {error: "El nom no pot estar buit!"}),
   username: z
     .string()
-    .refine(
-      (el) => !el || el.length >= 5,
-      "El nom d'usuari ha de ser com a mínim 5 caràcters!",
-    )
+    .min(5, {error: "El nom d'usuari ha de ser com a mínim 5 caràcters de llarg!"})
+    .max(20, {error: "El nom d'usuari ha de ser com a màxim 20 caràcters de llarg!"})
     .refine(
       (el) => !el || /^[a-zA-Z0-9]+$/.test(el),
       "El nom d'usuari només pot contenir lletres i números!",

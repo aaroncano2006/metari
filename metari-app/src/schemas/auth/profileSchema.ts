@@ -15,7 +15,11 @@ export const createProfileSchema = (userId: number) =>
       .optional()
       .refine(
         (el) => !el || el.length >= 5,
-        "El nom d'usuari ha de ser com a mínim 5 caràcters!",
+        "El nom d'usuari ha de ser com a mínim 5 caràcters de llarg!",
+      )
+      .refine(
+        (el) => !el || el.length <= 20,
+        "El nom d'usuari ha de ser com a màxim 20 caràcters de llarg!"
       )
       .refine(
         (el) => {
