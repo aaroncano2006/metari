@@ -22,3 +22,25 @@ export async function createComment(newComment: Partial<commentType>): Promise<c
   }
 
 }
+
+
+
+export async function updateComment(id: number, updatedData: Partial<commentType>): Promise<commentType> {
+  try {
+    const { data } = await axiosConnection.put<commentType>(`/comentaris/${id}`, updatedData)
+    return data
+
+  } catch (error) {
+    console.error("Error actualitzant el comentari:", error)
+    throw error
+  }
+}
+
+export async function deleteComment(id: number): Promise<void> {
+  try {
+    await axiosConnection.delete(`/comentaris/${id}`);
+  } catch (error) {
+    console.error("Error eliminant comentari:", error);
+  }
+  
+}

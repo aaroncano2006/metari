@@ -110,15 +110,15 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
-                              <div className=" d-flex align-self-end me-2">
+                              <div className=" d-flex align-self-end me-2 mb-2 mt-2">
 
-                                <div className="btn btn-primary d-flex align-self-end me-2 mt-2 "
+                                <div className="btn btn-primary d-flex align-self-end me-2 "
                                   onClick={() => {
                                     // setShowComments(true);
                                     setShowComments(prev => !prev);
                                     //canviar variable al contrari del prev
                                   }}>Mostrar comentaris</div>
-                                <div className="btn btn-primary align-self-end me-2 mt-2"
+                                <div className="btn btn-primary align-self-end me-2 "
                                   onClick={() => {
                                     setAssignationToAddComment(assignation);
                                   }}>Nou comentari</div>
@@ -131,11 +131,32 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                                   .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                                 return filteredComments.length > 0
                                   ? filteredComments.map(comment => (
-                                    <div key={comment.id} className="border rounded p-2 mb-1 bg-white">
-                                      {comment.user?.name ?? comment.user_id}:
-                                      <p className="mb-0">{comment.body}</p>
-                                      <small>{new Date(comment.created_at).toLocaleString("ca-ES")}</small>
-                                    </div>
+                                    <>
+                                      <div key={comment.id} className="border rounded p-2 mb-1 bg-white me-2">
+                                        {comment.user?.name ?? comment.user_id}:
+                                        <p className="mb-0">{comment.body}</p>
+                                        <small>{new Date(comment.created_at).toLocaleString("ca-ES")}</small>
+                                        <div className=" d-flex justify-content-end">
+
+                                          {comment.user_id === getUserId() &&
+
+
+                                            <div className="btn btn-warning align-self-end me-2 "
+                                              onClick={() => {
+                                                //edit
+                                              }}>edita</div>
+
+                                          }
+                                          {(comment.user_id === getUserId() || group.owner_id === getUserId()) &&
+                                            <div className="btn btn-danger align-self-end me-2 "
+                                              onClick={() => {
+                                                //edit
+                                              }}>Elimina</div>
+                                          }
+                                        </div>
+                                      </div>
+
+                                    </>
                                   ))
                                   : <p className="text-muted">No hi ha comentaris</p>
                               })()}

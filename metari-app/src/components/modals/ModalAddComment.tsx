@@ -18,40 +18,6 @@ export function ModalAddComment({ assignation, assignationSetter, commentsSetter
   const [errors, setErrors] = useState<Record<string, string>>({})
 
 
-  // async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  //   event.preventDefault()
-
-  //   const formData = new FormData(event.currentTarget)
-
-  //   const data = {
-  //     user_id: Number(getUserId()),
-  //     assignation_id: assignation.id,
-  //     body: String(formData.get("body") ?? "")
-  //   }
-
-
-
-
-  //   const validation = commentSchema.safeParse(data)
-  //   if (!validation.success) {
-  //     const fieldErrors: Record<string, string> = {}
-
-  //     validation.error.issues.forEach((issue) => {
-  //       const field = issue.path[0] as string
-  //       fieldErrors[field] = issue.message
-  //     })
-
-  //     setErrors(fieldErrors)
-  //     console.log("Zod validation errors:", validation.error.issues)
-  //     return
-  //   }
-
-  //   const newComment = await createComment(validation.data)
-  //   commentsSetter(prev => [newComment, ...prev])
-  //   assignationSetter(null)
-  // }
-
-
 
   return (
     <>
