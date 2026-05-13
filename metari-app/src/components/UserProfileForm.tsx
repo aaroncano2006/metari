@@ -169,7 +169,7 @@ export default function UserProfileForm() {
         </div>
 
         <div className="row mb-2 user-profile-form-row">
-          <label className="form-label text-start" htmlFor="username">
+          <label className="form-label text-start" htmlFor="email">
             Email
           </label>
 
