@@ -9,11 +9,11 @@ import type { commentType } from "../../types/commentType"
 type ModalProps = {
   assignation: assignationType
   assignationSetter: React.Dispatch<React.SetStateAction<assignationType | null>>
-  commentsSetter: React.Dispatch<React.SetStateAction<commentType[]>>
+  commentSetter: React.Dispatch<React.SetStateAction<commentType[]>>
 }
 
 
-export function ModalAddComment({ assignation, assignationSetter, commentsSetter }: ModalProps) {
+export function ModalAddComment({ assignation, assignationSetter, commentSetter: commentsSetter }: ModalProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
 

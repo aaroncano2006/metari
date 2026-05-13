@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import type { assignationType } from "../types/assignationType";
 import type { groupType } from "../types/groupType";
 import { ModalAddComment } from "./modals/ModalAddComment";
-import { fetchComments } from "../services/commentService";
+import { fetchComments, deleteComment } from "../services/commentService";
 import type { commentType } from "../types/commentType";
 
 
@@ -88,7 +88,11 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                     .map((assignation) => (
                       <li key={assignation.meta.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
-                          onClick={() => toggleEntity(assignation.id)}>
+                          onClick={() => {
+                          toggleEntity(assignation.id)
+                          setShowComments(false)
+                          }
+                          }>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
                             <div className="me-2">{assignation.completed === true ? "completada" : ""}</div>
@@ -149,8 +153,9 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                                           }
                                           {(comment.user_id === getUserId() || group.owner_id === getUserId()) &&
                                             <div className="btn btn-danger align-self-end me-2 "
-                                              onClick={() => {
-                                                //edit
+                                              onClick={async() => {
+                                                await deleteComment(comment.id)
+                                                setComments(prev => prev.filter(c => c.id !== comment.id))
                                               }}>Elimina</div>
                                           }
                                         </div>
@@ -212,7 +217,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
         <ModalAddComment
           assignation={assignationToAddComment}
           assignationSetter={setAssignationToAddComment}
-          commentsSetter={setComments}
+          commentSetter={setComments}
         />
       )}
     </>
