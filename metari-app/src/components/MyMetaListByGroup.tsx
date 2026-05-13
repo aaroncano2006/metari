@@ -29,6 +29,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
   const [showCompletedByGroup, setShowCompletedByGroup] = useState<Record<number, boolean>>({})
   const [assignationToAddComment, setAssignationToAddComment] = useState<assignationType | null>(null)
 
+  const [showComments, setShowComments] = useState(false)
   //filtrar assignacions del usuari
   // const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId)
 
@@ -99,10 +100,26 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
-                              <div className="btn btn-primary align-self-end me-2"
-                              onClick={() => {
-                                  setAssignationToAddComment(assignation);
-                                }}>Afegir comentari</div>
+                              <div className=" d-flex align-self-end me-2">
+
+                                <div className="btn btn-primary d-flex align-self-end me-2 mt-2 "
+                                  onClick={() => {
+                                    // setShowComments(true);
+                                    setShowComments(prev => !prev );
+                                    //canviar variable al contrari del prev
+                                  }}>Mostrar comentaris</div>
+                                <div className="btn btn-primary align-self-end me-2 mt-2"
+                                  onClick={() => {
+                                    setAssignationToAddComment(assignation);
+                                  }}>Nou comentari</div>
+                              </div>
+
+
+                                  {showComments === true &&
+                                  <div>
+                                    comentaris
+                                  </div>
+                                  }
                             </div>
 
                           )}
@@ -152,9 +169,12 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
         </>
       }
       {assignationToAddComment && (
-              <ModalAddComment assignation={assignationToAddComment} assignationSetter={setAssignationToAddComment}/>
-            )}
+        <ModalAddComment assignation={assignationToAddComment} assignationSetter={setAssignationToAddComment} />
+      )}
     </>
   );
 }
 
+
+
+// afegir un boto per mostrar comentaris i que es mostrin per ordre descendent per data de creacio, amb el nom del usuari del comentari
