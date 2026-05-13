@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchRegister } from "../services/auth/registerService";
 import type { registerType } from "../types/auth/registerType";
-import { emailExists, usernameExists } from "../services/userService";
 import { registerSchema } from "../schemas/auth/registerSchema";
 
 export default function RegisterForm() {
@@ -35,78 +34,6 @@ export default function RegisterForm() {
       return setErrors(errors);
     }
     setErrors({});
-
-    // if (!data.name.trim()) {
-    //   return setError("El nom és obligatori!");
-    // }
-
-    // if (data.name && typeof data.name !== "string") {
-    //   return setError("El nom enviat no és vàlid! Ha de ser un text");
-    // }
-
-    // if (!data.username.trim()) {
-    //   return setError("El nom d'usuari és obligatori!");
-    // }
-
-    // if (data.username) {
-    //   if (typeof data.username !== "string") {
-    //     return setError(
-    //       "El nom d'usuari enviat no és vàlid! Ha de ser un text",
-    //     );
-    //   }
-
-    //   if (!/[a-zA-Z0-9]+$/.test(data.username)) {
-    //     return setError(
-    //       "El nom d'usuari només pot contenir lletres i números!",
-    //     );
-    //   }
-
-    //   if (data.username.length < 5) {
-    //     return setError("El nom d'usuari ha de contenir almenys 5 caràcters!");
-    //   }
-
-    //   const existingUsername = await usernameExists(data.username);
-
-    //   if (existingUsername) {
-    //     return setError("El nom d'usuari introduït ja està registrat!");
-    //   }
-    // }
-
-    // if (!data.email.trim()) {
-    //   return setError("L'email és obligatori!");
-    // }
-
-    // if (data.email) {
-    //   if (typeof data.email !== "string") {
-    //     return setError("L'email de l'usuari no és vàlid! Ha de ser un text");
-    //   }
-
-    //   if (
-    //     !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)
-    //   ) {
-    //     return setError("El format de l'email no és vàlid!");
-    //   }
-
-    //   const existingEmail = await emailExists(data.email);
-
-    //   if (existingEmail) {
-    //     return setError("L'email introduït ja està registrat!");
-    //   }
-    // }
-
-    // if (!data.password.trim()) {
-    //   return setError("La contrasenya és obligatòria");
-    // }
-
-    // if (data.password) {
-    //   if (typeof data.password !== "string") {
-    //     return setError("La contrasenya introduïda no és vàlida! Ha de ser un text!");
-    //   }
-
-    //   if (data.password.length < 8) {
-    //     return setError("La contrasenya ha de contenir almenys 8 caràcters!");
-    //   }
-    // }
 
     if (data.password !== data.repeat_password) {
       return setError("Les contrasenyes no coincideixen!");
