@@ -2,11 +2,14 @@ import { useState } from "react";
 import type { forgotPasswordType } from "../types/auth/forgotPasswordType";
 import { fetchForgotPassword } from "../services/auth/forgotPasswordService";
 import { forgotPasswordSchema } from "../schemas/auth/forgotPasswordSchema";
+import { fetchUsers } from "../services/userService";
+import type { userTypeFrontend } from "../types/userTypeFrontend";
 
 export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<boolean>(false);
+  const [foundUser, setFoundUser] = useState<userTypeFrontend | undefined>(undefined);
 
   // const rememberedPassword = localStorage.getItem("password");
 
@@ -17,6 +20,7 @@ export default function ForgotPasswordForm() {
   const handleSubmit = async (data: forgotPasswordType) => {
     setError(null);
     setSuccess(false);
+    setFoundUser(undefined);
 
     const validation = forgotPasswordSchema.safeParse(data);
     if (!validation.success) {
@@ -34,6 +38,10 @@ export default function ForgotPasswordForm() {
     let response = null;
     try {
       response = await fetchForgotPassword(data);
+
+      const users = await fetchUsers();
+      const user = users.find((el) => el.username === data.email_or_username || el.email === data.email_or_username);
+      setFoundUser(user);
 
       setSuccess(true);
     } catch (error: any) {
@@ -65,7 +73,7 @@ export default function ForgotPasswordForm() {
         {error && <div className="alert alert-danger">{error}</div>}
         {success && (
           <div className="alert alert-success">
-            Revisa el teu correu electrònic i restaura la teva contrasenya!
+            Revisa el teu correu electrònic <strong>({foundUser?.email})</strong> i restaura la teva contrasenya!
           </div>
         )}
         <form
