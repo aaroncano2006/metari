@@ -1,11 +1,15 @@
 import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import type { forgotPasswordType } from "../types/auth/forgotPasswordType";
 import { fetchForgotPassword } from "../services/auth/forgotPasswordService";
+import { forgotPasswordSchema } from "../schemas/auth/forgotPasswordSchema";
+import { fetchUsers } from "../services/userService";
+import type { userTypeFrontend } from "../types/userTypeFrontend";
 
 export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<boolean>(false);
+  const [foundUser, setFoundUser] = useState<userTypeFrontend | undefined>(undefined);
 
   // const rememberedPassword = localStorage.getItem("password");
 
@@ -13,22 +17,40 @@ export default function ForgotPasswordForm() {
     email_or_username: "",
   });
 
-  // const navigate = useNavigate();
-
   const handleSubmit = async (data: forgotPasswordType) => {
     setError(null);
     setSuccess(false);
-    if (!data.email_or_username.trim()) {
-      return setError("El username o email és obligatori!");
+    setFoundUser(undefined);
+
+    const validation = forgotPasswordSchema.safeParse(data);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        errors[field] = issue.message;
+      });
+
+      return setErrors(errors);
     }
+    setErrors({});
 
     let response = null;
     try {
       response = await fetchForgotPassword(data);
 
+      const users = await fetchUsers();
+      const user = users.find((el) => el.username === data.email_or_username || el.email === data.email_or_username);
+      setFoundUser(user);
+
       setSuccess(true);
     } catch (error: any) {
-      setError(`${error}`);
+      const message = error.request.responseText;
+      const JSONmessage = JSON.parse(message);
+      setError(`${JSONmessage.message}`);
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
@@ -49,7 +71,11 @@ export default function ForgotPasswordForm() {
 
       <div className="mt-4">
         {error && <div className="alert alert-danger">{error}</div>}
-        {success && <div className="alert alert-success">Revisa el teu correu electrònic i restaura la teva contrasenya!</div>}
+        {success && (
+          <div className="alert alert-success">
+            Revisa el teu correu electrònic <strong>({foundUser?.email})</strong> i restaura la teva contrasenya!
+          </div>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -77,6 +103,9 @@ export default function ForgotPasswordForm() {
                 })
               }
             />
+            {errors.email_or_username && (
+                <small className="text-danger d-flex mb-2">{errors.email_or_username}</small>
+            )}
           </div>
 
           <div className="d-flex justify-content-end gap-5 mt-3">

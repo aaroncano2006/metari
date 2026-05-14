@@ -33,6 +33,10 @@ const validateUser = async (data, id = null) => {
     return "El nom d'usuari ha de contenir almenys 5 caràcters!";
   }
 
+  if (data.username.length > 20) {
+    return "El nom d'usuari ha de contenir menys de 20 caràcters!";
+  }
+
   const existingUsername = await prisma.user.findUnique({
     where: { username: data.username },
   });
