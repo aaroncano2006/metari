@@ -125,6 +125,7 @@ export default function Profile() {
                 {!userData && (
                   <>
                     <div className="ps-5">
+                      <h2>Edita el perfil</h2>
                       <UserProfileForm></UserProfileForm>
                     </div>
                   </>
