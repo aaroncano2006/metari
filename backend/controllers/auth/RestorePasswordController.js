@@ -1,9 +1,9 @@
-const primsa = require("../../config/prisma");
-const nodemailer = require("../../config/nodemailer");
 const prisma = require("../../config/prisma");
+const nodemailer = require("../../config/nodemailer");
 const jwt = require("jsonwebtoken");
 const SECRET = require("../../config/auth").SECRET;
 const { hash } = require("../../helpers/Utils");
+const { validateRestorePassword } = require("../../middlewares/validators/auth/validateRestorePassword");
 
 const forgotPassword = async (req, res, next) => {
   try {
@@ -87,27 +87,21 @@ const forgotPassword = async (req, res, next) => {
 const restorePassword = async (req, res, next) => {
     try {
         const reqBody = req.body;
-        const token = reqBody.token;
-        const newPassword = reqBody.new_password;
-        const confirmPassword = reqBody.confirm_password;
+        const data = {
+          token: reqBody.token,
+          new_password: reqBody.new_password,
+          confirm_password: reqBody.confirm_password,
+        };
 
-        if (!token || !newPassword || !confirmPassword) {
-            const error = new Error("Tots els camps són obligatoris!");
-            error.statusCode = 400;
-            throw error;
+        const validate = await validateRestorePassword(data);
+        if (validate) {
+          const error = new Error(validate);
+          error.statusCode = 400;
+          throw error;
         }
 
-        if (newPassword !== confirmPassword) {
-            const error = new Error("Les contrasenyes no coincideixen!");
-            error.statusCode = 400;
-            throw error;
-        }
-
-        if (newPassword.length < 8) {
-            const error = new Error("La contrasenya ha de tenir almenys 6 caràcters!");
-            error.statusCode = 400;
-            throw error;
-        }
+        const token = data.token;
+        const newPassword = data.new_password;
 
         let payload = null;
         try {
@@ -116,7 +110,7 @@ const restorePassword = async (req, res, next) => {
             throw err;
         }
 
-        const existingUser = await primsa.user.findFirst({
+        const existingUser = await prisma.user.findFirst({
             where: {
                 id: payload.id,
                 restore_token: token
