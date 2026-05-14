@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ForgotPasswordForm from "../components/ForgotPasswordForm";
+import { Helmet } from "react-helmet-async";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -21,6 +22,9 @@ export default function ForgotPassword() {
 
   return (
     <>
+      <Helmet>
+        <title>Metari · Has oblidat la contrasenya?</title>
+      </Helmet>
       <div className="container-fluid">
         <div className="row mt-5 d-flex justify-content-center">
           <div className="col-5">
