@@ -44,6 +44,7 @@ export default function RestorePasswordForm() {
       setTimeout(() => {
         setError(null);
       }, 5000);
+      return;
     }
 
     let response = null;
@@ -94,31 +95,8 @@ export default function RestorePasswordForm() {
           }}
         >
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="confirm_password">
-              Nova contrasenya <span className="text-danger">*</span>
-            </label>
-
-            <input
-              className="form-control mb-2"
-              type="password"
-              name="confirm_password"
-              id="confirm_password"
-              value={formData.confirm_password}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  confirm_password: e.target.value,
-                })
-              }
-            />
-            {errors.new_password && (
-                <small className="text-danger d-flex mb-2">{errors.new_password}</small>
-            )}
-          </div>
-
-          <div className="row mb-2">
             <label className="form-label text-start" htmlFor="new_password">
-              Confirma nova contrasenya <span className="text-danger">*</span>
+              Nova contrasenya <span className="text-danger">*</span>
             </label>
 
             <input
@@ -131,6 +109,29 @@ export default function RestorePasswordForm() {
                 setFormData({
                   ...formData,
                   new_password: e.target.value,
+                })
+              }
+            />
+            {errors.new_password && (
+                <small className="text-danger d-flex mb-2">{errors.new_password}</small>
+            )}
+          </div>
+
+          <div className="row mb-2">
+            <label className="form-label text-start" htmlFor="confirm_password">
+              Confirma nova contrasenya <span className="text-danger">*</span>
+            </label>
+
+            <input
+              className="form-control mb-2"
+              type="password"
+              name="confirm_password"
+              id="confirm_password"
+              value={formData.confirm_password}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  confirm_password: e.target.value,
                 })
               }
             />
