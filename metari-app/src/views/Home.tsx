@@ -40,7 +40,10 @@ export default function Home() {
     fetchUsers().then(setUsers)
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
-    fetchGroups().then(setGroups)
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter((el) => el.is_public);
+      setGroups(filteredByPublic);
+    });
     fetchFriends(getUserId()!).then(setFriends)
     fetchAssignations().then(setAssignations)
 
