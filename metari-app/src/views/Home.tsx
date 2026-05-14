@@ -18,7 +18,7 @@ import { getUserId } from "../services/auth/loginService"
 import { fetchFriends } from "../services/invitationService";
 import { fetchAssignations } from "../services/assignationService"
 import type { assignationType } from "../types/assignationType"
-
+import { UserCreateMetaBtn } from "../components/Buttons/UserCreateMetaBtn"
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
 
@@ -51,6 +51,7 @@ export default function Home() {
       <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
       <div className="container-fluid">
         <div className="row mt-5">
+          <UserCreateMetaBtn/>
 
           <div className="col-12 col-md-3">
             <CategoryList 
