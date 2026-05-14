@@ -10,7 +10,7 @@ import Profile from './views/Profile'
 import Login from './views/Login'
 import Register from './views/Register'
 import AdminPanel from './views/AdminPanel'
-import Logout from "./views/Logut";
+import Logout from "./views/Logout";
 import ForgotPassword from "./views/ForgotPassword";
 import RestorePassword from "./views/RestorePassword";
 

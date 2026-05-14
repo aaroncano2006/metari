@@ -22,6 +22,8 @@ import type { groupType } from "../types/groupType";
 import { useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/loginService";
 
+import { Helmet } from "react-helmet-async";
+
 export default function AdminPanel() {
 
   const navigate = useNavigate();
@@ -61,6 +63,9 @@ export default function AdminPanel() {
 
   return (
     <>
+      <Helmet>
+        <title>Metari · Admin</title>
+      </Helmet>
       <h1 className="text-center mt-4">Panell Admin</h1>
       <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div

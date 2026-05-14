@@ -17,6 +17,7 @@ import type { userTypeFrontend } from "../types/userTypeFrontend";
 import { MyGroupsList } from "../components/MyGroupsList";
 import type { groupType } from "../types/groupType";
 import { fetchGroupsByUserId } from "../services/groupService";
+import { Helmet } from "react-helmet-async";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
@@ -94,6 +95,9 @@ export default function Profile() {
 
   return (
     <>
+      <Helmet>
+        <title>{`Metari · Profile - ${username} (${name})`}</title>
+      </Helmet>
       <div className="container-fluid p-3">
         {!error && (
           <>
