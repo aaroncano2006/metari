@@ -209,7 +209,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                         <div className="metaDetailsBox my-0 me-3">
                           {openEntityId === assignation.id && (
                             <div className="metaDetails ps-2 py-2">
-                              <div>📌 id:{assignation.meta.id}</div>
+                              {/* <div> id:{assignation.meta.id}</div> */}
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
