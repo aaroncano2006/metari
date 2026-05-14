@@ -20,6 +20,7 @@ import { fetchFriends } from "../services/invitationService";
 import { fetchAssignations } from "../services/assignationService"
 import type { assignationType } from "../types/assignationType"
 import { Helmet } from "react-helmet-async"
+import { useNavigate } from "react-router-dom";
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -37,6 +38,8 @@ export default function MyGroups() {
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
 
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchUsers().then(setUsers)
@@ -47,6 +50,10 @@ export default function MyGroups() {
     fetchAssignations().then(setAssignations)
 
   }, [])
+
+  if (!token) {
+    navigate("/login");
+  }
 
   return (
     <>
