@@ -32,6 +32,7 @@ export default function Home() {
   const [friends, setFriends] = useState<userTypeFrontend[]>([])
   const [_assignations, setAssignations] = useState<assignationType[]>([])
 
+  const token = localStorage.getItem("token");
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
 
@@ -48,8 +49,10 @@ export default function Home() {
       const filteredByPublic = response.filter((el) => el.is_public);
       setGroups(filteredByPublic);
     });
-    fetchFriends(getUserId()!).then(setFriends)
-    fetchAssignations().then(setAssignations)
+    if (token) {
+      fetchFriends(getUserId()!).then(setFriends)
+      fetchAssignations().then(setAssignations)
+    }
 
   }, [])
 
