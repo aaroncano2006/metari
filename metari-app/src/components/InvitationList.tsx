@@ -1,6 +1,6 @@
 import type { userTypeFrontend } from "../types/userTypeFrontend";
 import { useState } from "react";
-import { getUserName } from "../services/auth/loginService";
+import { getUserName, getUserId } from "../services/auth/loginService";
 import { Link } from "react-router-dom";
 import SendFriendInvitationButton from "./Buttons/SendFriendInvitationBtn";
 
@@ -17,6 +17,7 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
   };
   const token = localStorage.getItem("token");
   const username = getUserName();
+  const userId = getUserId();
 
   return (
     <>
@@ -68,7 +69,7 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
                           <div className="justify-content-end">
                             {target === "friends" && (
                               <SendFriendInvitationButton
-                                receiverId={i.receiver.id}
+                                receiverId={i.sender_id === userId ? i.receiver.id : i.sender.id}
                               ></SendFriendInvitationButton>
                             )}
                           </div>
