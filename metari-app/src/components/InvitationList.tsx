@@ -43,7 +43,7 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
                         </div>
                         {token && target === "friends" && (
                           <Link
-                            to={`/Profile?username=${i.sender.username === username ? i.receiver.username : i.sender.username}`}
+                            to={`/profile?username=${i.sender.username === username ? i.receiver.username : i.sender.username}`}
                             className="btn btn-primary p-1 "
                           >
                             <i className="bi bi-person-fill"></i>

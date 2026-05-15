@@ -29,7 +29,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit =
-    (vistaActual !== "/" && vistaActual !== "/myGroups" && vistaActual !== "/myMetas") &&
+    (vistaActual !== "/" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
     role === "admin";
 
   //suma el total de punts del grup
@@ -55,7 +55,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/Admin" ? "Llista de grups" : "Top 10 Grups"}</div>
+        <div className="titolComponent  text-center my-2">{vistaActual === "/admin" ? "Llista de grups" : "Top 10 Grups"}</div>
         <hr className="m-0" />
 
         <div className="inline">
@@ -130,7 +130,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
               Fes <Link to="/login" className=" p-1 ">
                 LogIn
               </Link>
-              o <Link to="/Register" className=" p-1 ">
+              o <Link to="/register" className=" p-1 ">
                 Registra't
               </Link>
               per participar amb la comunitat

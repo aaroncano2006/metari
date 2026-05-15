@@ -52,7 +52,7 @@ export function FriendList({ users, setter }: UserListProps) {
                         <div className="me-auto">{user.username}</div>
                         {token && (
                           <Link
-                            to={`/Profile?username=${user.username}`}
+                            to={`/profile?username=${user.username}`}
                             className="btn btn-primary p-1 me-2"
                           >
                             <i className="bi bi-person-fill"></i>
@@ -70,7 +70,7 @@ export function FriendList({ users, setter }: UserListProps) {
                           <div>e-mail: {user.email}</div>
                           <div>completed_tasks: {user.completed_tasks}</div>
                           <div>Puntuacio: {user.score}</div>
-                          {vistaActual === "/Profile" && (
+                          {vistaActual === "/profile" && (
                             <div className="d-flex p-3 justify-content-end">
                               <SendFriendInvitationButton
                                 receiverId={user.id}

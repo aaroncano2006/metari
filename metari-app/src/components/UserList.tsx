@@ -24,7 +24,7 @@ export function UserList({ users, setter }: UserListProps) {
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit =
-    (vistaActual !== "/" && vistaActual !== "/myGroups" && vistaActual !== "/myMetas") &&
+    (vistaActual !== "/" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
     role === "admin";
 
   const top10 = [...users].sort((a, b) => b.score - a.score).slice(0, 10)
@@ -39,7 +39,7 @@ export function UserList({ users, setter }: UserListProps) {
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/Admin" ? "Llista d'usuaris" : "Top 10 Usuaris"}</div>
+        <div className="titolComponent  text-center my-2">{vistaActual === "/admin" ? "Llista d'usuaris" : "Top 10 Usuaris"}</div>
         <hr className="m-0" />
 
         <div className="inline">
@@ -55,7 +55,7 @@ export function UserList({ users, setter }: UserListProps) {
                     <div className="d-flex py-1 ps-2 pe-2  align-items-center">
                       <div className="me-auto">{user.username}</div>
                       {token &&
-                        <Link to={`/Profile?username=${user.username}`} className="btn btn-primary p-1 ">
+                        <Link to={`/profile?username=${user.username}`} className="btn btn-primary p-1 ">
                           <i className="bi bi-person-fill"></i>
                         </Link>
                       }
@@ -80,7 +80,7 @@ export function UserList({ users, setter }: UserListProps) {
                   <div className=" metaDetailsBox  my-0 me-3">
                     {openEntityId === user.id && (
                       <div className="metaDetails ps-2 py-2">
-                        {vistaActual === "/Admin" &&
+                        {vistaActual === "/admin" &&
                           <>
                             <div>ID: {user.id}</div>
                             <div>Nom: {user.name}</div>
@@ -104,7 +104,7 @@ export function UserList({ users, setter }: UserListProps) {
               Fes <Link to="/login" className=" p-1 ">
                 LogIn
               </Link>
-              o <Link to="/Register" className=" p-1 ">
+              o <Link to="/register" className=" p-1 ">
                 Registra't
               </Link>
               per participar amb la comunitat
