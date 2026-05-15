@@ -29,8 +29,7 @@ export async function fetchInvitations(
   userId: number,
   otherUserId: number,
   status: "pending" | "accepted",
-  groupId: number | null = null
-
+  groupId: number | null = null,
 ): Promise<any> {
   const [sent, received] = await Promise.all([
     axiosConnection.get<invitationType[]>(
@@ -50,22 +49,58 @@ export async function fetchInvitations(
   return invitations ?? null;
 }
 
-export async function rejectOrDeleteInvitation(userId: number, otherUserId: number): Promise<any> {
+export async function fetchMyInvitations(
+  userId: number,
+  status: "pending" | "accepted",
+  groupId: number | null = null,
+): Promise<any> {
+  const [sent, received] = await Promise.all([
+    axiosConnection.get<invitationType[]>(
+      `/invitacions/${userId}/sent/${status}`,
+    ),
+    axiosConnection.get<invitationType[]>(
+      `/invitacions/${userId}/received/${status}`,
+    ),
+  ]);
+
+  const invitations = [...sent.data, ...received.data].find(
+    (el) =>
+      el.group_id === (groupId ?? null) &&
+      el.status === status &&
+      (el.sender_id === userId || el.receiver_id === userId),
+  );
+
+  return invitations ?? null;
+}
+
+export async function rejectOrDeleteInvitation(
+  userId: number,
+  otherUserId: number,
+): Promise<any> {
   const pending = await fetchInvitations(userId, otherUserId, "pending");
   const accepted = await fetchInvitations(userId, otherUserId, "accepted");
 
   let deletePending = null;
   let deleteAccepted = null;
   if (pending && !accepted) {
-    deletePending = await axiosConnection.delete(`/invitacions/${userId}/${pending.id}`);
+    deletePending = await axiosConnection.delete(
+      `/invitacions/${userId}/${pending.id}`,
+    );
   } else if (!pending && accepted) {
-    deleteAccepted = await axiosConnection.delete(`/invitacions/${userId}/${accepted.id}`);
+    deleteAccepted = await axiosConnection.delete(
+      `/invitacions/${userId}/${accepted.id}`,
+    );
   }
 
   return pending ? deletePending : deleteAccepted;
 }
 
-export async function acceptInvitation(receiverId: number, invitationId: number): Promise<any> {
-  const { data } = await axiosConnection.put(`/invitacions/${receiverId}/${invitationId}`);
+export async function acceptInvitation(
+  receiverId: number,
+  invitationId: number,
+): Promise<any> {
+  const { data } = await axiosConnection.put(
+    `/invitacions/${receiverId}/${invitationId}`,
+  );
   return data;
 }
