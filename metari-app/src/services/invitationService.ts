@@ -52,7 +52,6 @@ export async function fetchInvitations(
 export async function fetchMyInvitations(
   userId: number,
   status: "pending" | "accepted",
-  groupId: number | null = null,
 ): Promise<any> {
   const [sent, received] = await Promise.all([
     axiosConnection.get<invitationType[]>(
@@ -65,7 +64,6 @@ export async function fetchMyInvitations(
 
   const invitations = [...sent.data, ...received.data].find(
     (el) =>
-      el.group_id === (groupId ?? null) &&
       el.status === status &&
       (el.sender_id === userId || el.receiver_id === userId),
   );
