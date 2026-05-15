@@ -121,7 +121,7 @@ const sendInvitations = async (req, res, next) => {
           </p>
 
           <p>
-            Pots acceptar o rebutjar-la des del teu panell d'invitacions.
+            Pots acceptar o rebutjar-la des del teu <a href='http://localhost:5173/Profile?friendInvitations=true#friends_and_groups'>panell d'invitacions</a>.
           </p>
 
           <hr />
@@ -143,7 +143,7 @@ const sendInvitations = async (req, res, next) => {
           </p>
 
           <p>
-            Pots revisar-la i decidir si vols unir-t'hi des del teu panell d'invitacions.
+            Pots revisar-la i decidir si vols unir-t'hi des del teu <a href='http://localhost:5173/Profile?groupInvitations=true#friends_and_groups'>panell d'invitacions</a>.
           </p>
 
           <hr />

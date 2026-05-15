@@ -37,6 +37,8 @@ export default function Profile() {
   // Controla si s'està consultant el perfil de l'usuari loguejat o d'un altre usuari.
   const [searchParams] = useSearchParams();
   const usernameSearchParam = searchParams.get("username") || "";
+  const friendInvitationSearchParam = searchParams.get("friendInvitations") || "";
+  const groupInvitationSearchParam = searchParams.get("groupInvitations") || "";
   const [userData, setUserData] = useState<any>(null);
   const name = userData?.name || getUserFullName();
   const username = userData?.username || getUserName();
@@ -95,6 +97,14 @@ export default function Profile() {
         setGroupInvitations(groupInv);
       };
       loadOwnData();
+    }
+
+    if (friendInvitationSearchParam === "true") {
+      setFriendInvitationPanelActive(true);
+    }
+
+    if (friendInvitationSearchParam === "true" && !usernameSearchParam) {
+      setFriendInvitationPanelActive(true);
     }
   }, [usernameSearchParam, recharge]);
 
@@ -209,6 +219,7 @@ export default function Profile() {
                       )}
                     </button>
                   </div>
+                  <a id="friends_and_groups"></a>
                   {!friendInvitationPanelActive && (
                     <FriendList users={friendsList}></FriendList>
                   )}
