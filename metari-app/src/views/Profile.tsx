@@ -103,8 +103,8 @@ export default function Profile() {
       setFriendInvitationPanelActive(true);
     }
 
-    if (friendInvitationSearchParam === "true" && !usernameSearchParam) {
-      setFriendInvitationPanelActive(true);
+    if (groupInvitationSearchParam === "true") {
+      setGroupInvitationPanelActive(true)
     }
   }, [usernameSearchParam, recharge]);
 
