@@ -66,7 +66,7 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
                           <div>
                             Receptor: {i.receiver.name} ({i.receiver.username})
                           </div>
-                          <div className="mt-2 justify-content-end">
+                          <div className="ps-2 d-flex justify-content-end">
                             {target === "friends" && (
                               <SendFriendInvitationButton
                                 receiverId={i.sender_id === userId ? i.receiver.id : i.sender.id}
