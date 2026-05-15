@@ -12,19 +12,25 @@ import UserProfileStats from "../components/UserProfileStats";
 import { getUserProfileData } from "../services/auth/profileService";
 import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
 import { FriendList } from "../components/FriendList";
-import { fetchFriends } from "../services/invitationService";
+import {
+  fetchFriends,
+  fetchMyInvitations,
+} from "../services/invitationService";
 import type { userTypeFrontend } from "../types/userTypeFrontend";
 import { MyGroupsList } from "../components/MyGroupsList";
 import type { groupType } from "../types/groupType";
 import { fetchGroupsByUserId } from "../services/groupService";
 import { Helmet } from "react-helmet-async";
+import { InvitationList } from "../components/InvitationList";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
   const navigate = useNavigate();
   const [_recharge, setRecharge] = useState(0);
-  const [friendInvitationPanelActive, setFriendInvitationPanelActive] = useState<boolean>(false);
-  const [groupInvitationPanelActive, setGroupInvitationPanelActive] = useState<boolean>(false);
+  const [friendInvitationPanelActive, setFriendInvitationPanelActive] =
+    useState<boolean>(false);
+  const [groupInvitationPanelActive, setGroupInvitationPanelActive] =
+    useState<boolean>(false);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -36,6 +42,9 @@ export default function Profile() {
   const username = userData?.username || getUserName();
   const [friendsList, setFriendsList] = useState<userTypeFrontend[]>([]);
   const [groupsList, setGroupsList] = useState<groupType[]>([]);
+  const [friendInvitations, setFriendInvitations] = useState<any[]>([]);
+  const [groupInvitations, setGroupInvitations] = useState<any[]>([]);
+
   const stats = userData
     ? {
         score: userData.score,
@@ -70,12 +79,20 @@ export default function Profile() {
     } else {
       setUserData(null);
       const loadOwnData = async () => {
-        const [friends, groups] = await Promise.all([
+        const [friends, groups, friendInv, groupInv] = await Promise.all([
           fetchFriends(getUserId()!),
           fetchGroupsByUserId(getUserId()!),
+          fetchMyInvitations(getUserId()!, "pending").then((response) =>
+            response.filter((el: any) => el.group_id === null),
+          ),
+          fetchMyInvitations(getUserId()!, "pending").then((response) =>
+            response.filter((el: any) => el.group_id !== null),
+          ),
         ]);
         setFriendsList(friends);
         setGroupsList(groups);
+        setFriendInvitations(friendInv);
+        setGroupInvitations(groupInv);
       };
       loadOwnData();
     }
@@ -101,11 +118,11 @@ export default function Profile() {
     if (!validTargets.includes(target)) return;
 
     if (target === "friends") {
-      setFriendInvitationPanelActive((prev) => !prev ? true : false);
+      setFriendInvitationPanelActive((prev) => (!prev ? true : false));
     } else {
-      setGroupInvitationPanelActive((prev) => !prev ? true : false);
+      setGroupInvitationPanelActive((prev) => (!prev ? true : false));
     }
-  }
+  };
 
   return (
     <>
@@ -152,7 +169,10 @@ export default function Profile() {
                   <>
                     <div className="me-5 mb-4">
                       <FriendList users={friendsList}></FriendList>
-                      <MyGroupsList groups={groupsList} viewedUserId={userData.id}></MyGroupsList>
+                      <MyGroupsList
+                        groups={groupsList}
+                        viewedUserId={userData.id}
+                      ></MyGroupsList>
                     </div>
                   </>
                 )}
@@ -168,10 +188,14 @@ export default function Profile() {
               <>
                 <div className="row ps-5 pe-5 mb-5">
                   <div>
-                    <button className="btn btn-primary" onClick={() => changeList("friends")}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => changeList("friends")}
+                    >
                       {!friendInvitationPanelActive && (
                         <>
-                          <i className="bi bi-envelope-fill me-2"></i> Veure invitacions
+                          <i className="bi bi-envelope-fill me-2"></i> Veure
+                          invitacions
                         </>
                       )}
                       {friendInvitationPanelActive && (
@@ -184,13 +208,20 @@ export default function Profile() {
                   {!friendInvitationPanelActive && (
                     <FriendList users={friendsList}></FriendList>
                   )}
+                  {friendInvitationPanelActive && (
+                    <InvitationList invitations={friendInvitations} target="friends"></InvitationList>
+                  )}
                 </div>
                 <div className="row ps-5 pe-5">
                   <div>
-                    <button className="btn btn-primary" onClick={() => changeList("groups")}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => changeList("groups")}
+                    >
                       {!groupInvitationPanelActive && (
                         <>
-                          <i className="bi bi-envelope-fill me-2"></i> Veure invitacions
+                          <i className="bi bi-envelope-fill me-2"></i> Veure
+                          invitacions
                         </>
                       )}
                       {groupInvitationPanelActive && (
