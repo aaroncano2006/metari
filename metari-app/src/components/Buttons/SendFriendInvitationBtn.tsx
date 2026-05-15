@@ -123,7 +123,7 @@ export default function SendFriendInvitationButton({
       {!alreadyFriends && !pendingInvitation && (
         <button
           className={`btn ${small ? "p-1" : ""} btn-success`}
-          onClick={async () => await sendInvitationToUser()}
+          onClick={async (event) => {event.stopPropagation(); await sendInvitationToUser()}}
         >
           <i className={`bi bi-person-fill-add ${!small ? "me-2" : ""}`}></i>
           {!small && <span>Afegir amic</span>}
@@ -134,7 +134,7 @@ export default function SendFriendInvitationButton({
         pendingInvitation.sender_id !== userId && (
           <button
             className={`btn ${small ? "p-1" : ""} btn-success me-3`}
-            onClick={async () => await handleAcceptInvitation()}
+            onClick={async (event) => {event.stopPropagation(); await handleAcceptInvitation()}}
           >
             <i className={`bi bi-person-fill-add ${!small ? "me-2" : ""}`}></i>
             {!small && <span>Acceptar invitació</span>}
@@ -143,7 +143,7 @@ export default function SendFriendInvitationButton({
       {(alreadyFriends || pendingInvitation) && (
         <button
           className={`btn ${small ? "p-1" : ""} btn-danger`}
-          onClick={async () => await handleRejectOrDelete()}
+          onClick={async (event) => { event.stopPropagation(); await handleRejectOrDelete() }}
         >
           <i className={`bi bi-person-fill-dash ${!small ? "me-2" : ""}`}></i>
           {!small ? (

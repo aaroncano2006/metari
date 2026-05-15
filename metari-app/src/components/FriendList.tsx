@@ -26,7 +26,8 @@ export function FriendList({ users, setter }: UserListProps) {
       }
     };
     window.addEventListener("buttonChange", handleFriendsUpdate);
-    return () => window.removeEventListener("buttonChange", handleFriendsUpdate);
+    return () =>
+      window.removeEventListener("buttonChange", handleFriendsUpdate);
   }, [setter]);
 
   return (
@@ -51,12 +52,16 @@ export function FriendList({ users, setter }: UserListProps) {
                           <Link
                             to={`/profile?username=${user.username}`}
                             className="btn btn-primary p-1 me-2"
+                            onClick={(event) => event.stopPropagation()}
                           >
                             <i className="bi bi-person-fill"></i>
                           </Link>
                         )}
                         {token && vistaActual === "/" && (
-                          <SendFriendInvitationButton receiverId={user.id} small={true}/>
+                          <SendFriendInvitationButton
+                            receiverId={user.id}
+                            small={true}
+                          />
                         )}
                       </div>
                     </div>
@@ -67,13 +72,14 @@ export function FriendList({ users, setter }: UserListProps) {
                           <div>e-mail: {user.email}</div>
                           <div>Tasques completades: {user.completed_tasks}</div>
                           <div>Puntuacio: {user.score}</div>
-                          {(vistaActual === "/profile" && user.id !== getUserId() ) && (
-                            <div className="d-flex p-3 justify-content-end">
-                              <SendFriendInvitationButton
-                                receiverId={user.id}
-                              />
-                            </div>
-                          )}
+                          {vistaActual === "/profile" &&
+                            user.id !== getUserId() && (
+                              <div className="d-flex p-3 justify-content-end">
+                                <SendFriendInvitationButton
+                                  receiverId={user.id}
+                                />
+                              </div>
+                            )}
                         </div>
                       )}
                     </div>
