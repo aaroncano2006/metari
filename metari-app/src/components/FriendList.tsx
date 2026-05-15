@@ -1,7 +1,9 @@
 import type { userTypeFrontend } from "../types/userTypeFrontend";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
+import { fetchFriends } from "../services/invitationService";
+import { getUserId } from "../services/auth/loginService";
 
 type UserListProps = {
   users: userTypeFrontend[];
@@ -17,6 +19,16 @@ export function FriendList({ users, setter }: UserListProps) {
   const token = localStorage.getItem("token");
   // const role = getUserRole()
   const vistaActual = useLocation().pathname;
+
+  useEffect(() => {
+    const handleFriendsUpdate = () => {
+      if (setter) {
+        fetchFriends(getUserId()!).then(setter);
+      }
+    };
+    window.addEventListener("buttonChange", handleFriendsUpdate);
+    return () => window.removeEventListener("buttonChange", handleFriendsUpdate);
+  }, [setter]);
 
   // const canEdit = vistaActual !== "/" && role === "admin";
 
@@ -41,10 +53,13 @@ export function FriendList({ users, setter }: UserListProps) {
                         {token && (
                           <Link
                             to={`/Profile?username=${user.username}`}
-                            className="btn btn-primary p-1 "
+                            className="btn btn-primary p-1 me-2"
                           >
                             <i className="bi bi-person-fill"></i>
                           </Link>
+                        )}
+                        {token && vistaActual === "/" && (
+                          <SendFriendInvitationButton receiverId={user.id} small={true}/>
                         )}
                       </div>
                     </div>

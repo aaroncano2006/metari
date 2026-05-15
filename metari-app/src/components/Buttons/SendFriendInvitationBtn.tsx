@@ -11,10 +11,12 @@ import type { invitationType } from "../../types/invitationType";
 
 type SendInvitationButtonProps = {
   receiverId: number;
+  small?: boolean;
 };
 
 export default function SendFriendInvitationButton({
   receiverId,
+  small,
 }: SendInvitationButtonProps) {
   const [_error, setError] = useState<boolean>(false);
   const [_success, setSuccess] = useState<boolean>(false);
@@ -120,35 +122,37 @@ export default function SendFriendInvitationButton({
     <>
       {!alreadyFriends && !pendingInvitation && (
         <button
-          className="btn btn-success"
+          className={`btn ${small ? "p-1" : ""} btn-success`}
           onClick={async () => await sendInvitationToUser()}
         >
-          <i className="bi bi-person-fill-add me-2"></i>
-          Afegir amic
+          <i className={`bi bi-person-fill-add ${!small ? "me-2" : ""}`}></i>
+          {!small && <span>Afegir amic</span>}
         </button>
       )}
       {!alreadyFriends &&
         pendingInvitation &&
         pendingInvitation.sender_id !== userId && (
           <button
-            className="btn btn-success me-3"
+            className={`btn ${small ? "p-1" : ""} btn-success me-3`}
             onClick={async () => await handleAcceptInvitation()}
           >
-            <i className="bi bi-person-fill-add me-2"></i>
-            Acceptar invitació
+            <i className={`bi bi-person-fill-add ${!small ? "me-2" : ""}`}></i>
+            {!small && <span>Acceptar invitació</span>}
           </button>
         )}
       {(alreadyFriends || pendingInvitation) && (
         <button
-          className="btn btn-danger"
+          className={`btn ${small ? "p-1" : ""} btn-danger`}
           onClick={async () => await handleRejectOrDelete()}
         >
-          <i className="bi bi-person-fill-dash me-2"></i>
-          {alreadyFriends
-            ? "Eliminar amic"
-            : pendingInvitation?.sender_id === userId
-              ? "Eliminar invitació"
-              : "Rebutjar invitació"}
+          <i className={`bi bi-person-fill-dash ${!small ? "me-2" : ""}`}></i>
+          {!small ? (
+            alreadyFriends
+              ? "Eliminar amic"
+              : pendingInvitation?.sender_id === userId
+                ? "Eliminar invitació"
+                : "Rebutjar invitació"
+          ) : null}
         </button>
       )}
     </>
