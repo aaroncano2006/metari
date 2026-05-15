@@ -26,7 +26,7 @@ import { InvitationList } from "../components/InvitationList";
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
   const navigate = useNavigate();
-  const [_recharge, setRecharge] = useState(0);
+  const [recharge, setRecharge] = useState(0);
   const [friendInvitationPanelActive, setFriendInvitationPanelActive] =
     useState<boolean>(false);
   const [groupInvitationPanelActive, setGroupInvitationPanelActive] =
@@ -96,12 +96,16 @@ export default function Profile() {
       };
       loadOwnData();
     }
-  }, [usernameSearchParam]);
+  }, [usernameSearchParam, recharge]);
 
   useEffect(() => {
     const handleRecharge = () => setRecharge((cur) => cur + 1);
     window.addEventListener("profileChange", handleRecharge);
-    return () => window.removeEventListener("profileChange", handleRecharge);
+    window.addEventListener("buttonChange", handleRecharge);
+    return () => {
+      window.removeEventListener("profileChange", handleRecharge);
+      window.removeEventListener("buttonChange", handleRecharge);
+    };
   }, []);
 
   useEffect(() => {
