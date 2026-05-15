@@ -29,7 +29,7 @@ export async function fetchInvitations(
   userId: number,
   otherUserId: number,
   status: "pending" | "accepted",
-  groupId?: number
+  groupId: number | null = null
 
 ): Promise<any> {
   const [sent, received] = await Promise.all([
@@ -42,7 +42,7 @@ export async function fetchInvitations(
   ]);
   const invitations = [...sent.data, ...received.data].find(
     (el) =>
-      el.group_id === (groupId !== undefined ? groupId : null) &&
+      el.group_id === (groupId ?? null) &&
       el.status === status &&
       ((el.sender_id === userId && el.receiver_id === otherUserId) ||
         (el.sender_id === otherUserId && el.receiver_id === userId)),
