@@ -23,6 +23,8 @@ export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
   const navigate = useNavigate();
   const [_recharge, setRecharge] = useState(0);
+  const [friendInvitationPanelActive, setFriendInvitationPanelActive] = useState<boolean>(false);
+  const [groupInvitationPanelActive, setGroupInvitationPanelActive] = useState<boolean>(false);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -93,6 +95,18 @@ export default function Profile() {
     }
   }, []);
 
+  const changeList = (target: string) => {
+    const validTargets = ["friends", "groups"];
+
+    if (!validTargets.includes(target)) return;
+
+    if (target === "friends") {
+      setFriendInvitationPanelActive((prev) => !prev ? true : false);
+    } else {
+      setGroupInvitationPanelActive((prev) => !prev ? true : false);
+    }
+  }
+
   return (
     <>
       <Helmet>
@@ -153,10 +167,42 @@ export default function Profile() {
             {!userData && (
               <>
                 <div className="row ps-5 pe-5 mb-5">
-                  <FriendList users={friendsList}></FriendList>
+                  <div>
+                    <button className="btn btn-primary" onClick={() => changeList("friends")}>
+                      {!friendInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-envelope-fill me-2"></i> Veure invitacions
+                        </>
+                      )}
+                      {friendInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-person-fill me-2"></i> Veure amics
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {!friendInvitationPanelActive && (
+                    <FriendList users={friendsList}></FriendList>
+                  )}
                 </div>
                 <div className="row ps-5 pe-5">
-                  <MyGroupsList groups={groupsList}></MyGroupsList>
+                  <div>
+                    <button className="btn btn-primary" onClick={() => changeList("groups")}>
+                      {!groupInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-envelope-fill me-2"></i> Veure invitacions
+                        </>
+                      )}
+                      {groupInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-people-fill me-2"></i> Veure grups
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {!groupInvitationPanelActive && (
+                    <MyGroupsList groups={groupsList}></MyGroupsList>
+                  )}
                 </div>
               </>
             )}
