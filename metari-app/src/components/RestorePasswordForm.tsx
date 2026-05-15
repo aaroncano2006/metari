@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import type { restorePasswordType } from "../types/auth/restorePasswordType";
 import { fetchRestorePassword } from "../services/auth/restorePasswordService";
@@ -85,7 +85,7 @@ export default function RestorePasswordForm() {
         {success && (
           <div className="alert alert-success">
             Contrasenya restablerta correctament!{" "}
-            <a href="/login">Inicia Sessió</a>
+            <Link to="/login">Inicia Sessió</Link>
           </div>
         )}
         <form

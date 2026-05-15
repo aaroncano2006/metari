@@ -33,6 +33,7 @@ export function NavBar() {
             Registra't
           </Link>
         )}
+        
         {token &&
           <>
             <Link to="/myMetas" className="nav-btn">
@@ -43,17 +44,6 @@ export function NavBar() {
             </Link>
           </>
         }
-
-        {/* {token && (
-          <Link to="/Profile" className="nav-btn ">
-            Els meus grups
-          </Link>
-        )}
-        {token && (
-          <Link to="/Profile" className="nav-btn  ">
-            Amics
-          </Link>
-        )} */}
 
         {token && (
           <div className="btn-group">

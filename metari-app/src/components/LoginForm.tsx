@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchLogin } from "../services/auth/loginService";
 import type { loginType } from "../types/auth/loginType";
 import { loginSchema } from "../schemas/auth/loginSchema";
@@ -146,9 +146,9 @@ export default function LoginForm() {
           </div>
 
           <div className="row mb-4">
-            <a href="/forgot-password" className="text-start">
+            <Link to="/forgot-password" className="text-start">
               Has oblidat la teva contrasenya?
-            </a>
+            </Link>
           </div>
 
           <div className="row mb-2 text-start">
@@ -176,9 +176,9 @@ export default function LoginForm() {
           </div>
 
           <div className="d-flex justify-content-end gap-5 mt-3">
-            <a href="/register" className="text-start">
-              No tens compte? Registra't
-            </a>
+            <Link to="/register" className="text-start">
+                No tens compte? Registra't
+            </Link>
 
             <button type="submit" className="btn btn-dark">
               Inicia sessió

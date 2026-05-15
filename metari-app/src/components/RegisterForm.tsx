@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchRegister } from "../services/auth/registerService";
 import type { registerType } from "../types/auth/registerType";
 import { registerSchema } from "../schemas/auth/registerSchema";
@@ -235,9 +235,9 @@ export default function RegisterForm() {
           </div>
 
           <div className="d-flex justify-content-end gap-5 mt-3">
-            <a href="/login" className="text-start">
+            <Link to="/login" className="text-start">
               Tens un compte? Inicia sessió
-            </a>
+            </Link>
 
             <button type="submit" className="btn btn-dark">
               Registra't
