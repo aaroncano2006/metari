@@ -234,6 +234,9 @@ export default function Profile() {
                   {!groupInvitationPanelActive && (
                     <MyGroupsList groups={groupsList}></MyGroupsList>
                   )}
+                  {groupInvitationPanelActive && (
+                    <InvitationList invitations={groupInvitations} target="groups"></InvitationList>
+                  )}
                 </div>
               </>
             )}
