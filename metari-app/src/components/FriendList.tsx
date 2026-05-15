@@ -65,7 +65,7 @@ export function FriendList({ users, setter }: UserListProps) {
                         <div className="metaDetails ps-2 py-2">
                           <div>Nom: {user.name}</div>
                           <div>e-mail: {user.email}</div>
-                          <div>completed_tasks: {user.completed_tasks}</div>
+                          <div>Tasques completades: {user.completed_tasks}</div>
                           <div>Puntuacio: {user.score}</div>
                           {(vistaActual === "/profile" && user.id !== getUserId() ) && (
                             <div className="d-flex p-3 justify-content-end">

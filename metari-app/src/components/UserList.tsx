@@ -89,7 +89,7 @@ export function UserList({ users, setter }: UserListProps) {
                           </>
                         }
 
-                        <div>completed_tasks: {user.completed_tasks}</div>
+                        <div>Tasques completades: {user.completed_tasks}</div>
                         <div>Puntuacio: {user.score}</div>
 
                       </div>
