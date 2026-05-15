@@ -17,7 +17,6 @@ export function FriendList({ users, setter }: UserListProps) {
   };
 
   const token = localStorage.getItem("token");
-  // const role = getUserRole()
   const vistaActual = useLocation().pathname;
 
   useEffect(() => {
@@ -29,8 +28,6 @@ export function FriendList({ users, setter }: UserListProps) {
     window.addEventListener("buttonChange", handleFriendsUpdate);
     return () => window.removeEventListener("buttonChange", handleFriendsUpdate);
   }, [setter]);
-
-  // const canEdit = vistaActual !== "/" && role === "admin";
 
   return (
     <>
@@ -70,7 +67,7 @@ export function FriendList({ users, setter }: UserListProps) {
                           <div>e-mail: {user.email}</div>
                           <div>completed_tasks: {user.completed_tasks}</div>
                           <div>Puntuacio: {user.score}</div>
-                          {vistaActual === "/profile" && (
+                          {(vistaActual === "/profile" && user.id !== getUserId() ) && (
                             <div className="d-flex p-3 justify-content-end">
                               <SendFriendInvitationButton
                                 receiverId={user.id}
