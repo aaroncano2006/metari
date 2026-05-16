@@ -129,6 +129,24 @@ app.get("/api", (req, res) => {
           DELETE: ["/:id"],
         },
       },
+      login: {
+        base: `${BASE_URL}/api/login`,
+        methods: {
+          POST: ["/"],
+        },
+      },
+      restore_password: {
+        base: `${BASE_URL}/api/restore-password`,
+        methods: {
+          POST: ["/forgot", "/restore"],
+        },
+      },
+      search: {
+        base: `${BASE_URL}/api/search`,
+        methods: {
+          GET: ["/"],
+        },
+      },
     },
   });
 });
@@ -169,12 +187,12 @@ app.use("/api/login", loginRoutes);
 app.use("/api/restore-password", restorePasswordRoutes);
 app.use("/api/search", searchRoutes);
 
-app.get("/api/dashboard", verifyToken, (req, res) => {
-  res.json({
-    message: "Acceso permitido",
-    user: req.user,
-  });
-});
+// app.get("/api/dashboard", verifyToken, (req, res) => {
+//   res.json({
+//     message: "Acceso permitido",
+//     user: req.user,
+//   });
+// });
 
 app.use(errorHandler);
 app.listen(PORT, () => {
