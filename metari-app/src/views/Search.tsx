@@ -70,7 +70,7 @@ export default function Search() {
     search(word).then((response) => {
       setFoundGroups(response.groups);
     });
-  }, []);
+  }, [word]);
 
   return (
     <>
