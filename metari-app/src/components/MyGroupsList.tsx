@@ -95,10 +95,10 @@ export function MyGroupsList({ groups, viewedUserId }: MyGroupListProps) {
             }
             {!token &&
               <div className="text-center">
-                Fes <Link to="/Profile" className=" p-1 ">
+                Fes <Link to="/profile" className=" p-1 ">
                   LogIn
                 </Link>
-                o <Link to="/Register" className=" p-1 ">
+                o <Link to="/register" className=" p-1 ">
                   Registra't
                 </Link>
                 per participar amb la comunitat
