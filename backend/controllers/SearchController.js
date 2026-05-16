@@ -3,7 +3,7 @@ const utils = require("../helpers/Utils");
 
 const search = async (req, res, next) => {
   try {
-    const searchWord = req.body.search;
+    const searchWord = req.query.search;
 
     const users = await prisma.user.findMany({
       where: {
