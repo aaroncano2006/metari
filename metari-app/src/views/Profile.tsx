@@ -12,28 +12,41 @@ import UserProfileStats from "../components/UserProfileStats";
 import { getUserProfileData } from "../services/auth/profileService";
 import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
 import { FriendList } from "../components/FriendList";
-import { fetchFriends } from "../services/invitationService";
+import {
+  fetchFriends,
+  fetchMyInvitations,
+} from "../services/invitationService";
 import type { userTypeFrontend } from "../types/userTypeFrontend";
 import { MyGroupsList } from "../components/MyGroupsList";
 import type { groupType } from "../types/groupType";
 import { fetchGroupsByUserId } from "../services/groupService";
 import { Helmet } from "react-helmet-async";
+import { InvitationList } from "../components/InvitationList";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
   const navigate = useNavigate();
-  const [_recharge, setRecharge] = useState(0);
+  const [recharge, setRecharge] = useState(0);
+  const [friendInvitationPanelActive, setFriendInvitationPanelActive] =
+    useState<boolean>(false);
+  const [groupInvitationPanelActive, setGroupInvitationPanelActive] =
+    useState<boolean>(false);
 
   const [error, setError] = useState<string | null>(null);
 
   // Controla si s'està consultant el perfil de l'usuari loguejat o d'un altre usuari.
   const [searchParams] = useSearchParams();
   const usernameSearchParam = searchParams.get("username") || "";
+  const friendInvitationSearchParam = searchParams.get("friendInvitations") || "";
+  const groupInvitationSearchParam = searchParams.get("groupInvitations") || "";
   const [userData, setUserData] = useState<any>(null);
   const name = userData?.name || getUserFullName();
   const username = userData?.username || getUserName();
   const [friendsList, setFriendsList] = useState<userTypeFrontend[]>([]);
   const [groupsList, setGroupsList] = useState<groupType[]>([]);
+  const [friendInvitations, setFriendInvitations] = useState<any[]>([]);
+  const [groupInvitations, setGroupInvitations] = useState<any[]>([]);
+
   const stats = userData
     ? {
         score: userData.score,
@@ -68,21 +81,41 @@ export default function Profile() {
     } else {
       setUserData(null);
       const loadOwnData = async () => {
-        const [friends, groups] = await Promise.all([
+        const [friends, groups, friendInv, groupInv] = await Promise.all([
           fetchFriends(getUserId()!),
           fetchGroupsByUserId(getUserId()!),
+          fetchMyInvitations(getUserId()!, "pending").then((response) =>
+            response.filter((el: any) => el.group_id === null),
+          ),
+          fetchMyInvitations(getUserId()!, "pending").then((response) =>
+            response.filter((el: any) => el.group_id !== null),
+          ),
         ]);
         setFriendsList(friends);
         setGroupsList(groups);
+        setFriendInvitations(friendInv);
+        setGroupInvitations(groupInv);
       };
       loadOwnData();
     }
-  }, [usernameSearchParam]);
+
+    if (friendInvitationSearchParam === "true") {
+      setFriendInvitationPanelActive(true);
+    }
+
+    if (groupInvitationSearchParam === "true") {
+      setGroupInvitationPanelActive(true)
+    }
+  }, [usernameSearchParam, recharge]);
 
   useEffect(() => {
     const handleRecharge = () => setRecharge((cur) => cur + 1);
     window.addEventListener("profileChange", handleRecharge);
-    return () => window.removeEventListener("profileChange", handleRecharge);
+    window.addEventListener("buttonChange", handleRecharge);
+    return () => {
+      window.removeEventListener("profileChange", handleRecharge);
+      window.removeEventListener("buttonChange", handleRecharge);
+    };
   }, []);
 
   useEffect(() => {
@@ -92,6 +125,18 @@ export default function Profile() {
       navigate("/login");
     }
   }, []);
+
+  const changeList = (target: string) => {
+    const validTargets = ["friends", "groups"];
+
+    if (!validTargets.includes(target)) return;
+
+    if (target === "friends") {
+      setFriendInvitationPanelActive((prev) => (!prev ? true : false));
+    } else {
+      setGroupInvitationPanelActive((prev) => (!prev ? true : false));
+    }
+  };
 
   return (
     <>
@@ -138,7 +183,10 @@ export default function Profile() {
                   <>
                     <div className="me-5 mb-4">
                       <FriendList users={friendsList}></FriendList>
-                      <MyGroupsList groups={groupsList} viewedUserId={userData.id}></MyGroupsList>
+                      <MyGroupsList
+                        groups={groupsList}
+                        viewedUserId={userData.id}
+                      ></MyGroupsList>
                     </div>
                   </>
                 )}
@@ -153,10 +201,57 @@ export default function Profile() {
             {!userData && (
               <>
                 <div className="row ps-5 pe-5 mb-5">
-                  <FriendList users={friendsList}></FriendList>
+                  <div>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => changeList("friends")}
+                    >
+                      {!friendInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-envelope-fill me-2"></i> Veure
+                          invitacions
+                        </>
+                      )}
+                      {friendInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-person-fill me-2"></i> Veure amics
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <a id="friends_and_groups"></a>
+                  {!friendInvitationPanelActive && (
+                    <FriendList users={friendsList}></FriendList>
+                  )}
+                  {friendInvitationPanelActive && (
+                    <InvitationList invitations={friendInvitations} target="friends"></InvitationList>
+                  )}
                 </div>
                 <div className="row ps-5 pe-5">
-                  <MyGroupsList groups={groupsList}></MyGroupsList>
+                  <div>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => changeList("groups")}
+                    >
+                      {!groupInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-envelope-fill me-2"></i> Veure
+                          invitacions
+                        </>
+                      )}
+                      {groupInvitationPanelActive && (
+                        <>
+                          <i className="bi bi-people-fill me-2"></i> Veure grups
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  {!groupInvitationPanelActive && (
+                    <MyGroupsList groups={groupsList}></MyGroupsList>
+                  )}
+                  {groupInvitationPanelActive && (
+                    <InvitationList invitations={groupInvitations} target="groups"></InvitationList>
+                  )}
                 </div>
               </>
             )}
