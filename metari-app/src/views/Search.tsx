@@ -19,6 +19,7 @@ import type { assignationType } from "../types/assignationType";
 import { Helmet } from "react-helmet-async";
 import { search } from "../services/searchService";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import SearchBar from "../components/SearchBar";
 
 export default function Search() {
   const [users, setUsers] = useState<userTypeFrontend[]>([]);
@@ -78,6 +79,12 @@ export default function Search() {
       </Helmet>
 
       <h1 className="p-5">{`Resultats de cerca per a: "${word}"`}</h1>
+
+      <div className="row mb-5 d-flex justify-content-center">
+        <div className="col-6">
+          <SearchBar></SearchBar>
+        </div>
+      </div>
 
       <div className="row-sm gap-3 d-flex justify-content-center">
           <button className="btn btn-primary" onClick={() => setList("metas")}>Metas</button>
