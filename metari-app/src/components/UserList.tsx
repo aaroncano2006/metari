@@ -22,6 +22,7 @@ export function UserList({ users, setter }: UserListProps) {
   const vistaActual = useLocation().pathname;
   const canEdit =
     vistaActual !== "/" &&
+    vistaActual !== "/search" &&
     vistaActual !== "/mygroups" &&
     vistaActual !== "/mymetas" &&
     role === "admin";
@@ -62,7 +63,7 @@ export function UserList({ users, setter }: UserListProps) {
                           <i className="bi bi-person-fill"></i>
                         </Link>
                       )}
-                      {token && vistaActual === "/" && user.id !== getUserId() && (
+                      {token && (vistaActual === "/" || vistaActual === "/search") && user.id !== getUserId() && (
                         <SendFriendInvitationButton
                           receiverId={user.id}
                           small={true}

@@ -18,6 +18,7 @@ import { fetchFriends } from "../services/invitationService";
 import { fetchAssignations } from "../services/assignationService"
 import type { assignationType } from "../types/assignationType"
 import { Helmet } from "react-helmet-async"
+import SearchBar from "../components/SearchBar"
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -75,6 +76,7 @@ export default function Home() {
             />
           </div>
           <div className="col-12 col-md">
+            <SearchBar></SearchBar>
             <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory} groups={groups}/>
             {/* <MyMetaList assignations={assignations}/> */}
           </div>

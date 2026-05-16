@@ -29,7 +29,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit =
-    (vistaActual !== "/" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
+    (vistaActual !== "/" && vistaActual !== "/search" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
     role === "admin";
 
   //suma el total de punts del grup
@@ -45,7 +45,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
 
 
   let groupsToShow = top10;
-  if (vistaActual === "/") {
+  if (vistaActual === "/" || vistaActual === "/search") {
     groupsToShow = top10;
   } else {
     groupsToShow = groups;
