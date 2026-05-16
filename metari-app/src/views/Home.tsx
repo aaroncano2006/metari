@@ -66,7 +66,6 @@ export default function Home() {
       <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
       <div className="container-fluid">
         <div className="row mt-5">
-
           <div className="col-12 col-md-3">
             <CategoryList 
             categories={categories} 
@@ -75,7 +74,7 @@ export default function Home() {
             setFilteredCategory={setFilteredCategory}
             />
           </div>
-          <div className="col-12 col-md">
+          <div className="col-12 pt-4 col-md">
             <SearchBar></SearchBar>
             <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory} groups={groups}/>
             {/* <MyMetaList assignations={assignations}/> */}
