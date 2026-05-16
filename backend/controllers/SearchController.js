@@ -67,9 +67,9 @@ const search = async (req, res, next) => {
     });
 
     res.status(200).json({
-        users,
+        users: utils.handleBigInt(users),
         metas: utils.handleBigInt(metas),
-        groups
+        groups: utils.handleBigInt(groups)
     });
   } catch (error) {
     next(error);
