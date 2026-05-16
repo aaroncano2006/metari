@@ -36,6 +36,7 @@ const search = async (req, res, next) => {
             },
           },
         ],
+        is_public: true
       },
       include: {
         category: true,
@@ -53,6 +54,7 @@ const search = async (req, res, next) => {
             description: searchWord,
           },
         ],
+        is_public: true
       },
       include: {
         owner: true,
