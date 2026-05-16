@@ -136,7 +136,7 @@ export default function SendFriendInvitationButton({
             className={`btn ${small ? "p-1" : ""} btn-success me-2`}
             onClick={async (event) => {event.stopPropagation(); await handleAcceptInvitation()}}
           >
-            <i className={`bi bi-person-fill-add ${!small ? "me-2" : ""}`}></i>
+            <i className={`bi bi-person-fill-check ${!small ? "me-2" : ""}`}></i>
             {!small && <span>Acceptar invitació</span>}
           </button>
         )}
