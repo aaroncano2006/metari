@@ -11,6 +11,9 @@ import { createIndexedMeta } from "../../services/IndexerService"
 import { createMeta } from "../../services/metaService"
 import { metaSchema } from "../../schemas/metaSchema"
 import { indexSchema } from "../../schemas/indexSchema"
+import type { groupType } from "../../types/groupType"
+import { fetchGroupsByUserId } from "../../services/groupService"
+import { createAssignation } from "../../services/assignationService"
 
 
 type ModalProps = {
@@ -25,6 +28,31 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
   const [isPublic, setIsPublic] = useState<boolean>(true)
   const [needsProofs, setNeedsProofs] = useState<boolean>(false)
   const metaTypeOptions: metaType["type"][] = ["task", "challenge"];
+  const [myGroups, setMyGroups] = useState<groupType[]>([])
+  const [selectedGroupId, setSelectedGroupId] = useState<number | undefined>(undefined)
+  const [metaType, setMetaType] = useState<"task" | "challenge">("task")
+  const [selectedUserId, setSelectedUserId] = useState<number | undefined>(undefined)
+
+
+  useEffect(() => {
+    const userId = getUserId()
+    if (userId) {
+      fetchGroupsByUserId(userId).then(setMyGroups)
+    }
+  }, [])
+
+  useEffect(() => {
+  if (isPublic) {
+    setErrors(prev => {
+      const { group_id, user_id, ...rest } = prev
+      return rest
+    })
+  }
+}, [isPublic])
+
+  const selectedGroupUsers = selectedGroupId
+    ? myGroups.find(g => g.id === selectedGroupId)?.groupUsers.map(gu => gu.user) ?? []
+    : []
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -56,20 +84,45 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
 
     setErrors({})
 
+    // validacions extres del formulari
+    if (!validation.data.is_public) {
+      const errorsExtra: Record<string, string> = {}
+      if (!selectedGroupId) {
+        errorsExtra.group_id = "Has de triar un grup"
+      }
+      if (validation.data.type === "task" && !selectedUserId) {
+        errorsExtra.user_id = "Has de triar un usuari del grup"
+      }
+      if (Object.keys(errorsExtra).length > 0) {
+        setErrors(errorsExtra)
+        return
+      }
+    }
+
 
     const newMeta = await createMeta(validation.data)
-    
+
     const indexedMetaData = {
       user_id: getUserId(),
       meta_id: newMeta.id,
-      
+
     }
-    
+
     const indexedValidation = indexSchema.safeParse(indexedMetaData)
     if (indexedValidation.success) {
       await createIndexedMeta(indexedValidation.data)
     }
-    
+
+    if (selectedGroupId) {
+      await createAssignation({
+        meta_id: newMeta.id,
+        group_id: selectedGroupId,
+        assigner_id: getUserId()!,
+        needs_proofs: needsProofs,
+        user_id: selectedUserId,
+      })
+    }
+
     setCreatingMeta(false)
 
 
@@ -111,7 +164,9 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
 
                   <div className="d-flex flex-column">
                     <label htmlFor="type">Tipus</label>
-                    <select className="form-select mb-2" name="type" id="type">
+                    <select className="form-select mb-2" name="type" id="type"
+                      value={metaType}
+                      onChange={(e) => setMetaType(e.target.value as "task" | "challenge")}>
 
                       {metaTypeOptions.map((option) => (
                         <option key={option} value={option}>
@@ -146,22 +201,35 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
                       <div>
                         <label htmlFor="group_id">Grups dels que formes part:</label>
                         <select className="form-select mb-2" name="group_id" id="group_id"
-                        // onChange={(e) => setSelectedGroupId(e.target.value ? Number(e.target.value) : "")}
+                          onChange={(e) => {
+                            setSelectedGroupId(e.target.value ? Number(e.target.value) : undefined)
+                            setSelectedUserId(undefined)
+                          }}
                         >
-                          <option key={"empty"} value={""}>
-                            Tria un grup
-                          </option>
-                          {/* {myGroups.map((group) => (
-                              <option key={group.id} value={group.id}>
+                          <option value={""}>Tria un grup</option>
+                          {myGroups.map((group) => (
+                            <option key={group.id} value={group.id}>
                               {group.name}
-                              </option>
-                              ))} */}
-                          {/* {(meta[0]?.type === "task" ? myModeratedGroups : myGroups).map((group) => (
-                        <option key={group.id} value={group.id}>{group.name}</option>
-                        ))} */}
+                            </option>
+                          ))}
                         </select>
                         {errors.group_id && <div className="text-danger small">{errors.group_id}</div>}
                       </div>
+
+                      {metaType === "task" && (
+                        <div>
+                          <label htmlFor="user_id">Usuaris del grup:</label>
+                          <select className="form-select mb-2" name="user_id" id="user_id"
+                            value={selectedUserId ?? ""}
+                            onChange={(e) => setSelectedUserId(e.target.value ? Number(e.target.value) : undefined)}>
+                            <option value={""}>Tria un usuari del grup</option>
+                            {selectedGroupUsers.map((user) => (
+                              <option key={user.id} value={user.id}>{user.name}</option>
+                            ))}
+                          </select>
+                          {errors.user_id && <div className="text-danger small">{errors.user_id}</div>}
+                        </div>
+                      )}
                       <div>
                         <label className="me-5 my-2" htmlFor="needs_proofs">Proves necessaries?</label>
                         <input type="checkbox" name="needs_proofs" id="needs_proofs"
