@@ -14,6 +14,7 @@ import Logout from "./views/Logout";
 import ForgotPassword from "./views/ForgotPassword";
 import RestorePassword from "./views/RestorePassword";
 import Footer from "./components/Footer";
+import Search from "./views/Search";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/restore-password" element={<RestorePassword />} />
+          <Route path="/search" element={<Search />} />
         </Routes>
       </div>
 

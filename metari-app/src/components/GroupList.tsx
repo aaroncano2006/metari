@@ -13,11 +13,11 @@ import { Link, useLocation } from "react-router-dom";
 type GroupListProps = {
   groups: groupType[]
   setter: React.Dispatch<React.SetStateAction<groupType[]>>
-
+  isTop10?: boolean
 }
 
 
-export function GroupList({ groups, setter }: GroupListProps) {
+export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
 
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
@@ -29,7 +29,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
   const canEdit =
-    (vistaActual !== "/" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
+    (vistaActual !== "/" && vistaActual !== "/search" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
     role === "admin";
 
   //suma el total de punts del grup
@@ -45,7 +45,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
 
 
   let groupsToShow = top10;
-  if (vistaActual === "/") {
+  if (isTop10) {
     groupsToShow = top10;
   } else {
     groupsToShow = groups;
@@ -55,7 +55,7 @@ export function GroupList({ groups, setter }: GroupListProps) {
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/admin" ? "Llista de grups" : "Top 10 Grups"}</div>
+        <div className="titolComponent  text-center my-2">{vistaActual === "/admin" || !isTop10 ? "Llista de grups" : "Top 10 Grups"}</div>
         <hr className="m-0" />
 
         <div className="inline">

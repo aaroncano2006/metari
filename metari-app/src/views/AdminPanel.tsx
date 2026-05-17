@@ -33,15 +33,13 @@ export default function AdminPanel() {
   const [metas, setMetas] = useState<metaType[]>([])
   const [users, setUsers] = useState<userTypeFrontend[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   useEffect(() => {
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
     fetchUsers().then(setUsers)
     fetchGroups().then(setGroups)
-    
-  //useEffect(() => {
-    //fetchCategories().then(setCategories);
   }, []);
 
   useEffect(() => {
@@ -60,6 +58,22 @@ export default function AdminPanel() {
 
   //need to refactor again
   // const metas = useMetas();
+
+  const q = searchTerm.toLowerCase()
+  const filteredMetas = metas.filter(m =>
+    m.title.toLowerCase().includes(q) || m.description.toLowerCase().includes(q)
+  )
+  const filteredCategories = categories.filter(c =>
+    c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+  )
+  const filteredUsers = users.filter(u =>
+    u.username.toLowerCase().includes(q) ||
+    u.name.toLowerCase().includes(q) ||
+    u.email.toLowerCase().includes(q)
+  )
+  const filteredGroups = groups.filter(g =>
+    g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q)
+  )
 
   return (
     <>
@@ -104,10 +118,20 @@ export default function AdminPanel() {
         <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
-            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas} groups={groups}/>}
-            {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
-            {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
-            {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}
+            <div className="input-group my-3">
+              <span className="input-group-text"><i className="bi bi-search"></i></span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Cerca..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+            {menuSelection === "metas" && <MetaList metas={filteredMetas} setter={setMetas} groups={groups}/>}
+            {menuSelection === "categories" && <CategoryList categories={filteredCategories} setter={setCategories} />}
+            {menuSelection === "usuaris" && <UserList users={filteredUsers} setter={setUsers} />}
+            {menuSelection === "grups" && <GroupList groups={filteredGroups} setter={setGroups} />}
           </div>
           <div className="col-3">
           </div>
