@@ -24,7 +24,7 @@ export function UserCreateGroupBtn({ setGroups }: CreateBtnProps) {
       </div>
 
       {creatingGroup === true &&
-        <ModalUserCreateGroup setCreatingGroup={setCreatingGroup} />
+        <ModalUserCreateGroup setCreatingGroup={setCreatingGroup} setGroups={setGroups} />
       }
     </>
   );

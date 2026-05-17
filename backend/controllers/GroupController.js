@@ -109,6 +109,12 @@ const createGroup = async (req, res, next) => {
 
     const group = await prisma.group.create({
       data,
+      include: {
+        owner: true,
+        groupUsers: {
+          include: { user: true }
+        }
+      },
     });
     res.status(201).json(utils.handleBigInt(group));
   } catch (error) {
