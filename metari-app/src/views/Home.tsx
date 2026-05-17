@@ -19,6 +19,7 @@ import { fetchFriends } from "../services/invitationService";
 import { fetchAssignations } from "../services/assignationService"
 import type { assignationType } from "../types/assignationType"
 import { UserCreateMetaBtn } from "../components/Buttons/UserCreateMetaBtn"
+import { UserCreateGroupBtn } from "../components/Buttons/UserCreateGroupBtn"
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
 
@@ -31,6 +32,7 @@ export default function Home() {
   const [groups, setGroups] = useState<groupType[]>([])
   const [friends, setFriends] = useState<userTypeFrontend[]>([])
   const [assignations, setAssignations] = useState<assignationType[]>([])
+  const token = localStorage.getItem("token");
 
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
@@ -50,19 +52,25 @@ export default function Home() {
     <>
       <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
       <div className="container-fluid">
-        <div className="row mt-5">
-          <UserCreateMetaBtn/>
+        <div className="row mt-4">
+          {token &&
+            <div className="d-flex gap-2 justify-content-center">
+
+              <UserCreateMetaBtn setMetas={setMetas} categories={categories} />
+              <UserCreateGroupBtn setGroups={setGroups} />
+            </div>
+          }
 
           <div className="col-12 col-md-3">
-            <CategoryList 
-            categories={categories} 
-            setter={setCategories} 
-            filteredCategory={filteredCategory}
-            setFilteredCategory={setFilteredCategory}
+            <CategoryList
+              categories={categories}
+              setter={setCategories}
+              filteredCategory={filteredCategory}
+              setFilteredCategory={setFilteredCategory}
             />
           </div>
           <div className="col-12 col-md">
-            <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory} groups={groups}/>
+            <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory} groups={groups} />
             {/* <MyMetaList assignations={assignations}/> */}
           </div>
           <div className="col-12 col-md-3">

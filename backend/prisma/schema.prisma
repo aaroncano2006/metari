@@ -220,11 +220,11 @@ model IndexedMeta {
   id                    Int      @id @default(autoincrement())
   user_id               Int? // el que afegeix la meta al grup
   meta_id               Int
-  is_approved           Boolean?
-  is_community_approved Boolean?
+  is_approved           Boolean? @default(false)
+  is_community_approved Boolean? @default(false)
   user                  User?    @relation(fields: [user_id], references: [id])
   meta                  Meta     @relation(fields: [meta_id], references: [id])
-  // group                 Group?   @relation(fields: [group_id], references: [id])
+  //group                 Group?   @relation(fields: [group_id], references: [id])
 
   @@map("index")
 }

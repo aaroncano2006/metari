@@ -47,8 +47,8 @@ const createIndexedMeta = async (req, res, next) => {
             data: {
                 user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
                 meta_id: parseInt(reqBody.meta_id),
-                group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
-                is_public: reqBody.is_public ?? false,
+                // group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
+                // is_public: reqBody.is_public ?? false,
                 is_approved: reqBody.is_approved ?? null,
                 is_community_approved: reqBody.is_community_approved ?? null,
             },
@@ -78,8 +78,8 @@ const updateIndexedMeta = async (req, res, next) => {
             data: {
                 user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
                 meta_id: parseInt(reqBody.meta_id),
-                group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
-                is_public: reqBody.is_public,
+                // group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
+                // is_public: reqBody.is_public,
                 is_approved: reqBody.is_approved,
                 is_community_approved: reqBody.is_community_approved,
             },
