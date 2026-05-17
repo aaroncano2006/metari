@@ -19,10 +19,11 @@ import { createAssignation } from "../../services/assignationService"
 type ModalProps = {
   setCreatingMeta: React.Dispatch<React.SetStateAction<boolean>>
   categories: categoryType[]
+  setMetas: React.Dispatch<React.SetStateAction<metaType[]>>
 }
 
 
-export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps) {
+export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: ModalProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isPublic, setIsPublic] = useState<boolean>(true)
@@ -134,7 +135,7 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
         user_id: selectedUserId,
       })
     }
-
+    setMetas(prev => [...prev, newMeta])
     setCreatingMeta(false)
 
 

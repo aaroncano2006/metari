@@ -17,9 +17,7 @@ export function ModalUserCreateGroup({ setCreatingGroup, setGroups }: ModalProps
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const userId = getUserId()
-    if (!userId) return
-
+    
     const formData = new FormData(event.currentTarget)
     const groupData = {
       name: formData.get("name") as string,
@@ -39,13 +37,13 @@ export function ModalUserCreateGroup({ setCreatingGroup, setGroups }: ModalProps
     setErrors({})
     const newGroup = await createGroup({
       ...validation.data,
-      owner_id: userId,
+      owner_id: getUserId()!,
     })
     // setGroups(prev => [...prev, newGroup])
 
     const newGroupUser = await createGroupUser({
       group_id: newGroup.id,
-      user_id: userId,
+      user_id: getUserId()!,
       role: "moderator",
     })
     

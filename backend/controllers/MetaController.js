@@ -59,6 +59,7 @@ const createMeta = async (req, res, next) => {
       group_id: parseInt(reqBody.group_id),
       category_id: reqBody.category_id ? parseInt(reqBody.category_id) : undefined,
       type: reqBody.type ?? "task",
+      is_public: reqBody.is_public ?? true,
     };
 
     const validate = await validateMeta(data);
@@ -107,6 +108,7 @@ const updateMeta = async (req, res, next) => {
       group_id: reqBody.group_id ? parseInt(reqBody.group_id) : foundMeta.group_id,
       category_id: reqBody.category_id ? parseInt(reqBody.category_id) : foundMeta.category_id,
       type: reqBody.type ?? foundMeta.type,
+      is_public: reqBody.is_public ?? foundMeta.is_public,
     };
 
     const validate = await validateMeta(data, true);

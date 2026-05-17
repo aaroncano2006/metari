@@ -24,7 +24,7 @@ export function UserCreateMetaBtn({ setMetas, categories }: CreateBtnProps) {
       </div>
 
       {creatingMeta === true &&
-        <ModalUserCreateMeta setCreatingMeta={setCreatingMeta} categories={categories}/>
+        <ModalUserCreateMeta setCreatingMeta={setCreatingMeta} setMetas={setMetas} categories={categories}/>
       }
     </>
   );
