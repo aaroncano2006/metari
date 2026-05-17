@@ -41,14 +41,18 @@ export function ModalUserCreateGroup({ setCreatingGroup, setGroups }: ModalProps
       ...validation.data,
       owner_id: userId,
     })
-    setGroups(prev => [...prev, newGroup])
+    // setGroups(prev => [...prev, newGroup])
 
-    await createGroupUser({
+    const newGroupUser = await createGroupUser({
       group_id: newGroup.id,
       user_id: userId,
       role: "moderator",
     })
-
+    
+    setGroups(prev => [...prev, {
+      ...newGroup,
+      groupUsers: [newGroupUser],
+    }])
     setCreatingGroup(false)
 
 
