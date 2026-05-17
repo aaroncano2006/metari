@@ -39,9 +39,9 @@ export default function SearchBar() {
         }}
       >
         <div className="input-group">
-          <span className="input-group-text">
+          <button className="input-group-text" type="submit">
             <i className="bi bi-search"></i>
-          </span>
+          </button>
           <input
             type="text"
             id="word"
