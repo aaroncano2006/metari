@@ -42,13 +42,13 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
   }, [])
 
   useEffect(() => {
-  if (isPublic) {
-    setErrors(prev => {
-      const { group_id, user_id, ...rest } = prev
-      return rest
-    })
-  }
-}, [isPublic])
+    if (isPublic) {
+      setErrors(prev => {
+        const { group_id, user_id, ...rest } = prev
+        return rest
+      })
+    }
+  }, [isPublic])
 
   const selectedGroupUsers = selectedGroupId
     ? myGroups.find(g => g.id === selectedGroupId)?.groupUsers.map(gu => gu.user) ?? []
@@ -95,6 +95,18 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
       }
       if (Object.keys(errorsExtra).length > 0) {
         setErrors(errorsExtra)
+        return
+      }
+    }
+
+    if (!validation.data.is_public && validation.data.type === "task" && selectedGroupId) {
+      const selectedGroup = myGroups.find(g => g.id === selectedGroupId)
+      const currentUserId = getUserId()
+      const isModerator = selectedGroup?.groupUsers.some(
+        gu => gu.user_id === currentUserId && (gu.role === "moderator")
+      )
+      if (!isModerator) {
+        setErrors({ assign_permission: "No ets moderador d'aquest grup, no pots assignar una tasca a un usuari" })
         return
       }
     }
@@ -234,6 +246,11 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories }: ModalProps)
                         <label className="me-5 my-2" htmlFor="needs_proofs">Proves necessaries?</label>
                         <input type="checkbox" name="needs_proofs" id="needs_proofs"
                           onChange={() => setNeedsProofs(prev => !prev)} />
+                      </div>
+                      <div>
+                        {errors.assign_permission && (
+                          <small className="text-danger d-block mb-2">{errors.assign_permission}</small>
+                        )}
                       </div>
                     </>
                   }
