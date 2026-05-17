@@ -6,5 +6,6 @@ export const metaSchema = z.object({
   author_id: z.number().int().positive().optional(),
   group_id: z.number().int().positive().optional(),
   category_id: z.number().int().positive().optional(),
+  is_public: z.boolean().optional(),
   type: z.enum(["task", "challenge"]),
 })

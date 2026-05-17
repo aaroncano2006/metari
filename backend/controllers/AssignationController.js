@@ -93,6 +93,8 @@ const createAssignation = async (req, res, next) => {
             : null
           : null,
       completed: reqBody.completed ?? false,
+      needs_proofs: reqBody.needs_proofs ?? null,
+      assigner_id: reqBody.assigner_id ? parseInt(reqBody.assigner_id) : null,
     };
 
     const validate = await validateAssignation(data);

@@ -9,6 +9,7 @@ export type metaType = {
   group_id?: number 
   category_id: number
   type: "task" | "challenge"
+  is_public: boolean
 
   category: categoryType
   author: userTypeFrontend
