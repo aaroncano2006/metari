@@ -29,8 +29,8 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
   const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
-  const canEdit = vistaActual !== "/" && role === "admin";
-  const canAddMeta = vistaActual === "/" && token
+  const canEdit = vistaActual !== "/" && vistaActual !== "/search" && role === "admin";
+  const canAddMeta = (vistaActual === "/" || vistaActual === "/search") && token
 
 
   //Si alguna de les condicions es true, es guarda la meta a la variable

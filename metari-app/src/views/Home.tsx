@@ -18,6 +18,7 @@ import { fetchFriends } from "../services/invitationService";
 import { fetchAssignations } from "../services/assignationService"
 import type { assignationType } from "../types/assignationType"
 import { Helmet } from "react-helmet-async"
+import SearchBar from "../components/SearchBar"
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -65,7 +66,6 @@ export default function Home() {
       <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
       <div className="container-fluid">
         <div className="row mt-5">
-
           <div className="col-12 col-md-3">
             <CategoryList 
             categories={categories} 
@@ -74,15 +74,16 @@ export default function Home() {
             setFilteredCategory={setFilteredCategory}
             />
           </div>
-          <div className="col-12 col-md">
+          <div className="col-12 pt-4 col-md">
+            <SearchBar></SearchBar>
             <MetaList metas={metas} setter={setMetas} filteredCategory={filteredCategory} groups={groups}/>
             {/* <MyMetaList assignations={assignations}/> */}
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
             <MyGroupsList groups={groups} />
-            <UserList users={users} setter={setUsers} />
-            <GroupList groups={groups} setter={setGroups} />
+            <UserList users={users} setter={setUsers} isTop10={true}/>
+            <GroupList groups={groups} setter={setGroups} isTop10={true}/>
           </div>
         </div>
       </div>

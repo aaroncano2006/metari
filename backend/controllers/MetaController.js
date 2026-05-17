@@ -6,11 +6,10 @@ const { validateMeta } = require("../middlewares/validators/validateMeta");
 const getMetas = async (req, res, next) => {
   try {
     const metas = await prisma.meta.findMany({
-      include:{
+      include: {
         category: true,
-        author: true
-
-      }
+        author: true,
+      },
     });
     res.status(200).json(utils.handleBigInt(metas));
   } catch (error) {
@@ -32,7 +31,9 @@ const getMetaById = async (req, res, next) => {
     const meta = await prisma.meta.findUnique({
       where: { id },
       include: {
-         category: true}
+        category: true,
+        author: true,
+      },
     });
 
     if (!meta) {
@@ -101,8 +102,12 @@ const updateMeta = async (req, res, next) => {
     const data = {
       title: reqBody.title ?? foundMeta.title,
       description: reqBody.description ?? foundMeta.description,
-      author_id: reqBody.author_id ? parseInt(reqBody.author_id) : foundMeta.author_id,
-      group_id: reqBody.group_id ? parseInt(reqBody.group_id) : foundMeta.group_id,
+      author_id: reqBody.author_id
+        ? parseInt(reqBody.author_id)
+        : foundMeta.author_id,
+      group_id: reqBody.group_id
+        ? parseInt(reqBody.group_id)
+        : foundMeta.group_id,
       type: reqBody.type ?? foundMeta.type,
     };
 

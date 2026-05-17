@@ -78,8 +78,8 @@ export default function MyMetas() {
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
             <MyGroupsList groups={groups} />
-            <UserList users={users} setter={setUsers} />
-            <GroupList groups={groups} setter={setGroups} />
+            <UserList users={users} setter={setUsers} isTop10={true} />
+            <GroupList groups={groups} setter={setGroups} isTop10={true} />
           </div>
         </div>
       </div>
