@@ -7,7 +7,12 @@ const { validateUser } = require("../middlewares/validators/validateUser");
 //Get all
 const getUsuaris = async (req, res, next) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      omit: {
+        password: true,
+        restore_token: true
+      }
+    });
     res.status(200).json(utils.handleBigInt(users));
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -28,8 +33,11 @@ const getUsuariById = async (req, res, next) => {
     }
 
     const user = await prisma.user.findUnique({
-      // where: { id: id },
       where: { id },
+      omit: {
+        password: true,
+        restore_token: true
+      }
     });
 
     if (!user) {
