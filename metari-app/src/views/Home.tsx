@@ -82,7 +82,7 @@ export default function Home() {
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
             <MyGroupsList groups={groups} />
-            <UserList users={users} setter={setUsers} />
+            <UserList users={users} setter={setUsers} isTop10={true}/>
             <GroupList groups={groups} setter={setGroups} />
           </div>
         </div>

@@ -8,9 +8,10 @@ import SendFriendInvitationButton from "./Buttons/SendFriendInvitationBtn";
 type UserListProps = {
   users: userTypeFrontend[];
   setter: React.Dispatch<React.SetStateAction<userTypeFrontend[]>>;
+  isTop10?: boolean;
 };
 
-export function UserList({ users, setter }: UserListProps) {
+export function UserList({ users, setter, isTop10 }: UserListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null);
   const toggleEntity = (id: number) => {
     setOpenEntityId((prev) => (prev === id ? null : id));
@@ -29,7 +30,7 @@ export function UserList({ users, setter }: UserListProps) {
 
   const top10 = [...users].sort((a, b) => b.score - a.score).slice(0, 10);
   let usersToShow = top10;
-  if (vistaActual === "/") {
+  if (isTop10) {
     usersToShow = top10;
   } else {
     usersToShow = users;
@@ -39,7 +40,7 @@ export function UserList({ users, setter }: UserListProps) {
     <>
       <div className="metaList mt-4">
         <div className="titolComponent  text-center my-2">
-          {vistaActual === "/admin" ? "Llista d'usuaris" : "Top 10 Usuaris"}
+          {vistaActual === "/admin" || !isTop10 ? "Llista d'usuaris" : "Top 10 Usuaris"}
         </div>
         <hr className="m-0" />
 
