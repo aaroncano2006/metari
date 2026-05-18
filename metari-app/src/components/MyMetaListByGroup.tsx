@@ -56,10 +56,10 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
   )
 
   const filteredAssignations = assignations.filter(a =>
-  !a.meta.indexedMetas ||
-  a.meta.indexedMetas.length === 0 ||
-  a.meta.indexedMetas.some(im => im.is_community_approved === true)
-)
+    !a.meta.indexedMetas ||
+    a.meta.indexedMetas.length === 0 ||
+    a.meta.indexedMetas.some(im => im.is_community_approved === true)
+  )
 
   const assignationsByGroup = myGroups.map(group => ({
     group,
@@ -133,10 +133,17 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                               <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
                               <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
                               <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
+
+                              {assignation.meta.type === "challenge" && (
+                                <div>🏆 Puntuacio: {assignation.score ?? 0}</div>
+                              )}
+
+
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
                               {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
                                 <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
                               )}
+
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
                               <div className=" d-flex align-self-end me-2 mb-2 mt-2">
@@ -154,7 +161,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
 
                                   }}>Nou comentari</div>
                               </div>
-                              {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs &&(
+                              {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs && (
                                 <div className="btn btn-success align-self-end me-2"
                                   onClick={async () => {
                                     await updateAssignation(assignation.id, { completed: true })
