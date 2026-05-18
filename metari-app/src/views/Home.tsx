@@ -21,6 +21,7 @@ import { UserCreateMetaBtn } from "../components/Buttons/UserCreateMetaBtn";
 import { UserCreateGroupBtn } from "../components/Buttons/UserCreateGroupBtn";
 import { Helmet } from "react-helmet-async";
 import SearchBar from "../components/SearchBar";
+import ModalGroupModeratorPanel from "../components/modals/ModalGroupModeratorPanel";
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -37,6 +38,7 @@ export default function Home() {
   const token = localStorage.getItem("token");
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null);
+  const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
 
   useEffect(() => {
     fetchUsers().then(setUsers);
@@ -75,6 +77,14 @@ export default function Home() {
             <div className="d-flex gap-2 justify-content-center">
               <UserCreateMetaBtn setMetas={setMetas} categories={categories} />
               <UserCreateGroupBtn setGroups={setGroups} />
+              {groups[0] && (
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() => setGroupModeratorPanel(groups[0])}
+                >
+                  Panell de grup
+                </button>
+              )}
             </div>
           )}
 
@@ -106,6 +116,14 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {groupModeratorPanel && (
+        <ModalGroupModeratorPanel
+          group={groupModeratorPanel}
+          setEditGroup={setGroupModeratorPanel}
+          setter={setGroups}
+        />
+      )}
     </>
   );
 }
