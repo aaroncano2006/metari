@@ -82,17 +82,32 @@ export function PendingIndexedMetas({ indexedMetas, setIndexedMetas }: PendingIn
                     >
                       Aprovar
                     </button>
-                    <button className="btn btn-danger btn-sm ms-2"
-                      onClick={async (e) => {
-                        e.stopPropagation()
-                        await updateIndexedMeta(indexed.id, { is_community_approved: false })
-                        setIndexedMetas(prev => prev.map(im =>
-                          im.id === indexed.id ? { ...im, is_community_approved: false } : im
-                        ))
-                      }}
-                    >
-                      Rebutjar
-                    </button>
+                    {indexed.is_community_approved !== null &&
+                      <button className="btn btn-warning btn-sm ms-2"
+                        onClick={async (e) => {
+                          e.stopPropagation()
+                          await updateIndexedMeta(indexed.id, { is_community_approved: null })
+                          setIndexedMetas(prev => prev.map(im =>
+                            im.id === indexed.id ? { ...im, is_community_approved: null } : im
+                          ))
+                        }}
+                      >
+                        Marcar pendent
+                      </button>
+                    }
+                    {indexed.is_community_approved !== false &&
+                      <button className="btn btn-danger btn-sm ms-2"
+                        onClick={async (e) => {
+                          e.stopPropagation()
+                          await updateIndexedMeta(indexed.id, { is_community_approved: false })
+                          setIndexedMetas(prev => prev.map(im =>
+                            im.id === indexed.id ? { ...im, is_community_approved: false } : im
+                          ))
+                        }}
+                      >
+                        Rebutjar
+                      </button>
+                    }
                   </div>
                 )}
               </div>
