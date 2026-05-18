@@ -115,13 +115,13 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 
 ## Grups-Usuaris (`/api/grups-usuaris`)
 
-| Mètode | Ruta | Protecció |
-|--------|------|-----------|
-| GET | `/` | `isAuthenticated` + `isAdmin` |
-| GET | `/:group_id/:user_id` | `isAuthenticated` + `isAdmin` |
-| POST | `/` | `isAuthenticated` + `isAdmin` |
-| PUT | `/:group_id/:user_id` | `isAuthenticated` + `isAdmin` |
-| DELETE | `/:group_id/:user_id` | `isAuthenticated` + `isAdmin` |
+| Mètode | Ruta | Protecció | Notes |
+|--------|------|-----------|-------|
+| GET | `/` | Pública | |
+| GET | `/:group_id/:user_id` | Pública | |
+| POST | `/` | `isAuthenticated` | Controller: owner del grup, moderador, o admin |
+| PUT | `/:group_id/:user_id` | `isAuthenticated` | Controller: owner del grup o admin (canvi de rol sensible) |
+| DELETE | `/:group_id/:user_id` | `isAuthenticated` | Controller: owner del grup, moderador, o admin |
 
 ---
 
@@ -167,7 +167,7 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 | 6 | comentaris | pública | pública | **auth** | **auth** | **auth** |
 | 7 | proves | pública | pública | **auth** | **auth** | **admin** |
 | 8 | invitacions | — | — | **auth** | **auth** | **auth** |
-| 9 | grups-usuaris | **admin** | **admin** | **admin** | **admin** | **admin** |
+| 9 | grups-usuaris | pública | pública | **auth+owner/mod/admin*** | **auth+owner/admin*** | **auth+owner/mod/admin*** |
 | 10 | indexa-metas | pública | pública | **auth** | **admin** | **admin** |
 | 11 | search | pública | — | — | — | — |
 | 12 | login | — | — | pública | — | — |
