@@ -72,7 +72,7 @@ export default function AdminPanel() {
     m.title.toLowerCase().includes(q) || m.description?.toLowerCase().includes(q)
   )
   const filteredCategories = categories.filter(c =>
-    c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+    c.name.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q)
   )
   const filteredUsers = users.filter(u =>
     u.username.toLowerCase().includes(q) ||
@@ -80,7 +80,7 @@ export default function AdminPanel() {
     u.email.toLowerCase().includes(q)
   )
   const filteredGroups = groups.filter(g =>
-    g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q)
+    g.name.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q)
   )
 
   return (
