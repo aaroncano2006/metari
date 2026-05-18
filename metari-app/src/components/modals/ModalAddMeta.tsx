@@ -5,6 +5,7 @@ import type { assignationType } from "../../types/assignationType";
 import { createAssignation } from "../../services/assignationService";
 import { getUserId } from "../../services/auth/loginService";
 import { assignationSchema } from "../../schemas/assignationSchema"
+// import { createAssignationSchema } from "../../schemas/assignationSchema"
 import type { groupType } from "../../types/groupType";
 
 
@@ -22,21 +23,20 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
   const difficultyOptions: assignationType["difficulty"][] = ["easy", "normal", "hard", "extreme"];
   const priorityOptions: assignationType["priority"][] = ["high", "low"];
 
-  // const [formData, setFormData] = useState({
-  //   meta_id: meta[0]?.id,
-  //   user_id: getUserId() ?? undefined,
-  //   start_date: new Date().toISOString().split("T")[0],
-  //   due_date: new Date().toISOString().split("T")[0],
-  //   priority:  formData.get("priority"),
-  //   difficulty: "",
-  // });
+
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const loggedInUserId = getUserId()
+
   const myGroups = groups.filter(group =>
     group.owner_id === loggedInUserId ||
     group.groupUsers.some(gu => gu.user_id === loggedInUserId)
   )
+
+  const myModeratedGroups = groups.filter(group =>
+    group.groupUsers.some(gu => gu.user_id === loggedInUserId && gu.role === "moderator")
+  )
+
   const [selectedGroupId, setSelectedGroupId] = useState<number | "">("")
 
   const selectedGroupUsers = selectedGroupId !== ""
@@ -47,7 +47,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
-    
+
     const data = {
       meta_id: Number(formData.get("meta_id")),
       group_id: formData.get("group_id") ? Number(formData.get("group_id")) || undefined : undefined,
@@ -67,6 +67,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
 
     const validation = assignationSchema.safeParse(data)
+    // const validation = createAssignationSchema(groups, loggedInUserId).safeParse(data)
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
 
@@ -171,17 +172,20 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
 
                         <div>
-                          <label htmlFor="group_id">grup:</label>
+                          <label htmlFor="group_id">{meta[0]?.type === "task" ? "Grups dels que ets moderador:" : "Grups dels que formes part:"}</label>
                           <select className="form-select mb-2" name="group_id" id="group_id"
                             onChange={(e) => setSelectedGroupId(e.target.value ? Number(e.target.value) : "")}
                           >
                             <option key={"empty"} value={""}>
                               Tria un grup
                             </option>
-                            {myGroups.map((group) => (
+                            {/* {myGroups.map((group) => (
                               <option key={group.id} value={group.id}>
                                 {group.name}
                               </option>
+                            ))} */}
+                            {(meta[0]?.type === "task" ? myModeratedGroups : myGroups).map((group) => (
+                              <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
                           </select>
                           {errors.group_id && <div className="text-danger small">{errors.group_id}</div>}
@@ -199,7 +203,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                                 </option>
                               ))}
                             </select>
-                             {errors.user_id && <div className="text-danger small">{errors.user_id}</div>}
+                            {errors.user_id && <div className="text-danger small">{errors.user_id}</div>}
                           </div>
 
                         }

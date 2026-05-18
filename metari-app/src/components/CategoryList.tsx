@@ -75,6 +75,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                         onClick={async (event) => {
                           event.stopPropagation()
                           await deleteCategory(category.id)
+                          setter(prev => prev.filter(prevCategory => prevCategory.id !== category.id))
                         }}>X</button>
                     }
                   </div>

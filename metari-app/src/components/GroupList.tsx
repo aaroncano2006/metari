@@ -33,11 +33,16 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
     role === "admin";
 
   //suma el total de punts del grup
+
+  const visibleGroups = vistaActual === "/"
+    ? groups.filter(g => g.is_public)
+    : groups
+
   const groupScores = new Map(
-    groups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
+    visibleGroups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
   )
 
-  const top10 = [...groups].sort((a, b) => {
+  const top10 = [...visibleGroups].sort((a, b) => {
     const scoreA = a.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)
     const scoreB = b.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)
     return scoreB - scoreA

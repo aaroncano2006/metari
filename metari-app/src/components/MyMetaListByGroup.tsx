@@ -1,19 +1,23 @@
 import type { metaType } from "../types/metaType";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { getUserRole, getUserId } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
 import type { assignationType } from "../types/assignationType";
 import type { groupType } from "../types/groupType";
 import { ModalAddComment } from "./modals/ModalAddComment";
+import { fetchComments, deleteComment } from "../services/commentService";
+import type { commentType } from "../types/commentType";
+import { updateAssignation } from "../services/assignationService";
 
 
 type MyMetaListProps = {
   assignations: assignationType[]
   groups: groupType[]
+  setAssignations: React.Dispatch<React.SetStateAction<assignationType[]>>
 
 }
 
-export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
+export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyMetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
@@ -29,8 +33,21 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
   const [showCompletedByGroup, setShowCompletedByGroup] = useState<Record<number, boolean>>({})
   const [assignationToAddComment, setAssignationToAddComment] = useState<assignationType | null>(null)
 
-  //filtrar assignacions del usuari
-  // const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId)
+  const [showComments, setShowComments] = useState(false)
+  const [comments, setComments] = useState<commentType[]>([])
+  const [comment, setcomment] = useState<commentType>()
+
+  const [commentFormType, setcommentFormType] = useState<string | null>(null)
+
+
+  useEffect(() => {
+    const loadComments = async () => {
+      const data = await fetchComments()
+      setComments(data)
+    }
+    loadComments()
+  }, [])
+
 
   //filtrar grups del usuari owner i membre
   const myGroups = groups.filter(group =>
@@ -38,18 +55,35 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
     group.groupUsers.some(gu => gu.user_id === loggedInUserId)
   )
 
+  const filteredAssignations = assignations.filter(a =>
+  !a.meta.indexedMetas ||
+  a.meta.indexedMetas.length === 0 ||
+  a.meta.indexedMetas.some(im => im.is_community_approved === true)
+)
+
   const assignationsByGroup = myGroups.map(group => ({
     group,
-    assignations: assignations.filter(a => a.group_id === group.id)
+    assignations: filteredAssignations.filter(a => a.group_id === group.id)
   }))
   // .filter(item => item.assignations.length > 0)
 
+
+  const groupAssignations = assignationsByGroup.map(({ group, assignations }) => ({
+    group,
+    assignations,
+    myAssignations: assignations
+      .filter(a => a.user_id === loggedInUserId || a.meta.type === "challenge")
+      .filter(a => showCompletedByGroup[group.id] || !a.completed),
+    memberAssignations: assignations
+      .filter(a => a.user_id !== loggedInUserId && a.meta.type === "task")
+      .filter(a => showCompletedByGroup[group.id] || !a.completed)
+  }))
 
   return (
     <>
       {token &&
         <>
-          {assignationsByGroup.map(({ group, assignations }) => (
+          {groupAssignations.map(({ group, myAssignations, memberAssignations }) => (
             <div className="metaList mt-4" key={group.id}>
               <div className="d-flex align-items-center my-2 ps-4 pe-4 position-relative">
                 <div className="titolComponent">
@@ -68,76 +102,151 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                     />
                   </div>
                 </div>
-                <ul className="ps-2 m-0 py-2">
-                  {assignations
-                    //filtrem per les del usuari i challenges
-                    .filter(assignation => assignation.user_id === loggedInUserId || assignation.meta.type === "challenge")
-                    //filtrem si amaguem les completades
-                    .filter(assignation => showCompletedByGroup[group.id] || !Boolean(assignation.completed))
-                    .map((assignation) => (
-                      <li key={assignation.meta.id} className="m-0 p-0">
+                {myAssignations.length === 0
+                  ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
+                  : <ul className="ps-2 m-0 py-2">
+                    {myAssignations.map((assignation) => (
+                      <li key={assignation.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
-                          onClick={() => toggleEntity(assignation.id)}>
+                          onClick={() => {
+                            toggleEntity(assignation.id)
+                            setShowComments(false)
+                          }
+                          }>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
-                            <div className="me-2">{assignation.completed === true ? "completada" : ""}</div>
-
+                            {assignation.completed === true && (
+                              <div className="badge bg-success">completada</div>
+                            )}
                           </div>
                         </div>
                         <div className="metaDetailsBox my-0 me-3 ">
                           {openEntityId === assignation.id && (
 
                             <div className="metaDetails ps-2 py-2 d-flex flex-column">
+                              {/* <div>📌 id:{assignation.meta.id}</div> */}
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
                                 <div>👤 Assignada a: {assignation.user?.name ?? assignation.user_id}</div>
                               }
                               <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
-                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0]}</div>
-                              <div>🔥 Prioritat: {assignation.priority}</div>
+                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
+                              <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
+                              {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
+                                <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
+                              )}
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
-                              <div className="btn btn-primary align-self-end me-2"
-                              onClick={() => {
-                                  setAssignationToAddComment(assignation);
-                                }}>Afegir comentari</div>
+                              <div className=" d-flex align-self-end me-2 mb-2 mt-2">
+
+                                <div className="btn btn-primary d-flex align-self-end me-2 "
+                                  onClick={() => {
+                                    // setShowComments(true);
+                                    setShowComments(prev => !prev);
+                                    //canviar variable al contrari del prev
+                                  }}>Mostrar comentaris</div>
+                                <div className="btn btn-primary align-self-end me-2 "
+                                  onClick={() => {
+                                    setAssignationToAddComment(assignation);
+                                    setcommentFormType("create")
+
+                                  }}>Nou comentari</div>
+                              </div>
+                              {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs &&(
+                                <div className="btn btn-success align-self-end me-2"
+                                  onClick={async () => {
+                                    await updateAssignation(assignation.id, { completed: true })
+                                    setAssignations(prev => prev.map(a =>
+                                      a.id === assignation.id ? { ...a, completed: true } : a
+                                    ))
+                                  }}>
+                                  Marcar completada
+                                </div>
+                              )}
+
+
+                              {showComments === true && (() => {
+                                const filteredComments = comments
+                                  .filter(c => c.assignation_id === assignation.id)
+                                  .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                return filteredComments.length > 0
+                                  ? filteredComments.map(comment => (
+                                    <>
+                                      <div key={comment.id} className="border rounded p-2 mb-1 bg-white me-2">
+                                        {comment.user?.name ?? comment.user_id}:
+                                        <p className="mb-0">{comment.body}</p>
+                                        <small>{new Date(comment.created_at).toLocaleString("ca-ES")}</small>
+                                        <div className=" d-flex justify-content-end">
+
+                                          {comment.user_id === getUserId() &&
+
+
+                                            <div className="btn btn-warning align-self-end me-2 "
+                                              onClick={() => {
+                                                //edit
+                                                setcomment(comment);
+                                                setAssignationToAddComment(assignation);
+                                                setcommentFormType("edit")
+                                              }}>edita</div>
+
+                                          }
+                                          {(comment.user_id === getUserId() || group.owner_id === getUserId()) &&
+                                            <div className="btn btn-danger align-self-end me-2 "
+                                              onClick={async () => {
+                                                await deleteComment(comment.id)
+                                                setComments(prev => prev.filter(c => c.id !== comment.id))
+                                              }}>Elimina</div>
+                                          }
+                                        </div>
+                                      </div>
+
+                                    </>
+                                  ))
+                                  : <p className="text-muted">No hi ha comentaris</p>
+                              })()}
                             </div>
 
                           )}
                         </div>
                       </li>
                     ))}
-                </ul>
+                  </ul>
+                }
 
 
                 <div className="me-auto ms-3">Metes dels integrants del grup</div>
-                <ul className="ps-2 m-0 py-2">
-                  {assignations
-                    .filter(a => (a.user_id !== loggedInUserId && a.meta.type === "task"))
-                    .filter(assignation => showCompletedByGroup[group.id] || !Boolean(assignation.completed))
-                    .map((assignation) => (
-                      <li key={assignation.meta.id} className="m-0 p-0">
+                {memberAssignations.length === 0
+                  ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
+                  : <ul className="ps-2 m-0 py-2">
+                    {memberAssignations.map((assignation) => (
+                      <li key={assignation.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                           onClick={() => toggleEntity(assignation.id)}>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
-                            <div className="">{assignation.completed === true ? "completada" : ""}</div>
+                            {assignation.completed === true && (
+                              <div className="badge bg-success">completada</div>
+                            )}
                           </div>
                         </div>
                         <div className="metaDetailsBox my-0 me-3">
                           {openEntityId === assignation.id && (
                             <div className="metaDetails ps-2 py-2">
+                              <div> id:{assignation.meta.id}</div>
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
                                 <div>👤 Assignada a: {assignation.user?.name ?? assignation.user_id}</div>
                               }
                               <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
-                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0]}</div>
-                              <div>🔥 Prioritat: {assignation.priority}</div>
+                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
+                              <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
+                              {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
+                                <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
+                              )}
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
                             </div>
@@ -145,16 +254,26 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                         </div>
                       </li>
                     ))}
-                </ul>
+                  </ul>
+                }
               </div>
             </div>
           ))}
         </>
       }
       {assignationToAddComment && (
-              <ModalAddComment assignation={assignationToAddComment} assignationSetter={setAssignationToAddComment}/>
-            )}
+        <ModalAddComment
+          assignation={assignationToAddComment}
+          assignationSetter={setAssignationToAddComment}
+          commentSetter={setComments}
+          commentFormType={commentFormType}
+          comment={comment}
+        />
+      )}
     </>
   );
 }
 
+
+
+// afegir un boto per mostrar comentaris i que es mostrin per ordre descendent per data de creacio, amb el nom del usuari del comentari
