@@ -11,31 +11,21 @@ import { fetchGroupById } from "../services/groupService";
 
 type MyGroupListProps = {
   groups: groupType[]
-  viewedUserId?: number
 }
 
 
-export function MyGroupsList({ groups, viewedUserId }: MyGroupListProps) {
-
-  const loggedInUserId = getUserId()
+export function MyGroupsList({ groups }: MyGroupListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
   }
 
-  const [groupToEdit, setGroupToEdit] = useState<groupType | null>(null)
   const token = localStorage.getItem("token");
 
 
   //suma el total de punts del grup
   const groupScores = new Map(
     groups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
-  )
-
-  const targetUserId = viewedUserId ?? loggedInUserId;
-  const myGroups = groups.filter(group =>
-    group.owner_id === targetUserId ||
-    group.groupUsers.some(gu => gu.user_id === targetUserId)
   )
 
 
@@ -49,7 +39,7 @@ export function MyGroupsList({ groups, viewedUserId }: MyGroupListProps) {
           <div className="inline">
             {token &&
               <ul className=" ps-2  m-0  py-2">
-                {myGroups.map((group) => (
+                {groups.map((group) => (
                   <li key={group.id} className="m-0 p-0" >
                     <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
                       onClick={() => toggleEntity(group.id)}>
