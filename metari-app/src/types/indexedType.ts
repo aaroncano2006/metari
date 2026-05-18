@@ -7,7 +7,7 @@ export type indexedType = {
   user_id: number
   meta_id: number  
   is_approved: boolean
-  is_comunity_approved: boolean
+  is_community_approved: boolean
 
   user: userTypeFrontend
   meta: metaType

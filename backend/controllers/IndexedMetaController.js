@@ -3,7 +3,16 @@ const utils = require("../helpers/Utils");
 
 const getIndexedMetas = async (req, res, next) => {
     try {
-        const indexedMetas = await prisma.indexedMeta.findMany();
+        const indexedMetas = await prisma.indexedMeta.findMany({
+            include: {
+                meta: { 
+                    include: { 
+                        category: true, author: true 
+                        } 
+                    },
+                user: true,
+            },
+        });
 
         res.status(200).json(utils.handleBigInt(indexedMetas));
     } catch (error) {
@@ -66,18 +75,13 @@ const createIndexedMeta = async (req, res, next) => {
 const updateIndexedMeta = async (req, res, next) => {
     const reqBody = req.body;
 
-    if ((reqBody.group_id && reqBody.user_id) || (!reqBody.group_id && !reqBody.user_id)) {
-        return res.status(400).json({
-            error: "You must provide either group_id or user_id, but not both or neither.",
-        });
-    }
-
+    
     try {
         const updatedIndexedMeta = await prisma.indexedMeta.update({
             where: { id: parseInt(req.params.id) },
             data: {
-                user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
-                meta_id: parseInt(reqBody.meta_id),
+                user_id: reqBody.user_id ? parseInt(reqBody.user_id) : undefined,
+                meta_id: reqBody.meta_id ? parseInt(reqBody.meta_id) : undefined,
                 // group_id: reqBody.group_id ? parseInt(reqBody.group_id) : null,
                 // is_public: reqBody.is_public,
                 is_approved: reqBody.is_approved,

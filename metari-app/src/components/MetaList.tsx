@@ -35,9 +35,14 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
 
   //Si alguna de les condicions es true, es guarda la meta a la variable
   const filteredMetas = metas.filter(meta =>
-    (!filteredCategory || meta.category_id === filteredCategory) &&
-    meta.is_public
+  (!filteredCategory || meta.category_id === filteredCategory) &&
+  meta.is_public &&
+  (
+    !meta.indexedMetas ||
+    meta.indexedMetas.length === 0 ||
+    meta.indexedMetas.some(im => im.is_community_approved === true)
   )
+)
 
 
   return (

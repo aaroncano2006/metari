@@ -6,6 +6,7 @@ import { fetchCategories } from "../services/categoryService"
 import { fetchMetas } from "../services/metaService"
 import { fetchUsers } from "../services/userService";
 import { fetchGroups } from "../services/groupService";
+import { fetchIndexedMetas } from "../services/IndexerService"
 
 //components
 import { CreateBtn } from "../components/Buttons/CreateBtn";
@@ -13,6 +14,7 @@ import { MetaList } from "../components/MetaList"
 import { CategoryList } from "../components/CategoryList";
 import { UserList } from "../components/UserList";
 import { GroupList } from "../components/GroupList";
+import { PendingIndexedMetas } from "../components/PendingIndexedMetas"
 
 //types
 import type { categoryType } from "../types/categoryType"
@@ -21,6 +23,7 @@ import type { userTypeFrontend } from "../types/userTypeFrontend";
 import type { groupType } from "../types/groupType";
 import { useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/loginService";
+import type { indexedType } from "../types/indexedType";
 
 export default function AdminPanel() {
 
@@ -31,12 +34,14 @@ export default function AdminPanel() {
   const [metas, setMetas] = useState<metaType[]>([])
   const [users, setUsers] = useState<userTypeFrontend[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
+  const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([])
 
   useEffect(() => {
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
     fetchUsers().then(setUsers)
     fetchGroups().then(setGroups)
+    fetchIndexedMetas().then(setIndexedMetas)
 
     //useEffect(() => {
     //fetchCategories().then(setCategories);
@@ -102,7 +107,13 @@ export default function AdminPanel() {
         <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
-            {menuSelection === "metas" && <MetaList metas={metas} setter={setMetas} groups={groups} />}
+            {menuSelection === "metas" && (
+              <>
+                <MetaList metas={metas} setter={setMetas} groups={groups} />
+                <PendingIndexedMetas indexedMetas={indexedMetas} setIndexedMetas={setIndexedMetas} />
+              </>
+            )
+            }
             {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
             {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
             {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}
