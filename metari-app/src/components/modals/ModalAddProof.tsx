@@ -1,12 +1,13 @@
 import { useState } from "react"
 import type { assignationType } from "../../types/assignationType"
 import { getUserId } from "../../services/auth/loginService"
-import { createProof } from "../../services/proofService"
+import { createProof, createProofWithFile } from "../../services/proofService"
 type ModalProps = {
   assignation: assignationType
   assignationSetter: React.Dispatch<React.SetStateAction<assignationType | null>>
+  setAssignations: React.Dispatch<React.SetStateAction<assignationType[]>>
 }
-export function ModalAddProof({ assignation, assignationSetter }: ModalProps) {
+export function ModalAddProof({ assignation, assignationSetter, setAssignations }: ModalProps) {
   const [proofType, setProofType] = useState<"text" | "image">("text")
   const [proofText, setProofText] = useState("")
   const [proofImage, setProofImage] = useState<File | null>(null)
@@ -19,36 +20,48 @@ export function ModalAddProof({ assignation, assignationSetter }: ModalProps) {
     setErrors({})
 
     const userId = getUserId()
-    
+
     if (proofType === "text") {
       if (!proofText.trim()) {
         setErrors({ proof: "El text de la prova no pot estar buit" })
         return
       }
-      await createProof({
+      const proof = await createProof({
         assignation_id: assignation.id,
         user_id: userId,
         proof: proofText,
         proof_type: "text",
         is_valid: false,
       })
+      setAssignations(prev => prev.map(a =>
+        a.id === proof.assignation_id
+          ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+          : a
+      ))
       assignationSetter(null)
     }
+    
     if (proofType === "image" && proofImage) {
-      const reader = new FileReader()
-      reader.onload = async () => {
-        await createProof({
-          assignation_id: assignation.id,
-          user_id: userId,
-          proof: reader.result as string,
-          proof_type: "image",
-          is_valid: false,
-        })
-        assignationSetter(null)
-      }
-      reader.readAsDataURL(proofImage)
+      const formData = new FormData()
+      formData.append("assignation_id", String(assignation.id))
+      formData.append("user_id", String(userId))
+      formData.append("proof_type", "image")
+      formData.append("is_valid", "false")
+      formData.append("proofImage", proofImage)
+
+      const proof = await createProofWithFile(formData)
+      setAssignations(prev => prev.map(a =>
+        a.id === proof.assignation_id
+          ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+          : a
+      ))
+
+      
+      assignationSetter(null)
     }
   }
+
+
   return (
     <div className="modalOverlay h-100 w-100">
       <div className="container-fluid">

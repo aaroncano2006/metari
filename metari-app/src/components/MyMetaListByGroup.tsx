@@ -328,6 +328,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
         <ModalAddProof
           assignation={assignationToAddProof}
           assignationSetter={setAssignationToAddProof}
+          setAssignations={setAssignations}
         />
       )}
     </>

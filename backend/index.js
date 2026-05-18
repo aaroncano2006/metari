@@ -188,6 +188,7 @@ app.use("/api/indexa-metas", indexedMetaRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/restore-password", restorePasswordRoutes);
 app.use("/api/search", searchRoutes);
+app.use("/uploads", express.static("uploads"));
 
 
 // app.get("/api/dashboard", verifyToken, (req, res) => {
