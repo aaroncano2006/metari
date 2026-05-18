@@ -92,7 +92,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                                   a.id === assignation.id ? { ...a, completed: true } : a
                                 ))
                               }}>
-                              Completar
+                              Marcar completada
                             </div>
                           )}
 

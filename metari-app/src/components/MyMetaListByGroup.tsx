@@ -148,7 +148,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
 
                                   }}>Nou comentari</div>
                               </div>
-                              {!assignation.completed && assignation.meta.type === "task" && (
+                              {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs &&(
                                 <div className="btn btn-success align-self-end me-2"
                                   onClick={async () => {
                                     await updateAssignation(assignation.id, { completed: true })
@@ -156,7 +156,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                       a.id === assignation.id ? { ...a, completed: true } : a
                                     ))
                                   }}>
-                                  Completar
+                                  Marcar completada
                                 </div>
                               )}
 
