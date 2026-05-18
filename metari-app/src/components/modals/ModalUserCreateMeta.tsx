@@ -131,6 +131,7 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
         meta_id: newMeta.id,
         group_id: selectedGroupId,
         assigner_id: getUserId()!,
+        // score: formData.get("score"),
         needs_proofs: needsProofs,
         user_id: selectedUserId,
       })
@@ -212,6 +213,13 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
                   {isPublic === false &&
                     <>
                       <div>
+                        {metaType === "challenge" &&
+                          <div>
+                            <label htmlFor="score">Punts al completar:</label>
+                            <input className="form-control mb-2" type="number" name="score" id="score" />
+                          </div>
+                        }
+
                         <label htmlFor="group_id">Grups dels que formes part:</label>
                         <select className="form-select mb-2" name="group_id" id="group_id"
                           onChange={(e) => {
@@ -227,6 +235,9 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
                           ))}
                         </select>
                         {errors.group_id && <div className="text-danger small">{errors.group_id}</div>}
+
+
+
                       </div>
 
                       {metaType === "task" && (
