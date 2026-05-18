@@ -25,6 +25,8 @@ import { useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/loginService";
 import type { indexedType } from "../types/indexedType";
 
+import { Helmet } from "react-helmet-async";
+
 export default function AdminPanel() {
 
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ export default function AdminPanel() {
   const [users, setUsers] = useState<userTypeFrontend[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
   const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
   useEffect(() => {
     fetchCategories().then(setCategories)
@@ -64,8 +67,27 @@ export default function AdminPanel() {
   //need to refactor again
   // const metas = useMetas();
 
+  const q = searchTerm.toLowerCase()
+  const filteredMetas = metas.filter(m =>
+    m.title.toLowerCase().includes(q) || m.description.toLowerCase().includes(q)
+  )
+  const filteredCategories = categories.filter(c =>
+    c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+  )
+  const filteredUsers = users.filter(u =>
+    u.username.toLowerCase().includes(q) ||
+    u.name.toLowerCase().includes(q) ||
+    u.email.toLowerCase().includes(q)
+  )
+  const filteredGroups = groups.filter(g =>
+    g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q)
+  )
+
   return (
     <>
+      <Helmet>
+        <title>Metari · Admin</title>
+      </Helmet>
       <h1 className="text-center mt-4">Panell Admin</h1>
       <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div
@@ -107,16 +129,26 @@ export default function AdminPanel() {
         <div className="row">
           <div className="col-3"></div>
           <div className="col-6">
+            <div className="input-group my-3">
+              <span className="input-group-text"><i className="bi bi-search"></i></span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Cerca..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+           
             {menuSelection === "metas" && (
               <>
-                <MetaList metas={metas} setter={setMetas} groups={groups} />
+                <MetaList metas={filteredMetas} setter={setMetas} groups={groups}/>
                 <PendingIndexedMetas indexedMetas={indexedMetas} setIndexedMetas={setIndexedMetas} />
               </>
-            )
-            }
-            {menuSelection === "categories" && <CategoryList categories={categories} setter={setCategories} />}
-            {menuSelection === "usuaris" && <UserList users={users} setter={setUsers} />}
-            {menuSelection === "grups" && <GroupList groups={groups} setter={setGroups} />}
+            )}
+            {menuSelection === "categories" && <CategoryList categories={filteredCategories} setter={setCategories} />}
+            {menuSelection === "usuaris" && <UserList users={filteredUsers} setter={setUsers} />}
+            {menuSelection === "grups" && <GroupList groups={filteredGroups} setter={setGroups} />}
           </div>
           <div className="col-3">
           </div>

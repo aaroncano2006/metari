@@ -28,7 +28,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
  const canEdit =
-  (vistaActual !== "/" && vistaActual !== "/myGroups" && vistaActual !== "/myMetas") &&
+  (vistaActual !== "/" && vistaActual !== "/search" && vistaActual !== "/mygroups" && vistaActual !== "/mymetas") &&
   role === "admin";
 
 
@@ -49,7 +49,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
 
                   <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                     <div className="me-auto">{category.name}</div>
-                    {vistaActual === "/" && setFilteredCategory &&  
+                    {(vistaActual === "/" || vistaActual === "/search") && setFilteredCategory &&  
                       <input
                         type="checkbox"
                         checked={filteredCategory === category.id}

@@ -44,10 +44,6 @@ export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEd
         return metaSchema
       case "categories":
         return categorySchema
-      case "usuaris":
-        return userSchema
-      case "grups":
-        return groupSchema
       default:
         return null
     }

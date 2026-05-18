@@ -7,10 +7,10 @@ import {
 } from "../services/auth/loginService";
 import type { profileType } from "../types/auth/profileType";
 import { updateProfile } from "../services/auth/profileService";
-import { emailExists, usernameExists } from "../services/userService";
+import { createProfileSchema } from "../schemas/auth/profileSchema";
 
 export default function UserProfileForm() {
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<boolean>(false);
 
   const fullName = getUserFullName() ?? "";
@@ -25,67 +25,25 @@ export default function UserProfileForm() {
     password: "",
   });
 
+  const profileSchema = createProfileSchema(userId);
+
   const handleSubmit = async (data: profileType) => {
-    setError(null);
     setSuccess(false);
 
-    if (data.name && typeof data.name !== "string") {
-      return setError("El nom enviat no és vàlid! Ha de ser un text");
+    const validation = await profileSchema.safeParseAsync(data);
+
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        errors[field] = issue.message;
+      });
+      
+      return setErrors(errors);
     }
 
-    if (data.username) {
-      if (typeof data.username !== "string") {
-        return setError(
-          "El nom d'usuari enviat no és vàlid! Ha de ser un text",
-        );
-      }
-
-      if (!/[a-zA-Z0-9]+$/.test(data.username)) {
-        return setError(
-          "El nom d'usuari només pot contenir lletres i números!",
-        );
-      }
-
-      if (data.username.length < 5) {
-        return setError("El nom d'usuari ha de contenir almenys 5 caràcters!");
-      }
-
-      const existingUsername = await usernameExists(data.username, userId);
-
-      if (existingUsername) {
-        return setError("El nom d'usuari introduït ja està registrat!");
-      }
-    }
-
-    if (data.email) {
-      if (typeof data.email !== "string") {
-        return setError("L'email de l'usuari no és vàlid! Ha de ser un text");
-      }
-
-      if (
-        !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)
-      ) {
-        return setError("El format de l'email no és vàlid!");
-      }
-
-      const existingEmail = await emailExists(data.email, userId);
-
-      if (existingEmail) {
-        return setError("L'email introduït ja està registrat!");
-      }
-    }
-
-    if (data.password) {
-      if (typeof data.password !== "string") {
-        return setError(
-          "La contrasenya introduïda no és vàlida! Ha de ser un text!",
-        );
-      }
-
-      if (data.password.length < 8) {
-        return setError("La contrasenya ha de contenir almenys 8 caràcters!");
-      }
-    }
+    setErrors({});
 
     const updateData: profileType = {
       name: data.name || fullName,
@@ -97,8 +55,6 @@ export default function UserProfileForm() {
     try {
       const response = await updateProfile(updateData);
 
-      console.log(response);
-
       if (response?.token) {
         localStorage.setItem("token", response.token);
       }
@@ -106,22 +62,27 @@ export default function UserProfileForm() {
       window.dispatchEvent(new Event("profileChange"));
 
       setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
     } catch (error: any) {
-      setError("Error: " + error);
+      setErrors({ form: "Error: " + error });
+      setTimeout(() => {
+        setErrors({})
+      }, 5000);
     }
   };
 
   return (
     <>
-      {success && 
-      <div className="alert alert-success alert-profile">
-        Dades actualitzades correctament!
-      </div>}
-      {error && 
-      <div className="alert alert-danger alert-profile">
-        {error}
-      </div>
-      }
+      {success &&
+        <div className="alert alert-success alert-profile">
+          Dades actualitzades correctament!
+        </div>}
+      {errors.form &&
+        <div className="alert alert-danger alert-profile">
+          {errors.form}
+        </div>}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -146,6 +107,8 @@ export default function UserProfileForm() {
               })
             }
           />
+          {errors.name &&
+            <small className="text-danger d-flex mb-2">{errors.name}</small>}
         </div>
 
         <div className="row mb-2 user-profile-form-row">
@@ -166,10 +129,12 @@ export default function UserProfileForm() {
               })
             }
           />
+          {errors.username &&
+            <small className="text-danger d-flex mb-2">{errors.username}</small>}
         </div>
 
         <div className="row mb-2 user-profile-form-row">
-          <label className="form-label text-start" htmlFor="username">
+          <label className="form-label text-start" htmlFor="email">
             Email
           </label>
 
@@ -186,6 +151,8 @@ export default function UserProfileForm() {
               })
             }
           />
+          {errors.email &&
+            <small className="text-danger d-flex mb-2">{errors.email}</small>}
         </div>
 
         <div className="row mb-2 user-profile-form-row">
@@ -206,6 +173,8 @@ export default function UserProfileForm() {
               })
             }
           />
+          {errors.password &&
+            <small className="text-danger d-flex mb-2">{errors.password}</small>}
         </div>
 
         <button type="submit" className="btn btn-dark">

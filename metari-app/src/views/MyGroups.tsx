@@ -19,6 +19,8 @@ import { getUserId } from "../services/auth/loginService"
 import { fetchFriends } from "../services/invitationService";
 import { fetchAssignations } from "../services/assignationService"
 import type { assignationType } from "../types/assignationType"
+import { Helmet } from "react-helmet-async"
+import { useNavigate } from "react-router-dom";
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -36,6 +38,8 @@ export default function MyGroups() {
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null)
 
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchUsers().then(setUsers)
@@ -47,8 +51,15 @@ export default function MyGroups() {
 
   }, [])
 
+  if (!token) {
+    navigate("/login");
+  }
+
   return (
     <>
+      <Helmet>
+        <title>Metari · Els meus grups</title>
+      </Helmet>
       <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
       <div className="container-fluid">
         <div className="row mt-5">
@@ -67,8 +78,8 @@ export default function MyGroups() {
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
             <MyGroupsList groups={groups} />
-            <UserList users={users} setter={setUsers} />
-            <GroupList groups={groups} setter={setGroups} />
+            <UserList users={users} setter={setUsers} isTop10={true}/>
+            <GroupList groups={groups} setter={setGroups} isTop10={true}/>
           </div>
         </div>
       </div>

@@ -24,36 +24,26 @@ export function NavBar() {
         </Link>
 
         {!token && (
-          <Link to="/Login" className="nav-btn">
+          <Link to="/login" className="nav-btn">
             Login
           </Link>
         )}
         {!token && (
-          <Link to="/Register" className="nav-btn">
+          <Link to="/register" className="nav-btn">
             Registra't
           </Link>
         )}
+        
         {token &&
           <>
-            <Link to="/myMetas" className="nav-btn">
+            <Link to="/mymetas" className="nav-btn">
               Les meves metas
             </Link>
-            <Link to="/myGroups" className="nav-btn">
+            <Link to="/mygroups" className="nav-btn">
               Els meus grups
             </Link>
           </>
         }
-
-        {/* {token && (
-          <Link to="/Profile" className="nav-btn ">
-            Els meus grups
-          </Link>
-        )}
-        {token && (
-          <Link to="/Profile" className="nav-btn  ">
-            Amics
-          </Link>
-        )} */}
 
         {token && (
           <div className="btn-group">
@@ -62,17 +52,17 @@ export function NavBar() {
             </button>
             <ul className="dropdown-menu dropdown-menu-end">
               <li>
-                <Link to="/Profile" className="dropdown-item">
+                <Link to="/profile" className="dropdown-item">
                   Perfil
                 </Link>
               </li>
               <li>
-                <Link to="/Logout" className="dropdown-item">
+                <Link to="/logout" className="dropdown-item">
                   Logout
                 </Link>
               </li>
               {token && role === "admin" && (
-                <li><Link to="/Admin" className="dropdown-item">
+                <li><Link to="/admin" className="dropdown-item">
                   Panell Admin
                 </Link>
                 </li>

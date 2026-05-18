@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const SECRET = require("../../config/auth").SECRET;
 const prisma = require("../../config/prisma");
 const utils = require("../../helpers/Utils");
+const { validateLogin } = require("../../middlewares/validators/auth/validateLogin");
 
 const login = async (req, res, next) => {
   try {
@@ -9,8 +10,15 @@ const login = async (req, res, next) => {
 
     const data = {
       email_or_username: reqBody.email_or_username,
-      password: String(reqBody.password),
+      password: reqBody.password,
     };
+
+    const validate = await validateLogin(data);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
+    }
 
     const existingUser = await prisma.user.findFirst({
       where: {
@@ -26,7 +34,9 @@ const login = async (req, res, next) => {
     });
 
     if (!existingUser) {
-      return res.status(404).json({ message: "Usuari no trobat!" });
+      const error = new Error("Usuari no trobat!");
+      error.statusCode = 404;
+      throw error;
     }
 
     const isSamePassword = await utils.compareHash(
@@ -35,7 +45,9 @@ const login = async (req, res, next) => {
     );
 
     if (!isSamePassword) {
-      return res.status(400).json({ message: "Contrasenya incorrecta!" });
+      const error = new Error("Contrasenya incorrecta!");
+      error.statusCode = 400;
+      throw error;
     }
 
     const token = jwt.sign(

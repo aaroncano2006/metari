@@ -34,8 +34,9 @@ const getMetaById = async (req, res, next) => {
     const meta = await prisma.meta.findUnique({
       where: { id },
       include: {
-        category: true
-      }
+        category: true,
+        author: true,
+      },
     });
 
     if (!meta) {

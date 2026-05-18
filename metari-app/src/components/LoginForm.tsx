@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchLogin } from "../services/auth/loginService";
 import type { loginType } from "../types/auth/loginType";
+import { loginSchema } from "../schemas/auth/loginSchema";
 
 export default function LoginForm() {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // Error de credencials o de servidor
+  const [errors, setErrors] = useState<Record<string, string>>({}); // Error de validacions Zod
 
   const rememberedPassword = localStorage.getItem("password");
   const rememberedEmail = localStorage.getItem("email_or_username");
@@ -20,13 +22,18 @@ export default function LoginForm() {
   const handleSubmit = async (data: loginType) => {
     setError(null);
 
-    if (!data.email_or_username.trim()) {
-      return setError("El username o email és obligatori!");
-    }
+    const validation = loginSchema.safeParse(data);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
 
-    if (!data.password.trim()) {
-      return setError("La contrasenya és obligatòria!");
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        errors[field] = issue.message;
+      });
+
+      return setErrors(errors);
     }
+    setErrors({});
 
     if (data.remember) {
       localStorage.setItem("email_or_username", data.email_or_username);
@@ -41,8 +48,6 @@ export default function LoginForm() {
     try {
       const response = await fetchLogin(data);
 
-      console.log(response);
-
       if (response.token) {
         localStorage.setItem("token", response.token);
       }
@@ -56,6 +61,12 @@ export default function LoginForm() {
       if (!rememberedPassword) {
         localStorage.removeItem("password");
       }
+      if (!rememberedEmail) {
+        localStorage.removeItem("email_or_username");
+      }
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
@@ -106,6 +117,9 @@ export default function LoginForm() {
                 })
               }
             />
+            {errors.email_or_username && (
+                <small className="text-danger d-flex mb-2">{errors.email_or_username}</small>
+            )}
           </div>
 
           <div className="row mb-2">
@@ -126,12 +140,15 @@ export default function LoginForm() {
                 })
               }
             />
+            {errors.password && (
+              <small className="text-danger d-flex mb-2">{errors.password}</small>
+            )}
           </div>
 
           <div className="row mb-4">
-            <a href="/forgot-password" className="text-start">
+            <Link to="/forgot-password" className="text-start">
               Has oblidat la teva contrasenya?
-            </a>
+            </Link>
           </div>
 
           <div className="row mb-2 text-start">
@@ -159,9 +176,9 @@ export default function LoginForm() {
           </div>
 
           <div className="d-flex justify-content-end gap-5 mt-3">
-            <a href="/register" className="text-start">
-              No tens compte? Registra't
-            </a>
+            <Link to="/register" className="text-start">
+                No tens compte? Registra't
+            </Link>
 
             <button type="submit" className="btn btn-dark">
               Inicia sessió

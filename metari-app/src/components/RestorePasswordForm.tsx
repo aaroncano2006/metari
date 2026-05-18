@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import type { restorePasswordType } from "../types/auth/restorePasswordType";
 import { fetchRestorePassword } from "../services/auth/restorePasswordService";
+import { restorePasswordSchema } from "../schemas/auth/restorePasswordSchema";
 
 export default function RestorePasswordForm() {
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -24,40 +26,25 @@ export default function RestorePasswordForm() {
     setError(null);
     setSuccess(false);
 
-    if (!data.new_password.trim()) {
-      return setError("La contrasenya és obligatòria");
+    const validation = restorePasswordSchema.safeParse(data);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        errors[field] = issue.message;
+      });
+
+      return setErrors(errors);
     }
-
-    if (data.new_password) {
-      if (typeof data.new_password !== "string") {
-        return setError(
-          "La contrasenya introduïda no és vàlida! Ha de ser un text!",
-        );
-      }
-
-      if (data.new_password.length < 8) {
-        return setError("La contrasenya ha de contenir almenys 8 caràcters!");
-      }
-    }
-
-    if (!data.confirm_password.trim()) {
-      return setError("La contrasenya és obligatòria");
-    }
-
-    if (data.confirm_password) {
-      if (typeof data.confirm_password !== "string") {
-        return setError(
-          "La contrasenya introduïda no és vàlida! Ha de ser un text!",
-        );
-      }
-
-      if (data.confirm_password.length < 8) {
-        return setError("La contrasenya ha de contenir almenys 8 caràcters!");
-      }
-    }
+    setErrors({});
 
     if (data.new_password !== data.confirm_password) {
-      return setError("Les contrasenyes no coincideixen!");
+      setError("Les contrasenyes no coincideixen!");
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
+      return;
     }
 
     let response = null;
@@ -65,7 +52,12 @@ export default function RestorePasswordForm() {
       response = await fetchRestorePassword(data);
       setSuccess(true);
     } catch (error: any) {
-      setError(`${error}`);
+      const message = error.request.responseText;
+      const JSONmessage = JSON.parse(message);
+      setError(`${JSONmessage.message}`);
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
@@ -93,7 +85,7 @@ export default function RestorePasswordForm() {
         {success && (
           <div className="alert alert-success">
             Contrasenya restablerta correctament!{" "}
-            <a href="/login">Inicia Sessió</a>
+            <Link to="/login">Inicia Sessió</Link>
           </div>
         )}
         <form
@@ -103,28 +95,8 @@ export default function RestorePasswordForm() {
           }}
         >
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="confirm_password">
-              Nova contrasenya <span className="text-danger">*</span>
-            </label>
-
-            <input
-              className="form-control mb-2"
-              type="password"
-              name="confirm_password"
-              id="confirm_password"
-              value={formData.confirm_password}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  confirm_password: e.target.value,
-                })
-              }
-            />
-          </div>
-
-          <div className="row mb-2">
             <label className="form-label text-start" htmlFor="new_password">
-              Confirma nova contrasenya <span className="text-danger">*</span>
+              Nova contrasenya <span className="text-danger">*</span>
             </label>
 
             <input
@@ -140,6 +112,32 @@ export default function RestorePasswordForm() {
                 })
               }
             />
+            {errors.new_password && (
+                <small className="text-danger d-flex mb-2">{errors.new_password}</small>
+            )}
+          </div>
+
+          <div className="row mb-2">
+            <label className="form-label text-start" htmlFor="confirm_password">
+              Confirma nova contrasenya <span className="text-danger">*</span>
+            </label>
+
+            <input
+              className="form-control mb-2"
+              type="password"
+              name="confirm_password"
+              id="confirm_password"
+              value={formData.confirm_password}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  confirm_password: e.target.value,
+                })
+              }
+            />
+            {errors.confirm_password && (
+                <small className="text-danger d-flex mb-2">{errors.confirm_password}</small>
+            )}
           </div>
 
           <div className="d-flex justify-content-end gap-5 mt-3">
