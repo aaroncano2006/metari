@@ -63,7 +63,6 @@ export default function ModalGroupModeratorPanel({
       return setErrors(errors);
     }
     setErrors({});
-    // setFeedback(null);
 
     try {
       const updatedGroup = await updateGroup(group.id, data);
@@ -78,7 +77,6 @@ export default function ModalGroupModeratorPanel({
       setTimeout(() => {
         setSuccess(false);
       }, 5000);
-      // setFeedback({ type: "success", message: "Grup actualitzat correctament" });
     } catch (error: any) {
       setError(
         "Error actualitzant el grup! Revisa els teus permisos o l'estat del servidor!",
