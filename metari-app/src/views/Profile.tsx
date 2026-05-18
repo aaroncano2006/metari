@@ -185,7 +185,6 @@ export default function Profile() {
                       <FriendList users={friendsList}></FriendList>
                       <MyGroupsList
                         groups={groupsList}
-                        viewedUserId={userData.id}
                       ></MyGroupsList>
                     </div>
                   </>

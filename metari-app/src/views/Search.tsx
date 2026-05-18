@@ -25,6 +25,7 @@ export default function Search() {
   const [users, setUsers] = useState<userTypeFrontend[]>([]);
   const [categories, setCategories] = useState<categoryType[]>([]);
   const [groups, setGroups] = useState<groupType[]>([]);
+  const [myGroups, setMyGroups] = useState<groupType[]>([]);
   const [friends, setFriends] = useState<userTypeFrontend[]>([]);
   const [_assignations, setAssignations] = useState<assignationType[]>([]);
 
@@ -48,6 +49,14 @@ export default function Search() {
     fetchGroups().then((response) => {
       const filteredByPublic = response.filter((el) => el.is_public);
       setGroups(filteredByPublic);
+    });
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter(
+        (el) =>
+          el.owner_id === getUserId() ||
+          el.groupUsers.some((gu) => gu.user_id === getUserId()),
+      );
+      setMyGroups(filteredByPublic);
     });
 
     if (token) {
@@ -121,7 +130,7 @@ export default function Search() {
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
-            <MyGroupsList groups={groups} />
+            <MyGroupsList groups={myGroups} />
             <UserList users={users} setter={setUsers} isTop10={true}/>
             <GroupList groups={groups} setter={setGroups} isTop10={true}/>
           </div>
