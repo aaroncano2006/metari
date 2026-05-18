@@ -28,3 +28,13 @@ export async function updateAssignation(id: number, data: Partial<assignationTyp
   const { data: response } = await axiosConnection.put<assignationType>(`/assignacions/${id}`, data);
   return response;
 }
+
+
+export async function deleteAssignation(id: number): Promise<void> {
+  try {
+    await axiosConnection.delete(`/assignacions/${id}`);
+  } catch (error) {
+    console.error("Error eliminant assignació:", error);
+    throw error;
+  }
+}
