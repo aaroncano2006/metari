@@ -7,15 +7,17 @@ import type { groupType } from "../types/groupType";
 import { ModalAddComment } from "./modals/ModalAddComment";
 import { fetchComments, deleteComment } from "../services/commentService";
 import type { commentType } from "../types/commentType";
+import { updateAssignation } from "../services/assignationService";
 
 
 type MyMetaListProps = {
   assignations: assignationType[]
   groups: groupType[]
+  setAssignations: React.Dispatch<React.SetStateAction<assignationType[]>>
 
 }
 
-export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
+export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyMetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
@@ -98,7 +100,7 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                   ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
                   : <ul className="ps-2 m-0 py-2">
                     {myAssignations.map((assignation) => (
-                      <li key={assignation.meta.id} className="m-0 p-0">
+                      <li key={assignation.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                           onClick={() => {
                             toggleEntity(assignation.id)
@@ -107,8 +109,9 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                           }>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
-                            <div className="me-2">{assignation.completed === true ? "completada" : ""}</div>
-
+                            {assignation.completed === true && (
+                              <div className="badge bg-success">completada</div>
+                            )}
                           </div>
                         </div>
                         <div className="metaDetailsBox my-0 me-3 ">
@@ -122,9 +125,12 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                                 <div>👤 Assignada a: {assignation.user?.name ?? assignation.user_id}</div>
                               }
                               <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
-                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0]}</div>
-                              <div>🔥 Prioritat: {assignation.priority}</div>
+                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
+                              <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
+                              {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
+                                <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
+                              )}
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
                               <div className=" d-flex align-self-end me-2 mb-2 mt-2">
@@ -142,6 +148,17 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
 
                                   }}>Nou comentari</div>
                               </div>
+                              {!assignation.completed && assignation.meta.type === "task" && (
+                                <div className="btn btn-success align-self-end me-2"
+                                  onClick={async () => {
+                                    await updateAssignation(assignation.id, { completed: true })
+                                    setAssignations(prev => prev.map(a =>
+                                      a.id === assignation.id ? { ...a, completed: true } : a
+                                    ))
+                                  }}>
+                                  Completar
+                                </div>
+                              )}
 
 
                               {showComments === true && (() => {
@@ -198,27 +215,32 @@ export function MyMetaListByGroup({ assignations, groups }: MyMetaListProps) {
                   ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
                   : <ul className="ps-2 m-0 py-2">
                     {memberAssignations.map((assignation) => (
-                      <li key={assignation.meta.id} className="m-0 p-0">
+                      <li key={assignation.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
                           onClick={() => toggleEntity(assignation.id)}>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
-                            <div className="">{assignation.completed === true ? "completada" : ""}</div>
+                            {assignation.completed === true && (
+                              <div className="badge bg-success">completada</div>
+                            )}
                           </div>
                         </div>
                         <div className="metaDetailsBox my-0 me-3">
                           {openEntityId === assignation.id && (
                             <div className="metaDetails ps-2 py-2">
-                              {/* <div> id:{assignation.meta.id}</div> */}
+                              <div> id:{assignation.meta.id}</div>
                               <div>📌 Tipus:{assignation.meta.type}</div>
                               <div>📝 Descripció: {assignation.meta.description}</div>
                               {assignation.user_id &&
                                 <div>👤 Assignada a: {assignation.user?.name ?? assignation.user_id}</div>
                               }
                               <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
-                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0]}</div>
-                              <div>🔥 Prioritat: {assignation.priority}</div>
+                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
+                              <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
+                              {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
+                                <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
+                              )}
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
                             </div>

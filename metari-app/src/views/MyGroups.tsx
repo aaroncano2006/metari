@@ -62,7 +62,7 @@ export default function MyGroups() {
             />
           </div>
           <div className="col-12 col-md">
-            <MyMetaListByGroup assignations={assignations} groups={groups}/>
+            <MyMetaListByGroup assignations={assignations} groups={groups} setAssignations={setAssignations}/>
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
