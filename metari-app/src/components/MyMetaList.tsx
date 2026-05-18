@@ -3,14 +3,16 @@ import { useState } from "react"
 import { getUserRole, getUserId } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
 import type { assignationType } from "../types/assignationType";
+import { updateAssignation } from "../services/assignationService"
 
 
 type MyMetaListProps = {
   assignations: assignationType[]
+  setAssignations: React.Dispatch<React.SetStateAction<assignationType[]>>
 
 }
 
-export function MyMetaList({ assignations }: MyMetaListProps) {
+export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
@@ -63,7 +65,9 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
 
                       <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                         <div className="me-auto">{assignation.meta.title}</div>
-                        <div className="">{assignation.completed === true ? "completa" : ""}</div>
+                        {assignation.completed === true && (
+                              <div className="badge bg-success">completada</div>
+                            )}
                       </div>
 
                     </div>
@@ -80,7 +84,17 @@ export function MyMetaList({ assignations }: MyMetaListProps) {
                           <div>completada: {assignation.completed ? "si" : "no"}</div>
                           <div>Creada el: {assignation.created_at}</div>
                           <div>Actualitzada el: {assignation.updated_at}</div>
-
+                          {!assignation.completed && assignation.meta.type === "task" && (
+                            <div className="btn btn-success mt-2"
+                              onClick={async () => {
+                                await updateAssignation(assignation.id, { completed: true })
+                                setAssignations(prev => prev.map(a =>
+                                  a.id === assignation.id ? { ...a, completed: true } : a
+                                ))
+                              }}>
+                              Completar
+                            </div>
+                          )}
 
                         </div>
                       )}

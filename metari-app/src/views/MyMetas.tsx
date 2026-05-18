@@ -61,7 +61,7 @@ export default function MyMetas() {
             />
           </div>
           <div className="col-12 col-md">
-            <MyMetaList assignations={assignations}/>
+            <MyMetaList assignations={assignations} setAssignations={setAssignations}/>
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
