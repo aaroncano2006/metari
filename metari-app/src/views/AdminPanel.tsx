@@ -69,7 +69,7 @@ export default function AdminPanel() {
 
   const q = searchTerm.toLowerCase()
   const filteredMetas = metas.filter(m =>
-    m.title.toLowerCase().includes(q) || m.description.toLowerCase().includes(q)
+    m.title.toLowerCase().includes(q) || m.description?.toLowerCase().includes(q)
   )
   const filteredCategories = categories.filter(c =>
     c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
