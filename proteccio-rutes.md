@@ -11,7 +11,7 @@
 
 ---
 
-## Categories (`/api/categories`)
+## Categories (`/api/categories`) (fet)
 
 | Mètode | Ruta | Protecció |
 |--------|------|-----------|
@@ -21,17 +21,27 @@
 | PUT | `/:id` | `isAuthenticated` + `isAdmin` |
 | DELETE | `/:id` | `isAuthenticated` + `isAdmin` |
 
+Les categòries ja venen definides en l'aplicació, els usuaris poden consultar-les i filtrar metes públiques per aquestes castegòries, però només els administradors de l'aplicació poden crear-les,
+editar-les i eliminar-les.
+
 ---
 
 ## Usuaris (`/api/usuaris`)
 
 | Mètode | Ruta | Protecció | Notes |
 |--------|------|-----------|-------|
-| GET | `/` | Pública | Excloure `password` i `restore_token` del resultat |
-| GET | `/:id` | Pública | Excloure `password` i `restore_token` del resultat |
+| GET | `/` | `isAuthenticated` | Excloure `password` i `restore_token` del resultat |
+| GET | `/:id` | `isAuthenticated` | Excloure `password` i `restore_token` del resultat |
 | POST | `/` | Pública | Registre |
 | PUT | `/:id` | `isAuthenticated` | Ownership check: `req.user.id === id` → perfil propi; `req.user.role === "admin"` → edició completa |
 | DELETE | `/:id` | `isAuthenticated` + `isAdmin` | Només admin |
+
+Els convidats no poden veure els usuaris registrats en l'aplicació, han de fer login o registar-se per poder tenir aquesta interacció,
+veuran el següent missatge si no estàn autenticats:
+
+```
+Fes LogIno Registra'tper participar amb la comunitat
+```
 
 ---
 
