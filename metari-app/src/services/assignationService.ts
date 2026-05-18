@@ -38,3 +38,13 @@ export async function deleteAssignation(id: number): Promise<void> {
     throw error;
   }
 }
+
+//per la taula assignation completions
+export async function createAssignationCompletion(assignationId: number, userId: number) {
+  const { data } = await axiosConnection.post(`/assignacio-completions`, {
+    assignation_id: assignationId,
+    user_id: userId,
+    is_Completed: true,
+  });
+  return data;
+}

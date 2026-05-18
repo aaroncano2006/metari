@@ -44,6 +44,7 @@ const createProof = async (req, res, next) => {
                 assignation_id: parseInt(reqBody.assignation_id),
                 user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
                 proof: reqBody.proof,
+                proof_type: reqBody.proof_type ?? "text", 
                 is_valid: reqBody.is_valid ?? false,
             },
         });

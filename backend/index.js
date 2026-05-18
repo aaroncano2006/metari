@@ -17,6 +17,7 @@ const grupRoutes = require("./routes/GroupRoutes");
 const assignationRoutes = require("./routes/AssignationRoutes");
 const commentRoutes = require("./routes/CommentRoutes");
 const proofRoutes = require("./routes/ProofRoutes");
+const assignationCompletionsRoutes = require("./routes/AssignationCompletionsRoutes");
 const groupUserRoutes = require("./routes/GroupUserRoutes");
 const indexedMetaRoutes = require("./routes/IndexedMetaRoutes");
 const loginRoutes = require("./routes/auth/LoginRoutes");
@@ -181,11 +182,13 @@ app.use("/api/grups", grupRoutes);
 app.use("/api/assignacions", assignationRoutes);
 app.use("/api/comentaris", commentRoutes);
 app.use("/api/proves", proofRoutes);
+app.use("/api/assignacio-completions", assignationCompletionsRoutes);
 app.use("/api/grups-usuaris", groupUserRoutes);
 app.use("/api/indexa-metas", indexedMetaRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/restore-password", restorePasswordRoutes);
 app.use("/api/search", searchRoutes);
+
 
 // app.get("/api/dashboard", verifyToken, (req, res) => {
 //   res.json({
