@@ -23,3 +23,8 @@ export async function createAssignation(newAssignation: Partial<assignationType>
   }
 
 }
+
+export async function updateAssignation(id: number, data: Partial<assignationType>): Promise<assignationType> {
+  const { data: response } = await axiosConnection.put<assignationType>(`/assignacions/${id}`, data);
+  return response;
+}

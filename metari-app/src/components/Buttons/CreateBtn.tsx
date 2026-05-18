@@ -4,9 +4,10 @@ import { useState } from "react";
 
 type CreateBtnProps = {
   menuSelection: string
+  setter?: React.Dispatch<React.SetStateAction<any[]>>
 }
 
-export function CreateBtn({menuSelection}: CreateBtnProps){
+export function CreateBtn({menuSelection, setter}: CreateBtnProps){
   const [creatingEntry , setCreatingEntry] = useState<string | null>(null)
 
     return (
@@ -17,7 +18,7 @@ export function CreateBtn({menuSelection}: CreateBtnProps){
 
 
       {creatingEntry && (
-        <ModalCreate creatingEntry={creatingEntry} setCreatingEntry={setCreatingEntry}/> )}
+        <ModalCreate creatingEntry={creatingEntry} setCreatingEntry={setCreatingEntry} setter={setter}/> )}
     </>
   );
 }

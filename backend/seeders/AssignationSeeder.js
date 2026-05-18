@@ -15,7 +15,7 @@ const seedAssignations = async () => {
         {
           group_id: 1,
           meta_id: 1,
-          user_id: null,
+          user_id: 1,
           start_date: new Date("2026-01-01"),
           due_date: new Date("2026-01-10"),
           priority: "high",
