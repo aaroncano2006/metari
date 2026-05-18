@@ -55,9 +55,15 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
     group.groupUsers.some(gu => gu.user_id === loggedInUserId)
   )
 
+  const filteredAssignations = assignations.filter(a =>
+  !a.meta.indexedMetas ||
+  a.meta.indexedMetas.length === 0 ||
+  a.meta.indexedMetas.some(im => im.is_community_approved === true)
+)
+
   const assignationsByGroup = myGroups.map(group => ({
     group,
-    assignations: assignations.filter(a => a.group_id === group.id)
+    assignations: filteredAssignations.filter(a => a.group_id === group.id)
   }))
   // .filter(item => item.assignations.length > 0)
 

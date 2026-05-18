@@ -10,7 +10,13 @@ const getAssignations = async (req, res, next) => {
     const assignations = await prisma.assignation.findMany({
       include: {
         group: true,
-        meta: true,
+        meta: {
+          include: {
+            indexedMetas: {
+              select: { is_community_approved: true }
+            }
+          }
+        },
         user: true,
         comments: true,
         proofs: true,
@@ -39,7 +45,7 @@ const getAssignationById = async (req, res, next) => {
       where: { id },
       include: {
         group: true,
-        meta: true,
+        meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
         comments: true,
         proofs: true,
@@ -108,7 +114,7 @@ const createAssignation = async (req, res, next) => {
       data,
       include: {
         group: true,
-        meta: true,
+        meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
         comments: true,
         proofs: true,
@@ -182,7 +188,7 @@ const updateAssignation = async (req, res, next) => {
       data,
       include: {
         group: true,
-        meta: true,
+        meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
         comments: true,
         proofs: true,
