@@ -183,9 +183,10 @@ export default function SendGroupInvitationBtn({
                 event.stopPropagation();
                 await handleAcceptInvitation();
               }}
+              title={small ? "Acceptar invitació" : ""}
             >
               <i className={`bi bi-check-lg ${!small ? "me-2" : ""}`}></i>
-              {!small && <span>Acceptar</span>}
+              {!small && <span>Acceptar invitació</span>}
             </button>
           )}
           <button
@@ -194,6 +195,7 @@ export default function SendGroupInvitationBtn({
               event.stopPropagation();
               await handleRejectOrDelete();
             }}
+            title={small ? (pendingInvitation.sender_id === userId ? "Cancel·lar invitació" : "Rebutjar") : ""}
           >
             <i className={`bi bi-x-lg ${!small ? "me-2" : ""}`}></i>
             {!small && (
@@ -213,6 +215,7 @@ export default function SendGroupInvitationBtn({
             event.stopPropagation();
             await handleLeaveGroup();
           }}
+          title={small ? "Sortir del grup" : ""}
         >
           <i className={`bi bi-box-arrow-left ${!small ? "me-2" : ""}`}></i>
           {!small && <span>Sortir del grup</span>}
@@ -225,6 +228,7 @@ export default function SendGroupInvitationBtn({
             event.stopPropagation();
             await (receiverId === userId ? joinPublicGroup() : sendInvitationToUser());
           }}
+          title={small ? (receiverId === userId ? "Unir-se" : "Invitar al grup") : ""}
         >
           <i className={`bi bi-person-plus-fill ${!small ? "me-2" : ""}`}></i>
           {!small && <span>{receiverId === userId ? "Unir-se" : "Invitar al grup"}</span>}
