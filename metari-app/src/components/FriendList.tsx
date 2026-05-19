@@ -57,7 +57,7 @@ export function FriendList({ users, setter }: UserListProps) {
                             <i className="bi bi-person-fill"></i>
                           </Link>
                         )}
-                        {token && (vistaActual === "/" || vistaActual === "/search") && (
+                        {token && (vistaActual === "/" || vistaActual === "/search" || vistaActual === "/mymetas" || vistaActual === "/mygroups") && (
                           <SendFriendInvitationButton
                             receiverId={user.id}
                             small={true}

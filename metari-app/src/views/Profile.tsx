@@ -11,6 +11,7 @@ import UserProfileForm from "../components/UserProfileForm";
 import UserProfileStats from "../components/UserProfileStats";
 import { getUserProfileData } from "../services/auth/profileService";
 import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
+import SendGroupInvitationBtn from "../components/Buttons/SendGroupInvitationBtn";
 import { FriendList } from "../components/FriendList";
 import {
   fetchFriends,
@@ -46,6 +47,8 @@ export default function Profile() {
   const [groupsList, setGroupsList] = useState<groupType[]>([]);
   const [friendInvitations, setFriendInvitations] = useState<any[]>([]);
   const [groupInvitations, setGroupInvitations] = useState<any[]>([]);
+  const [myGroupsForInvite, setMyGroupsForInvite] = useState<groupType[]>([]);
+  const [selectedGroupForInvite, setSelectedGroupForInvite] = useState<number | null>(null);
 
   const stats = userData
     ? {
@@ -54,27 +57,32 @@ export default function Profile() {
       }
     : getUserStats();
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const user = await getUserProfileData(usernameSearchParam);
-        if (user) {
-          if (user.username === getUserName()) {
-            return navigate("/profile");
+      const loadProfile = async () => {
+        try {
+          const user = await getUserProfileData(usernameSearchParam);
+          if (user) {
+            if (user.username === getUserName()) {
+              return navigate("/profile");
+            }
+            setUserData(user);
+            const [friends, groups, myGroups] = await Promise.all([
+              fetchFriends(user.id),
+              fetchGroupsByUserId(user.id),
+              fetchGroupsByUserId(getUserId()!),
+            ]);
+            setFriendsList(friends);
+            setGroupsList(groups);
+            setMyGroupsForInvite(myGroups);
+            if (myGroups.length > 0) {
+              setSelectedGroupForInvite(myGroups[0].id);
+            }
+          } else {
+            throw new Error(`No s'ha trobat cap usuari amb el username: `);
           }
-          setUserData(user);
-          const [friends, groups] = await Promise.all([
-            fetchFriends(user.id),
-            fetchGroupsByUserId(user.id),
-          ]);
-          setFriendsList(friends);
-          setGroupsList(groups);
-        } else {
-          throw new Error(`No s'ha trobat cap usuari amb el username: `);
+        } catch (err: any) {
+          setError(err.message);
         }
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
+      };
 
     if (usernameSearchParam) {
       loadProfile();
@@ -150,11 +158,35 @@ export default function Profile() {
               <div className="col-9">
                 <h1>Profile</h1>
               </div>
-              <div className="col pt-2">
+              <div className="col pt-2 d-flex gap-2 align-items-start">
                 {userData && (
-                  <SendFriendInvitationButton
-                    receiverId={userData?.id}
-                  ></SendFriendInvitationButton>
+                  <>
+                    <SendFriendInvitationButton
+                      receiverId={userData?.id}
+                    />
+                    {myGroupsForInvite.length > 0 && selectedGroupForInvite && (
+                      <SendGroupInvitationBtn
+                        receiverId={userData.id}
+                        groupId={selectedGroupForInvite}
+                      />
+                    )}
+                    {myGroupsForInvite.length > 0 && (
+                      <select
+                        className="form-select form-select-sm"
+                        style={{ width: "auto" }}
+                        value={selectedGroupForInvite ?? ""}
+                        onChange={(e) =>
+                          setSelectedGroupForInvite(parseInt(e.target.value))
+                        }
+                      >
+                        {myGroupsForInvite.map((g) => (
+                          <option key={g.id} value={g.id}>
+                            {g.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </>
                 )}
               </div>
             </header>
@@ -185,6 +217,7 @@ export default function Profile() {
                       <FriendList users={friendsList}></FriendList>
                       <MyGroupsList
                         groups={groupsList}
+                        setter={setGroupsList}
                       ></MyGroupsList>
                     </div>
                   </>
@@ -246,7 +279,7 @@ export default function Profile() {
                     </button>
                   </div>
                   {!groupInvitationPanelActive && (
-                    <MyGroupsList groups={groupsList}></MyGroupsList>
+                    <MyGroupsList groups={groupsList} setter={setGroupsList}></MyGroupsList>
                   )}
                   {groupInvitationPanelActive && (
                     <InvitationList invitations={groupInvitations} target="groups"></InvitationList>
