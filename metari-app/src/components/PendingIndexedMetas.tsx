@@ -1,8 +1,5 @@
-import { useState, useEffect } from "react";
-import {
-  fetchIndexedMetas,
-  updateIndexedMeta,
-} from "../services/IndexerService";
+import { useState } from "react";
+import { updateIndexedMeta } from "../services/IndexerService";
 import type { indexedType } from "../types/indexedType";
 
 type PendingIndexedMetasProps = {
@@ -24,15 +21,6 @@ export function PendingIndexedMetas({
   const toggleEntity = (id: number) => {
     setOpenEntityId((prev) => (prev === id ? null : id));
   };
-  // const pendingMetas = indexedMetas.filter(
-  //   indexed => indexed.is_community_approved === null || indexed.is_community_approved === false
-  // )
-  // const pendingMetas = indexedMetas.filter(indexed =>
-  //   filterStatus === "pending"
-  //     ? indexed.is_community_approved === null
-  //     : indexed.is_community_approved === false
-  // )
-
   const pendingMetas = indexedMetas.filter((indexed) =>
     isGroupModerating
       ? filterStatus === "pending"
@@ -78,22 +66,34 @@ export function PendingIndexedMetas({
             </li>
           )}
           {pendingMetas.map((indexed) => (
-            <li key={indexed.id} className="m-0 p-0">
-              <div
-                className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === indexed.id ? "mb-0" : "mb-1"} ${
-                  indexed.meta.type === "task" ? "meta-task" : "meta-challenge"
-                }`}
-                onClick={() => toggleEntity(indexed.id)}
-              >
+              <li key={indexed.id} className="m-0 p-0">
+                <div
+                  className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === indexed.id ? "mb-0" : "mb-1"} ${
+                    indexed.meta.type === "task" ? "meta-task" : "meta-challenge"
+                  }`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => toggleEntity(indexed.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggleEntity(indexed.id);
+                    }
+                  }}
+                >
                 <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                   <div>{indexed.meta.title}</div>
 
                   <span
-                    className={`ms-auto badge ${indexed.is_community_approved === false ? "bg-danger" : "bg-warning text-black"}`}
+                    className={`ms-auto badge ${isGroupModerating ? (indexed.is_approved === false ? "bg-danger" : "bg-warning text-black") : indexed.is_community_approved === false ? "bg-danger" : "bg-warning text-black"}`}
                   >
-                    {indexed.is_community_approved === false
-                      ? "Rebutjada"
-                      : "Pendent"}
+                    {isGroupModerating
+                      ? indexed.is_approved === false
+                        ? "Rebutjada"
+                        : "Pendent"
+                      : indexed.is_community_approved === false
+                        ? "Rebutjada"
+                        : "Pendent"}
                   </span>
                 </div>
               </div>
@@ -109,12 +109,17 @@ export function PendingIndexedMetas({
                       className="btn btn-success btn-sm ms-2"
                       onClick={async (e) => {
                         e.stopPropagation();
-                        await updateIndexedMeta(indexed.id, {
-                          is_community_approved: true,
-                        });
-                        setIndexedMetas((prev) =>
-                          prev.filter((im) => im.id !== indexed.id),
-                        );
+                        try {
+                          const data = isGroupModerating
+                            ? { is_approved: true }
+                            : { is_community_approved: true };
+                          await updateIndexedMeta(indexed.id, data);
+                          setIndexedMetas((prev) =>
+                            prev.filter((im) => im.id !== indexed.id),
+                          );
+                        } catch {
+                          console.error("Error approving indexed meta");
+                        }
                       }}
                     >
                       Aprovar
@@ -123,16 +128,19 @@ export function PendingIndexedMetas({
                       className="btn btn-danger btn-sm ms-2"
                       onClick={async (e) => {
                         e.stopPropagation();
-                        await updateIndexedMeta(indexed.id, {
-                          is_community_approved: false,
-                        });
-                        setIndexedMetas((prev) =>
-                          prev.map((im) =>
-                            im.id === indexed.id
-                              ? { ...im, is_community_approved: false }
-                              : im,
-                          ),
-                        );
+                        try {
+                          const data = isGroupModerating
+                            ? { is_approved: false }
+                            : { is_community_approved: false };
+                          await updateIndexedMeta(indexed.id, data);
+                          setIndexedMetas((prev) =>
+                            prev.map((im) =>
+                              im.id === indexed.id ? { ...im, ...data } : im,
+                            ),
+                          );
+                        } catch {
+                          console.error("Error rejecting indexed meta");
+                        }
                       }}
                     >
                       Rebutjar
