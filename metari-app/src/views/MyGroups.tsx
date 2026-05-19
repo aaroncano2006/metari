@@ -42,14 +42,7 @@ export default function MyGroups() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    fetchUsers().then(setUsers)
-    fetchCategories().then(setCategories)
-    fetchMetas().then(setMetas)
-    fetchGroups().then((response) => {
-      const filteredByPublic = response.filter((el) => el.is_public);
-      setGroups(filteredByPublic);
-    });
+  const fetchMyGroups = () => {
     fetchGroups().then((response) => {
       const filteredByPublic = response.filter(
         (el) =>
@@ -58,10 +51,26 @@ export default function MyGroups() {
       );
       setMyGroups(filteredByPublic);
     });
+  };
+
+  useEffect(() => {
+    fetchUsers().then(setUsers)
+    fetchCategories().then(setCategories)
+    fetchMetas().then(setMetas)
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter((el) => el.is_public);
+      setGroups(filteredByPublic);
+    });
+    fetchMyGroups();
     fetchFriends(getUserId()!).then(setFriends)
     fetchAssignations().then(setAssignations)
 
   }, [])
+
+  useEffect(() => {
+    window.addEventListener("buttonChange", fetchMyGroups);
+    return () => window.removeEventListener("buttonChange", fetchMyGroups);
+  }, []);
 
   if (!token) {
     navigate("/login");

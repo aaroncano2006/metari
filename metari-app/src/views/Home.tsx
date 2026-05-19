@@ -40,14 +40,7 @@ export default function Home() {
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null);
   const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
 
-  useEffect(() => {
-    fetchUsers().then(setUsers);
-    fetchCategories().then(setCategories);
-    fetchMetas().then(setMetas);
-    fetchGroups().then((response) => {
-      const filteredByPublic = response.filter((el) => el.is_public);
-      setGroups(filteredByPublic);
-    });
+  const fetchMyGroups = () => {
     fetchGroups().then((response) => {
       const filteredByPublic = response.filter(
         (el) =>
@@ -56,10 +49,26 @@ export default function Home() {
       );
       setMyGroups(filteredByPublic);
     });
+  };
+
+  useEffect(() => {
+    fetchUsers().then(setUsers);
+    fetchCategories().then(setCategories);
+    fetchMetas().then(setMetas);
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter((el) => el.is_public);
+      setGroups(filteredByPublic);
+    });
+    fetchMyGroups();
     if (token) {
       fetchFriends(getUserId()!).then(setFriends);
       fetchAssignations().then(setAssignations);
     }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("buttonChange", fetchMyGroups);
+    return () => window.removeEventListener("buttonChange", fetchMyGroups);
   }, []);
 
   return (

@@ -180,13 +180,13 @@ export default function SendGroupInvitationBtn({receiverId, small, groupId, isPu
                     {!small && <span>Sortir del grup</span>}
                 </button>
             )}
-            {!pendingInvitation && !alreadyInGrup && (
+            {isPublic && !pendingInvitation && !alreadyInGrup && (
                 <button
                     className={`btn ${small ? "p-1" : ""} btn-success`}
-                    onClick={async (event) => {event.stopPropagation(); await (isPublic ? joinPublicGroup() : sendInvitationToUser())}}
+                    onClick={async (event) => {event.stopPropagation(); await joinPublicGroup()}}
                 >
                     <i className={`bi bi-person-plus-fill ${!small ? "me-2" : ""}`}></i>
-                    {!small && <span>{isPublic ? "Unir-se" : "Invitar al grup"}</span>}
+                    {!small && <span>Unir-se</span>}
                 </button>
             )}
         </>

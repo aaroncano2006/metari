@@ -19,6 +19,7 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
   };
 
   const token = localStorage.getItem("token");
+  const vistaActual = useLocation().pathname;
 
   //suma el total de punts del grup
   const groupScores = new Map(
@@ -49,10 +50,15 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
                     >
                       <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                         <div className="me-auto">{group.name}</div>
-                        {token && (
+                        {token &&
+                          (vistaActual === "/" ||
+                            vistaActual === "/search" ||
+                            vistaActual === "/mymetas" ||
+                            vistaActual === "/mygroups") && (
                             <SendGroupInvitationBtn
                               receiverId={getUserId()!}
                               groupId={group.id}
+                              isPublic={group.is_public}
                               small={true}
                             />
                           )}
@@ -92,6 +98,15 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
                             ))}
                           </div>
                           {/* } */}
+                          {vistaActual === "/profile" && (
+                            <div className="d-flex p-3 justify-content-end">
+                              <SendGroupInvitationBtn
+                                receiverId={getUserId()!}
+                                groupId={group.id}
+                                isPublic={group.is_public}
+                              />
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
