@@ -1,30 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { assignationType } from "../../types/assignationType"
 import { getUserId } from "../../services/auth/loginService"
-import { createProof, createProofWithFile } from "../../services/proofService"
+import { createProof, createProofWithFile, updateProof, updateProofWithFile } from "../../services/proofService"
 import { proofSchema } from "../../schemas/proofSchema"
+import type { proofType } from "../../types/proofType"
 
 type ModalProps = {
   assignation: assignationType
   assignationSetter: React.Dispatch<React.SetStateAction<assignationType | null>>
   setAssignations: React.Dispatch<React.SetStateAction<assignationType[]>>
+  existingProof?: proofType
 }
 
 
-export function ModalAddProof({ assignation, assignationSetter, setAssignations }: ModalProps) {
+export function ModalAddProof({ assignation, assignationSetter, setAssignations, existingProof }: ModalProps) {
   const [proofType, setProofType] = useState<"text" | "image">("text")
   const [proofText, setProofText] = useState("")
   const [proofImage, setProofImage] = useState<File | null>(null)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
+  useEffect(() => {
+    if (existingProof) {
+      setProofType(existingProof.proof_type as "text" | "image")
+      if (existingProof.proof_type === "text") {
+        setProofText(existingProof.proof)
+      }
+    }
+  }, [existingProof])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-
     setErrors({})
-
     const userId = getUserId()
-
     if (proofType === "text") {
       const data = {
         assignation_id: assignation.id,
@@ -43,18 +50,24 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations 
         setErrors(fieldErrors)
         return
       }
-
       setErrors({})
-      const proof = await createProof(validation.data)
-
-      setAssignations(prev => prev.map(a =>
-        a.id === proof.assignation_id
-          ? { ...a, proofs: [...(a.proofs ?? []), proof] }
-          : a
-      ))
+      if (existingProof) {
+        const proof = await updateProof(existingProof.id, validation.data)
+        setAssignations(prev => prev.map(a =>
+          a.id === proof.assignation_id
+            ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
+            : a
+        ))
+      } else {
+        const proof = await createProof(validation.data)
+        setAssignations(prev => prev.map(a =>
+          a.id === proof.assignation_id
+            ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+            : a
+        ))
+      }
       assignationSetter(null)
     }
-
     if (proofType === "image" && proofImage) {
       const formData = new FormData()
       formData.append("assignation_id", String(assignation.id))
@@ -62,15 +75,21 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations 
       formData.append("proof_type", "image")
       formData.append("is_valid", "false")
       formData.append("proofImage", proofImage)
-
-      const proof = await createProofWithFile(formData)
-      setAssignations(prev => prev.map(a =>
-        a.id === proof.assignation_id
-          ? { ...a, proofs: [...(a.proofs ?? []), proof] }
-          : a
-      ))
-
-
+      if (existingProof) {
+        const proof = await updateProofWithFile(existingProof.id, formData)
+        setAssignations(prev => prev.map(a =>
+          a.id === proof.assignation_id
+            ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
+            : a
+        ))
+      } else {
+        const proof = await createProofWithFile(formData)
+        setAssignations(prev => prev.map(a =>
+          a.id === proof.assignation_id
+            ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+            : a
+        ))
+      }
       assignationSetter(null)
     }
   }
@@ -132,6 +151,12 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations 
                       onChange={(e) => setProofImage(e.target.files?.[0] ?? null)}
                     />
                   </>
+                )}
+                {proofType === "image" && existingProof && !proofImage && (
+                  <div className="mb-2">
+                    <p>Imatge actual:</p>
+                    <img src={existingProof.proof} alt="Prova actual" className="img-fluid" style={{ maxHeight: 200 }} />
+                  </div>
                 )}
                 <div className="d-flex justify-content-end gap-2">
                   <button

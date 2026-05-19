@@ -15,7 +15,14 @@ router.post("/", (req, res, next) => {
   }
 }, proofController.createProof);
 
-router.put('/:id', proofController.updateProof);
+router.put("/:id", (req, res, next) => {
+    if (req.is("multipart/form-data")) {
+        upload.single("proofImage")(req, res, next);
+    } else {
+        next();
+    }
+}, proofController.updateProof);
+
 router.delete('/:id', proofController.deleteProof);
 
 

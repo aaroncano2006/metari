@@ -62,7 +62,7 @@ const createProof = async (req, res, next) => {
                 error.statusCode = 400;
                 throw error;
             }
-            
+
             const proof = await prisma.proof.create({
                 data: {
                     assignation_id: parseInt(reqBody.assignation_id),
@@ -97,28 +97,27 @@ const createProof = async (req, res, next) => {
 
 const updateProof = async (req, res, next) => {
     const reqBody = req.body;
-
     try {
+        const data = {
+            proof: reqBody.proof,
+            proof_type: reqBody.proof_type,
+            is_valid: reqBody.is_valid === "true" || reqBody.is_valid === true,
+        };
+        if (req.file) {
+            const ext = path.extname(req.file.originalname);
+            const fileName = `${reqBody.assignation_id}_${req.params.id}_${reqBody.user_id}${ext}`;
+            const destPath = path.join("uploads/proofs", fileName);
+            fs.renameSync(req.file.path, destPath);
+            data.proof = `/uploads/proofs/${fileName}`;
+        }
         const updatedProof = await prisma.proof.update({
             where: { id: parseInt(req.params.id) },
-            data: {
-                assignation_id: reqBody.assignation_id
-                    ? parseInt(reqBody.assignation_id)
-                    : undefined,
-                user_id: reqBody.user_id
-                    ? parseInt(reqBody.user_id)
-                    : undefined,
-                proof: reqBody.proof,
-                is_valid: reqBody.is_valid,
-            },
+            data,
         });
-
         res.status(200).json(utils.handleBigInt(updatedProof));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        // res.status(500).json({ error: "Error al actualitzar la prova" });
         next(error);
-
     }
 };
 

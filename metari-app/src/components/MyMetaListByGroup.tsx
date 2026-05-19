@@ -9,6 +9,8 @@ import { fetchComments, deleteComment } from "../services/commentService";
 import type { commentType } from "../types/commentType";
 import { updateAssignation, createAssignationCompletion } from "../services/assignationService";
 import { ModalAddProof } from "./modals/ModalAddProof";
+import type { proofType } from "../types/proofType";
+import { deleteProof } from "../services/proofService";
 
 
 type MyMetaListProps = {
@@ -33,6 +35,10 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
 
   const hasUserSentProof = (assignation: assignationType): boolean => {
     return assignation.proofs?.some(p => p.user_id === loggedInUserId) ?? false
+  }
+
+  const getUserProof = (assignation: assignationType): proofType | undefined => {
+    return assignation.proofs?.find(p => p.user_id === loggedInUserId)
   }
 
 
@@ -199,12 +205,33 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                 </div>
                               )}
 
-                              {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs && (
-                                <div className="btn btn-warning align-self-end me-2"
-                                  onClick={() => setAssignationToAddProof(assignation)}>
-                                  Enviar prova
-                                </div>
-                              )}
+                              {(() => {
+                                const userProof = getUserProof(assignation)
+                                return assignation.meta.type === "challenge" && assignation.needs_proofs && (
+                                  <div className="d-flex gap-2 align-self-end me-2">
+                                    <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
+                                      onClick={() => setAssignationToAddProof(assignation)}>
+                                      {userProof ? "Editar prova" : "Enviar prova"}
+                                    </div>
+                                    {userProof && (
+                                      <div className="btn btn-danger"
+                                        onClick={async () => {
+                                          await deleteProof(userProof.id)
+                                          
+                                          setAssignations(prev => prev.map(a =>
+                                            a.id === assignation.id
+                                              ? { ...a, proofs: a.proofs?.filter(p => p.id !== userProof.id) }
+                                              : a
+                                          ))
+                                        }}>
+                                        Elimina prova
+                                      </div>
+                                    )}
+                                  </div>
+                                )
+                              })()}
+
+
 
 
                               {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
@@ -327,6 +354,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
       {assignationToAddProof && (
         <ModalAddProof
           assignation={assignationToAddProof}
+          existingProof={getUserProof(assignationToAddProof)}
           assignationSetter={setAssignationToAddProof}
           setAssignations={setAssignations}
         />
