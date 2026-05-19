@@ -28,3 +28,7 @@ export async function updateAssignation(id: number, data: Partial<assignationTyp
   const { data: response } = await axiosConnection.put<assignationType>(`/assignacions/${id}`, data);
   return response;
 }
+
+export async function deleteAssignation(id: number): Promise<void> {
+  await axiosConnection.delete(`/assignacions/${id}`);
+}
