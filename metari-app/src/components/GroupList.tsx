@@ -71,8 +71,8 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                     onClick={() => toggleEntity(group.id)}>
 
                     <div className="d-flex py-1 ps-2 pe-2 align-items-center">
-                      <div>{group.name}</div>
-                      {token && group.groupUsers.some((gu) => gu.user_id === getUserId()) && (
+                      <div className="me-auto">{group.name}</div>
+                      {token && (
                         <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} small={true} />
                       )}
                       {canEdit &&
