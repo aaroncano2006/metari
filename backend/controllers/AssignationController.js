@@ -20,7 +20,9 @@ const getAssignations = async (req, res, next) => {
         user: true,
         comments: true,
         proofs: true,
-        assignationCompletions: true,
+        assignationCompletions: {
+          include: { user: true }
+        }
       },
     });
     res.status(200).json(utils.handleBigInt(assignations));

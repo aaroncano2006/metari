@@ -7,7 +7,10 @@ import type { groupType } from "../types/groupType";
 import { ModalAddComment } from "./modals/ModalAddComment";
 import { fetchComments, deleteComment } from "../services/commentService";
 import type { commentType } from "../types/commentType";
-import { updateAssignation } from "../services/assignationService";
+import { updateAssignation, createAssignationCompletion } from "../services/assignationService";
+import { ModalAddProof } from "./modals/ModalAddProof";
+import type { proofType } from "../types/proofType";
+import { deleteProof } from "../services/proofService";
 
 
 type MyMetaListProps = {
@@ -21,6 +24,21 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
   const [openEntityId, setOpenEntityId] = useState<number | null>(null)
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
+  }
+
+  const hasUserCompletedChallenge = (assignation: assignationType): boolean => {
+    if (assignation.meta.type !== "challenge") return assignation.completed;
+    return assignation.assignationCompletions?.some(
+      ac => ac.user_id === loggedInUserId && ac.is_Completed
+    ) ?? false
+  }
+
+  const hasUserSentProof = (assignation: assignationType): boolean => {
+    return assignation.proofs?.some(p => p.user_id === loggedInUserId) ?? false
+  }
+
+  const getUserProof = (assignation: assignationType): proofType | undefined => {
+    return assignation.proofs?.find(p => p.user_id === loggedInUserId)
   }
 
 
@@ -38,6 +56,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
   const [comment, setcomment] = useState<commentType>()
 
   const [commentFormType, setcommentFormType] = useState<string | null>(null)
+  const [assignationToAddProof, setAssignationToAddProof] = useState<assignationType | null>(null)
 
 
   useEffect(() => {
@@ -56,10 +75,10 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
   )
 
   const filteredAssignations = assignations.filter(a =>
-  !a.meta.indexedMetas ||
-  a.meta.indexedMetas.length === 0 ||
-  a.meta.indexedMetas.some(im => im.is_community_approved === true)
-)
+    !a.meta.indexedMetas ||
+    a.meta.indexedMetas.length === 0 ||
+    a.meta.indexedMetas.some(im => im.is_community_approved === true)
+  )
 
   const assignationsByGroup = myGroups.map(group => ({
     group,
@@ -73,7 +92,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
     assignations,
     myAssignations: assignations
       .filter(a => a.user_id === loggedInUserId || a.meta.type === "challenge")
-      .filter(a => showCompletedByGroup[group.id] || !a.completed),
+      .filter(a => showCompletedByGroup[group.id] || !hasUserCompletedChallenge(a)),
     memberAssignations: assignations
       .filter(a => a.user_id !== loggedInUserId && a.meta.type === "task")
       .filter(a => showCompletedByGroup[group.id] || !a.completed)
@@ -115,8 +134,11 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                           }>
                           <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                             <div className="me-auto">{assignation.meta.title}</div>
-                            {assignation.completed === true && (
+                            {hasUserCompletedChallenge(assignation) === true && (
                               <div className="badge bg-success">completada</div>
+                            )}
+                            {assignation.meta.type === "challenge" && hasUserSentProof(assignation) && (
+                              <div className="badge bg-success ms-1">Proves enviades</div>
                             )}
                           </div>
                         </div>
@@ -133,10 +155,27 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                               <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
                               <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
                               <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
-                              <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
+
+                              {assignation.meta.type === "challenge" && (
+                                <div>🏆 Puntuacio: {assignation.score ?? 0}</div>
+                              )}
+
+
+                              {/* <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div> */}
+
+                              {assignation.assignationCompletions && assignation.assignationCompletions.length > 0 && (
+                                <div>✅ Completat per: {assignation.assignationCompletions
+                                  .filter(ac => ac.is_Completed)
+                                  .map(ac => ac.user?.username ?? ac.user_id)
+                                  .join(", ")
+                                }</div>
+                              )}
+
+
                               {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
                                 <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
                               )}
+
                               <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
                               <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
                               <div className=" d-flex align-self-end me-2 mb-2 mt-2">
@@ -154,7 +193,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
 
                                   }}>Nou comentari</div>
                               </div>
-                              {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs &&(
+                              {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs && (
                                 <div className="btn btn-success align-self-end me-2"
                                   onClick={async () => {
                                     await updateAssignation(assignation.id, { completed: true })
@@ -162,10 +201,52 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                       a.id === assignation.id ? { ...a, completed: true } : a
                                     ))
                                   }}>
-                                  Marcar completada
+                                  Marcar task completada
                                 </div>
                               )}
 
+                              {(() => {
+                                const userProof = getUserProof(assignation)
+                                return assignation.meta.type === "challenge" && assignation.needs_proofs && (
+                                  <div className="d-flex gap-2 align-self-end me-2">
+                                    <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
+                                      onClick={() => setAssignationToAddProof(assignation)}>
+                                      {userProof ? "Editar prova" : "Enviar prova"}
+                                    </div>
+                                    {userProof && (
+                                      <div className="btn btn-danger"
+                                        onClick={async () => {
+                                          await deleteProof(userProof.id)
+                                          
+                                          setAssignations(prev => prev.map(a =>
+                                            a.id === assignation.id
+                                              ? { ...a, proofs: a.proofs?.filter(p => p.id !== userProof.id) }
+                                              : a
+                                          ))
+                                        }}>
+                                        Elimina prova
+                                      </div>
+                                    )}
+                                  </div>
+                                )
+                              })()}
+
+
+
+
+                              {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
+                                <div className="btn btn-success align-self-end me-2"
+                                  onClick={async () => {
+                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!)
+                                    setAssignations(prev => prev.map(a =>
+                                      a.id === assignation.id
+                                        ? { ...a, assignationCompletions: [...(a.assignationCompletions ?? []), newCompletion] }
+                                        : a
+                                    ))
+                                  }}>
+                                  Marcar completada
+                                </div>
+                              )}
 
                               {showComments === true && (() => {
                                 const filteredComments = comments
@@ -268,6 +349,14 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
           commentSetter={setComments}
           commentFormType={commentFormType}
           comment={comment}
+        />
+      )}
+      {assignationToAddProof && (
+        <ModalAddProof
+          assignation={assignationToAddProof}
+          existingProof={getUserProof(assignationToAddProof)}
+          assignationSetter={setAssignationToAddProof}
+          setAssignations={setAssignations}
         />
       )}
     </>
