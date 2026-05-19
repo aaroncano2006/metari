@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { updateIndexedMeta } from "../services/IndexerService";
-import type { indexedType } from "../types/indexedType";
+import { useState, useEffect } from "react"
+import { deleteIndexedMeta, fetchIndexedMetas, updateIndexedMeta } from "../services/IndexerService"
+import type { indexedType } from "../types/indexedType"
+import { deleteMeta } from "../services/metaService"
+import { deleteAssignation, fetchAssignations } from "../services/assignationService"
 
 type PendingIndexedMetasProps = {
   indexedMetas: indexedType[];
@@ -124,6 +126,7 @@ export function PendingIndexedMetas({
                     >
                       Aprovar
                     </button>
+                    
                     <button
                       className="btn btn-danger btn-sm ms-2"
                       onClick={async (e) => {
@@ -145,6 +148,54 @@ export function PendingIndexedMetas({
                     >
                       Rebutjar
                     </button>
+                    
+                    {indexed.is_community_approved !== null &&
+                      <button className="btn btn-warning btn-sm ms-2"
+                        onClick={async (e) => {
+                          e.stopPropagation()
+                          await updateIndexedMeta(indexed.id, { is_community_approved: null })
+                          setIndexedMetas(prev => prev.map(im =>
+                            im.id === indexed.id ? { ...im, is_community_approved: null } : im
+                          ))
+                        }}
+                      >
+                        Marcar pendent
+                      </button>
+                    }
+                    
+                    {/*{indexed.is_community_approved !== false &&
+                      <button className="btn btn-danger btn-sm ms-2"
+                        onClick={async (e) => {
+                          e.stopPropagation()
+                          await updateIndexedMeta(indexed.id, { is_community_approved: false })
+                          setIndexedMetas(prev => prev.map(im =>
+                            im.id === indexed.id ? { ...im, is_community_approved: false } : im
+                          ))
+                        }}
+                      >
+                        Rebutjar
+                      </button>
+                    }*/}
+
+                    {indexed.is_community_approved === false &&
+                      <button className="btn btn-danger btn-sm ms-2"
+                        onClick={async (e) => {
+                          e.stopPropagation()
+
+                          const allAssignations = await fetchAssignations()
+                          const toDelete = allAssignations.filter(a => a.meta_id === indexed.meta_id)
+                          for (const ass of toDelete) {
+                            await deleteAssignation(ass.id)
+                          }
+
+                          await deleteIndexedMeta(indexed.id)
+                          await deleteMeta(indexed.meta_id)
+                          setIndexedMetas(prev => prev.filter(im => im.id !== indexed.id))
+                        }}
+                      >
+                        Eliminar
+                      </button>
+                    }
                   </div>
                 )}
               </div>

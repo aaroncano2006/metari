@@ -30,5 +30,10 @@ export async function updateIndexedMeta(id: number, data: Partial<indexedType>):
 }
 
 export async function deleteIndexedMeta(id: number): Promise<void> {
-  await axiosConnection.delete(`/indexa-metas/${id}`);
+  try {
+    await axiosConnection.delete(`/indexa-metas/${id}`);
+  } catch (error) {
+    console.error("Error eliminant meta indexada:", error);
+  }
+  
 }
