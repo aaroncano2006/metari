@@ -2,11 +2,15 @@ import { useState } from "react"
 import type { assignationType } from "../../types/assignationType"
 import { getUserId } from "../../services/auth/loginService"
 import { createProof, createProofWithFile } from "../../services/proofService"
+import { proofSchema } from "../../schemas/proofSchema"
+
 type ModalProps = {
   assignation: assignationType
   assignationSetter: React.Dispatch<React.SetStateAction<assignationType | null>>
   setAssignations: React.Dispatch<React.SetStateAction<assignationType[]>>
 }
+
+
 export function ModalAddProof({ assignation, assignationSetter, setAssignations }: ModalProps) {
   const [proofType, setProofType] = useState<"text" | "image">("text")
   const [proofText, setProofText] = useState("")
@@ -22,17 +26,27 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations 
     const userId = getUserId()
 
     if (proofType === "text") {
-      if (!proofText.trim()) {
-        setErrors({ proof: "El text de la prova no pot estar buit" })
-        return
-      }
-      const proof = await createProof({
+      const data = {
         assignation_id: assignation.id,
         user_id: userId,
         proof: proofText,
-        proof_type: "text",
+        proof_type: "text" as const,
         is_valid: false,
-      })
+      }
+      const validation = proofSchema.safeParse(data)
+      if (!validation.success) {
+        const fieldErrors: Record<string, string> = {}
+        validation.error.issues.forEach((issue) => {
+          const field = issue.path[0] as string
+          fieldErrors[field] = issue.message
+        })
+        setErrors(fieldErrors)
+        return
+      }
+
+      setErrors({})
+      const proof = await createProof(validation.data)
+
       setAssignations(prev => prev.map(a =>
         a.id === proof.assignation_id
           ? { ...a, proofs: [...(a.proofs ?? []), proof] }
@@ -40,7 +54,7 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations 
       ))
       assignationSetter(null)
     }
-    
+
     if (proofType === "image" && proofImage) {
       const formData = new FormData()
       formData.append("assignation_id", String(assignation.id))
@@ -56,7 +70,7 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations 
           : a
       ))
 
-      
+
       assignationSetter(null)
     }
   }

@@ -72,7 +72,7 @@ const createProof = async (req, res, next) => {
                     is_valid: false,
                 },
             });
-            // nombrem l'arxiu
+            // renombrem l'arxiu
             const ext = path.extname(req.file.originalname);
             const fileName = `${reqBody.assignation_id}_${proof.id}_${reqBody.user_id}${ext}`;
             const destPath = path.join("uploads/proofs", fileName);
@@ -93,28 +93,7 @@ const createProof = async (req, res, next) => {
     }
 };
 
-// const createProof = async (req, res, next) => {
-//     const reqBody = req.body;
 
-//     try {
-//         const proof = await prisma.proof.create({
-//             data: {
-//                 assignation_id: parseInt(reqBody.assignation_id),
-//                 user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
-//                 proof: reqBody.proof,
-//                 proof_type: reqBody.proof_type ?? "text", 
-//                 is_valid: reqBody.is_valid ?? false,
-//             },
-//         });
-
-//         res.status(201).json(utils.handleBigInt(proof));
-//     } catch (error) {
-//         console.error("Error en Prisma:", error);
-//         // res.status(500).json({ error: "Error al crear la prova" });
-//         next(error);
-
-//     }
-// };
 
 const updateProof = async (req, res, next) => {
     const reqBody = req.body;
