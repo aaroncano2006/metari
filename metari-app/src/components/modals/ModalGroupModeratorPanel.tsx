@@ -436,6 +436,7 @@ export default function ModalGroupModeratorPanel({
                       <PendingIndexedMetas
                         indexedMetas={indexedMetas}
                         setIndexedMetas={setIndexedMetas}
+                        isGroupModerating={true}
                       />
 
                       <div className="d-flex justify-content-end gap-2 mt-2">
