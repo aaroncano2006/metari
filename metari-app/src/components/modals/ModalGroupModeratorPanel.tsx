@@ -19,6 +19,9 @@ import { PendingIndexedMetas } from "../PendingIndexedMetas";
 import type { metaType } from "../../types/metaType";
 import type { assignationType } from "../../types/assignationType";
 import { fetchMetas, deleteMeta } from "../../services/metaService";
+import { search as searchUsers } from "../../services/searchService";
+import { sendInvitation } from "../../services/invitationService";
+import type { userTypeFrontend } from "../../types/userTypeFrontend";
 
 type ModalGroupModeratorPanelProps = {
   group: groupType;
@@ -37,6 +40,11 @@ export default function ModalGroupModeratorPanel({
   const [metas, setMetas] = useState<metaType[]>([]);
   const [assignations, setAssignations] = useState<assignationType[]>([]);
   const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([]);
+
+  const [inviteUsername, setInviteUsername] = useState("");
+  const [inviteMenuActive, setInviteMenuActive] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
 
   const [menu, setMenu] = useState<"users" | "metas" | "group_config">(
     defaultMenu ?? "group_config",
@@ -169,6 +177,35 @@ export default function ModalGroupModeratorPanel({
     } catch {
       setError("Error expulsant l'usuari! Revisa els teus permisos.");
       setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const handleInviteByUsername = async () => {
+    setInviteError(null);
+    setInviteSuccess(null);
+    if (!inviteUsername.trim()) return;
+    try {
+      const results = await searchUsers(inviteUsername);
+      const users = results.users || [];
+      const user = users.find((u: userTypeFrontend) =>
+        u.username.toLowerCase() === inviteUsername.toLowerCase() ||
+        u.name.toLowerCase() === inviteUsername.toLowerCase()
+      ) || users[0];
+      if (!user) {
+        return setInviteError("Usuari no trobat!");
+      }
+      if (groupUsers.some((gu) => gu.user_id === user.id)) {
+        return setInviteError("Aquest usuari ja és membre del grup!");
+      }
+      const userId = getUserId();
+      if (!userId) return;
+      await sendInvitation(userId, user.id, group.id);
+      setInviteSuccess(`Invitació enviada a ${user.name} (${user.username})`);
+      setInviteUsername("");
+      window.dispatchEvent(new Event("buttonChange"));
+      setTimeout(() => setInviteSuccess(null), 5000);
+    } catch {
+      setInviteError("Error enviant la invitació!");
     }
   };
 
@@ -315,7 +352,44 @@ export default function ModalGroupModeratorPanel({
                   )}
                   {menu === "users" && (
                     <div className="mt-3">
-                      <h6>Membres del grup ({groupUsers.length})</h6>
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <h6 className="m-0">Membres del grup ({groupUsers.length})</h6>
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => setInviteMenuActive(!inviteMenuActive)}
+                        >
+                          <i className="bi bi-person-plus-fill me-1"></i>
+                          Invitar
+                        </button>
+                      </div>
+
+                      {inviteMenuActive && (
+                        <div className="mb-3 p-2 border rounded bg-light">
+                          <div className="input-group">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              placeholder="Username del usuari..."
+                              value={inviteUsername}
+                              onChange={(e) => setInviteUsername(e.target.value)}
+                              onKeyDown={(e) => e.key === "Enter" && handleInviteByUsername()}
+                            />
+                            <button
+                              className="btn btn-primary btn-sm"
+                              onClick={handleInviteByUsername}
+                            >
+                              <i className="bi bi-send me-1"></i>Invitar
+                            </button>
+                          </div>
+                          {inviteError && (
+                            <small className="text-danger d-block mt-1">{inviteError}</small>
+                          )}
+                          {inviteSuccess && (
+                            <small className="text-success d-block mt-1">{inviteSuccess}</small>
+                          )}
+                        </div>
+                      )}
+
                       {groupUsers.length === 0 && (
                         <small className="text-muted">
                           No hi ha membres al grup.
