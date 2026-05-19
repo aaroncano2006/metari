@@ -1,10 +1,9 @@
-import type { userTypeFrontend } from "../types/userTypeFrontend"
 import { useState } from "react"
-import { ModalEditUser } from "./modals/ModalEditUser"
 import { ModalEditGroup } from "./modals/ModalEditGroup";
 import type { groupType } from "../types/groupType";
-import { getUserRole } from "../services/auth/loginService"
+import { getUserId, getUserRole } from "../services/auth/loginService"
 import { Link, useLocation } from "react-router-dom";
+import SendGroupInvitationBtn from "./Buttons/SendGroupInvitationBtn";
 
 
 
@@ -73,6 +72,9 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
 
                     <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                       <div>{group.name}</div>
+                      {token && group.groupUsers.some((gu) => gu.user_id === getUserId()) && (
+                        <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} small={true} />
+                      )}
                       {canEdit &&
                         <button className="  btn btn-warning p-1  me-2  ms-auto"
                           onClick={(event) => {
@@ -116,9 +118,6 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                                   <i className="bi bi-star-fill text-black"></i>
                                 </div>
                               )}
-                              {/* <div className="badge bg-warning text-black">
-                                {groupUser.role}
-                              </div> */}
                             </div>
                           ))}
                         </div>
