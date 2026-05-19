@@ -61,6 +61,7 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
                         <Link
                           to={`/profile?username=${user.username}`}
                           className="btn btn-primary p-1 me-2"
+                          title="Perfil d'usuari"
                           onClick={(event) => event.stopPropagation()}
                         >
                           <i className="bi bi-person-fill"></i>

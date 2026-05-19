@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 export const metaSchema = z.object({
-  title: z.string().min(1, "El titol es obligatori"),
+  title: z.string().min(5, "El titol ha de tenir almenys 5 caràcters"),
   description: z.string().optional(),
   author_id: z.number().int().positive().optional(),
   group_id: z.number().int().positive().optional(),

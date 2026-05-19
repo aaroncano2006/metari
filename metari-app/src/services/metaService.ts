@@ -29,6 +29,11 @@ export async function fetchMetaById(id: number): Promise<metaType> {
   return data;
 }
 
+export async function fetchMetasByUserId(userId: number): Promise<metaType[]> {
+  const { data } = await axiosConnection.get<metaType[]>(`/metas/user/${userId}`);
+  return data;
+}
+
 export async function createMeta(newMeta: Partial<metaType>): Promise<metaType> {
   try {
     const { data } = await axiosConnection.post<metaType>(`/metas`, newMeta);

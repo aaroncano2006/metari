@@ -52,17 +52,20 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                   }
                   setErrors({})
 
-                  const updatedUser = await updateUser(user.id, formData)
-
-                  setter(prev =>
-                    prev.map(users =>
-                      users.id === user.id
-                        ? updatedUser
-                        : users
+                  try {
+                    const updatedUser = await updateUser(user.id, formData)
+                    setter(prev =>
+                      prev.map(users =>
+                        users.id === user.id
+                          ? updatedUser
+                          : users
+                      )
                     )
-                  )
-
-                  setEditUser(null)
+                    setEditUser(null)
+                    alert("Usuari actualitzat correctament")
+                  } catch (error) {
+                    alert("Error en actualitzar l'usuari")
+                  }
 
                 }}
                 >
