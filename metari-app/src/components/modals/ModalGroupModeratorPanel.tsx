@@ -260,7 +260,7 @@ export default function ModalGroupModeratorPanel({
                         {groupUsers.map((gu) => (
                           <li
                             key={gu.user_id}
-                            className="d-flex mb-2 p-2 border rounded m-0 bg-light"
+                            className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between"
                           >
                             <div>
                               <strong>{gu.user.name}</strong>
