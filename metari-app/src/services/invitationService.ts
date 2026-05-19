@@ -74,9 +74,10 @@ export async function fetchMyInvitations(
 export async function rejectOrDeleteInvitation(
   userId: number,
   otherUserId: number,
+  groupId: number | null = null,
 ): Promise<any> {
-  const pending = await fetchInvitations(userId, otherUserId, "pending");
-  const accepted = await fetchInvitations(userId, otherUserId, "accepted");
+  const pending = await fetchInvitations(userId, otherUserId, "pending", groupId);
+  const accepted = await fetchInvitations(userId, otherUserId, "accepted", groupId);
 
   let deletePending = null;
   let deleteAccepted = null;

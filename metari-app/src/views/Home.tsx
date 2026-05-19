@@ -21,6 +21,7 @@ import { UserCreateMetaBtn } from "../components/Buttons/UserCreateMetaBtn";
 import { UserCreateGroupBtn } from "../components/Buttons/UserCreateGroupBtn";
 import { Helmet } from "react-helmet-async";
 import SearchBar from "../components/SearchBar";
+import ModalGroupModeratorPanel from "../components/modals/ModalGroupModeratorPanel";
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -37,6 +38,18 @@ export default function Home() {
   const token = localStorage.getItem("token");
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null);
+  // const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
+
+  const fetchMyGroups = () => {
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter(
+        (el) =>
+          el.owner_id === getUserId() ||
+          el.groupUsers.some((gu) => gu.user_id === getUserId()),
+      );
+      setMyGroups(filteredByPublic);
+    });
+  };
 
   useEffect(() => {
     fetchUsers().then(setUsers);
@@ -46,18 +59,16 @@ export default function Home() {
       const filteredByPublic = response.filter((el) => el.is_public);
       setGroups(filteredByPublic);
     });
-    fetchGroups().then((response) => {
-      const filteredByPublic = response.filter(
-        (el) =>
-          el.owner_id === getUserId() ||
-          el.groupUsers.some((gu) => gu.user_id === getUserId()),
-      );
-      setMyGroups(filteredByPublic);
-    });
+    fetchMyGroups();
     if (token) {
       fetchFriends(getUserId()!).then(setFriends);
       fetchAssignations().then(setAssignations);
     }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("buttonChange", fetchMyGroups);
+    return () => window.removeEventListener("buttonChange", fetchMyGroups);
   }, []);
 
   return (
@@ -75,6 +86,14 @@ export default function Home() {
             <div className="d-flex gap-2 justify-content-center">
               <UserCreateMetaBtn setMetas={setMetas} categories={categories} />
               <UserCreateGroupBtn setGroups={setGroups} />
+              {/* {groups[0] && (
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() => setGroupModeratorPanel(groups[0])}
+                >
+                  Panell de grup
+                </button>
+              )} */}
             </div>
           )}
 
@@ -99,13 +118,21 @@ export default function Home() {
             </div>
             <div className="col-12 col-md-3">
               <FriendList users={friends} setter={setFriends} />
-              <MyGroupsList groups={myGroups} />
+              <MyGroupsList groups={myGroups} setter={setMyGroups} />
               <UserList users={users} setter={setUsers} isTop10={true} />
               <GroupList groups={groups} setter={setGroups} isTop10={true} />
             </div>
           </div>
         </div>
       </div>
+
+      {/* {groupModeratorPanel && (
+        <ModalGroupModeratorPanel
+          group={groupModeratorPanel}
+          setEditGroup={setGroupModeratorPanel}
+          setter={setGroups}
+        />
+      )} */}
     </>
   );
 }

@@ -40,7 +40,9 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
     <>
       <div className="metaList mt-4">
         <div className="titolComponent  text-center my-2">
-          {vistaActual === "/admin" || !isTop10 ? "Llista d'usuaris" : "Top 10 Usuaris"}
+          {vistaActual === "/admin" || !isTop10
+            ? "Llista d'usuaris"
+            : "Top 10 Usuaris"}
         </div>
         <hr className="m-0" />
 
@@ -65,12 +67,17 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
                           <i className="bi bi-person-fill"></i>
                         </Link>
                       )}
-                      {token && (vistaActual === "/" || vistaActual === "/search") && user.id !== getUserId() && (
-                        <SendFriendInvitationButton
-                          receiverId={user.id}
-                          small={true}
-                        />
-                      )}
+                      {token &&
+                        (vistaActual === "/" ||
+                          vistaActual === "/search" ||
+                          vistaActual === "/mymetas" ||
+                          vistaActual === "/mygroups") &&
+                        user.id !== getUserId() && (
+                          <SendFriendInvitationButton
+                            receiverId={user.id}
+                            small={true}
+                          />
+                        )}
 
                       {canEdit && (
                         <button

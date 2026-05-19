@@ -31,6 +31,7 @@ export default function MyMetas() {
   const [metas, setMetas] = useState<metaType[]>([])
   const [categories, setCategories] = useState<categoryType[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
+  const [myGroups, setMyGroups] = useState<groupType[]>([])
   const [friends, setFriends] = useState<userTypeFrontend[]>([])
   const [assignations, setAssignations] = useState<assignationType[]>([])
 
@@ -40,15 +41,35 @@ export default function MyMetas() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  const fetchMyGroups = () => {
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter(
+        (el) =>
+          el.owner_id === getUserId() ||
+          el.groupUsers.some((gu) => gu.user_id === getUserId()),
+      );
+      setMyGroups(filteredByPublic);
+    });
+  };
+
   useEffect(() => {
     fetchUsers().then(setUsers)
     fetchCategories().then(setCategories)
     fetchMetas().then(setMetas)
-    fetchGroups().then(setGroups)
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter((el) => el.is_public);
+      setGroups(filteredByPublic);
+    });
+    fetchMyGroups();
     fetchFriends(getUserId()!).then(setFriends)
     fetchAssignations().then(setAssignations)
 
   }, [])
+
+  useEffect(() => {
+    window.addEventListener("buttonChange", fetchMyGroups);
+    return () => window.removeEventListener("buttonChange", fetchMyGroups);
+  }, []);
 
   if (!token) {
     navigate("/login");
@@ -77,7 +98,7 @@ export default function MyMetas() {
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
-            <MyGroupsList groups={groups} />
+            <MyGroupsList groups={myGroups} setter={setMyGroups} />
             <UserList users={users} setter={setUsers} isTop10={true} />
             <GroupList groups={groups} setter={setGroups} isTop10={true} />
           </div>

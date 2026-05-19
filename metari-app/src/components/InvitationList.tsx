@@ -3,6 +3,8 @@ import { useState } from "react";
 import { getUserName, getUserId } from "../services/auth/loginService";
 import { Link } from "react-router-dom";
 import SendFriendInvitationButton from "./Buttons/SendFriendInvitationBtn";
+import { acceptInvitation } from "../services/invitationService";
+import { axiosConnection } from "../services/axiosConnection";
 
 type UserListProps = {
   invitations: any;
@@ -18,6 +20,18 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
   const token = localStorage.getItem("token");
   const username = getUserName();
   const userId = getUserId();
+
+  const handleAcceptGroupInvitation = async (invitationId: number) => {
+    if (!userId) return;
+    await acceptInvitation(userId, invitationId);
+    window.dispatchEvent(new Event("buttonChange"));
+  };
+
+  const handleRejectGroupInvitation = async (invitationId: number) => {
+    if (!userId) return;
+    await axiosConnection.delete(`/invitacions/${userId}/${invitationId}`);
+    window.dispatchEvent(new Event("buttonChange"));
+  };
 
   return (
     <>
@@ -49,6 +63,14 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
                             <i className="bi bi-person-fill"></i>
                           </Link>
                         )}
+                        {token && target === "groups" && i.group && (
+                          <Link
+                            to={`/mygroups?group=${i.group.id}`}
+                            className="btn btn-primary p-1 "
+                          >
+                            <i className="bi bi-people-fill"></i>
+                          </Link>
+                        )}
                       </div>
                     </div>
                     <div className=" metaDetailsBox  my-0 me-3">
@@ -71,6 +93,25 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
                               <SendFriendInvitationButton
                                 receiverId={i.sender_id === userId ? i.receiver.id : i.sender.id}
                               ></SendFriendInvitationButton>
+                            )}
+                            {target === "groups" && (
+                              <div className="d-flex gap-2">
+                                {i.receiver_id === userId && (
+                                  <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={async (event) => {event.stopPropagation(); await handleAcceptGroupInvitation(i.id)}}
+                                  >
+                                    <i className="bi bi-check-lg me-1"></i>Acceptar
+                                  </button>
+                                )}
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={async (event) => {event.stopPropagation(); await handleRejectGroupInvitation(i.id)}}
+                                >
+                                  <i className="bi bi-x-lg me-1"></i>
+                                  {i.sender_id === userId ? "Cancel·lar" : "Rebutjar"}
+                                </button>
+                              </div>
                             )}
                           </div>
                         </div>
