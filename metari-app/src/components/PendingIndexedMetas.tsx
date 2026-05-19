@@ -76,16 +76,17 @@ export function PendingIndexedMetas({ indexedMetas, setIndexedMetas }: PendingIn
                     <div>Categoria: {indexed.meta.category?.name}</div>
                     <div>Autor: {indexed.meta.author?.username}</div>
                     <button className="btn btn-success btn-sm ms-2"
+                      title="Aprovar indexació"
                       onClick={async (e) => {
                         e.stopPropagation()
                         await updateIndexedMeta(indexed.id, { is_community_approved: true })
                         setIndexedMetas(prev => prev.filter(im => im.id !== indexed.id))
                       }}
-                    >
-                      Aprovar
+                    > Aprovar
                     </button>
                     {indexed.is_community_approved !== null &&
                       <button className="btn btn-warning btn-sm ms-2"
+                      title="Marcar pendent"
                         onClick={async (e) => {
                           e.stopPropagation()
                           await updateIndexedMeta(indexed.id, { is_community_approved: null })
@@ -113,8 +114,10 @@ export function PendingIndexedMetas({ indexedMetas, setIndexedMetas }: PendingIn
 
                     {indexed.is_community_approved === false &&
                       <button className="btn btn-danger btn-sm ms-2"
+                        title="Eliminar meta"
                         onClick={async (e) => {
                           e.stopPropagation()
+                          if (!confirm("Estàs segur que el vols eliminar?")) return;
 
                           const allAssignations = await fetchAssignations()
                           const toDelete = allAssignations.filter(a => a.meta_id === indexed.meta_id)

@@ -65,16 +65,19 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
 
                     {canEdit &&
                       <button className="  btn btn-warning p-1  me-2  ms-auto"
+                      title="Edita"
                         onClick={(event) => {
                           event.stopPropagation()
                           setMetaToEdit(meta)
-                        }}>Edita</button>
+                        }}><i className="bi bi-pencil"></i></button>
                     }
                     {canEdit &&
                       <button className="  btn btn-danger p-1   "
+                      title="Elimina"
                         onClick={async (event) => {
                           event.stopPropagation()
                           try {
+                            if (!confirm("Estàs segur que el vols eliminar?")) return;
                             await deleteMeta(meta.id)
                             setter(prev => prev.filter(prevMeta => prevMeta.id !== meta.id))
                             alert("Meta eliminada correctament")

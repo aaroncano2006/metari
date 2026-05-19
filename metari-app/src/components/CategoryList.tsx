@@ -72,9 +72,11 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                     }
                     {canEdit &&
                       <button className="  btn btn-danger p-1   "
+                      title="Eliminar"
                         onClick={async (event) => {
                           event.stopPropagation()
                           try {
+                            if (!confirm("Estàs segur que el vols eliminar?")) return;
                             await deleteCategory(category.id)
                             setter(prev => prev.filter(prevCategory => prevCategory.id !== category.id))
                             alert("Categoria eliminada correctament")

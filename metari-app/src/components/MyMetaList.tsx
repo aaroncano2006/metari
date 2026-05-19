@@ -76,14 +76,14 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                         <div className="metaDetails ps-2 py-2">
                           {/* <div>ID: {assignation.id}</div> */}
                           <div>Tipus: {assignation.meta.type}</div>
-                          <div>Descripcio: {assignation.meta.description}</div>
-                          <div>Comensar el: {assignation.start_date?.split("T")[0]}</div>
-                          <div>Acabar avans del: {assignation.due_date?.split("T")[0]}</div>
-                          <div>prioritat: {assignation.priority}</div>
-                          <div>dificultat: {assignation.difficulty}</div>
-                          <div>completada: {assignation.completed ? "si" : "no"}</div>
-                          <div>Creada el: {assignation.created_at}</div>
-                          <div>Actualitzada el: {assignation.updated_at}</div>
+                          <div>Descripció: {assignation.meta.description}</div>
+                          <div>Començar el: {assignation.start_date?.split("T")[0].split("-").reverse().join("-")}</div>
+                          <div>Acabar abans del: {assignation.due_date?.split("T")[0].split("-").reverse().join("-")}</div>
+                          <div>Prioritat: {assignation.priority}</div>
+                          <div>Dificultat: {assignation.difficulty}</div>
+                          <div>Completada: {assignation.completed ? "si" : "no"}</div>
+                          <div>Creada el dia: {assignation.created_at && assignation.created_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.created_at.split("T")[1].split(".")[0]}</div>
+                          <div>Actualitzada el dia: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>
                           {!assignation.completed && assignation.meta.type === "task" && (
                             <div className="btn btn-success mt-2"
                               onClick={async () => {
