@@ -98,11 +98,28 @@ const createProof = async (req, res, next) => {
 const updateProof = async (req, res, next) => {
     const reqBody = req.body;
     try {
+        const existingProof = await prisma.proof.findUnique({
+            where: { id: parseInt(req.params.id) },
+        });
+        if (!existingProof) {
+            const error = new Error("Prova no trobada");
+            error.statusCode = 404;
+            throw error;
+        }
         const data = {
             proof: reqBody.proof,
             proof_type: reqBody.proof_type,
             is_valid: reqBody.is_valid === "true" || reqBody.is_valid === true,
         };
+        // esborrar imatge si es canvia a text o es posa una nova
+        if (existingProof.proof_type === "image" && existingProof.proof) {
+            if (reqBody.proof_type === "text" || req.file) {
+                const oldFilePath = path.join(__dirname, "..", existingProof.proof);
+                if (fs.existsSync(oldFilePath)) {
+                    fs.unlinkSync(oldFilePath);
+                }
+            }
+        }
         if (req.file) {
             const ext = path.extname(req.file.originalname);
             const fileName = `${reqBody.assignation_id}_${req.params.id}_${reqBody.user_id}${ext}`;
@@ -123,16 +140,25 @@ const updateProof = async (req, res, next) => {
 
 const deleteProof = async (req, res, next) => {
     try {
-        const proof = await prisma.proof.delete({
-            where: { id: parseInt(req.params.id) },
-        });
-
+        const id = parseInt(req.params.id);
+        const proof = await prisma.proof.findUnique({ where: { id } });
+        if (!proof) {
+            const error = new Error("Prova no trobada");
+            error.statusCode = 404;
+            throw error;
+        }
+        // Esborrar l'arxiu si és una imatge
+        if (proof.proof_type === "image" && proof.proof) {
+            const filePath = path.join(__dirname, "..", proof.proof);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+        await prisma.proof.delete({ where: { id } });
         res.status(204).end();
     } catch (error) {
         console.error("Error en Prisma:", error);
-        // res.status(500).json({ error: "Error al eliminar la prova" });
         next(error);
-
     }
 };
 
