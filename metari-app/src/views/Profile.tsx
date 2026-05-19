@@ -23,6 +23,10 @@ import { fetchGroupsByUserId } from "../services/groupService";
 import { Helmet } from "react-helmet-async";
 import { InvitationList } from "../components/InvitationList";
 
+import { fetchMetasByUserId } from "../services/metaService";
+import { UserCreatedMetas } from "../components/UserCreatedMetas";
+import type { metaType } from "../types/metaType";
+
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
   const navigate = useNavigate();
@@ -46,13 +50,15 @@ export default function Profile() {
   const [groupsList, setGroupsList] = useState<groupType[]>([]);
   const [friendInvitations, setFriendInvitations] = useState<any[]>([]);
   const [groupInvitations, setGroupInvitations] = useState<any[]>([]);
+  const [createdMetas, setCreatedMetas] = useState<metaType[]>([]);
 
   const stats = userData
     ? {
-        score: userData.score,
-        completed_tasks: userData.completed_tasks,
-      }
+      score: userData.score,
+      completed_tasks: userData.completed_tasks,
+    }
     : getUserStats();
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -62,10 +68,12 @@ export default function Profile() {
             return navigate("/profile");
           }
           setUserData(user);
-          const [friends, groups] = await Promise.all([
+          const [friends, groups, metas] = await Promise.all([
             fetchFriends(user.id),
             fetchGroupsByUserId(user.id),
+            fetchMetasByUserId(user.id),
           ]);
+          setCreatedMetas(metas);
           setFriendsList(friends);
           setGroupsList(groups);
         } else {
@@ -81,7 +89,7 @@ export default function Profile() {
     } else {
       setUserData(null);
       const loadOwnData = async () => {
-        const [friends, groups, friendInv, groupInv] = await Promise.all([
+        const [friends, groups, friendInv, groupInv, metas] = await Promise.all([
           fetchFriends(getUserId()!),
           fetchGroupsByUserId(getUserId()!),
           fetchMyInvitations(getUserId()!, "pending").then((response) =>
@@ -90,7 +98,9 @@ export default function Profile() {
           fetchMyInvitations(getUserId()!, "pending").then((response) =>
             response.filter((el: any) => el.group_id !== null),
           ),
+          fetchMetasByUserId(getUserId()!),
         ]);
+        setCreatedMetas(metas);
         setFriendsList(friends);
         setGroupsList(groups);
         setFriendInvitations(friendInv);
@@ -265,6 +275,8 @@ export default function Profile() {
             </div>
           </>
         )}
+
+        <UserCreatedMetas metas={createdMetas} setter={setCreatedMetas} />
       </div>
     </>
   );

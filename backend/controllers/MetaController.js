@@ -52,6 +52,29 @@ const getMetaById = async (req, res, next) => {
   }
 };
 
+
+const getMetasByUserId = async (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    if (isNaN(userId)) {
+      const error = new Error("ID d'usuari invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+    const metas = await prisma.meta.findMany({
+      where: { author_id: userId },
+      include: {
+        category: true,
+        author: true,
+        indexedMetas: {
+          select: { is_community_approved: true }
+        },
+      },
+    });
+    res.status(200).json(utils.handleBigInt(metas));
+  } catch (error) { next(error); }
+};
+
 const createMeta = async (req, res, next) => {
   try {
     const reqBody = req.body;
@@ -157,6 +180,7 @@ const deleteMeta = async (req, res, next) => {
 module.exports = {
   getMetas,
   getMetaById,
+  getMetasByUserId, 
   createMeta,
   updateMeta,
   deleteMeta,
