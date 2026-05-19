@@ -206,7 +206,7 @@ export default function SendGroupInvitationBtn({
           </button>
         </>
       )}
-      {!pendingInvitation && alreadyInGrup && (
+      {!pendingInvitation && alreadyInGrup && receiverId === userId && (
         <button
           className={`btn ${small ? "p-1" : ""} btn-danger`}
           onClick={async (event) => {
