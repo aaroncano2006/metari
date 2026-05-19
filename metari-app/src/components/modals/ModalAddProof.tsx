@@ -53,22 +53,27 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
         return
       }
       setErrors({})
-      if (existingProof) {
-        const proof = await updateProof(existingProof.id, validation.data)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
-            : a
-        ))
-      } else {
-        const proof = await createProof(validation.data)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: [...(a.proofs ?? []), proof] }
-            : a
-        ))
+      try {
+        if (existingProof) {
+          const proof = await updateProof(existingProof.id, validation.data)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
+              : a
+          ))
+        } else {
+          const proof = await createProof(validation.data)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+              : a
+          ))
+        }
+        assignationSetter(null)
+        alert("Prova enviada correctament")
+      } catch (error) {
+        alert("Error en enviar la prova")
       }
-      assignationSetter(null)
     }
 
     if (proofType === "image") {
@@ -83,22 +88,27 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
       formData.append("proof_type", "image")
       formData.append("is_valid", "false")
       formData.append("proofImage", proofImage)
-      if (existingProof) {
-        const proof = await updateProofWithFile(existingProof.id, formData)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
-            : a
-        ))
-      } else {
-        const proof = await createProofWithFile(formData)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: [...(a.proofs ?? []), proof] }
-            : a
-        ))
+      try {
+        if (existingProof) {
+          const proof = await updateProofWithFile(existingProof.id, formData)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
+              : a
+          ))
+        } else {
+          const proof = await createProofWithFile(formData)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+              : a
+          ))
+        }
+        assignationSetter(null)
+        alert("Prova enviada correctament")
+      } catch (error) {
+        alert("Error en enviar la prova")
       }
-      assignationSetter(null)
     }
   }
 

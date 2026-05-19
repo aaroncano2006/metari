@@ -53,9 +53,14 @@ export function ModalAddComment({ assignation, assignationSetter, commentSetter:
 
       }
       setErrors({})
-      const newComment = await createComment(validation.data)
-      commentsSetter(prev => [...prev, newComment])
-      assignationSetter(null)
+      try {
+        const newComment = await createComment(validation.data)
+        commentsSetter(prev => [...prev, newComment])
+        assignationSetter(null)
+        alert("Comentari creat correctament")
+      } catch (error) {
+        alert("Error en crear el comentari")
+      }
     }
 
     if (commentFormType === "edit") {
@@ -80,10 +85,14 @@ export function ModalAddComment({ assignation, assignationSetter, commentSetter:
 
       }
       setErrors({})
-      const updatedComment = await updateComment(currentComment!.id, validation.data)
-      // commentsSetter(prev => [...prev, updatedComment])
-      commentsSetter(prev => prev.map(c => c.id === updatedComment.id ? updatedComment : c))
-      assignationSetter(null)
+      try {
+        const updatedComment = await updateComment(currentComment!.id, validation.data)
+        commentsSetter(prev => prev.map(c => c.id === updatedComment.id ? updatedComment : c))
+        assignationSetter(null)
+        alert("Comentari actualitzat correctament")
+      } catch (error) {
+        alert("Error en actualitzar el comentari")
+      }
     }
   }
 

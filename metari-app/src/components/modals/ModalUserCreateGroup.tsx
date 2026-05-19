@@ -51,6 +51,7 @@ export function ModalUserCreateGroup({ setCreatingGroup, setGroups }: ModalProps
       ...newGroup,
       groupUsers: [newGroupUser],
     }])
+    alert("Grup creat correctament")
     setCreatingGroup(false)
 
 
