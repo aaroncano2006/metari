@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
-import { fetchGroupUsers } from "../../services/groupUserService";
+import {
+  fetchGroupUsers,
+  updateGroupUserRole,
+  deleteGroupUser,
+} from "../../services/groupUserService";
 import { updateGroup } from "../../services/groupService";
+import { getUserId } from "../../services/auth/loginService";
 import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
 import { groupSchema } from "../../schemas/groupSchema";
@@ -25,6 +30,9 @@ export default function ModalGroupModeratorPanel({
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<boolean>(false);
+
+  const currentUserId = getUserId();
+  const isOwner = group.owner_id === currentUserId;
 
   const [title, setTitle] = useState(group.name);
 
@@ -84,6 +92,54 @@ export default function ModalGroupModeratorPanel({
       setTimeout(() => {
         setError(null);
       }, 5000);
+    }
+  };
+
+  const handleRoleChange = async (userId: number, role: string) => {
+    setError(null);
+    setSuccess(false);
+    try {
+      await updateGroupUserRole(group.id, userId, role);
+      setGroupUsers((prev) =>
+        prev.map((gu) =>
+          gu.user_id === userId
+            ? { ...gu, role: role as "member" | "moderator" }
+            : gu,
+        ),
+      );
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch {
+      setError("Error canviant el rol! Revisa els teus permisos.");
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const handleTransferOwnership = async (userId: number) => {
+    setError(null);
+    setSuccess(false);
+    try {
+      const updatedGroup = await updateGroup(group.id, { owner_id: userId });
+      setter((prev) => prev.map((g) => (g.id === group.id ? updatedGroup : g)));
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch {
+      setError("Error transferint la propietat! Revisa els teus permisos.");
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const handleKickUser = async (userId: number) => {
+    setError(null);
+    setSuccess(false);
+    try {
+      await deleteGroupUser(group.id, userId);
+      setGroupUsers((prev) => prev.filter((gu) => gu.user_id !== userId));
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch {
+      setError("Error expulsant l'usuari! Revisa els teus permisos.");
+      setTimeout(() => setError(null), 3000);
     }
   };
 
@@ -189,22 +245,87 @@ export default function ModalGroupModeratorPanel({
                             })
                           }
                         />
-
-                        <div className="d-flex justify-content-end gap-2">
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            onClick={() => setEditGroup(null)}
-                          >
-                            Sortir
-                          </button>
-                          <button type="submit" className="btn btn-primary">
-                            Actualitza
-                          </button>
-                        </div>
                       </form>
                     </>
                   )}
+                  {menu === "users" && (
+                    <div className="mt-3">
+                      <h6>Membres del grup ({groupUsers.length})</h6>
+                      {groupUsers.length === 0 && (
+                        <small className="text-muted">
+                          No hi ha membres al grup.
+                        </small>
+                      )}
+                      <ul className="p-0">
+                        {groupUsers.map((gu) => (
+                          <li
+                            key={gu.user_id}
+                            className="d-flex mb-2 p-2 border rounded m-0 bg-light"
+                          >
+                            <div>
+                              <strong>{gu.user.name}</strong>
+                              <span className="text-muted ms-2">
+                                ({gu.user.username})
+                              </span>
+                              {gu.user_id === group.owner_id && (
+                                <span className="badge bg-warning ms-2">
+                                  Owner
+                                </span>
+                              )}
+                            </div>
+                            <div className="d-flex gap-2 align-items-center">
+                              {gu.user_id !== group.owner_id && (
+                                <select
+                                  value={gu.role}
+                                  onChange={(e) =>
+                                    handleRoleChange(gu.user_id, e.target.value)
+                                  }
+                                  className="form-select form-select-sm"
+                                  style={{ width: "auto" }}
+                                >
+                                  <option value="member">Membre</option>
+                                  <option value="moderator">Moderador</option>
+                                </select>
+                              )}
+                              {isOwner &&
+                                gu.user_id !== currentUserId &&
+                                gu.user_id !== group.owner_id && (
+                                  <button
+                                    className="btn btn-warning btn-sm"
+                                    onClick={() =>
+                                      handleTransferOwnership(gu.user_id)
+                                    }
+                                  >
+                                    Fer owner
+                                  </button>
+                                )}
+                              {gu.user_id !== currentUserId &&
+                                gu.user_id !== group.owner_id && (
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => handleKickUser(gu.user_id)}
+                                  >
+                                    Expulsar
+                                  </button>
+                                )}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div className="d-flex justify-content-end gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setEditGroup(null)}
+                    >
+                      Sortir
+                    </button>
+                    <button type="submit" className="btn btn-primary">
+                      Actualitza
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
