@@ -139,7 +139,7 @@ export default function Search() {
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
-            <MyGroupsList groups={myGroups} />
+            <MyGroupsList groups={myGroups} setter={setMyGroups} />
             <UserList users={users} setter={setUsers} isTop10={true}/>
             <GroupList groups={groups} setter={setGroups} isTop10={true}/>
           </div>

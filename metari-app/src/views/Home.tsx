@@ -38,7 +38,7 @@ export default function Home() {
   const token = localStorage.getItem("token");
 
   const [filteredCategory, setFilteredCategory] = useState<number | null>(null);
-  const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
+  // const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
 
   const fetchMyGroups = () => {
     fetchGroups().then((response) => {
@@ -86,14 +86,14 @@ export default function Home() {
             <div className="d-flex gap-2 justify-content-center">
               <UserCreateMetaBtn setMetas={setMetas} categories={categories} />
               <UserCreateGroupBtn setGroups={setGroups} />
-              {groups[0] && (
+              {/* {groups[0] && (
                 <button
                   className="btn btn-outline-primary"
                   onClick={() => setGroupModeratorPanel(groups[0])}
                 >
                   Panell de grup
                 </button>
-              )}
+              )} */}
             </div>
           )}
 
@@ -118,7 +118,7 @@ export default function Home() {
             </div>
             <div className="col-12 col-md-3">
               <FriendList users={friends} setter={setFriends} />
-              <MyGroupsList groups={myGroups} />
+              <MyGroupsList groups={myGroups} setter={setMyGroups} />
               <UserList users={users} setter={setUsers} isTop10={true} />
               <GroupList groups={groups} setter={setGroups} isTop10={true} />
             </div>
@@ -126,13 +126,13 @@ export default function Home() {
         </div>
       </div>
 
-      {groupModeratorPanel && (
+      {/* {groupModeratorPanel && (
         <ModalGroupModeratorPanel
           group={groupModeratorPanel}
           setEditGroup={setGroupModeratorPanel}
           setter={setGroups}
         />
-      )}
+      )} */}
     </>
   );
 }

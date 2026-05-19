@@ -7,13 +7,16 @@ import { getUserRole, getUserId } from "../services/auth/loginService";
 import { Link, useLocation } from "react-router-dom";
 import { fetchGroupById } from "../services/groupService";
 import SendGroupInvitationBtn from "./Buttons/SendGroupInvitationBtn";
+import ModalGroupModeratorPanel from "./modals/ModalGroupModeratorPanel";
 
 type MyGroupListProps = {
   groups: groupType[];
+  setter?: React.Dispatch<React.SetStateAction<groupType[]>>;
 };
 
-export function MyGroupsList({ groups }: MyGroupListProps) {
+export function MyGroupsList({ groups, setter }: MyGroupListProps) {
   const [openEntityId, setOpenEntityId] = useState<number | null>(null);
+  const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
   const toggleEntity = (id: number) => {
     setOpenEntityId((prev) => (prev === id ? null : id));
   };
@@ -55,12 +58,25 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
                             vistaActual === "/search" ||
                             vistaActual === "/mymetas" ||
                             vistaActual === "/mygroups") && (
-                            <SendGroupInvitationBtn
-                              receiverId={getUserId()!}
-                              groupId={group.id}
-                              isPublic={group.is_public}
-                              small={true}
-                            />
+                            <>
+                              <SendGroupInvitationBtn
+                                receiverId={getUserId()!}
+                                groupId={group.id}
+                                isPublic={group.is_public}
+                                small={true}
+                              />
+                              {group.groupUsers.find(
+                                (el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator"
+                              ) && (
+                                <button
+                                  className="btn btn-outline-primary btn-sm ms-1 p-1"
+                                  onClick={() => setGroupModeratorPanel(group)}
+                                  title="Configuració i moderació del grup"
+                                >
+                                  <i className="bi bi-gear-fill"></i>
+                                </button>
+                              )}
+                            </>
                           )}
                       </div>
                     </div>
@@ -129,6 +145,13 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
             )}
           </div>
         </div>
+      )}
+      {groupModeratorPanel && setter && (
+        <ModalGroupModeratorPanel
+          group={groupModeratorPanel}
+          setEditGroup={setGroupModeratorPanel}
+          setter={setter}
+        />
       )}
     </>
   );

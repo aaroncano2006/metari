@@ -217,6 +217,7 @@ export default function Profile() {
                       <FriendList users={friendsList}></FriendList>
                       <MyGroupsList
                         groups={groupsList}
+                        setter={setGroupsList}
                       ></MyGroupsList>
                     </div>
                   </>
@@ -278,7 +279,7 @@ export default function Profile() {
                     </button>
                   </div>
                   {!groupInvitationPanelActive && (
-                    <MyGroupsList groups={groupsList}></MyGroupsList>
+                    <MyGroupsList groups={groupsList} setter={setGroupsList}></MyGroupsList>
                   )}
                   {groupInvitationPanelActive && (
                     <InvitationList invitations={groupInvitations} target="groups"></InvitationList>

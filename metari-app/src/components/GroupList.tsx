@@ -4,7 +4,7 @@ import type { groupType } from "../types/groupType";
 import { getUserId, getUserRole } from "../services/auth/loginService"
 import { Link, useLocation } from "react-router-dom";
 import SendGroupInvitationBtn from "./Buttons/SendGroupInvitationBtn";
-
+import ModalGroupModeratorPanel from "./modals/ModalGroupModeratorPanel";
 
 
 
@@ -24,6 +24,7 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
   }
 
   const [groupToEdit, setGroupToEdit] = useState<groupType | null>(null)
+  const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
   const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
@@ -70,10 +71,21 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                   <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
                     onClick={() => toggleEntity(group.id)}>
 
-                    <div className="d-flex py-1 ps-2 pe-2 align-items-center">
+                    <div className="d-flex py-1 ps-2 pe-2 align-items-center gap-2">
                       <div className="me-auto">{group.name}</div>
                       {token && (
                         <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} isPublic={group.is_public} small={true} />
+                      )}
+                      {token && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
+                        <>
+                          <button
+                            className="btn btn-outline-primary p-1"
+                            onClick={() => setGroupModeratorPanel(group)}
+                            title="Configuració i moderació del grup"
+                          >
+                            <i className="bi bi-gear-fill"></i>
+                          </button>
+                        </>
                       )}
                       {canEdit &&
                         <button className="  btn btn-warning p-1  me-2  ms-auto"
@@ -146,6 +158,13 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
       {/* modal editar */}
       {groupToEdit && (
         <ModalEditGroup group={groupToEdit} setEditGroup={setGroupToEdit} setter={setter} />
+      )}
+      {groupModeratorPanel && (
+        <ModalGroupModeratorPanel
+          group={groupModeratorPanel}
+          setEditGroup={setGroupModeratorPanel}
+          setter={setter}
+        />
       )}
     </>
   )
