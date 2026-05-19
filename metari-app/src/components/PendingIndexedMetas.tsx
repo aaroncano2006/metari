@@ -1,8 +1,15 @@
-import { useState, useEffect } from "react"
-import { deleteIndexedMeta, fetchIndexedMetas, updateIndexedMeta } from "../services/IndexerService"
-import type { indexedType } from "../types/indexedType"
-import { deleteMeta } from "../services/metaService"
-import { deleteAssignation, fetchAssignations } from "../services/assignationService"
+import { useState, useEffect } from "react";
+import {
+  deleteIndexedMeta,
+  fetchIndexedMetas,
+  updateIndexedMeta,
+} from "../services/IndexerService";
+import type { indexedType } from "../types/indexedType";
+import { deleteMeta } from "../services/metaService";
+import {
+  deleteAssignation,
+  fetchAssignations,
+} from "../services/assignationService";
 
 type PendingIndexedMetasProps = {
   indexedMetas: indexedType[];
@@ -68,21 +75,21 @@ export function PendingIndexedMetas({
             </li>
           )}
           {pendingMetas.map((indexed) => (
-              <li key={indexed.id} className="m-0 p-0">
-                <div
-                  className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === indexed.id ? "mb-0" : "mb-1"} ${
-                    indexed.meta.type === "task" ? "meta-task" : "meta-challenge"
-                  }`}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => toggleEntity(indexed.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      toggleEntity(indexed.id);
-                    }
-                  }}
-                >
+            <li key={indexed.id} className="m-0 p-0">
+              <div
+                className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === indexed.id ? "mb-0" : "mb-1"} ${
+                  indexed.meta.type === "task" ? "meta-task" : "meta-challenge"
+                }`}
+                role="button"
+                tabIndex={0}
+                onClick={() => toggleEntity(indexed.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    toggleEntity(indexed.id);
+                  }
+                }}
+              >
                 <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                   <div>{indexed.meta.title}</div>
 
@@ -107,7 +114,8 @@ export function PendingIndexedMetas({
                     <div>Descripció: {indexed.meta.description}</div>
                     <div>Categoria: {indexed.meta.category?.name}</div>
                     <div>Autor: {indexed.meta.author?.username}</div>
-                    <button className="btn btn-success btn-sm ms-2"
+                    <button
+                      className="btn btn-success btn-sm ms-2"
                       title="Aprovar indexació"
                       onClick={async (e) => {
                         e.stopPropagation();
@@ -123,81 +131,88 @@ export function PendingIndexedMetas({
                           console.error("Error approving indexed meta");
                         }
                       }}
-                    > Aprovar
+                    >
+                      {" "}
+                      Aprovar
                     </button>
-                    
-                    <button
-                      className="btn btn-danger btn-sm ms-2"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        try {
-                          const data = isGroupModerating
-                            ? { is_approved: false }
-                            : { is_community_approved: false };
-                          await updateIndexedMeta(indexed.id, data);
+
+                    {isGroupModerating
+                      ? indexed.is_approved !== false
+                      : indexed.is_community_approved !== false && (
+                          <button
+                            className="btn btn-danger btn-sm ms-2"
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const data = isGroupModerating
+                                  ? { is_approved: false }
+                                  : { is_community_approved: false };
+                                await updateIndexedMeta(indexed.id, data);
+                                setIndexedMetas((prev) =>
+                                  prev.map((im) =>
+                                    im.id === indexed.id
+                                      ? { ...im, ...data }
+                                      : im,
+                                  ),
+                                );
+                              } catch {
+                                console.error("Error rejecting indexed meta");
+                              }
+                            }}
+                          >
+                            Rebutjar
+                          </button>
+                        )}
+
+                    {isGroupModerating ? indexed.is_approved !== null :indexed.is_community_approved !== null && (
+                      <button
+                        className="btn btn-warning btn-sm ms-2"
+                        title="Marcar pendent"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          await updateIndexedMeta(indexed.id, {
+                            is_community_approved: null,
+                          });
                           setIndexedMetas((prev) =>
                             prev.map((im) =>
-                              im.id === indexed.id ? { ...im, ...data } : im,
+                              im.id === indexed.id
+                                ? { ...im, is_community_approved: null }
+                                : im,
                             ),
                           );
-                        } catch {
-                          console.error("Error rejecting indexed meta");
-                        }
-                      }}
-                    >
-                      Rebutjar
-                    </button>
-                    
-                    {indexed.is_community_approved !== null &&
-                      <button className="btn btn-warning btn-sm ms-2"
-                      title="Marcar pendent"
-                        onClick={async (e) => {
-                          e.stopPropagation()
-                          await updateIndexedMeta(indexed.id, { is_community_approved: null })
-                          setIndexedMetas(prev => prev.map(im =>
-                            im.id === indexed.id ? { ...im, is_community_approved: null } : im
-                          ))
                         }}
                       >
                         Marcar pendent
                       </button>
-                    }
-                    
-                    {/*{indexed.is_community_approved !== false &&
-                      <button className="btn btn-danger btn-sm ms-2"
-                        onClick={async (e) => {
-                          e.stopPropagation()
-                          await updateIndexedMeta(indexed.id, { is_community_approved: false })
-                          setIndexedMetas(prev => prev.map(im =>
-                            im.id === indexed.id ? { ...im, is_community_approved: false } : im
-                          ))
-                        }}
-                      >
-                        Rebutjar
-                      </button>
-                    }*/}
+                    )}
 
-                    {indexed.is_community_approved === false &&
-                      <button className="btn btn-danger btn-sm ms-2"
+                    {isGroupModerating ? indexed.is_approved === false :indexed.is_community_approved === false && (
+                      <button
+                        className="btn btn-danger btn-sm ms-2"
                         title="Eliminar meta"
                         onClick={async (e) => {
-                          e.stopPropagation()
-                          if (!confirm("Estàs segur que el vols eliminar?")) return;
+                          e.stopPropagation();
+                          if (!confirm("Estàs segur que el vols eliminar?"))
+                            return;
 
-                          const allAssignations = await fetchAssignations()
-                          const toDelete = allAssignations.filter(a => a.meta_id === indexed.meta_id)
+                          const allAssignations = await fetchAssignations();
+                          const toDelete = allAssignations.filter(
+                            (a) => a.meta_id === indexed.meta_id,
+                          );
                           for (const ass of toDelete) {
-                            await deleteAssignation(ass.id)
+                            await deleteAssignation(ass.id);
                           }
 
-                          await deleteIndexedMeta(indexed.id)
-                          await deleteMeta(indexed.meta_id)
-                          setIndexedMetas(prev => prev.filter(im => im.id !== indexed.id))
+                          await deleteIndexedMeta(indexed.id);
+                          await deleteMeta(indexed.meta_id);
+                          setIndexedMetas((prev) =>
+                            prev.filter((im) => im.id !== indexed.id),
+                          );
                         }}
                       >
                         Eliminar
                       </button>
-                    }
+                    )}
                   </div>
                 )}
               </div>
