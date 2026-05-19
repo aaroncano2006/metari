@@ -6,189 +6,230 @@ import {
   rejectOrDeleteInvitation,
   sendInvitation,
 } from "../../services/invitationService";
-import { fetchGroupUsers, createGroupUser, deleteGroupUser } from "../../services/groupUserService";
+import {
+  fetchGroupUsers,
+  createGroupUser,
+  deleteGroupUser,
+} from "../../services/groupUserService";
 import type { invitationType } from "../../types/invitationType";
 
 type SendGroupInvitationBtnProps = {
-    receiverId: number;
-    small?: boolean;
-    groupId: number;
-    isPublic?: boolean;
-}
+  receiverId: number;
+  small?: boolean;
+  groupId: number;
+  isPublic?: boolean;
+};
 
-export default function SendGroupInvitationBtn({receiverId, small, groupId, isPublic = false}: SendGroupInvitationBtnProps) {
-    const [_error, setError] = useState<boolean>(false);
-    const [_success, setSuccess] = useState<boolean>(false);
-    const [alreadyInGrup, setAlreadyInGrup] = useState<boolean>(false);
-    const [pendingInvitation, setPendingInvitation] =
+export default function SendGroupInvitationBtn({
+  receiverId,
+  small,
+  groupId,
+  isPublic = false,
+}: SendGroupInvitationBtnProps) {
+  const [_error, setError] = useState<boolean>(false);
+  const [_success, setSuccess] = useState<boolean>(false);
+  const [alreadyInGrup, setAlreadyInGrup] = useState<boolean>(false);
+  const [pendingInvitation, setPendingInvitation] =
     useState<invitationType | null>(null);
-    const [recharge, setRecharge] = useState(0);
-    const userId = getUserId() ?? 0;
+  const [recharge, setRecharge] = useState(0);
+  const userId = getUserId() ?? 0;
 
-    useEffect(() => {
-        const checkGroupStatus = async () => {
-            const groupUser = await fetchGroupUsers().then((response) => {
-                const findGroupUser = response.find((el) => el.group_id === groupId && el.user_id === receiverId);
-                return findGroupUser;
-            });
+  useEffect(() => {
+    const checkGroupStatus = async () => {
+      const groupUser = await fetchGroupUsers().then((response) => {
+        const findGroupUser = response.find(
+          (el) => el.group_id === groupId && el.user_id === receiverId,
+        );
+        return findGroupUser;
+      });
 
-            setAlreadyInGrup(groupUser ? true : false);
+      setAlreadyInGrup(groupUser ? true : false);
 
-            const data = await fetchInvitations(userId, receiverId, "pending", groupId);
-            setPendingInvitation(data);
-        };
-
-        checkGroupStatus();
-    }, [recharge]);
-
-    useEffect(() => {
-        const handleRecharge = () => setRecharge((cur) => cur + 1);
-        window.addEventListener("buttonChange", handleRecharge);
-        return () => window.removeEventListener("buttonChange", handleRecharge);
-    }, [recharge]);
-
-    const joinPublicGroup = async () => {
-        try {
-            setError(false);
-            setSuccess(false);
-
-            await createGroupUser({ group_id: groupId, user_id: userId, role: "member" });
-
-            setAlreadyInGrup(true);
-            window.dispatchEvent(new Event("buttonChange"));
-            setSuccess(true);
-        } catch (err: any) {
-            setSuccess(false);
-            setError(true);
-        }
+      const data = await fetchInvitations(
+        userId,
+        receiverId,
+        "pending",
+        groupId,
+      );
+      setPendingInvitation(data);
     };
 
-    const sendInvitationToUser = async () => {
-        try {
-            setError(false);
-            setSuccess(false);
+    checkGroupStatus();
+  }, [recharge, groupId, receiverId]);
 
-            const send = await sendInvitation(userId, receiverId, groupId);
+  useEffect(() => {
+    const handleRecharge = () => setRecharge((cur) => cur + 1);
+    window.addEventListener("buttonChange", handleRecharge);
+    return () => window.removeEventListener("buttonChange", handleRecharge);
+  }, [recharge]);
 
-            if (!send) {
-                throw new Error("Error enviant la invitació al grup");
-            }
+  const joinPublicGroup = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
 
-            const pending = await fetchInvitations(userId, receiverId, "pending", groupId);
-            setPendingInvitation(pending);
-            window.dispatchEvent(new Event("buttonChange"));
-            setSuccess(true);
-        } catch (err: any) {
-            setSuccess(false);
-            setError(true);
-        }
-    };
+      await createGroupUser({
+        group_id: groupId,
+        user_id: userId,
+        role: "member",
+      });
 
-    const handleRejectOrDelete = async () => {
-        try {
-            setError(false);
-            setSuccess(false);
+      setAlreadyInGrup(true);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
 
-            const rejectOrDelete = await rejectOrDeleteInvitation(userId, receiverId, groupId);
+  const sendInvitationToUser = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
 
-            if (!rejectOrDelete) {
-                throw new Error("Error rebutjant o eliminant la invitació!");
-            }
+      const send = await sendInvitation(userId, receiverId, groupId);
 
-            setPendingInvitation(null);
-            window.dispatchEvent(new Event("buttonChange"));
-            setSuccess(true);
-        } catch (err: any) {
-            setSuccess(false);
-            setError(true);
-        }
-    };
+      if (!send) {
+        throw new Error("Error enviant la invitació al grup");
+      }
 
-    const handleAcceptInvitation = async () => {
-        try {
-            setError(false);
-            setSuccess(false);
+      const pending = await fetchInvitations(
+        userId,
+        receiverId,
+        "pending",
+        groupId,
+      );
+      setPendingInvitation(pending);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
 
-            if (!pendingInvitation) return;
+  const handleRejectOrDelete = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
 
-            const accepted = await acceptInvitation(userId, pendingInvitation.id);
+      const rejectOrDelete = await rejectOrDeleteInvitation(
+        userId,
+        receiverId,
+        groupId,
+      );
 
-            if (!accepted) {
-                throw new Error("Error acceptant la invitació");
-            }
+      if (!rejectOrDelete) {
+        throw new Error("Error rebutjant o eliminant la invitació!");
+      }
 
-            setAlreadyInGrup(true);
-            setPendingInvitation(null);
-            window.dispatchEvent(new Event("buttonChange"));
-            setSuccess(true);
-        } catch (err: any) {
-            setSuccess(false);
-            setError(true);
-        }
-    };
+      setPendingInvitation(null);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
 
-    const handleLeaveGroup = async () => {
-        try {
-            setError(false);
-            setSuccess(false);
+  const handleAcceptInvitation = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
 
-            await deleteGroupUser(groupId, receiverId);
+      if (!pendingInvitation) return;
 
-            setAlreadyInGrup(false);
-            window.dispatchEvent(new Event("buttonChange"));
-            setSuccess(true);
-        } catch (err: any) {
-            setSuccess(false);
-            setError(true);
-        }
-    };
+      const accepted = await acceptInvitation(userId, pendingInvitation.id);
 
-    return (
+      if (!accepted) {
+        throw new Error("Error acceptant la invitació");
+      }
+
+      setAlreadyInGrup(true);
+      setPendingInvitation(null);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
+
+  const handleLeaveGroup = async () => {
+    try {
+      setError(false);
+      setSuccess(false);
+
+      await deleteGroupUser(groupId, receiverId);
+
+      setAlreadyInGrup(false);
+      window.dispatchEvent(new Event("buttonChange"));
+      setSuccess(true);
+    } catch (err: any) {
+      setSuccess(false);
+      setError(true);
+    }
+  };
+
+  return (
+    <>
+      {pendingInvitation && (
         <>
-            {pendingInvitation && (
-                <>
-                    {pendingInvitation.sender_id !== userId && (
-                        <button
-                            className={`btn ${small ? "p-1" : ""} btn-success me-1`}
-                            onClick={async (event) => {event.stopPropagation(); await handleAcceptInvitation()}}
-                        >
-                            <i className={`bi bi-check-lg ${!small ? "me-2" : ""}`}></i>
-                            {!small && <span>Acceptar</span>}
-                        </button>
-                    )}
-                    <button
-                        className={`btn ${small ? "p-1" : ""} btn-danger`}
-                        onClick={async (event) => {event.stopPropagation(); await handleRejectOrDelete()}}
-                    >
-                        <i className={`bi bi-x-lg ${!small ? "me-2" : ""}`}></i>
-                        {!small && (
-                            <span>
-                                {pendingInvitation.sender_id === userId
-                                    ? "Cancel·lar invitació"
-                                    : "Rebutjar"}
-                            </span>
-                        )}
-                    </button>
-                </>
+          {pendingInvitation.sender_id !== userId && (
+            <button
+              className={`btn ${small ? "p-1" : ""} btn-success me-1`}
+              onClick={async (event) => {
+                event.stopPropagation();
+                await handleAcceptInvitation();
+              }}
+            >
+              <i className={`bi bi-check-lg ${!small ? "me-2" : ""}`}></i>
+              {!small && <span>Acceptar</span>}
+            </button>
+          )}
+          <button
+            className={`btn ${small ? "p-1" : ""} btn-danger`}
+            onClick={async (event) => {
+              event.stopPropagation();
+              await handleRejectOrDelete();
+            }}
+          >
+            <i className={`bi bi-x-lg ${!small ? "me-2" : ""}`}></i>
+            {!small && (
+              <span>
+                {pendingInvitation.sender_id === userId
+                  ? "Cancel·lar invitació"
+                  : "Rebutjar"}
+              </span>
             )}
-            {!pendingInvitation && alreadyInGrup && (
-                <button
-                    className={`btn ${small ? "p-1" : ""} btn-danger`}
-                    onClick={async (event) => {event.stopPropagation(); await handleLeaveGroup()}}
-                >
-                    <i className={`bi bi-box-arrow-left ${!small ? "me-2" : ""}`}></i>
-                    {!small && <span>Sortir del grup</span>}
-                </button>
-            )}
-            {isPublic && !pendingInvitation && !alreadyInGrup && (
-                <button
-                    className={`btn ${small ? "p-1" : ""} btn-success`}
-                    onClick={async (event) => {event.stopPropagation(); await joinPublicGroup()}}
-                >
-                    <i className={`bi bi-person-plus-fill ${!small ? "me-2" : ""}`}></i>
-                    {!small && <span>Unir-se</span>}
-                </button>
-            )}
+          </button>
         </>
-    )
+      )}
+      {!pendingInvitation && alreadyInGrup && (
+        <button
+          className={`btn ${small ? "p-1" : ""} btn-danger`}
+          onClick={async (event) => {
+            event.stopPropagation();
+            await handleLeaveGroup();
+          }}
+        >
+          <i className={`bi bi-box-arrow-left ${!small ? "me-2" : ""}`}></i>
+          {!small && <span>Sortir del grup</span>}
+        </button>
+      )}
+      {!pendingInvitation && !alreadyInGrup && (isPublic || receiverId !== userId) && (
+        <button
+          className={`btn ${small ? "p-1" : ""} btn-success`}
+          onClick={async (event) => {
+            event.stopPropagation();
+            await (receiverId === userId ? joinPublicGroup() : sendInvitationToUser());
+          }}
+        >
+          <i className={`bi bi-person-plus-fill ${!small ? "me-2" : ""}`}></i>
+          {!small && <span>{receiverId === userId ? "Unir-se" : "Invitar al grup"}</span>}
+        </button>
+      )}
+    </>
+  );
 }
