@@ -10,6 +10,7 @@ const createAssignationCompletion = async (req, res, next) => {
         user_id: parseInt(user_id),
         is_Completed: is_Completed ?? true,
       },
+      include: { user: true },
     });
     
     res.status(201).json(utils.handleBigInt(completion));
