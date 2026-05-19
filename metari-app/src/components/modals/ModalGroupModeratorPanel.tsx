@@ -10,7 +10,7 @@ import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
 import { groupSchema } from "../../schemas/groupSchema";
 import type { indexedType } from "../../types/indexedType";
-import { fetchIndexedMetas } from "../../services/IndexerService";
+import { fetchIndexedMetas, deleteIndexedMeta } from "../../services/IndexerService";
 import {
   fetchAssignations,
   deleteAssignation,
@@ -18,7 +18,7 @@ import {
 import { PendingIndexedMetas } from "../PendingIndexedMetas";
 import type { metaType } from "../../types/metaType";
 import type { assignationType } from "../../types/assignationType";
-import { fetchMetas } from "../../services/metaService";
+import { fetchMetas, deleteMeta } from "../../services/metaService";
 
 type ModalGroupModeratorPanelProps = {
   group: groupType;
@@ -177,15 +177,17 @@ export default function ModalGroupModeratorPanel({
     setSuccess(false);
     const targetAssignation = assignations.find((a) => a.id === assignationId);
     if (!targetAssignation) return;
+    const targetMeta = metas.find((m) => m.id === targetAssignation.meta_id);
     try {
       await deleteAssignation(assignationId);
+      if (targetMeta && !targetMeta.is_public) {
+        const metaIndexedMetas = indexedMetas.filter((im) => im.meta_id === targetMeta.id);
+        await Promise.all(metaIndexedMetas.map((im) => deleteIndexedMeta(im.id)));
+        await deleteMeta(targetMeta.id);
+      }
       setAssignations((prev) => prev.filter((a) => a.id !== assignationId));
-      setMetas((prev) =>
-        prev.filter((m) => m.id !== targetAssignation.meta_id),
-      );
-      setIndexedMetas((prev) =>
-        prev.filter((im) => im.meta_id !== targetAssignation.meta_id),
-      );
+      setMetas((prev) => prev.filter((m) => m.id !== targetAssignation.meta_id));
+      setIndexedMetas((prev) => prev.filter((im) => im.meta_id !== targetAssignation.meta_id));
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch {
