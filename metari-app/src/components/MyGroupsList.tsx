@@ -98,7 +98,7 @@ export function MyGroupsList({ groups }: MyGroupListProps) {
                             ))}
                           </div>
                           {/* } */}
-                          {vistaActual === "/profile" && (
+                          {vistaActual === "/profile" && group.is_public && (
                             <div className="d-flex p-3 justify-content-end">
                               <SendGroupInvitationBtn
                                 receiverId={getUserId()!}
