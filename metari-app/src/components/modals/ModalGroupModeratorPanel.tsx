@@ -9,6 +9,16 @@ import { getUserId } from "../../services/auth/loginService";
 import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
 import { groupSchema } from "../../schemas/groupSchema";
+import type { indexedType } from "../../types/indexedType";
+import { fetchIndexedMetas } from "../../services/IndexerService";
+import {
+  fetchAssignations,
+  deleteAssignation,
+} from "../../services/assignationService";
+import { PendingIndexedMetas } from "../PendingIndexedMetas";
+import type { metaType } from "../../types/metaType";
+import type { assignationType } from "../../types/assignationType";
+import { fetchMetas } from "../../services/metaService";
 
 type ModalGroupModeratorPanelProps = {
   group: groupType;
@@ -24,6 +34,10 @@ export default function ModalGroupModeratorPanel({
   defaultMenu,
 }: ModalGroupModeratorPanelProps) {
   const [groupUsers, setGroupUsers] = useState<groupUserType[]>([]);
+  const [metas, setMetas] = useState<metaType[]>([]);
+  const [assignations, setAssignations] = useState<assignationType[]>([]);
+  const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([]);
+
   const [menu, setMenu] = useState<"users" | "metas" | "group_config">(
     defaultMenu ?? "group_config",
   );
@@ -45,6 +59,21 @@ export default function ModalGroupModeratorPanel({
   useEffect(() => {
     fetchGroupUsers().then((response) => {
       setGroupUsers(response.filter((el) => el.group_id === group.id));
+    });
+    fetchAssignations().then((allAssignations) => {
+      const groupAssignations = allAssignations.filter(
+        (a) => a.group_id === group.id,
+      );
+      setAssignations(groupAssignations);
+      const groupMetaIds = groupAssignations.map((a) => a.meta_id);
+      fetchMetas().then((metas) => {
+        setMetas(metas.filter((m) => groupMetaIds.includes(m.id)));
+      });
+      fetchIndexedMetas().then((indexedMetas) => {
+        setIndexedMetas(
+          indexedMetas.filter((im) => groupMetaIds.includes(im.meta_id)),
+        );
+      });
     });
   }, [group]);
 
@@ -139,6 +168,28 @@ export default function ModalGroupModeratorPanel({
       setTimeout(() => setSuccess(false), 3000);
     } catch {
       setError("Error expulsant l'usuari! Revisa els teus permisos.");
+      setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const handleRemoveMeta = async (assignationId: number) => {
+    setError(null);
+    setSuccess(false);
+    const targetAssignation = assignations.find((a) => a.id === assignationId);
+    if (!targetAssignation) return;
+    try {
+      await deleteAssignation(assignationId);
+      setAssignations((prev) => prev.filter((a) => a.id !== assignationId));
+      setMetas((prev) =>
+        prev.filter((m) => m.id !== targetAssignation.meta_id),
+      );
+      setIndexedMetas((prev) =>
+        prev.filter((im) => im.meta_id !== targetAssignation.meta_id),
+      );
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch {
+      setError("Error eliminant la meta del grup! Revisa els teus permisos.");
       setTimeout(() => setError(null), 3000);
     }
   };
@@ -245,6 +296,18 @@ export default function ModalGroupModeratorPanel({
                             })
                           }
                         />
+                        <div className="d-flex justify-content-end gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setEditGroup(null)}
+                          >
+                            Sortir
+                          </button>
+                          <button type="submit" className="btn btn-primary">
+                            Actualitza
+                          </button>
+                        </div>
                       </form>
                     </>
                   )}
@@ -312,20 +375,78 @@ export default function ModalGroupModeratorPanel({
                           </li>
                         ))}
                       </ul>
+                      <div className="d-flex justify-content-end gap-2 mt-2">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setEditGroup(null)}
+                        >
+                          Sortir
+                        </button>
+                      </div>
                     </div>
                   )}
-                  <div className="d-flex justify-content-end gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      onClick={() => setEditGroup(null)}
-                    >
-                      Sortir
-                    </button>
-                    <button type="submit" className="btn btn-primary">
-                      Actualitza
-                    </button>
-                  </div>
+                  {menu === "metas" && (
+                    <div className="mt-3">
+                      <h6 className="mt-3">Metes del grup ({metas.length})</h6>
+                      {metas.length === 0 && (
+                        <small className="text-muted">
+                          No hi ha metes assignades al grup.
+                        </small>
+                      )}
+                      <ul className="p-0">
+                        {metas.map((meta) => {
+                          const assignation = assignations.find(
+                            (a) => a.meta_id === meta.id,
+                          );
+                          return (
+                            <li
+                              key={meta.id}
+                              className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
+                            >
+                              <div>
+                                <strong>{meta.title}</strong>
+                                <span className="text-muted ms-2">
+                                  {meta.type}
+                                </span>
+                                <br />
+                                <small className="text-muted">
+                                  {meta.category?.name} ·{" "}
+                                  {meta.author?.username}
+                                </small>
+                              </div>
+                              <div className="d-flex gap-2">
+                                {assignation && (
+                                  <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() =>
+                                      handleRemoveMeta(assignation.id)
+                                    }
+                                  >
+                                    Eliminar del grup
+                                  </button>
+                                )}
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                      <PendingIndexedMetas
+                        indexedMetas={indexedMetas}
+                        setIndexedMetas={setIndexedMetas}
+                      />
+
+                      <div className="d-flex justify-content-end gap-2 mt-2">
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          onClick={() => setEditGroup(null)}
+                        >
+                          Sortir
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
