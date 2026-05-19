@@ -28,3 +28,7 @@ export async function updateIndexedMeta(id: number, data: Partial<indexedType>):
   const { data: response } = await axiosConnection.put<indexedType>(`/indexa-metas/${id}`, data);
   return response;
 }
+
+export async function deleteIndexedMeta(id: number): Promise<void> {
+  await axiosConnection.delete(`/indexa-metas/${id}`);
+}

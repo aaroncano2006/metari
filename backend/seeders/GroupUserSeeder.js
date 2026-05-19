@@ -35,6 +35,11 @@ const seedGroupsUsers = async () => {
           group_id:3,
           role:"moderator",
         },
+        {
+          user_id:3,          
+          group_id:3,
+          role:"moderator",
+        },
       ],
       skipDuplicates: true,
     });

@@ -43,13 +43,7 @@ export default function Search() {
   const navigate = useNavigate();
   const word = searchParams.get("q");
 
-  useEffect(() => {
-    fetchUsers().then(setUsers);
-    fetchCategories().then(setCategories);
-    fetchGroups().then((response) => {
-      const filteredByPublic = response.filter((el) => el.is_public);
-      setGroups(filteredByPublic);
-    });
+  const fetchMyGroups = () => {
     fetchGroups().then((response) => {
       const filteredByPublic = response.filter(
         (el) =>
@@ -58,6 +52,16 @@ export default function Search() {
       );
       setMyGroups(filteredByPublic);
     });
+  };
+
+  useEffect(() => {
+    fetchUsers().then(setUsers);
+    fetchCategories().then(setCategories);
+    fetchGroups().then((response) => {
+      const filteredByPublic = response.filter((el) => el.is_public);
+      setGroups(filteredByPublic);
+    });
+    fetchMyGroups();
 
     if (token) {
       fetchFriends(getUserId()!).then(setFriends);
@@ -80,6 +84,11 @@ export default function Search() {
       setFoundGroups(response.groups);
     });
   }, [word]);
+
+  useEffect(() => {
+    window.addEventListener("buttonChange", fetchMyGroups);
+    return () => window.removeEventListener("buttonChange", fetchMyGroups);
+  }, []);
 
   return (
     <>
@@ -130,7 +139,7 @@ export default function Search() {
           </div>
           <div className="col-12 col-md-3">
             <FriendList users={friends} setter={setFriends} />
-            <MyGroupsList groups={myGroups} />
+            <MyGroupsList groups={myGroups} setter={setMyGroups} />
             <UserList users={users} setter={setUsers} isTop10={true}/>
             <GroupList groups={groups} setter={setGroups} isTop10={true}/>
           </div>

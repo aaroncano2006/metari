@@ -44,10 +44,10 @@ export default function AdminPanel() {
     fetchMetas().then(setMetas)
     fetchUsers().then(setUsers)
     fetchGroups().then(setGroups)
-    fetchIndexedMetas().then(setIndexedMetas)
-
-    //useEffect(() => {
-    //fetchCategories().then(setCategories);
+    // fetchIndexedMetas().then(setIndexedMetas)
+    fetchIndexedMetas().then((response) => {
+      setIndexedMetas(response.filter((el) => el.meta.is_public === true));
+    });
   }, []);
 
   useEffect(() => {

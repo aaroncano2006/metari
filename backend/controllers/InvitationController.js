@@ -209,16 +209,27 @@ const acceptInvitation = async (req, res, next) => {
     });
 
     if (acceptedInvitation && acceptedInvitation.group_id) {
-      await prisma.groupUser.create({
-        data: {
-          group: {
-            connect: { id: acceptedInvitation.group_id },
-          },
-          user: {
-            connect: { id: acceptedInvitation.receiver_id },
+      const alreadyInGroup = await prisma.groupUser.findUnique({
+        where: {
+          group_id_user_id: {
+            group_id: acceptedInvitation.group_id,
+            user_id: acceptedInvitation.receiver_id,
           },
         },
       });
+
+      if (!alreadyInGroup) {
+        await prisma.groupUser.create({
+          data: {
+            group: {
+              connect: { id: acceptedInvitation.group_id },
+            },
+            user: {
+              connect: { id: acceptedInvitation.receiver_id },
+            },
+          },
+        });
+      }
 
       await prisma.invitation.delete({
         where: { id },
