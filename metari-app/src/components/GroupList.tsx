@@ -73,7 +73,7 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                     <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                       <div className="me-auto">{group.name}</div>
                       {token && (
-                        <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} small={true} />
+                        <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} isPublic={group.is_public} small={true} />
                       )}
                       {canEdit &&
                         <button className="  btn btn-warning p-1  me-2  ms-auto"

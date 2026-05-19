@@ -6,16 +6,17 @@ import {
   rejectOrDeleteInvitation,
   sendInvitation,
 } from "../../services/invitationService";
-import { fetchGroupUsers, deleteGroupUser } from "../../services/groupUserService";
+import { fetchGroupUsers, createGroupUser, deleteGroupUser } from "../../services/groupUserService";
 import type { invitationType } from "../../types/invitationType";
 
 type SendGroupInvitationBtnProps = {
     receiverId: number;
     small?: boolean;
     groupId: number;
+    isPublic?: boolean;
 }
 
-export default function SendGroupInvitationBtn({receiverId, small, groupId}: SendGroupInvitationBtnProps) {
+export default function SendGroupInvitationBtn({receiverId, small, groupId, isPublic = false}: SendGroupInvitationBtnProps) {
     const [_error, setError] = useState<boolean>(false);
     const [_success, setSuccess] = useState<boolean>(false);
     const [alreadyInGrup, setAlreadyInGrup] = useState<boolean>(false);
@@ -45,6 +46,22 @@ export default function SendGroupInvitationBtn({receiverId, small, groupId}: Sen
         window.addEventListener("buttonChange", handleRecharge);
         return () => window.removeEventListener("buttonChange", handleRecharge);
     }, [recharge]);
+
+    const joinPublicGroup = async () => {
+        try {
+            setError(false);
+            setSuccess(false);
+
+            await createGroupUser({ group_id: groupId, user_id: userId, role: "member" });
+
+            setAlreadyInGrup(true);
+            window.dispatchEvent(new Event("buttonChange"));
+            setSuccess(true);
+        } catch (err: any) {
+            setSuccess(false);
+            setError(true);
+        }
+    };
 
     const sendInvitationToUser = async () => {
         try {
@@ -166,10 +183,10 @@ export default function SendGroupInvitationBtn({receiverId, small, groupId}: Sen
             {!pendingInvitation && !alreadyInGrup && (
                 <button
                     className={`btn ${small ? "p-1" : ""} btn-success`}
-                    onClick={async (event) => {event.stopPropagation(); await sendInvitationToUser()}}
+                    onClick={async (event) => {event.stopPropagation(); await (isPublic ? joinPublicGroup() : sendInvitationToUser())}}
                 >
                     <i className={`bi bi-person-plus-fill ${!small ? "me-2" : ""}`}></i>
-                    {!small && <span>Invitar al grup</span>}
+                    {!small && <span>{isPublic ? "Unir-se" : "Invitar al grup"}</span>}
                 </button>
             )}
         </>
