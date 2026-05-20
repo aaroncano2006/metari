@@ -133,6 +133,7 @@ html * {
   left: 0;
   background-color: rgba(0, 0, 0, 0.767);
   padding-top: 20vh;
+  overflow-y: scroll;
 }
 
 .modalWindow {
