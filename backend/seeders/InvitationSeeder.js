@@ -26,7 +26,30 @@ const seedInvitations = async () => {
             sender_id: 2,
             receiver_id: 3,
             status: "accepted",
-        }
+        },
+        {
+            sender_id: 4,
+            receiver_id: 1,
+            status: "accepted",
+        },
+        {
+            sender_id: 4,
+            receiver_id: 3,
+        },
+        {
+            sender_id: 4,
+            receiver_id: 7,
+        },
+        {
+            sender_id: 4,
+            receiver_id: 8,
+            status: "accepted",
+        },
+        {
+            sender_id: 4,
+            receiver_id: 9,
+            status: "accepted",
+        },
       ],
       skipDuplicates: true,
     });
