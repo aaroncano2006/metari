@@ -2,10 +2,15 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 const { validateMeta } = require("../middlewares/validators/validateMeta");
 
-//Get all
 const getMetas = async (req, res, next) => {
   try {
+    const where = {};
+    if (!req.user) {
+      where.is_public = true;
+    }
+
     const metas = await prisma.meta.findMany({
+      where,
       include: {
         category: true,
         author: true,
@@ -45,6 +50,12 @@ const getMetaById = async (req, res, next) => {
       throw error;
     }
 
+    if (!meta.is_public && !req.user) {
+      const error = new Error("Meta no trobada!");
+      error.statusCode = 404;
+      throw error;
+    }
+
     res.status(200).json(utils.handleBigInt(meta));
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -61,8 +72,14 @@ const getMetasByUserId = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
+
+    const where = { author_id: userId };
+    if (!req.user) {
+      where.is_public = true;
+    }
+
     const metas = await prisma.meta.findMany({
-      where: { author_id: userId },
+      where,
       include: {
         category: true,
         author: true,
@@ -82,8 +99,8 @@ const createMeta = async (req, res, next) => {
     const data = {
       title: reqBody.title,
       description: reqBody.description ?? undefined,
-      author_id: parseInt(reqBody.author_id),
-      group_id: parseInt(reqBody.group_id),
+      author_id: req.user.id,
+      group_id: reqBody.group_id ? parseInt(reqBody.group_id) : undefined,
       category_id: reqBody.category_id ? parseInt(reqBody.category_id) : undefined,
       type: reqBody.type ?? "task",
       is_public: reqBody.is_public ?? true,
@@ -123,15 +140,21 @@ const updateMeta = async (req, res, next) => {
     });
 
     if (!foundMeta) {
-      const error = new Error("No d'ha trobat la meta per actualitzar!");
+      const error = new Error("No s'ha trobat la meta per actualitzar!");
       error.statusCode = 404;
+      throw error;
+    }
+
+    if (req.user.id !== foundMeta.author_id && req.user.role !== "admin") {
+      const error = new Error("No tens permís per editar aquesta meta!");
+      error.statusCode = 403;
       throw error;
     }
 
     const data = {
       title: reqBody.title ?? foundMeta.title,
       description: reqBody.description ?? foundMeta.description,
-      author_id: reqBody.author_id ? parseInt(reqBody.author_id) : foundMeta.author_id,
+      author_id: foundMeta.author_id,
       group_id: reqBody.group_id ? parseInt(reqBody.group_id) : foundMeta.group_id,
       category_id: reqBody.category_id ? parseInt(reqBody.category_id) : foundMeta.category_id,
       type: reqBody.type ?? foundMeta.type,
@@ -164,6 +187,22 @@ const deleteMeta = async (req, res, next) => {
     if (isNaN(id)) {
       const error = new Error("ID invàlid");
       error.statusCode = 400;
+      throw error;
+    }
+
+    const foundMeta = await prisma.meta.findUnique({
+      where: { id },
+    });
+
+    if (!foundMeta) {
+      const error = new Error("No s'ha trobat la meta per eliminar!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (req.user.id !== foundMeta.author_id && req.user.role !== "admin") {
+      const error = new Error("No tens permís per eliminar aquesta meta!");
+      error.statusCode = 403;
       throw error;
     }
 
