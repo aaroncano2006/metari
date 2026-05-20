@@ -279,6 +279,17 @@ Si l'autenticació passa, retorna el missatge i les dades de l'usuari:
 
 Generats automàticament per JWT.
 
+
+## instal·lem multer
+
+```bash
+npm install multer
+```
+
+backend/index.js — afegir:  
+app.use("/uploads", express.static("uploads"));
+
+
 # Frontend
 
 Creem el projecte de l'aplicacio:

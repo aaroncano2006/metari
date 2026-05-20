@@ -1,10 +1,11 @@
 import { z } from "zod"
 
 export const metaSchema = z.object({
-  title: z.string().min(1, "El titol es obligatori"),
-  description: z.string().min(5, "La descripcio ha de tenir minim 5 caracters"),
-  author_id: z.number().int().positive(),
-  group_id: z.number().int().positive(),
-  // category_id: z.number().int().positive(),
+  title: z.string().min(5, "El titol ha de tenir almenys 5 caràcters"),
+  description: z.string().optional(),
+  author_id: z.number().int().positive().optional(),
+  group_id: z.number().int().positive().optional(),
+  category_id: z.number().int().positive().optional(),
+  is_public: z.boolean().optional(),
   type: z.enum(["task", "challenge"]),
 })

@@ -6,6 +6,7 @@ import { fetchCategories } from "../services/categoryService"
 import { fetchMetas } from "../services/metaService"
 import { fetchUsers } from "../services/userService";
 import { fetchGroups } from "../services/groupService";
+import { fetchIndexedMetas } from "../services/IndexerService"
 
 //components
 import { CreateBtn } from "../components/Buttons/CreateBtn";
@@ -13,6 +14,7 @@ import { MetaList } from "../components/MetaList"
 import { CategoryList } from "../components/CategoryList";
 import { UserList } from "../components/UserList";
 import { GroupList } from "../components/GroupList";
+import { PendingIndexedMetas } from "../components/PendingIndexedMetas"
 
 //types
 import type { categoryType } from "../types/categoryType"
@@ -21,6 +23,7 @@ import type { userTypeFrontend } from "../types/userTypeFrontend";
 import type { groupType } from "../types/groupType";
 import { useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/loginService";
+import type { indexedType } from "../types/indexedType";
 
 import { Helmet } from "react-helmet-async";
 
@@ -33,6 +36,7 @@ export default function AdminPanel() {
   const [metas, setMetas] = useState<metaType[]>([])
   const [users, setUsers] = useState<userTypeFrontend[]>([])
   const [groups, setGroups] = useState<groupType[]>([])
+  const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([])
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   useEffect(() => {
@@ -40,7 +44,15 @@ export default function AdminPanel() {
     fetchMetas().then(setMetas)
     fetchUsers().then(setUsers)
     fetchGroups().then(setGroups)
+    // fetchIndexedMetas().then(setIndexedMetas)
+    fetchIndexedMetas().then((response) => {
+      setIndexedMetas(response.filter((el) => el.meta.is_public === true));
+    });
   }, []);
+
+  useEffect(() => {
+    fetchMetas().then(setMetas)
+  }, [indexedMetas.length]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -61,10 +73,10 @@ export default function AdminPanel() {
 
   const q = searchTerm.toLowerCase()
   const filteredMetas = metas.filter(m =>
-    m.title.toLowerCase().includes(q) || m.description.toLowerCase().includes(q)
+    m.title.toLowerCase().includes(q) || m.description?.toLowerCase().includes(q)
   )
   const filteredCategories = categories.filter(c =>
-    c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+    c.name.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q)
   )
   const filteredUsers = users.filter(u =>
     u.username.toLowerCase().includes(q) ||
@@ -72,7 +84,7 @@ export default function AdminPanel() {
     u.email.toLowerCase().includes(q)
   )
   const filteredGroups = groups.filter(g =>
-    g.name.toLowerCase().includes(q) || g.description.toLowerCase().includes(q)
+    g.name.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q)
   )
 
   return (
@@ -109,8 +121,11 @@ export default function AdminPanel() {
       </div>
 
       <div className="createBtn mt-4 text-center">
-        {(menuSelection === "metas" || menuSelection === "categories") && (
-          <CreateBtn menuSelection={menuSelection} />
+        {menuSelection === "metas" && (
+          <CreateBtn menuSelection={menuSelection} setter={setMetas} />
+        )}
+        {menuSelection === "categories" && (
+          <CreateBtn menuSelection={menuSelection} setter={setCategories} />
         )}
       </div>
 
@@ -128,7 +143,13 @@ export default function AdminPanel() {
                 onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
-            {menuSelection === "metas" && <MetaList metas={filteredMetas} setter={setMetas} groups={groups}/>}
+           
+            {menuSelection === "metas" && (
+              <>
+                <MetaList metas={filteredMetas} setter={setMetas} groups={groups}/>
+                <PendingIndexedMetas indexedMetas={indexedMetas} setIndexedMetas={setIndexedMetas} />
+              </>
+            )}
             {menuSelection === "categories" && <CategoryList categories={filteredCategories} setter={setCategories} />}
             {menuSelection === "usuaris" && <UserList users={filteredUsers} setter={setUsers} />}
             {menuSelection === "grups" && <GroupList groups={filteredGroups} setter={setGroups} />}

@@ -23,3 +23,28 @@ export async function createAssignation(newAssignation: Partial<assignationType>
   }
 
 }
+
+export async function updateAssignation(id: number, data: Partial<assignationType>): Promise<assignationType> {
+  const { data: response } = await axiosConnection.put<assignationType>(`/assignacions/${id}`, data);
+  return response;
+}
+
+
+export async function deleteAssignation(id: number): Promise<void> {
+  try {
+    await axiosConnection.delete(`/assignacions/${id}`);
+  } catch (error) {
+    console.error("Error eliminant assignació:", error);
+    throw error;
+  }
+}
+
+//per la taula assignation completions
+export async function createAssignationCompletion(assignationId: number, userId: number, isValid: boolean) {
+  const { data } = await axiosConnection.post(`/assignacio-completions`, {
+    assignation_id: assignationId,
+    user_id: userId,
+    is_Completed: isValid,
+  });
+  return data;
+}

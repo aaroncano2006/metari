@@ -11,6 +11,7 @@ import UserProfileForm from "../components/UserProfileForm";
 import UserProfileStats from "../components/UserProfileStats";
 import { getUserProfileData } from "../services/auth/profileService";
 import SendFriendInvitationButton from "../components/Buttons/SendFriendInvitationBtn";
+import SendGroupInvitationBtn from "../components/Buttons/SendGroupInvitationBtn";
 import { FriendList } from "../components/FriendList";
 import {
   fetchFriends,
@@ -22,6 +23,10 @@ import type { groupType } from "../types/groupType";
 import { fetchGroupsByUserId } from "../services/groupService";
 import { Helmet } from "react-helmet-async";
 import { InvitationList } from "../components/InvitationList";
+
+import { fetchMetasByUserId } from "../services/metaService";
+import { UserCreatedMetas } from "../components/UserCreatedMetas";
+import type { metaType } from "../types/metaType";
 
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
@@ -46,13 +51,17 @@ export default function Profile() {
   const [groupsList, setGroupsList] = useState<groupType[]>([]);
   const [friendInvitations, setFriendInvitations] = useState<any[]>([]);
   const [groupInvitations, setGroupInvitations] = useState<any[]>([]);
+  const [createdMetas, setCreatedMetas] = useState<metaType[]>([]);
+  const [myGroupsForInvite, setMyGroupsForInvite] = useState<groupType[]>([]);
+  const [selectedGroupForInvite, setSelectedGroupForInvite] = useState<number | null>(null);
 
   const stats = userData
     ? {
-        score: userData.score,
-        completed_tasks: userData.completed_tasks,
-      }
+      score: userData.score,
+      completed_tasks: userData.completed_tasks,
+    }
     : getUserStats();
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -62,12 +71,19 @@ export default function Profile() {
             return navigate("/profile");
           }
           setUserData(user);
-          const [friends, groups] = await Promise.all([
+          const [friends, groups, myGroups, metas] = await Promise.all([
             fetchFriends(user.id),
             fetchGroupsByUserId(user.id),
+            fetchGroupsByUserId(getUserId()!),
+            fetchMetasByUserId(user.id),
           ]);
           setFriendsList(friends);
           setGroupsList(groups);
+          setMyGroupsForInvite(myGroups);
+          if (myGroups.length > 0) {
+            setSelectedGroupForInvite(myGroups[0].id);
+          }
+          setCreatedMetas(metas);
         } else {
           throw new Error(`No s'ha trobat cap usuari amb el username: `);
         }
@@ -81,7 +97,7 @@ export default function Profile() {
     } else {
       setUserData(null);
       const loadOwnData = async () => {
-        const [friends, groups, friendInv, groupInv] = await Promise.all([
+        const [friends, groups, friendInv, groupInv, metas] = await Promise.all([
           fetchFriends(getUserId()!),
           fetchGroupsByUserId(getUserId()!),
           fetchMyInvitations(getUserId()!, "pending").then((response) =>
@@ -90,7 +106,9 @@ export default function Profile() {
           fetchMyInvitations(getUserId()!, "pending").then((response) =>
             response.filter((el: any) => el.group_id !== null),
           ),
+          fetchMetasByUserId(getUserId()!),
         ]);
+        setCreatedMetas(metas);
         setFriendsList(friends);
         setGroupsList(groups);
         setFriendInvitations(friendInv);
@@ -150,11 +168,35 @@ export default function Profile() {
               <div className="col-9">
                 <h1>Profile</h1>
               </div>
-              <div className="col pt-2">
+              <div className="col pt-2 d-flex gap-2 align-items-start">
                 {userData && (
-                  <SendFriendInvitationButton
-                    receiverId={userData?.id}
-                  ></SendFriendInvitationButton>
+                  <>
+                    <SendFriendInvitationButton
+                      receiverId={userData?.id}
+                    />
+                    {myGroupsForInvite.length > 0 && selectedGroupForInvite && (
+                      <SendGroupInvitationBtn
+                        receiverId={userData.id}
+                        groupId={selectedGroupForInvite}
+                      />
+                    )}
+                    {myGroupsForInvite.length > 0 && (
+                      <select
+                        className="form-select form-select-sm"
+                        style={{ width: "auto" }}
+                        value={selectedGroupForInvite ?? ""}
+                        onChange={(e) =>
+                          setSelectedGroupForInvite(parseInt(e.target.value))
+                        }
+                      >
+                        {myGroupsForInvite.map((g) => (
+                          <option key={g.id} value={g.id}>
+                            {g.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </>
                 )}
               </div>
             </header>
@@ -185,7 +227,7 @@ export default function Profile() {
                       <FriendList users={friendsList}></FriendList>
                       <MyGroupsList
                         groups={groupsList}
-                        viewedUserId={userData.id}
+                        setter={setGroupsList}
                       ></MyGroupsList>
                     </div>
                   </>
@@ -247,7 +289,7 @@ export default function Profile() {
                     </button>
                   </div>
                   {!groupInvitationPanelActive && (
-                    <MyGroupsList groups={groupsList}></MyGroupsList>
+                    <MyGroupsList groups={groupsList} setter={setGroupsList}></MyGroupsList>
                   )}
                   {groupInvitationPanelActive && (
                     <InvitationList invitations={groupInvitations} target="groups"></InvitationList>
@@ -265,6 +307,8 @@ export default function Profile() {
             </div>
           </>
         )}
+
+        <UserCreatedMetas metas={createdMetas} setter={setCreatedMetas} />
       </div>
     </>
   );

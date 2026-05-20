@@ -1,11 +1,10 @@
-import type { userTypeFrontend } from "../types/userTypeFrontend"
 import { useState } from "react"
-import { ModalEditUser } from "./modals/ModalEditUser"
 import { ModalEditGroup } from "./modals/ModalEditGroup";
 import type { groupType } from "../types/groupType";
-import { getUserRole } from "../services/auth/loginService"
+import { getUserId, getUserRole } from "../services/auth/loginService"
 import { Link, useLocation } from "react-router-dom";
-
+import SendGroupInvitationBtn from "./Buttons/SendGroupInvitationBtn";
+import ModalGroupModeratorPanel from "./modals/ModalGroupModeratorPanel";
 
 
 
@@ -25,6 +24,7 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
   }
 
   const [groupToEdit, setGroupToEdit] = useState<groupType | null>(null)
+  const [groupModeratorPanel, setGroupModeratorPanel] = useState<groupType | null>(null);
   const token = localStorage.getItem("token");
   const role = getUserRole()
   const vistaActual = useLocation().pathname;
@@ -33,11 +33,16 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
     role === "admin";
 
   //suma el total de punts del grup
+
+  const visibleGroups = vistaActual === "/"
+    ? groups.filter(g => g.is_public)
+    : groups
+
   const groupScores = new Map(
-    groups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
+    visibleGroups.map(group => [group.id, group.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)])
   )
 
-  const top10 = [...groups].sort((a, b) => {
+  const top10 = [...visibleGroups].sort((a, b) => {
     const scoreA = a.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)
     const scoreB = b.groupUsers.reduce((sum, groupUser) => sum + groupUser.user.score, 0)
     return scoreB - scoreA
@@ -55,19 +60,43 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/admin" || !isTop10 ? "Llista de grups" : "Top 10 Grups"}</div>
-        <hr className="m-0" />
+        <div className="titolComponent text-center my-2">
+          {vistaActual === "/admin" || !isTop10 ? (
+            "Llista de grups"
+          ) : (
+            <>
+              <i className="bi bi-trophy-fill me-2 text-primary"></i>
+              Top 10 Grups
+            </>
+          )}
+        </div>
+        {/* <hr className="m-0" /> */}
 
         <div className="inline">
           {token &&
-            <ul className=" ps-2  m-0  py-2">
+            <ul className=" ps-3  m-0  pb-2">
               {groupsToShow.map((group) => (
                 <li key={group.id} className="m-0 p-0" >
                   <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
                     onClick={() => toggleEntity(group.id)}>
 
-                    <div className="d-flex py-1 ps-2 pe-2 align-items-center">
-                      <div>{group.name}</div>
+                    <div className="d-flex ps-2 pe-2 align-items-center gap-2">
+                      <i className="bi bi-people-fill me-3 profileIcon"></i>
+                      <div className="me-auto">{group.name}</div>
+                      {token && (
+                        <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} isPublic={group.is_public} small={true} />
+                      )}
+                      {token && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
+                        <>
+                          <button
+                            className="btn btn-outline-primary p-1 smallButton"
+                            onClick={() => setGroupModeratorPanel(group)}
+                            title="Configuració i moderació del grup"
+                          >
+                            <i className="bi bi-gear-fill"></i>
+                          </button>
+                        </>
+                      )}
                       {canEdit &&
                         <button className="  btn btn-warning p-1  me-2  ms-auto"
                           onClick={(event) => {
@@ -111,9 +140,6 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                                   <i className="bi bi-star-fill text-black"></i>
                                 </div>
                               )}
-                              {/* <div className="badge bg-warning text-black">
-                                {groupUser.role}
-                              </div> */}
                             </div>
                           ))}
                         </div>
@@ -142,6 +168,13 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
       {/* modal editar */}
       {groupToEdit && (
         <ModalEditGroup group={groupToEdit} setEditGroup={setGroupToEdit} setter={setter} />
+      )}
+      {groupModeratorPanel && (
+        <ModalGroupModeratorPanel
+          group={groupModeratorPanel}
+          setEditGroup={setGroupModeratorPanel}
+          setter={setter}
+        />
       )}
     </>
   )

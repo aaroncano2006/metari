@@ -30,8 +30,11 @@ export async function createUser(newUser: Partial<userTypeFrontend>): Promise<us
 
 export async function updateUser(id: number, updatedData: Partial<userTypeFrontend>): Promise<userTypeFrontend> {
   try {
-    const { data } = await axiosConnection.put<userTypeFrontend>(`/usuaris/${id}`, updatedData)
-    return data
+    // el endpoint ara retorna user i token...
+    // const { data } = await axiosConnection.put<userTypeFrontend>(`/usuaris/${id}`, updatedData)
+    // return data
+    const { data } = await axiosConnection.put<{ user: userTypeFrontend; token: string }>(`/usuaris/${id}`, updatedData)
+  return data.user
 
   } catch (error) {
     console.error("Error actualitzant usuari:", error)

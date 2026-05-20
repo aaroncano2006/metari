@@ -14,37 +14,41 @@ const seedCategories = async () => {
     const createMany = await prisma.category.createMany({
       data: [
         {
-          name: "Tecnologia",
+          name: "🖥️ Tecnologia",
           description:
             "Categoria sobre tecnologia. Involucra temes com informática, IA, electrònica i altres.",
         },
         {
-          name: "Llar",
+          name: "🏡 Llar",
           description: "Categoria relacionada a les tasques de la llar.",
         },
         {
-          name: "Matemàtiques",
+          name: "🧮 Matemàtiques",
           description: "Categoria amb temàtica de matemàtiques.",
         },
         {
-          name: "Esports",
+          name: "⚽ Esports",
           description: "Categoria relacionada a activitats esportives.",
         },
         {
-          name: "Exercici Fisic",
+          name: "💪 Exercici Fisic",
           description: "Categoria relacionada a activitats fisiques.",
         },
         {
-          name: "Jocs de taula",
+          name: "♟️ Jocs de taula",
           description: "Categoria relacionada amb jocs de taula.",
         },
         {
-          name: "Videojocs",
+          name: "🎮 Videojocs",
           description: "Categoria relacionada amb Videojocs.",
         },
         {
-          name: "Estudis",
+          name: "📚 Estudis",
           description: "Categoria relacionada amb els estudis.",
+        },
+        {
+          name: "🎨 Art",
+          description: "Categoria relacionada amb l'art.",
         },
       ],
       skipDuplicates: true,

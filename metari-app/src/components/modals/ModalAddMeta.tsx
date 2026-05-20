@@ -5,6 +5,7 @@ import type { assignationType } from "../../types/assignationType";
 import { createAssignation } from "../../services/assignationService";
 import { getUserId } from "../../services/auth/loginService";
 import { assignationSchema } from "../../schemas/assignationSchema"
+// import { createAssignationSchema } from "../../schemas/assignationSchema"
 import type { groupType } from "../../types/groupType";
 
 
@@ -22,22 +23,22 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
   const difficultyOptions: assignationType["difficulty"][] = ["easy", "normal", "hard", "extreme"];
   const priorityOptions: assignationType["priority"][] = ["high", "low"];
 
-  // const [formData, setFormData] = useState({
-  //   meta_id: meta[0]?.id,
-  //   user_id: getUserId() ?? undefined,
-  //   start_date: new Date().toISOString().split("T")[0],
-  //   due_date: new Date().toISOString().split("T")[0],
-  //   priority:  formData.get("priority"),
-  //   difficulty: "",
-  // });
+
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const loggedInUserId = getUserId()
+
   const myGroups = groups.filter(group =>
     group.owner_id === loggedInUserId ||
     group.groupUsers.some(gu => gu.user_id === loggedInUserId)
   )
+
+  const myModeratedGroups = groups.filter(group =>
+    group.groupUsers.some(gu => gu.user_id === loggedInUserId && gu.role === "moderator")
+  )
+
   const [selectedGroupId, setSelectedGroupId] = useState<number | "">("")
+  const [needsProofs, setNeedsProofs] = useState(false)
 
   const selectedGroupUsers = selectedGroupId !== ""
     ? myGroups.find(group => group.id === Number(selectedGroupId))?.groupUsers ?? []
@@ -47,7 +48,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
 
-    
+
     const data = {
       meta_id: Number(formData.get("meta_id")),
       group_id: formData.get("group_id") ? Number(formData.get("group_id")) || undefined : undefined,
@@ -56,7 +57,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
         ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
         : Number(formData.get("user_id")) || undefined,
       assigner_id: Number(formData.get("assigner_id")) || undefined,
-      needs_proofs: formData.get("needs_proofs") || undefined,
+      needs_proofs: needsProofs,
       start_date: formData.get("start_date"),
       due_date: formData.get("due_date"),
       priority: formData.get("priority") || undefined,
@@ -67,6 +68,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
 
     const validation = assignationSchema.safeParse(data)
+    // const validation = createAssignationSchema(groups, loggedInUserId).safeParse(data)
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
 
@@ -80,8 +82,13 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
       return
     }
 
-    await createAssignation(validation.data)
-    setMetaToAdd([null, ""])
+    try {
+      await createAssignation(validation.data)
+      alert("Meta afegida correctament!")
+      setMetaToAdd([null, ""])
+    } catch (error) {
+      alert("Error en afegir la meta")
+    }
   }
 
 
@@ -171,17 +178,20 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
 
                         <div>
-                          <label htmlFor="group_id">grup:</label>
+                          <label htmlFor="group_id">{meta[0]?.type === "task" ? "Grups dels que ets moderador:" : "Grups dels que formes part:"}</label>
                           <select className="form-select mb-2" name="group_id" id="group_id"
                             onChange={(e) => setSelectedGroupId(e.target.value ? Number(e.target.value) : "")}
                           >
                             <option key={"empty"} value={""}>
                               Tria un grup
                             </option>
-                            {myGroups.map((group) => (
+                            {/* {myGroups.map((group) => (
                               <option key={group.id} value={group.id}>
                                 {group.name}
                               </option>
+                            ))} */}
+                            {(meta[0]?.type === "task" ? myModeratedGroups : myGroups).map((group) => (
+                              <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
                           </select>
                           {errors.group_id && <div className="text-danger small">{errors.group_id}</div>}
@@ -199,12 +209,15 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                                 </option>
                               ))}
                             </select>
-                             {errors.user_id && <div className="text-danger small">{errors.user_id}</div>}
+                            {errors.user_id && <div className="text-danger small">{errors.user_id}</div>}
                           </div>
 
                         }
                         <label className="me-5 my-2" htmlFor="needs_proofs">Proves necessaries?</label>
-                        <input type="checkbox" name="needs_proofs" id="needs_proofs" />
+                        <input type="checkbox" name="needs_proofs" id="needs_proofs"
+                          checked={needsProofs}
+                          onChange={() => setNeedsProofs(prev => !prev)} />
+                        {errors.needs_proofs && <div className="text-danger small">{errors.needs_proofs}</div>}
 
 
 

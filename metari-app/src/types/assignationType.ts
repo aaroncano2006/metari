@@ -1,6 +1,8 @@
 import type { groupType } from "./groupType"
 import type { metaType } from "./metaType"
 import type { userTypeFrontend } from "./userTypeFrontend"
+import type { assignationCompletionType } from "./assignationCompletionType"
+import type { proofType } from "./proofType"
 
 export type assignationType = {
   id: number
@@ -22,4 +24,7 @@ export type assignationType = {
   group?: groupType
   meta: metaType
   user?: userTypeFrontend | null
+  assignationCompletions?: assignationCompletionType[]
+  proofs?: proofType[]
+  assigner?: userTypeFrontend
 }

@@ -9,6 +9,9 @@ const getMetas = async (req, res, next) => {
       include: {
         category: true,
         author: true,
+        indexedMetas: {
+          select: { is_community_approved: true }
+        },
       },
     });
     res.status(200).json(utils.handleBigInt(metas));
@@ -49,6 +52,29 @@ const getMetaById = async (req, res, next) => {
   }
 };
 
+
+const getMetasByUserId = async (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    if (isNaN(userId)) {
+      const error = new Error("ID d'usuari invàlid");
+      error.statusCode = 400;
+      throw error;
+    }
+    const metas = await prisma.meta.findMany({
+      where: { author_id: userId },
+      include: {
+        category: true,
+        author: true,
+        indexedMetas: {
+          select: { is_community_approved: true }
+        },
+      },
+    });
+    res.status(200).json(utils.handleBigInt(metas));
+  } catch (error) { next(error); }
+};
+
 const createMeta = async (req, res, next) => {
   try {
     const reqBody = req.body;
@@ -58,7 +84,9 @@ const createMeta = async (req, res, next) => {
       description: reqBody.description ?? undefined,
       author_id: parseInt(reqBody.author_id),
       group_id: parseInt(reqBody.group_id),
+      category_id: reqBody.category_id ? parseInt(reqBody.category_id) : undefined,
       type: reqBody.type ?? "task",
+      is_public: reqBody.is_public ?? true,
     };
 
     const validate = await validateMeta(data);
@@ -70,6 +98,7 @@ const createMeta = async (req, res, next) => {
 
     const meta = await prisma.meta.create({
       data,
+      include: { category: true, author: true },
     });
     res.status(201).json(utils.handleBigInt(meta));
   } catch (error) {
@@ -102,13 +131,11 @@ const updateMeta = async (req, res, next) => {
     const data = {
       title: reqBody.title ?? foundMeta.title,
       description: reqBody.description ?? foundMeta.description,
-      author_id: reqBody.author_id
-        ? parseInt(reqBody.author_id)
-        : foundMeta.author_id,
-      group_id: reqBody.group_id
-        ? parseInt(reqBody.group_id)
-        : foundMeta.group_id,
+      author_id: reqBody.author_id ? parseInt(reqBody.author_id) : foundMeta.author_id,
+      group_id: reqBody.group_id ? parseInt(reqBody.group_id) : foundMeta.group_id,
+      category_id: reqBody.category_id ? parseInt(reqBody.category_id) : foundMeta.category_id,
       type: reqBody.type ?? foundMeta.type,
+      is_public: reqBody.is_public ?? foundMeta.is_public,
     };
 
     const validate = await validateMeta(data, true);
@@ -121,6 +148,7 @@ const updateMeta = async (req, res, next) => {
     const meta = await prisma.meta.update({
       where: { id },
       data,
+      include: { category: true, author: true },
     });
     res.status(200).json(utils.handleBigInt(meta));
   } catch (error) {
@@ -152,6 +180,7 @@ const deleteMeta = async (req, res, next) => {
 module.exports = {
   getMetas,
   getMetaById,
+  getMetasByUserId, 
   createMeta,
   updateMeta,
   deleteMeta,

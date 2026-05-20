@@ -15,10 +15,17 @@ const seedInvitations = async () => {
         {
             sender_id: 1,
             receiver_id: 2,
+            status: "accepted",
         },
         {
             sender_id: 2,
             receiver_id: 3,
+            status: "accepted",
+        },
+        {
+            sender_id: 2,
+            receiver_id: 3,
+            status: "accepted",
         }
       ],
       skipDuplicates: true,

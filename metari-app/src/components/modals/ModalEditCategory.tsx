@@ -48,17 +48,20 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
                   }
                   setErrors({})
 
-                  const updatedCategory = await updateCategory(category.id, formData)
-
-                  setter(prev =>
-                    prev.map(categories =>
-                      categories.id === category.id
-                        ? updatedCategory
-                        : categories
+                  try {
+                    const updatedCategory = await updateCategory(category.id, formData)
+                    setter(prev =>
+                      prev.map(categories =>
+                        categories.id === category.id
+                          ? updatedCategory
+                          : categories
+                      )
                     )
-                  )
-
-                  setEditCategory(null)
+                    setEditCategory(null)
+                    alert("Categoria actualitzada correctament")
+                  } catch (error) {
+                    alert("Error en actualitzar la categoria")
+                  }
 
                 }}
                 >
