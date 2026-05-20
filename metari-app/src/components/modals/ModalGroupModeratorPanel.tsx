@@ -10,7 +10,10 @@ import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
 import { groupSchema } from "../../schemas/groupSchema";
 import type { indexedType } from "../../types/indexedType";
-import { fetchIndexedMetas, deleteIndexedMeta } from "../../services/IndexerService";
+import {
+  fetchIndexedMetas,
+  deleteIndexedMeta,
+} from "../../services/IndexerService";
 import {
   fetchAssignations,
   deleteAssignation,
@@ -187,10 +190,12 @@ export default function ModalGroupModeratorPanel({
     try {
       const results = await searchUsers(inviteUsername);
       const users = results.users || [];
-      const user = users.find((u: userTypeFrontend) =>
-        u.username.toLowerCase() === inviteUsername.toLowerCase() ||
-        u.name.toLowerCase() === inviteUsername.toLowerCase()
-      ) || users[0];
+      const user =
+        users.find(
+          (u: userTypeFrontend) =>
+            u.username.toLowerCase() === inviteUsername.toLowerCase() ||
+            u.name.toLowerCase() === inviteUsername.toLowerCase(),
+        ) || users[0];
       if (!user) {
         return setInviteError("Usuari no trobat!");
       }
@@ -218,13 +223,21 @@ export default function ModalGroupModeratorPanel({
     try {
       await deleteAssignation(assignationId);
       if (targetMeta && !targetMeta.is_public) {
-        const metaIndexedMetas = indexedMetas.filter((im) => im.meta_id === targetMeta.id);
-        await Promise.all(metaIndexedMetas.map((im) => deleteIndexedMeta(im.id)));
+        const metaIndexedMetas = indexedMetas.filter(
+          (im) => im.meta_id === targetMeta.id,
+        );
+        await Promise.all(
+          metaIndexedMetas.map((im) => deleteIndexedMeta(im.id)),
+        );
         await deleteMeta(targetMeta.id);
       }
       setAssignations((prev) => prev.filter((a) => a.id !== assignationId));
-      setMetas((prev) => prev.filter((m) => m.id !== targetAssignation.meta_id));
-      setIndexedMetas((prev) => prev.filter((im) => im.meta_id !== targetAssignation.meta_id));
+      setMetas((prev) =>
+        prev.filter((m) => m.id !== targetAssignation.meta_id),
+      );
+      setIndexedMetas((prev) =>
+        prev.filter((im) => im.meta_id !== targetAssignation.meta_id),
+      );
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch {
@@ -249,14 +262,14 @@ export default function ModalGroupModeratorPanel({
                   </div>
                 )}
 
-                <div className="row-sm mt-3 d-flex justify-content-center gap-3">
+                <div className="row-sm mt-4 mb-2 d-flex justify-content-center gap-3">
                   <button
                     className="btn btn-primary"
                     onClick={() => {
                       switchMenu("group_config");
                     }}
                   >
-                    Configuració del grup
+                    <i className="bi bi-gear-fill me-1"></i> Configuració del grup
                   </button>
                   <button
                     className="btn btn-primary"
@@ -264,7 +277,7 @@ export default function ModalGroupModeratorPanel({
                       switchMenu("users");
                     }}
                   >
-                    Membres del grup
+                    <i className="bi bi-people-fill me-1"></i> Membres del grup
                   </button>
                   <button
                     className="btn btn-primary"
@@ -272,7 +285,7 @@ export default function ModalGroupModeratorPanel({
                       switchMenu("metas");
                     }}
                   >
-                    Metas del grup
+                    <i className="bi bi-bullseye me-1"></i>Metas del grup
                   </button>
                 </div>
 
@@ -353,7 +366,9 @@ export default function ModalGroupModeratorPanel({
                   {menu === "users" && (
                     <div className="mt-3">
                       <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h6 className="m-0">Membres del grup ({groupUsers.length})</h6>
+                        <h6 className="m-0">
+                          Membres del grup ({groupUsers.length})
+                        </h6>
                         <button
                           className="btn btn-primary btn-sm"
                           onClick={() => setInviteMenuActive(!inviteMenuActive)}
@@ -371,8 +386,12 @@ export default function ModalGroupModeratorPanel({
                               className="form-control form-control-sm"
                               placeholder="Username del usuari..."
                               value={inviteUsername}
-                              onChange={(e) => setInviteUsername(e.target.value)}
-                              onKeyDown={(e) => e.key === "Enter" && handleInviteByUsername()}
+                              onChange={(e) =>
+                                setInviteUsername(e.target.value)
+                              }
+                              onKeyDown={(e) =>
+                                e.key === "Enter" && handleInviteByUsername()
+                              }
                             />
                             <button
                               className="btn btn-primary btn-sm"
@@ -382,10 +401,14 @@ export default function ModalGroupModeratorPanel({
                             </button>
                           </div>
                           {inviteError && (
-                            <small className="text-danger d-block mt-1">{inviteError}</small>
+                            <small className="text-danger d-block mt-1">
+                              {inviteError}
+                            </small>
                           )}
                           {inviteSuccess && (
-                            <small className="text-success d-block mt-1">{inviteSuccess}</small>
+                            <small className="text-success d-block mt-1">
+                              {inviteSuccess}
+                            </small>
                           )}
                         </div>
                       )}
@@ -444,7 +467,7 @@ export default function ModalGroupModeratorPanel({
                                     className="btn btn-danger btn-sm"
                                     onClick={() => handleKickUser(gu.user_id)}
                                   >
-                                    Expulsar
+                                    <i className="bi bi-person-dash-fill"></i> Expulsar
                                   </button>
                                 )}
                             </div>
@@ -493,14 +516,24 @@ export default function ModalGroupModeratorPanel({
                               </div>
                               <div className="d-flex gap-2">
                                 {assignation && (
-                                  <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                      handleRemoveMeta(assignation.id)
-                                    }
-                                  >
-                                    Eliminar del grup
-                                  </button>
+                                  <>
+                                    <button
+                                      className="btn btn-warning btn-sm"
+                                      title="Mostrar detalls i proves de l'assignació"
+                                    >
+                                      <i className="bi bi-eye-fill"></i>
+                                    </button>
+
+                                    <button
+                                      className="btn btn-danger btn-sm"
+                                      onClick={() =>
+                                        handleRemoveMeta(assignation.id)
+                                      }
+                                      title="Eliminar del grup"
+                                    >
+                                      <i className="bi bi-trash-fill"></i>
+                                    </button>
+                                  </>
                                 )}
                               </div>
                             </li>
