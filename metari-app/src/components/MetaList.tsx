@@ -40,7 +40,8 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
     (
       !meta.indexedMetas ||
       meta.indexedMetas.length === 0 ||
-      meta.indexedMetas.some(im => im.is_community_approved === true)
+      meta.indexedMetas.some(im => im.is_community_approved === true) 
+      // || meta.is_public
     )
   )
 

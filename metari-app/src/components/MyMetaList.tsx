@@ -27,7 +27,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
   const [showCompleted, setShowCompleted] = useState(false)
 
 
-  const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId)
+  const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId && !assignation.group_id)
 
 
 
@@ -38,7 +38,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
 
         <div className="metaList mt-4">
           {/* <div className="my-2 ps-4 pe-4"> */}
-            <div className="titolComponent  text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Les meves metas</div>
+          <div className="titolComponent  text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Les meves metas</div>
           {/* </div> */}
           {/* <hr className="m-0" /> */}
 
@@ -64,8 +64,8 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                       <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                         <div className="me-auto">{assignation.meta.title}</div>
                         {assignation.completed === true && (
-                              <div className="badge bg-success">completada</div>
-                            )}
+                          <div className="badge bg-success">completada</div>
+                        )}
                       </div>
 
                     </div>
@@ -79,6 +79,10 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                           <div>Acabar abans del: {assignation.due_date?.split("T")[0].split("-").reverse().join("-")}</div>
                           <div>Prioritat: {assignation.priority}</div>
                           <div>Dificultat: {assignation.difficulty}</div>
+                          {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
+                            <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
+                          )}
+
                           <div>Completada: {assignation.completed ? "si" : "no"}</div>
                           <div>Creada el dia: {assignation.created_at && assignation.created_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.created_at.split("T")[1].split(".")[0]}</div>
                           <div>Actualitzada el dia: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>
