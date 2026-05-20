@@ -170,13 +170,14 @@ export function PendingIndexedMetas({
                         title="Marcar pendent"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          await updateIndexedMeta(indexed.id, {
-                            is_community_approved: null,
-                          });
+                          const data = isGroupModerating
+                            ? { is_approved: null }
+                            : { is_community_approved: null };
+                          await updateIndexedMeta(indexed.id, data);
                           setIndexedMetas((prev) =>
                             prev.map((im) =>
                               im.id === indexed.id
-                                ? { ...im, is_community_approved: null }
+                                ? { ...im, ...data }
                                 : im,
                             ),
                           );
