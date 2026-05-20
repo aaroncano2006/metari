@@ -51,6 +51,10 @@ export default function AdminPanel() {
   }, []);
 
   useEffect(() => {
+    fetchMetas().then(setMetas)
+  }, [indexedMetas.length]);
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
 
     if (!token) {
