@@ -89,7 +89,7 @@ export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEd
         if (setter) {
           setter(prev => [...prev, newMeta])
         }
-        alert("Meta creada correctament")
+        alert("Meta creada correctament! A l'espera de ser indexada, pots consultar les teves metes i el seu estat en el teu perfil -> Metes Creades")
       } catch (error) {
         alert("Error en crear la meta")
         return
