@@ -43,6 +43,9 @@ export default function ModalGroupModeratorPanel({
   const [metas, setMetas] = useState<metaType[]>([]);
   const [assignations, setAssignations] = useState<assignationType[]>([]);
   const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([]);
+  const [currentAssignationId, setCurrentAssignationId] = useState<
+    number | null
+  >(0);
 
   const [inviteUsername, setInviteUsername] = useState("");
   const [inviteMenuActive, setInviteMenuActive] = useState(false);
@@ -246,6 +249,12 @@ export default function ModalGroupModeratorPanel({
     }
   };
 
+  const toggleAssingationDetail = (assignationId: number) => {
+    setCurrentAssignationId((prev) =>
+      prev === assignationId ? null : assignationId,
+    );
+  };
+
   return (
     <>
       <div className="modalOverlay h-100 w-100">
@@ -269,7 +278,8 @@ export default function ModalGroupModeratorPanel({
                       switchMenu("group_config");
                     }}
                   >
-                    <i className="bi bi-gear-fill me-1"></i> Configuració del grup
+                    <i className="bi bi-gear-fill me-1"></i> Configuració del
+                    grup
                   </button>
                   <button
                     className="btn btn-primary"
@@ -467,7 +477,8 @@ export default function ModalGroupModeratorPanel({
                                     className="btn btn-danger btn-sm"
                                     onClick={() => handleKickUser(gu.user_id)}
                                   >
-                                    <i className="bi bi-person-dash-fill"></i> Expulsar
+                                    <i className="bi bi-person-dash-fill"></i>{" "}
+                                    Expulsar
                                   </button>
                                 )}
                             </div>
@@ -499,44 +510,56 @@ export default function ModalGroupModeratorPanel({
                             (a) => a.meta_id === meta.id,
                           );
                           return (
-                            <li
-                              key={meta.id}
-                              className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
-                            >
-                              <div>
-                                <strong>{meta.title}</strong>
-                                <span className="text-muted ms-2">
-                                  {meta.type}
-                                </span>
-                                <br />
-                                <small className="text-muted">
-                                  {meta.category?.name} ·{" "}
-                                  {meta.author?.username}
-                                </small>
-                              </div>
-                              <div className="d-flex gap-2">
-                                {assignation && (
-                                  <>
-                                    <button
-                                      className="btn btn-warning btn-sm"
-                                      title="Mostrar detalls i proves de l'assignació"
-                                    >
-                                      <i className="bi bi-eye-fill"></i>
-                                    </button>
+                            <>
+                              <li
+                                key={meta.id}
+                                className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
+                              >
+                                <div>
+                                  <strong>{meta.title}</strong>
+                                  <span className="text-muted ms-2">
+                                    {meta.type}
+                                  </span>
+                                  <br />
+                                  <small className="text-muted">
+                                    {meta.category?.name} ·{" "}
+                                    {meta.author?.username}
+                                  </small>
+                                </div>
+                                <div className="d-flex gap-2">
+                                  {assignation && (
+                                    <>
+                                      <button
+                                        className="btn btn-warning btn-sm"
+                                        title="Mostrar detalls i proves de l'assignació"
+                                        onClick={() => {
+                                          toggleAssingationDetail(
+                                            assignation.id,
+                                          );
+                                        }}
+                                      >
+                                        <i className="bi bi-eye-fill"></i>
+                                      </button>
 
-                                    <button
-                                      className="btn btn-danger btn-sm"
-                                      onClick={() =>
-                                        handleRemoveMeta(assignation.id)
-                                      }
-                                      title="Eliminar del grup"
-                                    >
-                                      <i className="bi bi-trash-fill"></i>
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            </li>
+                                      <button
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() =>
+                                          handleRemoveMeta(assignation.id)
+                                        }
+                                        title="Eliminar del grup"
+                                      >
+                                        <i className="bi bi-trash-fill"></i>
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              </li>
+                              {currentAssignationId === assignation?.id && (
+                                <div className="bg-light ps-2 py-3">
+                                  Detall d'assignació {currentAssignationId}
+                                </div>
+                              )}
+                            </>
                           );
                         })}
                       </ul>
