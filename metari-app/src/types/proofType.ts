@@ -1,3 +1,5 @@
+import type { userTypeFrontend } from "./userTypeFrontend";
+
 export type proofType = {
   id: number
   assignation_id: number
@@ -6,5 +8,5 @@ export type proofType = {
   proof_type: string
   is_valid: boolean
   created_at: string
-  user?: { id: number; name: string } | null
+  user?: userTypeFrontend | null
 }

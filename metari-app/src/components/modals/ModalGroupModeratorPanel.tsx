@@ -638,7 +638,7 @@ export default function ModalGroupModeratorPanel({
                                         >
                                           <div className="d-flex justify-content-between align-items-center">
                                             <span className="fw-medium">
-                                              {proof.user?.name ?? "Usuari desconegut"}
+                                              {proof.user?.name ? `${proof.user?.name} (${proof.user?.username})` : "Usuari desconegut"}
                                             </span>
                                             <span>
                                               {proof.is_valid ? "✅ Vàlida" : "❌ Pendent"}
