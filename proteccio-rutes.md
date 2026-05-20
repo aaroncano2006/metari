@@ -92,6 +92,8 @@ Fes LogIno Registra'tper participar amb la comunitat
 | PUT | `/:id` | `isAuthenticated` |
 | DELETE | `/:id` | `isAuthenticated` |
 
+Comprovar si ets autor del comentari o moderador del grup.
+
 ---
 
 ## Proves (`/api/proves`)
