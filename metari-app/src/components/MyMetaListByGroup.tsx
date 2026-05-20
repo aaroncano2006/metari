@@ -139,9 +139,14 @@ export function MyMetaListByGroup({
                     Metes del grup: {group.name}
                   </div>
                   <div className="ms-auto">
-                    <button className="btn btn-sm btn-outline-primary" onClick={() => openModeratorGroupPanel(group)}>
-                      <i className="bi bi-gear-fill"></i>
-                    </button>
+                    {group.groupUsers.find((el) => el.user_id === getUserId() && el.role === "moderator") && (
+                      <>
+                        <button className="btn btn-sm btn-outline-primary" onClick={() => openModeratorGroupPanel(group)}>
+                          <i className="bi bi-gear-fill"></i>
+                        </button>
+                      </>
+                    )}
+                    
                   </div>
                   {currentGroup?.id === group.id && (
                     <ModalGroupModeratorPanel group={group} setEditGroup={setCurrentGroup} setter={setter} defaultMenu="metas" />
@@ -414,6 +419,7 @@ export function MyMetaListByGroup({
                                           await createAssignationCompletion(
                                             assignation.id,
                                             loggedInUserId!,
+                                            true
                                           );
                                         setAssignations((prev) =>
                                           prev.map((a) =>
