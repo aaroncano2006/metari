@@ -40,11 +40,11 @@ export async function deleteAssignation(id: number): Promise<void> {
 }
 
 //per la taula assignation completions
-export async function createAssignationCompletion(assignationId: number, userId: number) {
+export async function createAssignationCompletion(assignationId: number, userId: number, isValid: boolean) {
   const { data } = await axiosConnection.post(`/assignacio-completions`, {
     assignation_id: assignationId,
     user_id: userId,
-    is_Completed: true,
+    is_Completed: isValid,
   });
   return data;
 }
