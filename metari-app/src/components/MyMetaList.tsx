@@ -27,7 +27,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
   const [showCompleted, setShowCompleted] = useState(false)
 
 
-  const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId)
+  const myAssignations = assignations.filter(assignation => assignation.user_id === loggedInUserId && !assignation.group_id)
 
 
 
@@ -37,16 +37,14 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
       {token &&
 
         <div className="metaList mt-4">
-          <div className="my-2 ps-4 pe-4">
-            <div className="titolComponent text-center ">
-              Les meves metas
-            </div>
-          </div>
-          <hr className="m-0" />
+          {/* <div className="my-2 ps-4 pe-4"> */}
+          <div className="titolComponent  text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Les meves metas</div>
+          {/* </div> */}
+          {/* <hr className="m-0" /> */}
 
           <div className="inline">
-            <div className="d-flex ps-3 pe-3 mt-2">
-              <div className="me-auto">Metes personals</div>
+            <div className="d-flex ps-3 pe-3 mb-2">
+              {/* <div className="me-auto">Metes personals</div> */}
               <div className="ms-auto d-flex align-items-center">
                 <label htmlFor="showCompleted" className="me-2">Mostrar completades</label>
                 <input type="checkbox" id="showCompleted"
@@ -55,7 +53,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                 />
               </div>
             </div>
-            <ul className=" ps-2  m-0  py-2">
+            <ul className=" ps-3  m-0  pb-2">
               {myAssignations
                 .filter(assignation => showCompleted || !Boolean(assignation.completed))
                 .map((assignation) => (
@@ -66,8 +64,8 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                       <div className="d-flex py-1 ps-2 pe-3 align-items-center">
                         <div className="me-auto">{assignation.meta.title}</div>
                         {assignation.completed === true && (
-                              <div className="badge bg-success">completada</div>
-                            )}
+                          <div className="badge bg-success">completada</div>
+                        )}
                       </div>
 
                     </div>
@@ -81,6 +79,10 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                           <div>Acabar abans del: {assignation.due_date?.split("T")[0].split("-").reverse().join("-")}</div>
                           <div>Prioritat: {assignation.priority}</div>
                           <div>Dificultat: {assignation.difficulty}</div>
+                          {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
+                            <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
+                          )}
+
                           <div>Completada: {assignation.completed ? "si" : "no"}</div>
                           <div>Creada el dia: {assignation.created_at && assignation.created_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.created_at.split("T")[1].split(".")[0]}</div>
                           <div>Actualitzada el dia: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>

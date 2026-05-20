@@ -63,43 +63,34 @@ export default function Profile() {
     : getUserStats();
 
   useEffect(() => {
-      const loadProfile = async () => {
-        try {
-          const user = await getUserProfileData(usernameSearchParam);
-          if (user) {
-            if (user.username === getUserName()) {
-              return navigate("/profile");
-            }
-            setUserData(user);
-            const [friends, groups, myGroups] = await Promise.all([
-              fetchFriends(user.id),
-              fetchGroupsByUserId(user.id),
-              fetchGroupsByUserId(getUserId()!),
-            ]);
-            setFriendsList(friends);
-            setGroupsList(groups);
-            setMyGroupsForInvite(myGroups);
-            if (myGroups.length > 0) {
-              setSelectedGroupForInvite(myGroups[0].id);
-            }
-          } else {
-            throw new Error(`No s'ha trobat cap usuari amb el username: `);
+    const loadProfile = async () => {
+      try {
+        const user = await getUserProfileData(usernameSearchParam);
+        if (user) {
+          if (user.username === getUserName()) {
+            return navigate("/profile");
           }
           setUserData(user);
-          const [friends, groups, metas] = await Promise.all([
+          const [friends, groups, myGroups, metas] = await Promise.all([
             fetchFriends(user.id),
             fetchGroupsByUserId(user.id),
+            fetchGroupsByUserId(getUserId()!),
             fetchMetasByUserId(user.id),
           ]);
-          setCreatedMetas(metas);
           setFriendsList(friends);
           setGroupsList(groups);
+          setMyGroupsForInvite(myGroups);
+          if (myGroups.length > 0) {
+            setSelectedGroupForInvite(myGroups[0].id);
+          }
+          setCreatedMetas(metas);
         } else {
           throw new Error(`No s'ha trobat cap usuari amb el username: `);
-        } catch (err: any) {
-          setError(err.message);
         }
-      };
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
 
     if (usernameSearchParam) {
       loadProfile();
