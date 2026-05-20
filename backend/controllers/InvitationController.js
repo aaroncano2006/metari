@@ -7,24 +7,9 @@ const {
 
 const getInvitations = async (req, res, next) => {
   try {
-    const userId = parseInt(req.params.userid);
+    const userId = req.user.id;
     const status = req.params.status;
     const sentOrReceived = req.params.sentorreceived;
-
-    if (isNaN(userId)) {
-      const error = new Error("ID invàlida!");
-      error.statusCode = 400;
-      throw error;
-    }
-
-    const foundUser = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-    if (!foundUser) {
-      const error = new Error("No s'ha trobat l'usuari!");
-      error.statusCode = 404;
-      throw error;
-    }
 
     const validStatus = ["pending", "accepted", "rejected"];
     if (!validStatus.includes(status)) {
@@ -59,7 +44,7 @@ const getInvitations = async (req, res, next) => {
 
 const sendInvitations = async (req, res, next) => {
   try {
-    const senderId = parseInt(req.params.senderid);
+    const senderId = req.user.id;
     const receiverId = parseInt(req.params.receiverid);
     const groupId = req.params.groupid ? parseInt(req.params.groupid) : null;
 
@@ -69,7 +54,7 @@ const sendInvitations = async (req, res, next) => {
       group_id: groupId,
     };
 
-    if (isNaN(data.sender_id) || isNaN(data.receiver_id)) {
+    if (isNaN(data.receiver_id)) {
       const error = new Error("IDs no vàlids");
       error.statusCode = 400;
       throw error;
@@ -174,9 +159,9 @@ const sendInvitations = async (req, res, next) => {
 const acceptInvitation = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const receiverId = parseInt(req.params.receiverid); // S'haurà de refactoritzar més endavant per a JWT
+    const receiverId = req.user.id;
 
-    if (isNaN(id) || isNaN(receiverId)) {
+    if (isNaN(id)) {
       const error = new Error("IDs invàlides!");
       error.statusCode = 400;
       throw error;
@@ -253,9 +238,9 @@ const acceptInvitation = async (req, res, next) => {
 const rejectInvitation = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const userId = parseInt(req.params.userid);
+    const userId = req.user.id;
 
-    if (isNaN(id) || isNaN(userId)) {
+    if (isNaN(id)) {
       const error = new Error("IDs invàlides!");
       error.statusCode = 400;
       throw error;
@@ -315,13 +300,7 @@ const rejectInvitation = async (req, res, next) => {
 
 const getFriendsByID = async (req, res, next) => {
   try {
-    const userId = parseInt(req.params.userid);
-
-    if (isNaN(userId)) {
-      const error = new Error("ID invàlida!");
-      error.statusCode = 400;
-      throw error;
-    }
+    const userId = req.user.id;
     const invitations = await prisma.invitation.findMany({
       where: {
         status: "accepted",
