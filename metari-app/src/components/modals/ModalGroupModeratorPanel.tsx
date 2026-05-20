@@ -627,6 +627,43 @@ export default function ModalGroupModeratorPanel({
                                       </div>
                                     )}
 
+                                  {assignation.proofs && assignation.proofs.length > 0 && (
+                                    <div className="mt-2">
+                                      <div className="fw-bold">📋 Proves adjuntes ({assignation.proofs.length}):</div>
+                                      {assignation.proofs.map((proof) => (
+                                        <div
+                                          key={proof.id}
+                                          className="border rounded p-2 mb-1 bg-white"
+                                          style={{ fontSize: "0.9rem" }}
+                                        >
+                                          <div className="d-flex justify-content-between align-items-center">
+                                            <span className="fw-medium">
+                                              {proof.user?.name ?? "Usuari desconegut"}
+                                            </span>
+                                            <span>
+                                              {proof.is_valid ? "✅ Vàlida" : "❌ Pendent"}
+                                            </span>
+                                          </div>
+                                          <small className="text-muted">
+                                            {proof.created_at?.split("T")[0].split("-").reverse().join("-") +
+                                              " a les " +
+                                              proof.created_at?.split("T")[1]?.split(".")[0]}
+                                          </small>
+                                          {proof.proof_type === "text" ? (
+                                            <p className="mb-0 mt-1">{proof.proof}</p>
+                                          ) : (
+                                            <img
+                                              src={proof.proof}
+                                              alt="Prova"
+                                              className="img-fluid mt-1"
+                                              style={{ maxHeight: 150, objectFit: "contain" }}
+                                            />
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+
                                   <div>
                                     🆕 Creat el dia:{" "}
                                     {assignation.created_at &&
