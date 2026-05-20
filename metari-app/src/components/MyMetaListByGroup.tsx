@@ -272,70 +272,76 @@ export function MyMetaListByGroup({
                                             ac.user?.username ?? ac.user_id,
                                         )
                                         .join(", ")}
+                                    </div>
+                                  )}
+                                    
                               {(() => {
                                 const userProof = getUserProof(assignation)
-                                return (assignation.meta.type === "challenge" || assignation.meta.type === "task") && assignation.needs_proofs && (
-                                  <div className="d-flex gap-2 align-self-end me-2">
-                                    <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
-                                      onClick={() => setAssignationToAddProof(assignation)}>
-                                      {userProof ? "Editar o veure prova" : "Enviar prova"}
-                                    </div>
-                                  )}
+                                return (
+                                  <>
+                                    {(assignation.meta.type === "challenge" || assignation.meta.type === "task") && assignation.needs_proofs && (
+                                      <div className="d-flex gap-2 align-self-end me-2">
+                                        <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
+                                          onClick={() => setAssignationToAddProof(assignation)}>
+                                          {userProof ? "Editar o veure prova" : "Enviar prova"}
+                                        </div>
+                                      </div>
+                                    )}
 
-                                {assignation.needs_proofs !== null &&
-                                  assignation.needs_proofs !== undefined && (
+                                    {assignation.needs_proofs !== null &&
+                                      assignation.needs_proofs !== undefined && (
+                                        <div>
+                                          📋 Requereix proves:{" "}
+                                          {assignation.needs_proofs ? "Sí" : "No"}
+                                        </div>
+                                      )}
+
                                     <div>
-                                      📋 Requereix proves:{" "}
-                                      {assignation.needs_proofs ? "Sí" : "No"}
+                                      🆕 Creat el dia:{" "}
+                                      {assignation.created_at &&
+                                        assignation.created_at
+                                          .split("T")[0]
+                                          .split("-")
+                                          .reverse()
+                                          .join("-") +
+                                          " a les " +
+                                          assignation.created_at
+                                            .split("T")[1]
+                                            ?.split(".")[0]}
                                     </div>
-                                  )}
-
-                                <div>
-                                  🆕 Creat el dia:{" "}
-                                  {assignation.created_at &&
-                                    assignation.created_at
-                                      .split("T")[0]
-                                      .split("-")
-                                      .reverse()
-                                      .join("-") +
-                                      " a les " +
-                                      assignation.created_at
-                                        .split("T")[1]
-                                        .split(".")[0]}
-                                </div>
-                                <div>
-                                  🔄 Actualitzat el dia:{" "}
-                                  {assignation.updated_at &&
-                                    assignation.updated_at
-                                      .split("T")[0]
-                                      .split("-")
-                                      .reverse()
-                                      .join("-") +
-                                      " a les " +
-                                      assignation.updated_at
-                                        .split("T")[1]
-                                        .split(".")[0]}
-                                </div>
-                                <div className=" d-flex align-self-end me-2 mb-2 mt-2">
-                                  <div
-                                    className="btn btn-primary d-flex align-self-end me-2 "
-                                    onClick={() => {
-                                      // setShowComments(true);
-                                      setShowComments((prev) => !prev);
-                                      //canviar variable al contrari del prev
-                                    }}
-                                  >
-                                    Mostrar comentaris
-                                  </div>
-                                  <div
-                                    className="btn btn-primary align-self-end me-2 "
-                                    onClick={() => {
-                                      setAssignationToAddComment(assignation);
-                                      setcommentFormType("create");
-                                    }}
-                                  >
-                                    Nou comentari
-                                  </div>
+                                    <div>
+                                      🔄 Actualitzat el dia:{" "}
+                                      {assignation.updated_at &&
+                                        assignation.updated_at
+                                          .split("T")[0]
+                                          .split("-")
+                                          .reverse()
+                                          .join("-") +
+                                          " a les " +
+                                          assignation.updated_at
+                                            .split("T")[1]
+                                            ?.split(".")[0]}
+                                    </div>
+                                    <div className=" d-flex align-self-end me-2 mb-2 mt-2">
+                                      <div
+                                        className="btn btn-primary d-flex align-self-end me-2 "
+                                        onClick={() => {
+                                          setShowComments((prev) => !prev);
+                                        }}
+                                      >
+                                        Mostrar comentaris
+                                      </div>
+                                      <div
+                                        className="btn btn-primary align-self-end me-2 "
+                                        onClick={() => {
+                                          setAssignationToAddComment(assignation);
+                                          setcommentFormType("create");
+                                        }}
+                                      >
+                                        Nou comentari
+                                      </div>
+                                    </div>
+                                  </>
                                 )
                               })()}
 
@@ -343,7 +349,7 @@ export function MyMetaListByGroup({
                               {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
                                 <div className="btn btn-success align-self-end me-2"
                                   onClick={async () => {
-                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!)
+                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!, true)
                                     setAssignations(prev => prev.map(a =>
                                       a.id === assignation.id
                                         ? { ...a, assignationCompletions: [...(a.assignationCompletions ?? []), newCompletion] }
@@ -351,7 +357,7 @@ export function MyMetaListByGroup({
                                     ))
                                   }}>
                                   Marcar completada
-                                </div>
+                                </div>)}
                                 {!assignation.completed &&
                                   assignation.meta.type === "task" &&
                                   !assignation.needs_proofs && (
@@ -725,5 +731,3 @@ export function MyMetaListByGroup({
     </>
   );
 }
-
-// afegir un boto per mostrar comentaris i que es mostrin per ordre descendent per data de creacio, amb el nom del usuari del comentari
