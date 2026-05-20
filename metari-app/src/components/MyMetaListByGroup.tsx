@@ -109,7 +109,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                   Metes del grup: {group.name}
                 </div>
               </div>
-              <hr className="m-0" />
+              {/* <hr className="m-0" /> */}
               <div className="inline">
                 <div className="d-flex ps-3 pe-3 mt-2">
                   <div className=" d-flex w-100">
@@ -123,7 +123,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                 </div>
                 {myAssignations.length === 0
                   ? <p className="text-muted ps-3 py-2">No hi han asignacions</p>
-                  : <ul className="ps-2 m-0 py-2">
+                  : <ul className="ps-3 m-0 py-2">
                     {myAssignations.map((assignation) => (
                       <li key={assignation.id} className="m-0 p-0">
                         <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
@@ -160,9 +160,6 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                 <div>🏆 Puntuacio: {assignation.score ?? 0}</div>
                               )}
 
-
-                              {/* <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div> */}
-
                               {assignation.assignationCompletions && assignation.assignationCompletions.length > 0 && (
                                 <div>✅ Completat per: {assignation.assignationCompletions
                                   .filter(ac => ac.is_Completed)
@@ -170,7 +167,6 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                   .join(", ")
                                 }</div>
                               )}
-
 
                               {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
                                 <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
