@@ -65,8 +65,8 @@ Fes LogIno Registra'tper participar amb la comunitat
 | GET | `/user/:userId` | `isAuthenticated` |
 | GET | `/:id` | Pública |
 | POST | `/` | Pública |
-| PUT | `/:id` | `isAuthenticated` + `isAdmin` |
-| DELETE | `/:id` | `isAuthenticated` + `isAdmin` |
+| PUT | `/:id` | `isAuthenticated` + moderator check (s'ha de comprovar que l'usuari que edita el grup és moderador d'aquest) |
+| DELETE | `/:id` | `isAuthenticated` + owner check (s'ha de comprovar que l'usuari que vol eliminar el grup és l'owner) (per implementar, confirmació d'eliminar el grup.)|
 
 ---
 
@@ -77,8 +77,8 @@ Fes LogIno Registra'tper participar amb la comunitat
 | GET | `/` | Pública |
 | GET | `/:id` | Pública |
 | POST | `/` | `isAuthenticated` |
-| PUT | `/:id` | `isAuthenticated` + `isAdmin` |
-| DELETE | `/:id` | `isAuthenticated` + `isAdmin` |
+| PUT | `/:id` | `isAuthenticated` |
+| DELETE | `/:id` | `isAuthenticated` |
 
 ---
 
@@ -129,9 +129,9 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 |--------|------|-----------|-------|
 | GET | `/` | Pública | |
 | GET | `/:group_id/:user_id` | Pública | |
-| POST | `/` | `isAuthenticated` | Controller: owner del grup, moderador, o admin |
+| POST | `/` | `isAuthenticated` | Controller: owner del grup, moderador, o admin o usuari que es vol unir a un grup. |
 | PUT | `/:group_id/:user_id` | `isAuthenticated` | Controller: owner del grup o admin (canvi de rol sensible) |
-| DELETE | `/:group_id/:user_id` | `isAuthenticated` | Controller: owner del grup, moderador, o admin |
+| DELETE | `/:group_id/:user_id` | `isAuthenticated` | Controller: owner del grup, moderador, o admin o usuari que surt del grup. |
 
 ---
 
@@ -142,8 +142,10 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 | GET | `/` | Pública |
 | GET | `/:id` | Pública |
 | POST | `/` | `isAuthenticated` |
-| PUT | `/:id` | `isAuthenticated` + `isAdmin` |
-| DELETE | `/:id` | `isAuthenticated` + `isAdmin` |
+| PUT | `/:id` | `isAuthenticated` |
+| DELETE | `/:id` | `isAuthenticated` |
+
+isAdmin només farà falta per indexcions públiques, en cas d'indexacions de grup s'encarregaran els moderadors.
 
 ---
 
