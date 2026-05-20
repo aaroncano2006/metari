@@ -37,11 +37,11 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
 
     <>
       <div className="metaList mt-4">
-        <div className="titolComponent text-center my-2">Llista de Categories</div>
-        <hr className="m-0" />
+        <div className="titolComponent my-2 "><i className="bi bi-grid-fill text-primary"></i>Llista de Categories</div>
+        {/* <hr className="m-0" /> */}
 
         <div className="inline">
-          <ul className=" ps-2  m-0  py-2">
+          <ul className=" ps-3  m-0  pb-2">
             {categories.map((category) => (
               <li key={category.id} className="m-0 p-0" >
                 <div className={`metaEntry mt-1 me-3 ps-2 ${openEntitySelected === category.id ? "mb-0" : "mb-1"}`}

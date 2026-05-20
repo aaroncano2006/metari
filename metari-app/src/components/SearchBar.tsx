@@ -39,7 +39,7 @@ export default function SearchBar() {
         }}
       >
         <div className="input-group">
-          <button className="input-group-text" type="submit">
+          <button className="input-group-text searchBar" type="submit">
             <i className="bi bi-search"></i>
           </button>
           <input
@@ -48,7 +48,7 @@ export default function SearchBar() {
             name="word"
             value={formData.word}
             onChange={(e) => setFormData({ ...formData, word: e.target.value })}
-            className="form-control"
+            className="form-control searchBar"
             placeholder="Cerca"
           />
         </div>

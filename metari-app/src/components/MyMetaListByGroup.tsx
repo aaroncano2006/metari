@@ -77,7 +77,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
   const filteredAssignations = assignations.filter(a =>
     !a.meta.indexedMetas ||
     a.meta.indexedMetas.length === 0 ||
-    a.meta.indexedMetas.some(im => im.is_community_approved === true)
+    a.meta.indexedMetas.some(im => im.is_community_approved === true || im.is_approved === true)
   )
 
   const assignationsByGroup = myGroups.map(group => ({
@@ -207,7 +207,7 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
 
                               {(() => {
                                 const userProof = getUserProof(assignation)
-                                return assignation.meta.type === "challenge" && assignation.needs_proofs && (
+                                return (assignation.meta.type === "challenge" || assignation.meta.type === "task") && assignation.needs_proofs && (
                                   <div className="d-flex gap-2 align-self-end me-2">
                                     <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
                                       onClick={() => setAssignationToAddProof(assignation)}>
@@ -231,8 +231,6 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                   </div>
                                 )
                               })()}
-
-
 
 
                               {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
