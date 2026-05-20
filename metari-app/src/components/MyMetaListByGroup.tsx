@@ -96,12 +96,11 @@ export function MyMetaListByGroup({
       group.groupUsers.some((gu) => gu.user_id === loggedInUserId),
   );
 
-  const filteredAssignations = assignations.filter(
-    (a) =>
-      !a.meta.indexedMetas ||
-      a.meta.indexedMetas.length === 0 ||
-      a.meta.indexedMetas.some((im) => im.is_community_approved === true),
-  );
+  const filteredAssignations = assignations.filter(a =>
+    !a.meta.indexedMetas ||
+    a.meta.indexedMetas.length === 0 ||
+    a.meta.indexedMetas.some(im => im.is_community_approved === true || im.is_approved === true)
+  )
 
   const assignationsByGroup = myGroups.map((group) => ({
     group,
@@ -273,6 +272,13 @@ export function MyMetaListByGroup({
                                             ac.user?.username ?? ac.user_id,
                                         )
                                         .join(", ")}
+                              {(() => {
+                                const userProof = getUserProof(assignation)
+                                return (assignation.meta.type === "challenge" || assignation.meta.type === "task") && assignation.needs_proofs && (
+                                  <div className="d-flex gap-2 align-self-end me-2">
+                                    <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
+                                      onClick={() => setAssignationToAddProof(assignation)}>
+                                      {userProof ? "Editar o veure prova" : "Enviar prova"}
                                     </div>
                                   )}
 
@@ -330,6 +336,21 @@ export function MyMetaListByGroup({
                                   >
                                     Nou comentari
                                   </div>
+                                )
+                              })()}
+
+
+                              {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
+                                <div className="btn btn-success align-self-end me-2"
+                                  onClick={async () => {
+                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!)
+                                    setAssignations(prev => prev.map(a =>
+                                      a.id === assignation.id
+                                        ? { ...a, assignationCompletions: [...(a.assignationCompletions ?? []), newCompletion] }
+                                        : a
+                                    ))
+                                  }}>
+                                  Marcar completada
                                 </div>
                                 {!assignation.completed &&
                                   assignation.meta.type === "task" &&

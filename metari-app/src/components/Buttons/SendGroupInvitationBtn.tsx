@@ -178,7 +178,7 @@ export default function SendGroupInvitationBtn({
         <>
           {pendingInvitation.sender_id !== userId && (
             <button
-              className={`btn ${small ? "p-1" : ""} btn-success me-1`}
+              className={`btn ${small ? "p-1 smallButton" : ""} btn-success me-1 `}
               onClick={async (event) => {
                 event.stopPropagation();
                 await handleAcceptInvitation();
@@ -190,7 +190,7 @@ export default function SendGroupInvitationBtn({
             </button>
           )}
           <button
-            className={`btn ${small ? "p-1" : ""} btn-danger`}
+            className={`btn ${small ? "p-1 smallButton" : ""} btn-danger`}
             onClick={async (event) => {
               event.stopPropagation();
               await handleRejectOrDelete();
@@ -210,7 +210,7 @@ export default function SendGroupInvitationBtn({
       )}
       {!pendingInvitation && alreadyInGrup && receiverId === userId && (
         <button
-          className={`btn ${small ? "p-1" : ""} btn-danger`}
+          className={`btn ${small ? "p-1 smallButton" : ""} btn-danger`}
           onClick={async (event) => {
             event.stopPropagation();
             await handleLeaveGroup();
@@ -223,7 +223,7 @@ export default function SendGroupInvitationBtn({
       )}
       {!pendingInvitation && !alreadyInGrup && (isPublic || receiverId !== userId) && (
         <button
-          className={`btn ${small ? "p-1" : ""} btn-success`}
+          className={`btn ${small ? "p-1 smallButton" : ""} btn-success`}
           onClick={async (event) => {
             event.stopPropagation();
             await (receiverId === userId ? joinPublicGroup() : sendInvitationToUser());

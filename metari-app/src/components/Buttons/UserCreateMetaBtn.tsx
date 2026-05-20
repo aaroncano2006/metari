@@ -17,9 +17,9 @@ export function UserCreateMetaBtn({ setMetas, categories }: CreateBtnProps) {
     <>
       <div>
 
-        <button className="btn btn-warning"
+        <button className="btn  createBtnHome"
           onClick={() => setCreatingMeta(true)}>
-          Crea una meta</button>
+          <i className="bi bi-plus"></i> Crea una meta</button>
 
       </div>
 
