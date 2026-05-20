@@ -13,7 +13,7 @@ const getAssignations = async (req, res, next) => {
         meta: {
           include: {
             indexedMetas: {
-              select: { is_community_approved: true }
+              select: { is_community_approved: true, is_approved: true }
             }
           }
         },

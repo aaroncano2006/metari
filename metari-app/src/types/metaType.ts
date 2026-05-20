@@ -13,6 +13,6 @@ export type metaType = {
 
   category: categoryType
   author: userTypeFrontend
-  indexedMetas?: { is_community_approved: boolean | null }[]
+  indexedMetas?: { is_community_approved: boolean | null; is_approved: boolean | null }[]
   
 }
