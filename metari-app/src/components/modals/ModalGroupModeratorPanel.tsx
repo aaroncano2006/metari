@@ -17,6 +17,7 @@ import {
 import {
   fetchAssignations,
   deleteAssignation,
+  createAssignationCompletion,
 } from "../../services/assignationService";
 import { PendingIndexedMetas } from "../PendingIndexedMetas";
 import type { metaType } from "../../types/metaType";
@@ -25,6 +26,8 @@ import { fetchMetas, deleteMeta } from "../../services/metaService";
 import { search as searchUsers } from "../../services/searchService";
 import { sendInvitation } from "../../services/invitationService";
 import type { userTypeFrontend } from "../../types/userTypeFrontend";
+import { updateProof } from "../../services/proofService";
+import { fetchUserById, updateUser } from "../../services/userService";
 
 type ModalGroupModeratorPanelProps = {
   group: groupType;
@@ -253,6 +256,66 @@ export default function ModalGroupModeratorPanel({
     setCurrentAssignationId((prev) =>
       prev === assignationId ? null : assignationId,
     );
+  };
+
+  const validateProof = async (proofId: number, isValid: boolean) => {
+    try {
+      const updatedProof = await updateProof(proofId, { is_valid: isValid });
+
+      const assignation = assignations.find(
+        (a) => a.id === updatedProof.assignation_id,
+      );
+
+      if (!assignation) {
+        throw new Error("Error trobant l'assignació!");
+      }
+
+      if (isValid) {
+        const alreadyCompleted = assignation.assignationCompletions?.some(
+          (ac) => ac.is_Completed,
+        );
+
+        if (!alreadyCompleted) {
+          const assignedUserId = assignation.user_id ?? updatedProof.user_id;
+          if (assignedUserId) {
+            await createAssignationCompletion(
+              assignation.id,
+              assignedUserId,
+              isValid,
+            );
+          }
+
+          if (assignation.score && assignedUserId) {
+            const user = await fetchUserById(assignedUserId);
+            if (user) {
+              assignation.meta.type === "challenge"
+                ? await updateUser(user.id, {
+                    score: user.score + assignation.score,
+                  })
+                : await updateUser(user.id, {
+                    score: user.completed_tasks + 1,
+                  });
+            }
+          }
+        }
+      }
+
+      setAssignations((prev) =>
+        prev.map((a) => {
+          if (a.id !== assignation.id) return a;
+          return {
+            ...a,
+            proofs: a.proofs?.map((p) =>
+              p.id === proofId ? { ...p, is_valid: isValid } : p,
+            ),
+          };
+        }),
+      );
+    } catch (err: any) {
+      setError(err.message ?? "Error validant la prova");
+      console.log(err);
+      setTimeout(() => setError(null), 5000);
+    }
   };
 
   return (
@@ -634,54 +697,72 @@ export default function ModalGroupModeratorPanel({
                                           📋 Proves adjuntes (
                                           {assignation.proofs.length}):
                                         </div>
-                                        {assignation.proofs.map((proof) => (
-                                          <div
-                                            key={proof.id}
-                                            className="border rounded p-2 mb-1 bg-white"
-                                            style={{ fontSize: "0.9rem" }}
-                                          >
-                                            <div className="d-flex justify-content-between align-items-center">
-                                              <span className="fw-medium">
-                                                {proof.user?.name
-                                                  ? `${proof.user?.name} (${proof.user?.username})`
-                                                  : "Usuari desconegut"}
-                                              </span>
-                                              <span>
-                                                {proof.is_valid
-                                                  ? "✅ Vàlida"
-                                                  : "❌ Pendent"}
-                                              </span>
-                                            </div>
-                                            <small className="text-muted">
-                                              {proof.created_at
-                                                ?.split("T")[0]
-                                                .split("-")
-                                                .reverse()
-                                                .join("-") +
-                                                " a les " +
-                                                proof.created_at
-                                                  ?.split("T")[1]
-                                                  ?.split(".")[0]}
-                                            </small>
-                                            {proof.proof_type === "text" ? (
-                                              <p className="mb-0 mt-1">
-                                                {proof.proof}
-                                              </p>
-                                            ) : (
-                                              <p>
-                                                <img
-                                                  src={proof.proof}
-                                                  alt="Prova"
-                                                  className="img-fluid mt-1"
-                                                  style={{
-                                                    maxHeight: 150,
-                                                    objectFit: "contain",
-                                                  }}
-                                                />
-                                              </p>
-                                            )}
-                                          </div>
-                                        ))}
+                                        <div className="p-3">
+                                          <>
+                                            {assignation.proofs.map((proof) => (
+                                              <div
+                                                key={proof.id}
+                                                className="border rounded p-2 mb-1 bg-white"
+                                                style={{ fontSize: "0.9rem" }}
+                                              >
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                  <span className="fw-medium">
+                                                    {proof.user?.name
+                                                      ? `${proof.user?.name} (${proof.user?.username})`
+                                                      : "Usuari desconegut"}
+                                                  </span>
+                                                  <span>
+                                                    {proof.is_valid
+                                                      ? "✅ Vàlida"
+                                                      : "❌ Pendent"}
+                                                  </span>
+                                                </div>
+                                                <small className="text-muted">
+                                                  {proof.created_at
+                                                    ?.split("T")[0]
+                                                    .split("-")
+                                                    .reverse()
+                                                    .join("-") +
+                                                    " a les " +
+                                                    proof.created_at
+                                                      ?.split("T")[1]
+                                                      ?.split(".")[0]}
+                                                </small>
+                                                {proof.proof_type === "text" ? (
+                                                  <p className="mb-0 mt-1">
+                                                    {proof.proof}
+                                                  </p>
+                                                ) : (
+                                                  <p>
+                                                    <img
+                                                      src={proof.proof}
+                                                      alt="Prova"
+                                                      className="img-fluid mt-1"
+                                                      style={{
+                                                        maxHeight: 150,
+                                                        objectFit: "contain",
+                                                      }}
+                                                    />
+                                                  </p>
+                                                )}
+                                                {!proof.is_valid && (
+                                                  <div className="mt-2 d-flex gap-2 justify-content-end">
+                                                    <button
+                                                      className="btn btn-success"
+                                                      onClick={async () => {
+                                                        await validateProof(
+                                                          proof.id, true
+                                                        );
+                                                      }}
+                                                    >
+                                                      És vàlida
+                                                    </button>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </>
+                                        </div>
                                       </div>
                                     )}
 
