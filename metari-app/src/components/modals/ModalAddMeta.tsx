@@ -81,8 +81,13 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
       return
     }
 
-    await createAssignation(validation.data)
-    setMetaToAdd([null, ""])
+    try {
+      await createAssignation(validation.data)
+      alert("Meta afegida correctament! A l'espera de ser indexada, pots consultar les teves metes i el seu estat en el teu perfil -> Metes Creades")
+      setMetaToAdd([null, ""])
+    } catch (error) {
+      alert("Error en afegir la meta")
+    }
   }
 
 

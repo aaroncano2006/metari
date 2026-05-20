@@ -68,17 +68,20 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                   // netejem errors de les validacions, si no hi ha.
                   setErrors({})
 
-                  const updatedMeta = await updateMeta(meta.id, validation.data)
-
-                  setter(prev =>
-                    prev.map(metas =>
-                      metas.id === meta.id
-                        ? updatedMeta
-                        : metas
+                  try {
+                    const updatedMeta = await updateMeta(meta.id, validation.data)
+                    setter(prev =>
+                      prev.map(metas =>
+                        metas.id === meta.id
+                          ? updatedMeta
+                          : metas
+                      )
                     )
-                  )
-
-                  setEditMeta(null)
+                    setEditMeta(null)
+                    alert("Meta actualitzada correctament")
+                  } catch (error) {
+                    alert("Error en actualitzar la meta")
+                  }
 
                 }}
                 >

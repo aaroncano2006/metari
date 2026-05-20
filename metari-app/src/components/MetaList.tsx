@@ -50,7 +50,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
 
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">Llista de metas</div>
+        <div className="titolComponent  text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Llistat de metas</div>
         <hr className="m-0" />
 
         <div className="inline">
@@ -65,17 +65,25 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
 
                     {canEdit &&
                       <button className="  btn btn-warning p-1  me-2  ms-auto"
+                      title="Edita"
                         onClick={(event) => {
                           event.stopPropagation()
                           setMetaToEdit(meta)
-                        }}>Edita</button>
+                        }}><i className="bi bi-pencil"></i></button>
                     }
                     {canEdit &&
                       <button className="  btn btn-danger p-1   "
+                      title="Elimina"
                         onClick={async (event) => {
                           event.stopPropagation()
-                          await deleteMeta(meta.id)
-                          setter(prev => prev.filter(prevMeta => prevMeta.id !== meta.id))
+                          try {
+                            if (!confirm("Estàs segur que el vols eliminar?")) return;
+                            await deleteMeta(meta.id)
+                            setter(prev => prev.filter(prevMeta => prevMeta.id !== meta.id))
+                            alert("Meta eliminada correctament")
+                          } catch (error) {
+                            alert("Error en eliminar la meta")
+                          }
                         }}>X</button>
                     }
                   </div>
@@ -89,7 +97,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         </>
                       }
                       <div>Tipus: {meta.type}</div>
-                      <div>Descripcio: {meta.description}</div>
+                      <div>Descripció: {meta.description}</div>
                       <div>Categoria: {meta.category.name}</div>
                       <div>Autor: {meta.author.username}</div>
                       <div className="d-flex mt-2 justify-content-end">

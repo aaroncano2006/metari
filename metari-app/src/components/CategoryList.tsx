@@ -72,10 +72,17 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                     }
                     {canEdit &&
                       <button className="  btn btn-danger p-1   "
+                      title="Eliminar"
                         onClick={async (event) => {
                           event.stopPropagation()
-                          await deleteCategory(category.id)
-                          setter(prev => prev.filter(prevCategory => prevCategory.id !== category.id))
+                          try {
+                            if (!confirm("Estàs segur que el vols eliminar?")) return;
+                            await deleteCategory(category.id)
+                            setter(prev => prev.filter(prevCategory => prevCategory.id !== category.id))
+                            alert("Categoria eliminada correctament")
+                          } catch (error) {
+                            alert("Error en eliminar la categoria")
+                          }
                         }}>X</button>
                     }
                   </div>
@@ -83,8 +90,8 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntitySelected === category.id && (
                     <div className="metaDetails ps-2 py-2">
-                      <div>ID: {category.id}</div>
-                      <div>Descripcio: {category.description}</div>
+                      {/* <div>ID: {category.id}</div> */}
+                      <div>Descripció: {category.description}</div>
                     </div>
                   )}
                 </div>

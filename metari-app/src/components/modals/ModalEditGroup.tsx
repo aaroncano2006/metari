@@ -76,15 +76,20 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
 
                   const updatedGroup = await updateGroup(group.id, formData)
 
-                  setter(prev =>
-                    prev.map(groups =>
-                      groups.id === group.id
-                        ? updatedGroup
-                        : groups
+                  try {
+                    const updatedGroup = await updateGroup(group.id, formData)
+                    setter(prev =>
+                      prev.map(groups =>
+                        groups.id === group.id
+                          ? updatedGroup
+                          : groups
+                      )
                     )
-                  )
-
-                  setEditGroup(null)
+                    setEditGroup(null)
+                    alert("Grup actualitzat correctament")
+                  } catch (error) {
+                    alert("Error en actualitzar el grup")
+                  }
 
                 }}
                 >

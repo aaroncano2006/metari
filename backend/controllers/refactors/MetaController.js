@@ -167,6 +167,31 @@ const deleteMeta = async (req, res, next) => {
       throw error;
     }
 
+    const assignations = await prisma.assignation.findMany({
+      where: { meta_id: id },
+      select: { id: true },
+    });
+    const assignationIds = assignations.map((a) => a.id);
+
+    if (assignationIds.length > 0) {
+      await prisma.assignationCompletions.deleteMany({
+        where: { assignation_id: { in: assignationIds } },
+      });
+      await prisma.comment.deleteMany({
+        where: { assignation_id: { in: assignationIds } },
+      });
+      await prisma.proof.deleteMany({
+        where: { assignation_id: { in: assignationIds } },
+      });
+      await prisma.assignation.deleteMany({
+        where: { id: { in: assignationIds } },
+      });
+    }
+
+    await prisma.indexedMeta.deleteMany({
+      where: { meta_id: id },
+    });
+
     await prisma.meta.delete({
       where: { id },
     });

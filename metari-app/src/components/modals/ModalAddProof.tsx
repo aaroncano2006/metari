@@ -30,8 +30,10 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
     setErrors({})
     const userId = getUserId()
+
     if (proofType === "text") {
       const data = {
         assignation_id: assignation.id,
@@ -51,46 +53,62 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
         return
       }
       setErrors({})
-      if (existingProof) {
-        const proof = await updateProof(existingProof.id, validation.data)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
-            : a
-        ))
-      } else {
-        const proof = await createProof(validation.data)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: [...(a.proofs ?? []), proof] }
-            : a
-        ))
+      try {
+        if (existingProof) {
+          const proof = await updateProof(existingProof.id, validation.data)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
+              : a
+          ))
+        } else {
+          const proof = await createProof(validation.data)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+              : a
+          ))
+        }
+        assignationSetter(null)
+        alert("Prova enviada correctament")
+      } catch (error) {
+        alert("Error en enviar la prova")
       }
-      assignationSetter(null)
     }
-    if (proofType === "image" && proofImage) {
+
+    if (proofType === "image") {
+      if (!proofImage) {
+        setErrors({ proofImage: "Selecciona una imatge" })
+        return
+      }
+
       const formData = new FormData()
       formData.append("assignation_id", String(assignation.id))
       formData.append("user_id", String(userId))
       formData.append("proof_type", "image")
       formData.append("is_valid", "false")
       formData.append("proofImage", proofImage)
-      if (existingProof) {
-        const proof = await updateProofWithFile(existingProof.id, formData)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
-            : a
-        ))
-      } else {
-        const proof = await createProofWithFile(formData)
-        setAssignations(prev => prev.map(a =>
-          a.id === proof.assignation_id
-            ? { ...a, proofs: [...(a.proofs ?? []), proof] }
-            : a
-        ))
+      try {
+        if (existingProof) {
+          const proof = await updateProofWithFile(existingProof.id, formData)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: a.proofs?.map(p => p.id === proof.id ? proof : p) ?? [proof] }
+              : a
+          ))
+        } else {
+          const proof = await createProofWithFile(formData)
+          setAssignations(prev => prev.map(a =>
+            a.id === proof.assignation_id
+              ? { ...a, proofs: [...(a.proofs ?? []), proof] }
+              : a
+          ))
+        }
+        assignationSetter(null)
+        alert("Prova enviada correctament")
+      } catch (error) {
+        alert("Error en enviar la prova")
       }
-      assignationSetter(null)
     }
   }
 
@@ -150,12 +168,15 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
                       accept="image/*"
                       onChange={(e) => setProofImage(e.target.files?.[0] ?? null)}
                     />
+                    {errors.proofImage && (
+                      <small className="text-danger d-flex mb-2">{errors.proofImage}</small>
+                    )}
                   </>
                 )}
                 {proofType === "image" && existingProof && !proofImage && (
                   <div className="mb-2">
                     <p>Imatge actual:</p>
-                    <img src={existingProof.proof} alt="Prova actual" className="img-fluid" style={{ maxHeight: 200 }} />
+                    <img src={existingProof.proof} alt="No hi ha imatge" className="img-fluid" style={{ maxHeight: 200 }} />
                   </div>
                 )}
                 <div className="d-flex justify-content-end gap-2">

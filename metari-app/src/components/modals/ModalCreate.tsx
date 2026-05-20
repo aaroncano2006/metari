@@ -84,9 +84,15 @@ export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEd
 
       setErrors({})
 
-      const newMeta = await createMeta(validation.data)
-      if (setter) {
-        setter(prev => [...prev, newMeta])
+      try {
+        const newMeta = await createMeta(validation.data)
+        if (setter) {
+          setter(prev => [...prev, newMeta])
+        }
+        alert("Meta creada correctament")
+      } catch (error) {
+        alert("Error en crear la meta")
+        return
       }
     }
 
@@ -111,10 +117,15 @@ export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEd
 
       setErrors({})
 
-      // await createCategory(validation.data)
-      const newCategory = await createCategory(validation.data)
-      if (setter) {
-        setter(prev => [...prev, newCategory])
+      try {
+        const newCategory = await createCategory(validation.data)
+        if (setter) {
+          setter(prev => [...prev, newCategory])
+        }
+        alert("Categoria creada correctament")
+      } catch (error) {
+        alert("Error en crear la categoria")
+        return
       }
     }
 
@@ -146,9 +157,15 @@ export function ModalCreate({ setCreatingEntry, creatingEntry, setter }: ModalEd
 
       setErrors({})
 
-      const newUser = await createUser({ ...validation.data, role })
-      if (setter) {
-        setter(prev => [...prev, newUser])
+      try {
+        const newUser = await createUser({ ...validation.data, role })
+        if (setter) {
+          setter(prev => [...prev, newUser])
+        }
+        alert("Usuari creat correctament")
+      } catch (error) {
+        alert("Error en crear l'usuari")
+        return
       }
     }
 

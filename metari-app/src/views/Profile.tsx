@@ -24,6 +24,10 @@ import { fetchGroupsByUserId } from "../services/groupService";
 import { Helmet } from "react-helmet-async";
 import { InvitationList } from "../components/InvitationList";
 
+import { fetchMetasByUserId } from "../services/metaService";
+import { UserCreatedMetas } from "../components/UserCreatedMetas";
+import type { metaType } from "../types/metaType";
+
 export default function Profile() {
   // Redireccions i recarrega dinàmica de la pàgina
   const navigate = useNavigate();
@@ -47,49 +51,53 @@ export default function Profile() {
   const [groupsList, setGroupsList] = useState<groupType[]>([]);
   const [friendInvitations, setFriendInvitations] = useState<any[]>([]);
   const [groupInvitations, setGroupInvitations] = useState<any[]>([]);
+  const [createdMetas, setCreatedMetas] = useState<metaType[]>([]);
   const [myGroupsForInvite, setMyGroupsForInvite] = useState<groupType[]>([]);
   const [selectedGroupForInvite, setSelectedGroupForInvite] = useState<number | null>(null);
 
   const stats = userData
     ? {
-        score: userData.score,
-        completed_tasks: userData.completed_tasks,
-      }
+      score: userData.score,
+      completed_tasks: userData.completed_tasks,
+    }
     : getUserStats();
+
   useEffect(() => {
-      const loadProfile = async () => {
-        try {
-          const user = await getUserProfileData(usernameSearchParam);
-          if (user) {
-            if (user.username === getUserName()) {
-              return navigate("/profile");
-            }
-            setUserData(user);
-            const [friends, groups, myGroups] = await Promise.all([
-              fetchFriends(user.id),
-              fetchGroupsByUserId(user.id),
-              fetchGroupsByUserId(getUserId()!),
-            ]);
-            setFriendsList(friends);
-            setGroupsList(groups);
-            setMyGroupsForInvite(myGroups);
-            if (myGroups.length > 0) {
-              setSelectedGroupForInvite(myGroups[0].id);
-            }
-          } else {
-            throw new Error(`No s'ha trobat cap usuari amb el username: `);
+    const loadProfile = async () => {
+      try {
+        const user = await getUserProfileData(usernameSearchParam);
+        if (user) {
+          if (user.username === getUserName()) {
+            return navigate("/profile");
           }
-        } catch (err: any) {
-          setError(err.message);
+          setUserData(user);
+          const [friends, groups, myGroups, metas] = await Promise.all([
+            fetchFriends(user.id),
+            fetchGroupsByUserId(user.id),
+            fetchGroupsByUserId(getUserId()!),
+            fetchMetasByUserId(user.id),
+          ]);
+          setFriendsList(friends);
+          setGroupsList(groups);
+          setMyGroupsForInvite(myGroups);
+          if (myGroups.length > 0) {
+            setSelectedGroupForInvite(myGroups[0].id);
+          }
+          setCreatedMetas(metas);
+        } else {
+          throw new Error(`No s'ha trobat cap usuari amb el username: `);
         }
-      };
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
 
     if (usernameSearchParam) {
       loadProfile();
     } else {
       setUserData(null);
       const loadOwnData = async () => {
-        const [friends, groups, friendInv, groupInv] = await Promise.all([
+        const [friends, groups, friendInv, groupInv, metas] = await Promise.all([
           fetchFriends(getUserId()!),
           fetchGroupsByUserId(getUserId()!),
           fetchMyInvitations(getUserId()!, "pending").then((response) =>
@@ -98,7 +106,9 @@ export default function Profile() {
           fetchMyInvitations(getUserId()!, "pending").then((response) =>
             response.filter((el: any) => el.group_id !== null),
           ),
+          fetchMetasByUserId(getUserId()!),
         ]);
+        setCreatedMetas(metas);
         setFriendsList(friends);
         setGroupsList(groups);
         setFriendInvitations(friendInv);
@@ -297,6 +307,8 @@ export default function Profile() {
             </div>
           </>
         )}
+
+        <UserCreatedMetas metas={createdMetas} setter={setCreatedMetas} />
       </div>
     </>
   );

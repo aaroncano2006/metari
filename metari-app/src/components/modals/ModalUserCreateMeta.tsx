@@ -137,6 +137,7 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
       })
     }
     setMetas(prev => [...prev, newMeta])
+    alert("Meta creada correctament")
     setCreatingMeta(false)
 
 
@@ -154,6 +155,8 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
                 <h5>Crea una meta</h5>
 
                 <form onSubmit={handleSubmit}>
+
+                  
 
 
                   <div className="d-flex flex-column">

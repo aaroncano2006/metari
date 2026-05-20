@@ -152,8 +152,8 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                               {assignation.user_id &&
                                 <div>👤 Assignada a: {assignation.user?.name ?? assignation.user_id}</div>
                               }
-                              <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
-                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
+                              <div>📅 Inici: {assignation.start_date?.split("T")[0].split("-").reverse().join("-")}</div>
+                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0].split("-").reverse().join("-") ?? "sense data limit"}</div>
                               <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
 
                               {assignation.meta.type === "challenge" && (
@@ -176,8 +176,8 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                 <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
                               )}
 
-                              <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
-                              <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
+                              <div>🆕 Creat el dia: {assignation.created_at && assignation.created_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.created_at.split("T")[1].split(".")[0]}</div>
+                              <div>🔄 Actualitzat el dia: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>
                               <div className=" d-flex align-self-end me-2 mb-2 mt-2">
 
                                 <div className="btn btn-primary d-flex align-self-end me-2 "
@@ -211,13 +211,14 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                   <div className="d-flex gap-2 align-self-end me-2">
                                     <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
                                       onClick={() => setAssignationToAddProof(assignation)}>
-                                      {userProof ? "Editar prova" : "Enviar prova"}
+                                      {userProof ? "Editar o veure prova" : "Enviar prova"}
                                     </div>
                                     {userProof && (
                                       <div className="btn btn-danger"
                                         onClick={async () => {
+                                          if (!confirm("Estàs segur que el vols eliminar?")) return;
                                           await deleteProof(userProof.id)
-                                          
+
                                           setAssignations(prev => prev.map(a =>
                                             a.id === assignation.id
                                               ? { ...a, proofs: a.proofs?.filter(p => p.id !== userProof.id) }
@@ -258,27 +259,35 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                                       <div key={comment.id} className="border rounded p-2 mb-1 bg-white me-2">
                                         {comment.user?.name ?? comment.user_id}:
                                         <p className="mb-0">{comment.body}</p>
-                                        <small>{new Date(comment.created_at).toLocaleString("ca-ES")}</small>
+                                        <small>
+                                          {new Date(comment.created_at).toLocaleString("ca-ES")}
+                                          {comment.created_at !== comment.updated_at && (
+                                            <> (editat: {new Date(comment.updated_at).toLocaleString("ca-ES")})</>
+                                          )}
+                                        </small>
                                         <div className=" d-flex justify-content-end">
 
                                           {comment.user_id === getUserId() &&
 
 
                                             <div className="btn btn-warning align-self-end me-2 "
+                                            title="Editar comentari"
                                               onClick={() => {
                                                 //edit
                                                 setcomment(comment);
                                                 setAssignationToAddComment(assignation);
                                                 setcommentFormType("edit")
-                                              }}>edita</div>
+                                              }}><i className="bi bi-pencil"></i></div>
 
                                           }
                                           {(comment.user_id === getUserId() || group.owner_id === getUserId()) &&
                                             <div className="btn btn-danger align-self-end me-2 "
+                                            title="Eliminar comentari"
                                               onClick={async () => {
+                                                if (!confirm("Estàs segur que el vols eliminar?")) return;
                                                 await deleteComment(comment.id)
                                                 setComments(prev => prev.filter(c => c.id !== comment.id))
-                                              }}>Elimina</div>
+                                              }}>X</div>
                                           }
                                         </div>
                                       </div>
@@ -321,15 +330,15 @@ export function MyMetaListByGroup({ assignations, groups, setAssignations }: MyM
                               {assignation.user_id &&
                                 <div>👤 Assignada a: {assignation.user?.name ?? assignation.user_id}</div>
                               }
-                              <div>📅 Inici: {assignation.start_date?.split("T")[0]}</div>
-                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0] ?? "sense data limit"}</div>
+                              <div>📅 Inici: {assignation.start_date?.split("T")[0].split("-").reverse().join("-")}</div>
+                              <div>⏳ Data límit: {assignation.due_date?.split("T")[0].split("-").reverse().join("-") ?? "sense data limit"}</div>
                               <div>🔥 Prioritat: {assignation.priority ?? "sense prioritat"}</div>
                               <div>✔️ Estat: {assignation.completed ? "completada" : "pendent"}</div>
                               {assignation.needs_proofs !== null && assignation.needs_proofs !== undefined && (
                                 <div>📋 Requereix proves: {assignation.needs_proofs ? "Sí" : "No"}</div>
                               )}
-                              <div>🆕 Creat: {assignation.created_at?.split("T")[0]}</div>
-                              <div>🔄 Actualitzat: {assignation.updated_at?.split("T")[0]}</div>
+                              <div>🆕 Creat: {assignation.created_at && assignation.created_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.created_at.split("T")[1].split(".")[0]}</div>
+                              <div>🔄 Actualitzat: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>
                             </div>
                           )}
                         </div>
