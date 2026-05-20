@@ -38,6 +38,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
   )
 
   const [selectedGroupId, setSelectedGroupId] = useState<number | "">("")
+  const [needsProofs, setNeedsProofs] = useState(false)
 
   const selectedGroupUsers = selectedGroupId !== ""
     ? myGroups.find(group => group.id === Number(selectedGroupId))?.groupUsers ?? []
@@ -56,7 +57,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
         ? (formData.get("userToAssign") ? Number(formData.get("userToAssign")) : undefined)
         : Number(formData.get("user_id")) || undefined,
       assigner_id: Number(formData.get("assigner_id")) || undefined,
-      needs_proofs: formData.get("needs_proofs") || undefined,
+      needs_proofs: needsProofs,
       start_date: formData.get("start_date"),
       due_date: formData.get("due_date"),
       priority: formData.get("priority") || undefined,
@@ -83,7 +84,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
     try {
       await createAssignation(validation.data)
-      alert("Meta afegida correctament! A l'espera de ser indexada, pots consultar les teves metes i el seu estat en el teu perfil -> Metes Creades")
+      alert("Meta afegida correctament!")
       setMetaToAdd([null, ""])
     } catch (error) {
       alert("Error en afegir la meta")
@@ -213,7 +214,10 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
                         }
                         <label className="me-5 my-2" htmlFor="needs_proofs">Proves necessaries?</label>
-                        <input type="checkbox" name="needs_proofs" id="needs_proofs" />
+                        <input type="checkbox" name="needs_proofs" id="needs_proofs"
+                          checked={needsProofs}
+                          onChange={() => setNeedsProofs(prev => !prev)} />
+                        {errors.needs_proofs && <div className="text-danger small">{errors.needs_proofs}</div>}
 
 
 

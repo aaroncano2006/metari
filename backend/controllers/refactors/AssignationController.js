@@ -19,7 +19,7 @@ const getAssignations = async (req, res, next) => {
         },
         user: true,
         comments: true,
-        proofs: true,
+        proofs: { include: { user: true } },
         assignationCompletions: {
           include: { user: true }
         }
@@ -50,7 +50,7 @@ const getAssignationById = async (req, res, next) => {
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
         comments: true,
-        proofs: true,
+        proofs: { include: { user: true } },
       },
     });
 
@@ -119,7 +119,7 @@ const createAssignation = async (req, res, next) => {
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
         comments: true,
-        proofs: true,
+        proofs: { include: { user: true } },
       },
     });
 
@@ -193,7 +193,7 @@ const updateAssignation = async (req, res, next) => {
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
         comments: true,
-        proofs: true,
+        proofs: { include: { user: true } },
       },
     });
 

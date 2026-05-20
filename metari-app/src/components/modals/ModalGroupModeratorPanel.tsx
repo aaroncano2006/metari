@@ -10,10 +10,14 @@ import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
 import { groupSchema } from "../../schemas/groupSchema";
 import type { indexedType } from "../../types/indexedType";
-import { fetchIndexedMetas, deleteIndexedMeta } from "../../services/IndexerService";
+import {
+  fetchIndexedMetas,
+  deleteIndexedMeta,
+} from "../../services/IndexerService";
 import {
   fetchAssignations,
   deleteAssignation,
+  createAssignationCompletion,
 } from "../../services/assignationService";
 import { PendingIndexedMetas } from "../PendingIndexedMetas";
 import type { metaType } from "../../types/metaType";
@@ -22,6 +26,8 @@ import { fetchMetas, deleteMeta } from "../../services/metaService";
 import { search as searchUsers } from "../../services/searchService";
 import { sendInvitation } from "../../services/invitationService";
 import type { userTypeFrontend } from "../../types/userTypeFrontend";
+import { updateProof } from "../../services/proofService";
+import { fetchUserById, updateUser } from "../../services/userService";
 
 type ModalGroupModeratorPanelProps = {
   group: groupType;
@@ -40,6 +46,9 @@ export default function ModalGroupModeratorPanel({
   const [metas, setMetas] = useState<metaType[]>([]);
   const [assignations, setAssignations] = useState<assignationType[]>([]);
   const [indexedMetas, setIndexedMetas] = useState<indexedType[]>([]);
+  const [currentAssignationId, setCurrentAssignationId] = useState<
+    number | null
+  >(0);
 
   const [inviteUsername, setInviteUsername] = useState("");
   const [inviteMenuActive, setInviteMenuActive] = useState(false);
@@ -187,10 +196,12 @@ export default function ModalGroupModeratorPanel({
     try {
       const results = await searchUsers(inviteUsername);
       const users = results.users || [];
-      const user = users.find((u: userTypeFrontend) =>
-        u.username.toLowerCase() === inviteUsername.toLowerCase() ||
-        u.name.toLowerCase() === inviteUsername.toLowerCase()
-      ) || users[0];
+      const user =
+        users.find(
+          (u: userTypeFrontend) =>
+            u.username.toLowerCase() === inviteUsername.toLowerCase() ||
+            u.name.toLowerCase() === inviteUsername.toLowerCase(),
+        ) || users[0];
       if (!user) {
         return setInviteError("Usuari no trobat!");
       }
@@ -218,18 +229,92 @@ export default function ModalGroupModeratorPanel({
     try {
       await deleteAssignation(assignationId);
       if (targetMeta && !targetMeta.is_public) {
-        const metaIndexedMetas = indexedMetas.filter((im) => im.meta_id === targetMeta.id);
-        await Promise.all(metaIndexedMetas.map((im) => deleteIndexedMeta(im.id)));
+        const metaIndexedMetas = indexedMetas.filter(
+          (im) => im.meta_id === targetMeta.id,
+        );
+        await Promise.all(
+          metaIndexedMetas.map((im) => deleteIndexedMeta(im.id)),
+        );
         await deleteMeta(targetMeta.id);
       }
       setAssignations((prev) => prev.filter((a) => a.id !== assignationId));
-      setMetas((prev) => prev.filter((m) => m.id !== targetAssignation.meta_id));
-      setIndexedMetas((prev) => prev.filter((im) => im.meta_id !== targetAssignation.meta_id));
+      setMetas((prev) =>
+        prev.filter((m) => m.id !== targetAssignation.meta_id),
+      );
+      setIndexedMetas((prev) =>
+        prev.filter((im) => im.meta_id !== targetAssignation.meta_id),
+      );
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch {
       setError("Error eliminant la meta del grup! Revisa els teus permisos.");
       setTimeout(() => setError(null), 3000);
+    }
+  };
+
+  const toggleAssingationDetail = (assignationId: number) => {
+    setCurrentAssignationId((prev) =>
+      prev === assignationId ? null : assignationId,
+    );
+  };
+
+  const validateProof = async (proofId: number, isValid: boolean) => {
+    try {
+      const updatedProof = await updateProof(proofId, { is_valid: isValid });
+
+      const assignation = assignations.find(
+        (a) => a.id === updatedProof.assignation_id,
+      );
+
+      if (!assignation) {
+        throw new Error("Error trobant l'assignació!");
+      }
+
+      if (isValid) {
+        const alreadyCompleted = assignation.assignationCompletions?.some(
+          (ac) => ac.is_Completed,
+        );
+
+        if (!alreadyCompleted) {
+          const assignedUserId = assignation.user_id ?? updatedProof.user_id;
+          if (assignedUserId) {
+            await createAssignationCompletion(
+              assignation.id,
+              assignedUserId,
+              isValid,
+            );
+          }
+
+          if (assignation.score && assignedUserId) {
+            const user = await fetchUserById(assignedUserId);
+            if (user) {
+              assignation.meta.type === "challenge"
+                ? await updateUser(user.id, {
+                    score: user.score + assignation.score,
+                  })
+                : await updateUser(user.id, {
+                    score: user.completed_tasks + 1,
+                  });
+            }
+          }
+        }
+      }
+
+      setAssignations((prev) =>
+        prev.map((a) => {
+          if (a.id !== assignation.id) return a;
+          return {
+            ...a,
+            proofs: a.proofs?.map((p) =>
+              p.id === proofId ? { ...p, is_valid: isValid } : p,
+            ),
+          };
+        }),
+      );
+    } catch (err: any) {
+      setError(err.message ?? "Error validant la prova");
+      console.log(err);
+      setTimeout(() => setError(null), 5000);
     }
   };
 
@@ -249,14 +334,15 @@ export default function ModalGroupModeratorPanel({
                   </div>
                 )}
 
-                <div className="row-sm mt-3 d-flex justify-content-center gap-3">
+                <div className="row-sm mt-4 mb-2 d-flex justify-content-center gap-3">
                   <button
                     className="btn btn-primary"
                     onClick={() => {
                       switchMenu("group_config");
                     }}
                   >
-                    Configuració del grup
+                    <i className="bi bi-gear-fill me-1"></i> Configuració del
+                    grup
                   </button>
                   <button
                     className="btn btn-primary"
@@ -264,7 +350,7 @@ export default function ModalGroupModeratorPanel({
                       switchMenu("users");
                     }}
                   >
-                    Membres del grup
+                    <i className="bi bi-people-fill me-1"></i> Membres del grup
                   </button>
                   <button
                     className="btn btn-primary"
@@ -272,7 +358,7 @@ export default function ModalGroupModeratorPanel({
                       switchMenu("metas");
                     }}
                   >
-                    Metas del grup
+                    <i className="bi bi-bullseye me-1"></i>Metas del grup
                   </button>
                 </div>
 
@@ -353,7 +439,9 @@ export default function ModalGroupModeratorPanel({
                   {menu === "users" && (
                     <div className="mt-3">
                       <div className="d-flex justify-content-between align-items-center mb-2">
-                        <h6 className="m-0">Membres del grup ({groupUsers.length})</h6>
+                        <h6 className="m-0">
+                          Membres del grup ({groupUsers.length})
+                        </h6>
                         <button
                           className="btn btn-primary btn-sm"
                           onClick={() => setInviteMenuActive(!inviteMenuActive)}
@@ -371,8 +459,12 @@ export default function ModalGroupModeratorPanel({
                               className="form-control form-control-sm"
                               placeholder="Username del usuari..."
                               value={inviteUsername}
-                              onChange={(e) => setInviteUsername(e.target.value)}
-                              onKeyDown={(e) => e.key === "Enter" && handleInviteByUsername()}
+                              onChange={(e) =>
+                                setInviteUsername(e.target.value)
+                              }
+                              onKeyDown={(e) =>
+                                e.key === "Enter" && handleInviteByUsername()
+                              }
                             />
                             <button
                               className="btn btn-primary btn-sm"
@@ -382,10 +474,14 @@ export default function ModalGroupModeratorPanel({
                             </button>
                           </div>
                           {inviteError && (
-                            <small className="text-danger d-block mt-1">{inviteError}</small>
+                            <small className="text-danger d-block mt-1">
+                              {inviteError}
+                            </small>
                           )}
                           {inviteSuccess && (
-                            <small className="text-success d-block mt-1">{inviteSuccess}</small>
+                            <small className="text-success d-block mt-1">
+                              {inviteSuccess}
+                            </small>
                           )}
                         </div>
                       )}
@@ -444,6 +540,7 @@ export default function ModalGroupModeratorPanel({
                                     className="btn btn-danger btn-sm"
                                     onClick={() => handleKickUser(gu.user_id)}
                                   >
+                                    <i className="bi bi-person-dash-fill"></i>{" "}
                                     Expulsar
                                   </button>
                                 )}
@@ -476,34 +573,228 @@ export default function ModalGroupModeratorPanel({
                             (a) => a.meta_id === meta.id,
                           );
                           return (
-                            <li
-                              key={meta.id}
-                              className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
-                            >
-                              <div>
-                                <strong>{meta.title}</strong>
-                                <span className="text-muted ms-2">
-                                  {meta.type}
-                                </span>
-                                <br />
-                                <small className="text-muted">
-                                  {meta.category?.name} ·{" "}
-                                  {meta.author?.username}
-                                </small>
-                              </div>
-                              <div className="d-flex gap-2">
-                                {assignation && (
-                                  <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                      handleRemoveMeta(assignation.id)
-                                    }
-                                  >
-                                    Eliminar del grup
-                                  </button>
-                                )}
-                              </div>
-                            </li>
+                            <>
+                              <li
+                                key={meta.id}
+                                className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
+                              >
+                                <div>
+                                  <strong>{meta.title}</strong>
+                                  <span className="text-muted ms-2">
+                                    {meta.type}
+                                  </span>
+                                  <br />
+                                  <small className="text-muted">
+                                    {meta.category?.name} ·{" "}
+                                    {meta.author?.username}
+                                  </small>
+                                </div>
+                                <div className="d-flex gap-2">
+                                  {assignation && (
+                                    <>
+                                      <button
+                                        className="btn btn-warning btn-sm"
+                                        title="Mostrar detalls i proves de l'assignació"
+                                        onClick={() => {
+                                          toggleAssingationDetail(
+                                            assignation.id,
+                                          );
+                                        }}
+                                      >
+                                        <i className="bi bi-eye-fill"></i>
+                                      </button>
+
+                                      <button
+                                        className="btn btn-danger btn-sm"
+                                        onClick={() =>
+                                          handleRemoveMeta(assignation.id)
+                                        }
+                                        title="Eliminar del grup"
+                                      >
+                                        <i className="bi bi-trash-fill"></i>
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              </li>
+                              {currentAssignationId === assignation?.id && (
+                                <div className="bg-light ps-2 py-3 mb-2">
+                                  <div>📌 Tipus:{assignation.meta.type}</div>
+                                  <div>
+                                    📝 Descripció:{" "}
+                                    {assignation.meta.description}
+                                  </div>
+                                  {assignation.user_id && (
+                                    <div>
+                                      👤 Assignada a:{" "}
+                                      {assignation.user?.name
+                                        ? `${assignation.user?.name} (${assignation.user?.username})`
+                                        : assignation.user_id}
+                                    </div>
+                                  )}
+                                  {assignation.assigner_id && (
+                                    <div>
+                                      👑 Assignada per:{" "}
+                                      {assignation.assigner?.name
+                                        ? `${assignation.assigner?.name} (${assignation.assigner?.username})`
+                                        : assignation.assigner_id}
+                                    </div>
+                                  )}
+                                  <div>
+                                    📅 Inici:{" "}
+                                    {assignation.start_date
+                                      ?.split("T")[0]
+                                      .split("-")
+                                      .reverse()
+                                      .join("-")}
+                                  </div>
+                                  <div>
+                                    ⏳ Data límit:{" "}
+                                    {assignation.due_date
+                                      ?.split("T")[0]
+                                      .split("-")
+                                      .reverse()
+                                      .join("-") ?? "sense data limit"}
+                                  </div>
+                                  <div>
+                                    🔥 Prioritat:{" "}
+                                    {assignation.priority ?? "sense prioritat"}
+                                  </div>
+
+                                  {assignation.meta.type === "challenge" && (
+                                    <div>
+                                      🏆 Puntuacio: {assignation.score ?? 0}
+                                    </div>
+                                  )}
+
+                                  {assignation.assignationCompletions &&
+                                    assignation.assignationCompletions.length >
+                                      0 && (
+                                      <div>
+                                        ✅ Completat per:{" "}
+                                        {assignation.assignationCompletions
+                                          .filter((ac) => ac.is_Completed)
+                                          .map(
+                                            (ac) =>
+                                              ac.user?.username ?? ac.user_id,
+                                          )
+                                          .join(", ")}
+                                      </div>
+                                    )}
+
+                                  {assignation.needs_proofs !== null &&
+                                    assignation.needs_proofs !== undefined && (
+                                      <div>
+                                        📋 Requereix proves:{" "}
+                                        {assignation.needs_proofs ? "Sí" : "No"}
+                                      </div>
+                                    )}
+
+                                  {assignation.proofs &&
+                                    assignation.proofs.length > 0 && (
+                                      <div className="mt-2">
+                                        <div className="fw-bold">
+                                          📋 Proves adjuntes (
+                                          {assignation.proofs.length}):
+                                        </div>
+                                        <div className="p-3">
+                                          <>
+                                            {assignation.proofs.map((proof) => (
+                                              <div
+                                                key={proof.id}
+                                                className="border rounded p-2 mb-1 bg-white"
+                                                style={{ fontSize: "0.9rem" }}
+                                              >
+                                                <div className="d-flex justify-content-between align-items-center">
+                                                  <span className="fw-medium">
+                                                    {proof.user?.name
+                                                      ? `${proof.user?.name} (${proof.user?.username})`
+                                                      : "Usuari desconegut"}
+                                                  </span>
+                                                  <span>
+                                                    {proof.is_valid
+                                                      ? "✅ Vàlida"
+                                                      : "❌ Pendent"}
+                                                  </span>
+                                                </div>
+                                                <small className="text-muted">
+                                                  {proof.created_at
+                                                    ?.split("T")[0]
+                                                    .split("-")
+                                                    .reverse()
+                                                    .join("-") +
+                                                    " a les " +
+                                                    proof.created_at
+                                                      ?.split("T")[1]
+                                                      ?.split(".")[0]}
+                                                </small>
+                                                {proof.proof_type === "text" ? (
+                                                  <p className="mb-0 mt-1">
+                                                    {proof.proof}
+                                                  </p>
+                                                ) : (
+                                                  <p>
+                                                    <img
+                                                      src={proof.proof}
+                                                      alt="Prova"
+                                                      className="img-fluid mt-1"
+                                                      style={{
+                                                        maxHeight: 150,
+                                                        objectFit: "contain",
+                                                      }}
+                                                    />
+                                                  </p>
+                                                )}
+                                                {!proof.is_valid && (
+                                                  <div className="mt-2 d-flex gap-2 justify-content-end">
+                                                    <button
+                                                      className="btn btn-success"
+                                                      onClick={async () => {
+                                                        await validateProof(
+                                                          proof.id, true
+                                                        );
+                                                      }}
+                                                    >
+                                                      És vàlida
+                                                    </button>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                  <div>
+                                    🆕 Creat el dia:{" "}
+                                    {assignation.created_at &&
+                                      assignation.created_at
+                                        .split("T")[0]
+                                        .split("-")
+                                        .reverse()
+                                        .join("-") +
+                                        " a les " +
+                                        assignation.created_at
+                                          .split("T")[1]
+                                          .split(".")[0]}
+                                  </div>
+                                  <div>
+                                    🔄 Actualitzat el dia:{" "}
+                                    {assignation.updated_at &&
+                                      assignation.updated_at
+                                        .split("T")[0]
+                                        .split("-")
+                                        .reverse()
+                                        .join("-") +
+                                        " a les " +
+                                        assignation.updated_at
+                                          .split("T")[1]
+                                          .split(".")[0]}
+                                  </div>
+                                </div>
+                              )}
+                            </>
                           );
                         })}
                       </ul>
