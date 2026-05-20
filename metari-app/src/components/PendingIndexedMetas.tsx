@@ -136,47 +136,48 @@ export function PendingIndexedMetas({
                       Aprovar
                     </button>
 
-                    {isGroupModerating
+                    {(isGroupModerating
                       ? indexed.is_approved !== false
-                      : indexed.is_community_approved !== false && (
-                          <button
-                            className="btn btn-danger btn-sm ms-2"
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              try {
-                                const data = isGroupModerating
-                                  ? { is_approved: false }
-                                  : { is_community_approved: false };
-                                await updateIndexedMeta(indexed.id, data);
-                                setIndexedMetas((prev) =>
-                                  prev.map((im) =>
-                                    im.id === indexed.id
-                                      ? { ...im, ...data }
-                                      : im,
-                                  ),
-                                );
-                              } catch {
-                                console.error("Error rejecting indexed meta");
-                              }
-                            }}
-                          >
-                            Rebutjar
-                          </button>
-                        )}
+                      : indexed.is_community_approved !== false) && (
+                      <button
+                        className="btn btn-danger btn-sm ms-2"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const data = isGroupModerating
+                              ? { is_approved: false }
+                              : { is_community_approved: false };
+                            await updateIndexedMeta(indexed.id, data);
+                            setIndexedMetas((prev) =>
+                              prev.map((im) =>
+                                im.id === indexed.id ? { ...im, ...data } : im,
+                              ),
+                            );
+                          } catch {
+                            console.error("Error rejecting indexed meta");
+                          }
+                        }}
+                      >
+                        Rebutjar
+                      </button>
+                    )}
 
-                    {isGroupModerating ? indexed.is_approved !== null :indexed.is_community_approved !== null && (
+                    {(isGroupModerating
+                      ? indexed.is_approved !== null
+                      : indexed.is_community_approved !== null) && (
                       <button
                         className="btn btn-warning btn-sm ms-2"
                         title="Marcar pendent"
                         onClick={async (e) => {
                           e.stopPropagation();
-                          await updateIndexedMeta(indexed.id, {
-                            is_community_approved: null,
-                          });
+                          const data = isGroupModerating
+                            ? { is_approved: null }
+                            : { is_community_approved: null };
+                          await updateIndexedMeta(indexed.id, data);
                           setIndexedMetas((prev) =>
                             prev.map((im) =>
                               im.id === indexed.id
-                                ? { ...im, is_community_approved: null }
+                                ? { ...im, ...data }
                                 : im,
                             ),
                           );
@@ -186,7 +187,9 @@ export function PendingIndexedMetas({
                       </button>
                     )}
 
-                    {isGroupModerating ? indexed.is_approved === false :indexed.is_community_approved === false && (
+                    {(isGroupModerating
+                      ? indexed.is_approved === false
+                      : indexed.is_community_approved === false) && (
                       <button
                         className="btn btn-danger btn-sm ms-2"
                         title="Eliminar meta"

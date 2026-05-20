@@ -38,12 +38,12 @@ model User {
   //Autogenerades relacions  bidireccionals
   groups                 Group[]
   metas                  Meta[]
-  assignations           Assignation[]
+  assignedAssignations   Assignation[]            @relation("AssignedUser")
+  assignerAssignations   Assignation[]            @relation("AssignerUser")
   comments               Comment[]
   proofs                 Proof[]
-  //Aquestes dues relacions de retorn venen del mateix model aixi que s'han d'anomenar amb diferents noms (definits a les relacions del model invitation)
-  sentInvitations        Invitation[]             @relation("SentInvitations")
-  receivedInvitations    Invitation[]             @relation("ReceivedInvitations")
+  sentInvitations        Invitation[] @relation("SentInvitations")
+  receivedInvitations    Invitation[] @relation("ReceivedInvitations")
   groupUsers             GroupUser[]
   indexedMetas           IndexedMeta[]
   assignationCompletions AssignationCompletions[]
@@ -123,7 +123,8 @@ model Assignation {
   updated_at   DateTime   @updatedAt
   group        Group?     @relation(fields: [group_id], references: [id])
   meta         Meta       @relation(fields: [meta_id], references: [id])
-  user         User?      @relation(fields: [user_id], references: [id])
+  user         User?      @relation("AssignedUser", fields: [user_id], references: [id])
+  assigner     User?      @relation("AssignerUser", fields: [assigner_id], references: [id])
   //Autogenerades relacions bidireccionals
 
   comments               Comment[]

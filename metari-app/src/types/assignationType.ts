@@ -26,4 +26,5 @@ export type assignationType = {
   user?: userTypeFrontend | null
   assignationCompletions?: assignationCompletionType[]
   proofs?: proofType[]
+  assigner?: userTypeFrontend
 }

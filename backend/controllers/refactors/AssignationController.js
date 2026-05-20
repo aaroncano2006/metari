@@ -13,12 +13,11 @@ const getAssignations = async (req, res, next) => {
         meta: {
           include: {
             indexedMetas: {
-              select: { is_community_approved: true, is_approved: true }
+              select: { is_community_approved: true }
             }
           }
         },
         user: true,
-        assigner: true,
         comments: true,
         proofs: { include: { user: true } },
         assignationCompletions: {
@@ -50,7 +49,6 @@ const getAssignationById = async (req, res, next) => {
         group: true,
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
-        assigner: true,
         comments: true,
         proofs: { include: { user: true } },
       },
@@ -120,7 +118,6 @@ const createAssignation = async (req, res, next) => {
         group: true,
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
-        assigner: true,
         comments: true,
         proofs: { include: { user: true } },
       },
@@ -195,7 +192,6 @@ const updateAssignation = async (req, res, next) => {
         group: true,
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
         user: true,
-        assigner: true,
         comments: true,
         proofs: { include: { user: true } },
       },
@@ -211,10 +207,26 @@ const updateAssignation = async (req, res, next) => {
 
 const deleteAssignation = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    await prisma.assignationCompletions.deleteMany({
+      where: { assignation_id: id },
+    });
+    await prisma.comment.deleteMany({
+      where: { assignation_id: id },
+    });
+    await prisma.proof.deleteMany({
+      where: { assignation_id: id },
+    });
 
     await prisma.assignation.delete({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     res.status(204).end();

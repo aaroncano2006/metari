@@ -7,7 +7,11 @@ const fs = require("fs");
 
 const getProofs = async (req, res, next) => {
     try {
-        const proofs = await prisma.proof.findMany();
+        const proofs = await prisma.proof.findMany({
+            include: {
+                user: true
+            }
+        });
 
         res.status(200).json(utils.handleBigInt(proofs));
     } catch (error) {
@@ -22,6 +26,9 @@ const getProofById = async (req, res, next) => {
     try {
         const proof = await prisma.proof.findUnique({
             where: { id: parseInt(req.params.id) },
+            include: {
+                user: true
+            }
         });
 
         if (!proof) {
