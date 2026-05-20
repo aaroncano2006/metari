@@ -30,7 +30,19 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
+const tryAuth = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  if (authHeader) {
+    try {
+      const token = authHeader.split(" ")[1];
+      req.user = jwt.verify(token, SECRET);
+    } catch (_) {}
+  }
+  next();
+};
+
 module.exports = {
   isAuthenticated,
   isAdmin,
+  tryAuth,
 };
