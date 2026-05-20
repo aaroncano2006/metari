@@ -3,7 +3,6 @@ const router = express.Router();
 const categoryController = require('../controllers/CategoryController');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth/authorize');
 
-// Definimos el GET de todas las categorías
 router.get('/', categoryController.getCategories);
 
 router.get('/:id', categoryController.getCategoryById);
