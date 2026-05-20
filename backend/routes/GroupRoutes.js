@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const groupController = require('../controllers/GroupController');
+// const { isAuthenticated, isAdmin } = require('../middlewares/auth/authorize');
 
 
 router.get('/', groupController.getGroups);

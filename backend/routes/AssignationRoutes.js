@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const assignationController = require('../controllers/AssignationController');
+// const { isAuthenticated, isAdmin } = require('../middlewares/auth/authorize');
 
 // get totes les assignacions
 router.get('/', assignationController.getAssignations);

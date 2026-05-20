@@ -15,12 +15,12 @@ const seedComments = async () => {
         {
           assignation_id:1,
           user_id: 1,
-          body: "Que es aixo, wtf!",
+          body: "avui tambe??? :'(",
         },
         {
           assignation_id:2,
           user_id: 2,
-          body: "Esteu tots d'acord a fer aixo tarats?",
+          body: "Esteu tots d'acord a fer aixo...?",
         },       
       ],
       skipDuplicates: true,
