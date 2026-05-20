@@ -37,16 +37,14 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
       {token &&
 
         <div className="metaList mt-4">
-          <div className="my-2 ps-4 pe-4">
-            <div className="titolComponent text-center ">
-              Les meves metas
-            </div>
-          </div>
-          <hr className="m-0" />
+          {/* <div className="my-2 ps-4 pe-4"> */}
+            <div className="titolComponent  text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Les meves metas</div>
+          {/* </div> */}
+          {/* <hr className="m-0" /> */}
 
           <div className="inline">
-            <div className="d-flex ps-3 pe-3 mt-2">
-              <div className="me-auto">Metes personals</div>
+            <div className="d-flex ps-3 pe-3 mb-2">
+              {/* <div className="me-auto">Metes personals</div> */}
               <div className="ms-auto d-flex align-items-center">
                 <label htmlFor="showCompleted" className="me-2">Mostrar completades</label>
                 <input type="checkbox" id="showCompleted"
@@ -55,7 +53,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                 />
               </div>
             </div>
-            <ul className=" ps-2  m-0  py-2">
+            <ul className=" ps-3  m-0  pb-2">
               {myAssignations
                 .filter(assignation => showCompleted || !Boolean(assignation.completed))
                 .map((assignation) => (

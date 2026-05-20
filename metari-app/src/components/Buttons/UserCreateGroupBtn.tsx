@@ -17,9 +17,9 @@ export function UserCreateGroupBtn({ setGroups }: CreateBtnProps) {
     <>
       <div>
 
-        <button className="btn btn-warning"
+        <button className="btn createBtnHome"
           onClick={() => setCreatingGroup(true)}>
-          Crea un grup</button>
+          <i className="bi bi-people-fill me-3"></i>Crea un grup</button>
 
       </div>
 

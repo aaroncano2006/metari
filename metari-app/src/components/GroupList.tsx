@@ -60,18 +60,28 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
     <>
 
       <div className="metaList mt-4">
-        <div className="titolComponent  text-center my-2">{vistaActual === "/admin" || !isTop10 ? "Llista de grups" : "Top 10 Grups"}</div>
-        <hr className="m-0" />
+        <div className="titolComponent text-center my-2">
+          {vistaActual === "/admin" || !isTop10 ? (
+            "Llista de grups"
+          ) : (
+            <>
+              <i className="bi bi-trophy-fill me-2 text-primary"></i>
+              Top 10 Grups
+            </>
+          )}
+        </div>
+        {/* <hr className="m-0" /> */}
 
         <div className="inline">
           {token &&
-            <ul className=" ps-2  m-0  py-2">
+            <ul className=" ps-3  m-0  pb-2">
               {groupsToShow.map((group) => (
                 <li key={group.id} className="m-0 p-0" >
                   <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
                     onClick={() => toggleEntity(group.id)}>
 
-                    <div className="d-flex py-1 ps-2 pe-2 align-items-center gap-2">
+                    <div className="d-flex ps-2 pe-2 align-items-center gap-2">
+                      <i className="bi bi-people-fill me-3 profileIcon"></i>
                       <div className="me-auto">{group.name}</div>
                       {token && (
                         <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} isPublic={group.is_public} small={true} />
@@ -79,7 +89,7 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                       {token && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
                         <>
                           <button
-                            className="btn btn-outline-primary p-1"
+                            className="btn btn-outline-primary p-1 smallButton"
                             onClick={() => setGroupModeratorPanel(group)}
                             title="Configuració i moderació del grup"
                           >

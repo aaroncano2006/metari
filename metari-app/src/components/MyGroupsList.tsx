@@ -39,19 +39,20 @@ export function MyGroupsList({ groups, setter }: MyGroupListProps) {
     <>
       {token && (
         <div className="metaList mt-4">
-          <div className="titolComponent  text-center my-2">Els meus grups</div>
-          <hr className="m-0" />
+          <div className="titolComponent  text-center my-2"><i className="bi bi-people-fill text-primary"></i>Els meus grups</div>
+          {/* <hr className="m-0" /> */}
 
           <div className="inline">
             {token && (
-              <ul className=" ps-2  m-0  py-2">
+              <ul className=" ps-3  m-0  pb-2">
                 {groups.map((group) => (
                   <li key={group.id} className="m-0 p-0">
                     <div
                       className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === group.id ? "mb-0" : "mb-1"}`}
                       onClick={() => toggleEntity(group.id)}
                     >
-                      <div className="d-flex py-1 ps-2 pe-2 align-items-center">
+                      <div className="d-flex ps-2 pe-2 align-items-center">
+                        <i className="bi bi-people-fill me-3 profileIcon"></i>
                         <div className="me-auto">{group.name}</div>
                         {token &&
                           (vistaActual === "/" ||
@@ -69,7 +70,7 @@ export function MyGroupsList({ groups, setter }: MyGroupListProps) {
                                 (el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator"
                               ) && (
                                 <button
-                                  className="btn btn-outline-primary btn-sm ms-1 p-1"
+                                  className="btn btn-outline-primary ms-1 p-1 smallButton"
                                   onClick={() => setGroupModeratorPanel(group)}
                                   title="Configuració i moderació del grup"
                                 >

@@ -21,7 +21,7 @@ function App() {
     <>
       <NavBar />
 
-      <div className="flex-grow-1">
+      <div className="flex-grow-1 pagines">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/mygroups" element={<MyGroups />} />
