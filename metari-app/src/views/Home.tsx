@@ -48,21 +48,18 @@ export default function Home() {
           el.groupUsers.some((gu) => gu.user_id === getUserId()),
       );
       setMyGroups(filteredByPublic);
-    });
+    }).catch(() => {});
   };
 
   useEffect(() => {
-    fetchUsers().then(setUsers);
-    fetchCategories().then(setCategories);
-    fetchMetas().then(setMetas);
-    fetchGroups().then((response) => {
-      const filteredByPublic = response.filter((el) => el.is_public);
-      setGroups(filteredByPublic);
-    });
+    fetchUsers().then(setUsers).catch(() => {});
+    fetchCategories().then(setCategories).catch(() => {});
+    fetchMetas().then(setMetas).catch(() => {});
+    fetchGroups().then(setGroups).catch(() => {});
     fetchMyGroups();
     if (token) {
-      fetchFriends(getUserId()!).then(setFriends);
-      fetchAssignations().then(setAssignations);
+      fetchFriends(getUserId()!).then(setFriends).catch(() => {});
+      fetchAssignations().then(setAssignations).catch(() => {});
     }
   }, []);
 

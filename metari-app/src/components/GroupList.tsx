@@ -5,7 +5,7 @@ import { getUserId, getUserRole } from "../services/auth/loginService"
 import { Link, useLocation } from "react-router-dom";
 import SendGroupInvitationBtn from "./Buttons/SendGroupInvitationBtn";
 import ModalGroupModeratorPanel from "./modals/ModalGroupModeratorPanel";
-
+import { deleteGroup } from "../services/groupService";
 
 
 
@@ -83,10 +83,10 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                     <div className="d-flex ps-2 pe-2 align-items-center gap-2">
                       <i className="bi bi-people-fill me-3 profileIcon"></i>
                       <div className="me-auto">{group.name}</div>
-                      {token && (
+                      {token && vistaActual !== "/admin" && (
                         <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} isPublic={group.is_public} small={true} />
                       )}
-                      {token && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
+                      {token && vistaActual !== "/admin" && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
                         <>
                           <button
                             className="btn btn-outline-primary p-1 smallButton"
@@ -107,8 +107,15 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                       {canEdit &&
                         <button className="  btn btn-danger p-1   "
                           onClick={async (event) => {
-                            event.stopPropagation()
-                            // await deleteGroup(group.id)
+                            event.stopPropagation();
+                            try {
+                              if (!confirm("Estàs segur que el vols eliminar?")) return;
+                              await deleteGroup(group.id);
+                              setter(prev => prev.filter(g => g.id !== group.id));
+                              alert("Grup eliminat correctament");
+                            } catch (error) {
+                              alert("Error en eliminar el grup");
+                            }
                           }}>X</button>
                       }
                     </div>

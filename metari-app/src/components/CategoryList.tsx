@@ -53,13 +53,13 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                       <input
                         type="checkbox"
                         checked={filteredCategory === category.id}
-                        onClick={(event) => {
+                        onChange={(event) => {
                           event.stopPropagation()                          
                           setFilteredCategory(prev =>
                             prev === category.id ? null : category.id
                           )
                         }}
-                        
+                        onClick={(e) => e.stopPropagation()}
                       />
                     }
                     {canEdit &&

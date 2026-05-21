@@ -9,39 +9,51 @@ const { validateProof } = require("../middlewares/validators/validateProof");
 const getProofs = async (req, res, next) => {
     try {
         const proofs = await prisma.proof.findMany({
+            where: {
+                OR: [
+                    { user_id: req.user.id },
+                    { assignation: { group: { owner_id: req.user.id } } },
+                    { assignation: { group: { groupUsers: { some: { user_id: req.user.id } } } } },
+                ],
+            },
             include: {
-                user: true
-            }
+                user: true,
+            },
         });
 
         res.status(200).json(utils.handleBigInt(proofs));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        // res.status(500).json({ error: "Error al carregar proves" });
         next(error);
-
     }
 };
 
 const getProofById = async (req, res, next) => {
     try {
-        const proof = await prisma.proof.findUnique({
-            where: { id: parseInt(req.params.id) },
+        const proof = await prisma.proof.findFirst({
+            where: {
+                id: parseInt(req.params.id),
+                OR: [
+                    { user_id: req.user.id },
+                    { assignation: { group: { owner_id: req.user.id } } },
+                    { assignation: { group: { groupUsers: { some: { user_id: req.user.id } } } } },
+                ],
+            },
             include: {
-                user: true
-            }
+                user: true,
+            },
         });
 
         if (!proof) {
-            return res.status(404).json({ error: "Prova no trobada" });
+            const error = new Error("Prova no trobada");
+            error.statusCode = 404;
+            throw error;
         }
 
         res.status(200).json(utils.handleBigInt(proof));
     } catch (error) {
         console.error("Error en Prisma:", error);
-        // res.status(500).json({ error: "Error al carregar la prova" });
         next(error);
-
     }
 };
 
@@ -50,23 +62,48 @@ const getProofById = async (req, res, next) => {
 const createProof = async (req, res, next) => {
     const reqBody = req.body;
     try {
-        const validate = await validateProof({
-            assignation_id: reqBody.assignation_id,
-            user_id: reqBody.user_id,
-            proof_type: reqBody.proof_type,
-            proof: reqBody.proof,
-        });
-        if (validate) {
-            const error = new Error(validate);
+        const assignationId = parseInt(reqBody.assignation_id);
+        if (isNaN(assignationId)) {
+            const error = new Error("ID d'assignació invàlida!");
             error.statusCode = 400;
             throw error;
         }
-        // per text 
+
+        const assignation = await prisma.assignation.findUnique({
+            where: { id: assignationId },
+            include: {
+                group: {
+                    include: {
+                        groupUsers: { where: { user_id: req.user.id } },
+                    },
+                },
+            },
+        });
+
+        if (!assignation) {
+            const error = new Error("Assignació no trobada");
+            error.statusCode = 404;
+            throw error;
+        }
+
+        const isAssignee = assignation.user_id === req.user.id;
+        const isGroupOwner = assignation.group?.owner_id === req.user.id;
+        const isGroupModerator = assignation.group?.groupUsers.some(
+            (gu) => gu.role === "moderator"
+        );
+        const isAdmin = req.user.role === "admin";
+
+        if (!isAssignee && !isGroupOwner && !isGroupModerator && !isAdmin) {
+            const error = new Error("No tens permisos per crear una prova en aquesta assignació");
+            error.statusCode = 403;
+            throw error;
+        }
+
         if (reqBody.proof_type === "text") {
             const proof = await prisma.proof.create({
                 data: {
-                    assignation_id: parseInt(reqBody.assignation_id),
-                    user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
+                    assignation_id: assignationId,
+                    user_id: req.user.id,
                     proof: reqBody.proof,
                     proof_type: "text",
                     is_valid: false,
@@ -74,7 +111,7 @@ const createProof = async (req, res, next) => {
             });
             return res.status(201).json(utils.handleBigInt(proof));
         }
-        // per imatge
+
         if (reqBody.proof_type === "image") {
             if (!req.file) {
                 const error = new Error("No s'ha adjuntat cap imatge");
@@ -84,25 +121,26 @@ const createProof = async (req, res, next) => {
 
             const proof = await prisma.proof.create({
                 data: {
-                    assignation_id: parseInt(reqBody.assignation_id),
-                    user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
+                    assignation_id: assignationId,
+                    user_id: req.user.id,
                     proof: "",
                     proof_type: "image",
                     is_valid: false,
                 },
             });
-            // renombrem l'arxiu
+
             const ext = path.extname(req.file.originalname);
-            const fileName = `${reqBody.assignation_id}_${proof.id}_${reqBody.user_id}${ext}`;
+            const fileName = `${assignationId}_${proof.id}_${req.user.id}${ext}`;
             const destPath = path.join("uploads/proofs", fileName);
             fs.renameSync(req.file.path, destPath);
-            // 3. Actualitzar registre amb el path
+
             const updatedProof = await prisma.proof.update({
                 where: { id: proof.id },
                 data: { proof: `/uploads/proofs/${fileName}` },
             });
             return res.status(201).json(utils.handleBigInt(updatedProof));
         }
+
         const error = new Error("Tipus de prova no vàlid");
         error.statusCode = 400;
         throw error;
@@ -119,28 +157,50 @@ const updateProof = async (req, res, next) => {
     try {
         const existingProof = await prisma.proof.findUnique({
             where: { id: parseInt(req.params.id) },
+            include: {
+                assignation: {
+                    include: {
+                        group: {
+                            include: {
+                                groupUsers: { where: { user_id: req.user.id } },
+                            },
+                        },
+                    },
+                },
+            },
         });
         if (!existingProof) {
             const error = new Error("Prova no trobada");
             error.statusCode = 404;
             throw error;
         }
-        const validate = await validateProof({
-            proof_type: reqBody.proof_type,
-            proof: reqBody.proof,
-            is_valid: reqBody.is_valid,
-        }, true);
-        if (validate) {
-            const error = new Error(validate);
-            error.statusCode = 400;
+
+        const isAuthor = existingProof.user_id === req.user.id;
+        const isAdmin = req.user.role === "admin";
+        const group = existingProof.assignation?.group;
+        const isGroupOwner = group?.owner_id === req.user.id;
+        const isGroupModerator = group?.groupUsers.some(
+            (gu) => gu.role === "moderator"
+        );
+        const canValidate = isGroupOwner || isGroupModerator || isAdmin;
+
+        if (!isAuthor && !canValidate) {
+            const error = new Error("No tens permisos per modificar aquesta prova");
+            error.statusCode = 403;
             throw error;
         }
-        const data = {
-            proof: reqBody.proof,
-            proof_type: reqBody.proof_type,
-            is_valid: reqBody.is_valid === "true" || reqBody.is_valid === true,
-        };
-        // esborrar imatge si es canvia a text o es posa una nova
+
+        const data = {};
+
+        if (isAuthor) {
+            data.proof = reqBody.proof ?? existingProof.proof;
+            data.proof_type = reqBody.proof_type ?? existingProof.proof_type;
+        }
+
+        if (canValidate) {
+            data.is_valid = reqBody.is_valid === "true" || reqBody.is_valid === true;
+        }
+
         if (existingProof.proof_type === "image" && existingProof.proof) {
             if (reqBody.proof_type === "text" || req.file) {
                 const oldFilePath = path.join(__dirname, "..", existingProof.proof);
@@ -151,7 +211,7 @@ const updateProof = async (req, res, next) => {
         }
         if (req.file) {
             const ext = path.extname(req.file.originalname);
-            const fileName = `${reqBody.assignation_id}_${req.params.id}_${reqBody.user_id}${ext}`;
+            const fileName = `${existingProof.assignation_id}_${req.params.id}_${req.user.id}${ext}`;
             const destPath = path.join("uploads/proofs", fileName);
             fs.renameSync(req.file.path, destPath);
             data.proof = `/uploads/proofs/${fileName}`;

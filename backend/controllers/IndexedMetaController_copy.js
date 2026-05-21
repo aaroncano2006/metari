@@ -1,16 +1,15 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
-const { validateIndexedMeta } = require("../middlewares/validators/validateIndexedMeta");
 
 const getIndexedMetas = async (req, res, next) => {
     try {
         const indexedMetas = await prisma.indexedMeta.findMany({
             include: {
-                meta: {
-                    include: {
-                        category: true, author: true
-                    }
-                },
+                meta: { 
+                    include: { 
+                        category: true, author: true 
+                        } 
+                    },
                 user: true,
             },
         });
