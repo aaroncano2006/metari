@@ -217,20 +217,41 @@ const updateAssignation = async (req, res, next) => {
     }
 
     const group = existingAssignation.group;
-    if (group) {
-      const isOwner = group.owner_id === currentUserId;
-      const isModerator = group.groupUsers.some(
-        (gu) => gu.role === "moderator"
-      );
-      if (!isOwner && !isModerator && req.user.role !== "admin") {
-        const error = new Error("No tens permisos per modificar aquesta assignació");
+    const canManageAll = group
+      ? group.owner_id === currentUserId ||
+        group.groupUsers.some((gu) => gu.role === "moderator") ||
+        req.user.role === "admin"
+      : req.user.role === "admin";
+
+    const isAssignedUser = existingAssignation.user_id === currentUserId;
+    const isAssigner = existingAssignation.assigner_id === currentUserId;
+
+    if (!canManageAll && !isAssignedUser && !isAssigner) {
+      const error = new Error("No tens permisos per modificar aquesta assignació");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const changingOtherFields = Object.keys(req.body).some(
+      (k) => k !== "completed"
+    );
+
+    if (!canManageAll) {
+      if (changingOtherFields) {
+        const error = new Error("Només pots modificar l'estat de completat");
         error.statusCode = 403;
         throw error;
       }
-    } else if (req.user.role !== "admin") {
-      const error = new Error("Aquesta assignació no pertany a cap grup");
-      error.statusCode = 403;
-      throw error;
+
+      if (isAssignedUser && reqBody.completed === true && group) {
+        if (existingAssignation.needs_proofs) {
+          const error = new Error(
+            "Aquesta assignació requereix una prova per ser completada"
+          );
+          error.statusCode = 403;
+          throw error;
+        }
+      }
     }
 
     const data = {
