@@ -150,14 +150,14 @@ Fes Login o Registra't per participar amb la comunitat
 
 | Mètode | Ruta | Protecció | Notes |
 |--------|------|-----------|-------|
-| GET | `/` | **Pública*** | *Filtrar per visibilitat: només assignacions de grups públics o del propi usuari |
-| GET | `/:id` | **Pública*** | *Mateix filtre de visibilitat |
+| GET | `/` | `isAuthenticated` | Només assignacions pròpies o del grup on l'usuari és membre/moderador/owner |
+| GET | `/:id` | `isAuthenticated` | Mateix filtre de pertinença |
 | POST | `/` | `isAuthenticated` + **mod/owner check** | L'usuari ha de ser moderador/owner del grup o admin per assignar metes |
 | PUT | `/:id` | `isAuthenticated` + **mod/owner check** | L'usuari ha de ser moderador/owner del grup o admin per modificar assignacions |
 | DELETE | `/:id` | `isAuthenticated` + **mod/owner check** | L'usuari ha de ser moderador/owner del grup o admin per eliminar assignacions |
 
 ### Casos d'ús a protegir
-- **Veure assignacions**: Tothom pot veure assignacions de grups públics. Usuaris autenticats veuen les seves i les del seu grup.
+- **Veure assignacions**: Usuaris autenticats. Es mostren assignacions pròpies o del grup on l'usuari és membre/moderador/owner.
 - **Crear assignació**: Moderador/owner del grup asigna una meta a un usuari del mateix grup
 - **Editar assignació**: Moderador/owner del grup (canviar dates, prioritat, dificultat)
 - **Eliminar assignació**: Moderador/owner del grup o admin
@@ -166,11 +166,12 @@ Fes Login o Registra't per participar amb la comunitat
 - **Qualsevol usuari autenticat** pot crear/modificar/eliminar assignacions de qualsevol grup, incloent-hi grups dels quals no és membre
 - **Mass assignment de `assigner_id`**: Un usuari pot fer assignacions en nom d'un altre
 - **Score arbitrari**: Un usuari pot assignar-se puntuacions al crear o editar assignacions
-- **Fuga d'informació**: Assignacions de grups privats visibles públicament
+- **Fuga d'informació**: Assignacions de grups privats visibles a usuaris no membres
+- **Enumeració d'assignacions**: GET públic permet a qualsevol veure totes les assignacions del sistema
 
 ### Accions al codi
 - **⚠️ Afegir mod/owner check a POST/PUT/DELETE** — Actualment només tenen `isAuthenticated` sense verificació de pertinença al grup
-- **⚠️ GET: Afegir filtre de visibilitat** — Mostrar només assignacions rellevants per a l'usuari
+- **⚠️ GET: Afegir `isAuthenticated`** i filtrar només assignacions pròpies o del grup on l'usuari és membre
 - **⚠️ POST: Usar `req.user.id` per `assigner_id`** — No confiar en el body
 
 ---
@@ -402,7 +403,7 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 | 2 | usuaris | **authed** (⚠️ codi) | **authed** (⚠️ codi) | pública | **auth+ownership** (⚠️ codi) | **admin** |
 | 3 | metas | pública* | pública* | **auth** (⚠️ codi) | **auth+admin** (⚠️ codi) | **auth+admin** (⚠️ codi) |
 | 4 | grups | **authed** (⚠️ codi) | **authed** (⚠️ codi) | **auth** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+owner** (⚠️ codi) |
-| 5 | assignacions | pública* | pública* | **auth+mod** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+mod** (⚠️ codi) |
+| 5 | assignacions | **authed** (⚠️ codi) | **authed** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+mod** (⚠️ codi) |
 | 6 | comentaris | pública | pública | **auth+pertany** | **auth+owner** (⚠️ codi) | **auth+owner/mod** (⚠️ codi) |
 | 7 | proves | **authed** (⚠️ codi) | **authed** (⚠️ codi) | **auth+pertany** (⚠️ codi) | **auth+mod** (⚠️ codi) | **admin** (⚠️ codi) |
 | 8 | invitacions | — | — | **auth** | **auth** | **auth** |
@@ -434,12 +435,12 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 ### 🟡 Altues
 6. **Grups (`GroupController.js`)**: Requerir auth al GET i POST, owner/mod check a PUT/DELETE
 7. **Metes (`MetaController.js`)**: Usar `req.user.id` per `author_id`, afegir ownership check a PUT/DELETE
-8. **Assignacions (`AssignationController.js`)**: Afegir mod/owner check a POST/PUT/DELETE
+8. **Assignacions (`AssignationController.js`)**: Afegir `isAuthenticated` al GET + mod/owner check a POST/PUT/DELETE
 9. **Comentaris (`CommentController.js`)**: Afegir ownership check a PUT/DELETE
 10. **Usuaris (`UserController.js`)**: Afegir `isAuthenticated` a GET, requerir password actual al PUT
 11. **Auth (`RestorePasswordController.js`)**: No retornar token al body, rate limiting, URL configurable
 
 ### 🟢 Millores
-12. **Filtres de visibilitat**: Afegir filtrat per visibilitat a GET de metas, assignacions, i grups per a usuaris autenticats
+12. **Filtres de visibilitat**: Afegir filtrat per visibilitat a GET de metas i grups per a usuaris autenticats
 13. **Rate limiting**: Login, forgot-password, invitacions
 14. **Refactored controllers**: No usar `controllers/refactors/UserController.js` (fuga de passwords)

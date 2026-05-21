@@ -4,8 +4,8 @@ const assignationController = require('../controllers/AssignationController');
 const { isAuthenticated } = require('../middlewares/auth/authorize');
 
 // get totes les assignacions
-router.get('/', assignationController.getAssignations);
-router.get('/:id', assignationController.getAssignationById);
+router.get('/', isAuthenticated, assignationController.getAssignations);
+router.get('/:id', isAuthenticated, assignationController.getAssignationById);
 router.post('/', isAuthenticated, assignationController.createAssignation);
 router.delete('/:id', isAuthenticated, assignationController.deleteAssignation);
 router.put('/:id', isAuthenticated, assignationController.updateAssignation);
