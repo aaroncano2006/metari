@@ -4,6 +4,7 @@ import { getUserRole, getUserId } from "../services/auth/loginService"
 import { useLocation } from "react-router-dom";
 import type { assignationType } from "../types/assignationType";
 import { updateAssignation } from "../services/assignationService"
+import { fetchUserById, updateUser } from "../services/userService";
 
 
 type MyMetaListProps = {
@@ -118,9 +119,22 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                             <div
                               className={`btn mt-2 ${assignation.completed ? "btn-warning" : "btn-success"}`}
                               onClick={async () => {
-                                await updateAssignation(assignation.id, {
+                                const update = await updateAssignation(assignation.id, {
                                   completed: !assignation.completed,
                                 });
+                                
+                                if (update.completed) {
+                                  const user = await fetchUserById(getUserId()!);
+                                  await updateUser(getUserId()!, {
+                                    completed_tasks: user.completed_tasks + 1
+                                  });
+                                } else {
+                                  const user = await fetchUserById(getUserId()!);
+                                  await updateUser(getUserId()!, {
+                                    completed_tasks: user.completed_tasks - 1
+                                  });
+                                }
+
                                 setAssignations((prev) =>
                                   prev.map((a) =>
                                     a.id === assignation.id
