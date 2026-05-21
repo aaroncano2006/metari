@@ -110,15 +110,21 @@ Fes Login o Registra't per participar amb la comunitat
 
 | Mètode | Ruta | Protecció | Notes |
 |--------|------|-----------|-------|
-| GET | `/` | **Pública*** | *Filtrar només grups públics (`is_public: true`) per usuaris no autenticats |
+| GET | `/` | `isAuthenticated` | Llistat de grups. Excloure grups privats si l'usuari autenticat no n'és membre. |
 | GET | `/user/:userId` | `isAuthenticated` | Grups d'un usuari (membre o owner). Usa `req.user.id` per evitar enumeració. |
-| GET | `/:id` | **Pública*** | *Filtrar només grups públics per usuaris no autenticats |
+| GET | `/:id` | `isAuthenticated` | Consulta individual. Excloure grups privats si l'usuari autenticat no n'és membre. |
 | POST | `/` | `isAuthenticated` | `owner_id` s'obté de `req.user.id` (NO del body) |
 | PUT | `/:id` | `isAuthenticated` + **moderador check** | El controller verifica que l'usuari que edita el grup és moderador/owner d'aquest grup |
 | DELETE | `/:id` | `isAuthenticated` + **owner check** | El controller verifica que l'usuari que vol eliminar el grup és l'owner (o admin) |
 
+Els convidats no poden consultar els grups; han de fer login o registrar-se per poder accedir-hi. Veuran el següent missatge si no estan autenticats:
+
+```
+Fes Login o Registra't per participar amb la comunitat
+```
+
 ### Casos d'ús a protegir
-- **Veure grups**: Tothom pot veure grups públics. Usuaris autenticats poden veure grups dels quals en són membres.
+- **Veure grups**: Usuaris autenticats. Es filtren grups privats dels quals l'usuari no n'és membre.
 - **Crear grup**: Qualsevol usuari autenticat, assignant-se com a owner automàticament
 - **Editar grup**: Moderadors/owner del grup (nom, descripció, visibilitat)
 - **Transferir propietat**: Només l'owner actual
@@ -129,11 +135,12 @@ Fes Login o Registra't per participar amb la comunitat
 - **Falta d'auth al POST**: Un bot pot crear grups massivament (spam)
 - **Falta d'ownership check al PUT**: Qualsevol usuari autenticat pot editar qualsevol grup (canviar nom, descripció, robar la propietat canviant `owner_id`)
 - **Falta d'ownership check al DELETE**: Qualsevol usuari autenticat pot eliminar qualsevol grup
-- **Fuga de grups privats**: Si GET no filtra per `is_public`, grups interns es mostren a tothom
+- **Enumeració de grups**: GET públic permet a qualsevol llistar tots els grups (incloent-hi informació de grups privats si no es filtra correctament)
+- **Fuga de grups privats**: Si GET no filtra per `is_public` o per pertinença, grups interns es mostren a usuaris no membres
 
 ### Accions al codi
 - **⚠️ POST: Requerir `isAuthenticated` i usar `req.user.id`** per `owner_id` — Actualment POST és públic i accepta `owner_id` del body
-- **⚠️ GET: Afegir filtre `is_public`** per usuaris no autenticats
+- **⚠️ GET: Afegir `isAuthenticated`** i filtrar grups privats per usuaris que no en siguin membres
 - **⚠️ PUT: Afegir moderador/owner check** al controller — Actualment només té `isAuthenticated` sense verificació
 - **⚠️ DELETE: Afegir owner check** al controller — Actualment només té `isAuthenticated` sense verificació
 
@@ -394,7 +401,7 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 | 1 | categories | pública | pública | **admin** | **admin** | **admin** |
 | 2 | usuaris | **authed** (⚠️ codi) | **authed** (⚠️ codi) | pública | **auth+ownership** (⚠️ codi) | **admin** |
 | 3 | metas | pública* | pública* | **auth** (⚠️ codi) | **auth+admin** (⚠️ codi) | **auth+admin** (⚠️ codi) |
-| 4 | grups | pública* | pública* | **auth** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+owner** (⚠️ codi) |
+| 4 | grups | **authed** (⚠️ codi) | **authed** (⚠️ codi) | **auth** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+owner** (⚠️ codi) |
 | 5 | assignacions | pública* | pública* | **auth+mod** (⚠️ codi) | **auth+mod** (⚠️ codi) | **auth+mod** (⚠️ codi) |
 | 6 | comentaris | pública | pública | **auth+pertany** | **auth+owner** (⚠️ codi) | **auth+owner/mod** (⚠️ codi) |
 | 7 | proves | **authed** (⚠️ codi) | **authed** (⚠️ codi) | **auth+pertany** (⚠️ codi) | **auth+mod** (⚠️ codi) | **admin** (⚠️ codi) |
@@ -425,7 +432,7 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 5. **Cerca (`SearchController.js`)**: Afegir `omit: { password: true, restore_token: true }` a la query d'usuaris
 
 ### 🟡 Altues
-6. **Grups (`GroupController.js`)**: Requerir auth al POST, owner/mod check a PUT/DELETE
+6. **Grups (`GroupController.js`)**: Requerir auth al GET i POST, owner/mod check a PUT/DELETE
 7. **Metes (`MetaController.js`)**: Usar `req.user.id` per `author_id`, afegir ownership check a PUT/DELETE
 8. **Assignacions (`AssignationController.js`)**: Afegir mod/owner check a POST/PUT/DELETE
 9. **Comentaris (`CommentController.js`)**: Afegir ownership check a PUT/DELETE
@@ -433,6 +440,6 @@ Totes requereixen `isAuthenticated`. El controller verifica ownership internamen
 11. **Auth (`RestorePasswordController.js`)**: No retornar token al body, rate limiting, URL configurable
 
 ### 🟢 Millores
-12. **Filtres `is_public`**: Afegir filtrat per visibilitat a GET de metas, grups, assignacions
+12. **Filtres de visibilitat**: Afegir filtrat per visibilitat a GET de metas, assignacions, i grups per a usuaris autenticats
 13. **Rate limiting**: Login, forgot-password, invitacions
 14. **Refactored controllers**: No usar `controllers/refactors/UserController.js` (fuga de passwords)
