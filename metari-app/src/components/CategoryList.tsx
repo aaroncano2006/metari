@@ -59,7 +59,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                             prev === category.id ? null : category.id
                           )
                         }}
-                        
+                        onClick={(e) => e.stopPropagation()}
                       />
                     }
                     {canEdit &&
