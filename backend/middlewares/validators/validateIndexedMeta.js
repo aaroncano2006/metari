@@ -25,10 +25,10 @@ const validateIndexedMeta = async (data, isUpdating = false) => {
       return "La id de l'usuari no correspon a cap usuari registrat!";
     }
   }
-  if (data.is_approved && typeof data.is_approved !== "boolean" && data.is_approved !== "true" && data.is_approved !== "false") {
+  if (data.is_approved && typeof data.is_approved !== "boolean" && data.is_approved !== true && data.is_approved !== false) {
     return "El camp is_approved ha de ser un booleà!";
   }
-  if (data.is_community_approved && typeof data.is_community_approved !== "boolean" && data.is_community_approved !== "true" && data.is_community_approved !== "false") {
+  if (data.is_community_approved && typeof data.is_community_approved !== "boolean" && data.is_community_approved !== true && data.is_community_approved !== false) {
     return "El camp is_community_approved ha de ser un booleà!";
   }
   return null;
