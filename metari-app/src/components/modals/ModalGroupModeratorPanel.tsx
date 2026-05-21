@@ -90,7 +90,7 @@ export default function ModalGroupModeratorPanel({
   useEffect(() => {
     fetchGroupUsers().then((response) => {
       setGroupUsers(response.filter((el) => el.group_id === group.id));
-    });
+    }).catch(() => {});
     fetchAssignations().then((allAssignations) => {
       const groupAssignations = allAssignations.filter(
         (a) => a.group_id === group.id,
@@ -99,14 +99,14 @@ export default function ModalGroupModeratorPanel({
       const groupMetaIds = groupAssignations.map((a) => a.meta_id);
       fetchMetas().then((metas) => {
         setMetas(metas.filter((m) => groupMetaIds.includes(m.id)));
-      });
+      }).catch(() => {});
       fetchIndexedMetas().then((indexedMetas) => {
         setIndexedMetas(
           indexedMetas.filter((im) => groupMetaIds.includes(im.meta_id)),
         );
-      });
-    });
-    fetchComments().then((data) => setComments(data));
+      }).catch(() => {});
+    }).catch(() => {});
+    fetchComments().then((data) => setComments(data)).catch(() => {});
   }, [group]);
 
   const switchMenu = (menu: "users" | "metas" | "group_config") => {
