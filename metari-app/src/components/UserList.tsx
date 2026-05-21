@@ -4,6 +4,7 @@ import { ModalEditUser } from "./modals/ModalEditUser";
 import { getUserId, getUserRole } from "../services/auth/loginService";
 import { Link, useLocation } from "react-router-dom";
 import SendFriendInvitationButton from "./Buttons/SendFriendInvitationBtn";
+import { deleteUser } from "../services/userService";
 
 type UserListProps = {
   users: userTypeFrontend[];
@@ -101,7 +102,14 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
                           className="  btn btn-danger p-1   "
                           onClick={async (event) => {
                             event.stopPropagation();
-                            // await deleteUser(user.id)
+                            try {
+                              if (!confirm("Estàs segur que el vols eliminar?")) return;
+                              await deleteUser(user.id);
+                              setter(prev => prev.filter(u => u.id !== user.id));
+                              alert("Usuari eliminat correctament");
+                            } catch (error) {
+                              alert("Error en eliminar l'usuari");
+                            }
                           }}
                         >
                           X
