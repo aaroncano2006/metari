@@ -4,7 +4,16 @@ const { validateGroup } = require("../middlewares/validators/validateGroup");
 
 const getGroups = async (req, res, next) => {
   try {
+    const userId = req.user.id;
+
     const groups = await prisma.group.findMany({
+      where: {
+        OR: [
+          { is_public: true },
+          { owner_id: userId },
+          { groupUsers: { some: { user_id: userId } } },
+        ],
+      },
       include: {
         owner: true,
         groupUsers: {
@@ -31,17 +40,22 @@ const getGroupById = async (req, res, next) => {
       throw error;
     }
 
-    const group = await prisma.group.findUnique({
-      where: { id },
+    const userId = req.user.id;
+
+    const group = await prisma.group.findFirst({
+      where: {
+        id,
+        OR: [
+          { is_public: true },
+          { owner_id: userId },
+          { groupUsers: { some: { user_id: userId } } },
+        ],
+      },
       include: {
         owner: true,
-        //     metas: true,
-        //     assignations: true,
-        //     invitations: true,
         groupUsers: {
           include: { user: true }
         },
-        //     indexedMetas: true,
       },
     });
 
@@ -60,13 +74,7 @@ const getGroupById = async (req, res, next) => {
 
 const getGroupsByUserId = async (req, res, next) => {
   try {
-    const userId = parseInt(req.params.userId);
-
-    if (isNaN(userId)) {
-      const error = new Error("ID d'usuari invàlid");
-      error.statusCode = 400;
-      throw error;
-    }
+    const userId = req.user.id;
 
     const groups = await prisma.group.findMany({
       where: {
@@ -97,7 +105,7 @@ const createGroup = async (req, res, next) => {
       name: reqBody.name,
       description: reqBody.description ?? undefined,
       is_public: reqBody.is_public ?? true,
-      owner_id: parseInt(reqBody.owner_id),
+      owner_id: req.user.id,
     };
 
     const validate = await validateGroup(data);
@@ -127,6 +135,7 @@ const updateGroup = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
     const reqBody = req.body;
+    const userId = req.user.id;
 
     if (isNaN(id)) {
       const error = new Error("ID invàlid");
@@ -136,6 +145,11 @@ const updateGroup = async (req, res, next) => {
 
     const foundGroup = await prisma.group.findUnique({
       where: { id },
+      include: {
+        groupUsers: {
+          where: { user_id: userId },
+        },
+      },
     });
 
     if (!foundGroup) {
@@ -144,15 +158,26 @@ const updateGroup = async (req, res, next) => {
       throw error;
     }
 
+    const isOwner = foundGroup.owner_id === userId;
+    const isModerator = foundGroup.groupUsers.some(
+      (gu) => gu.role === "moderator"
+    );
+
+    if (!isOwner && !isModerator && req.user.role !== "admin") {
+      const error = new Error("No tens permisos per actualitzar aquest grup");
+      error.statusCode = 403;
+      throw error;
+    }
+
     const data = {
       name: reqBody.name ?? foundGroup.name,
       description: reqBody.description ?? foundGroup.description,
       is_public: reqBody.is_public ?? foundGroup.is_public,
-      owner_id:
-        reqBody.owner_id !== undefined
-          ? parseInt(reqBody.owner_id)
-          : foundGroup.owner_id,
     };
+
+    if (isOwner && reqBody.owner_id !== undefined) {
+      data.owner_id = parseInt(reqBody.owner_id);
+    }
 
     const validate = await validateGroup(reqBody, true);
     if (validate) {
@@ -181,10 +206,27 @@ const updateGroup = async (req, res, next) => {
 const deleteGroup = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
+    const userId = req.user.id;
 
     if (isNaN(id)) {
       const error = new Error("ID invàlid");
       error.statusCode = 400;
+      throw error;
+    }
+
+    const foundGroup = await prisma.group.findUnique({
+      where: { id },
+    });
+
+    if (!foundGroup) {
+      const error = new Error("No s'ha trobat el grup per eliminar!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (foundGroup.owner_id !== userId && req.user.role !== "admin") {
+      const error = new Error("No tens permisos per eliminar aquest grup");
+      error.statusCode = 403;
       throw error;
     }
 
