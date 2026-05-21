@@ -166,7 +166,7 @@ const updateIndexedMeta = async (req, res, next) => {
       throw error;
     }
 
-    const validate = validateIndexedMeta(data, true);
+    const validate = await validateIndexedMeta(data, true);
     if (validate) {
         const error = new Error(validate);
         error.statusCode = 400;
