@@ -57,10 +57,7 @@ export default function Search() {
   useEffect(() => {
     fetchUsers().then(setUsers);
     fetchCategories().then(setCategories);
-    fetchGroups().then((response) => {
-      const filteredByPublic = response.filter((el) => el.is_public);
-      setGroups(filteredByPublic);
-    });
+    fetchGroups().then(setGroups);
     fetchMyGroups();
 
     if (token) {
