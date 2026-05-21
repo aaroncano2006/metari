@@ -33,7 +33,16 @@ const seedAssignations = async () => {
           difficulty: "normal",
           score: 500,
           completed: false,
-        },     
+        }, 
+        {
+          group_id: null,
+          meta_id: 4,
+          user_id: 1,
+          start_date: new Date("2026-05-20"),
+          due_date: new Date("2026-05-21"),
+          priority: "high",
+          difficulty: "normal",
+        },    
       ],
       skipDuplicates: true,
     });

@@ -52,7 +52,7 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
         </div>
         {/* <hr className="m-0" /> */}
 
-        <div className="">
+        <div className="inline">
           {token && (
             <ul className=" ps-3  m-0  pb-2">
               {usersToShow.map((user) => (
