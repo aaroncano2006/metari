@@ -83,10 +83,10 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                     <div className="d-flex ps-2 pe-2 align-items-center gap-2">
                       <i className="bi bi-people-fill me-3 profileIcon"></i>
                       <div className="me-auto">{group.name}</div>
-                      {token && (
+                      {token && vistaActual !== "/admin" && (
                         <SendGroupInvitationBtn receiverId={getUserId()!} groupId={group.id} isPublic={group.is_public} small={true} />
                       )}
-                      {token && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
+                      {token && vistaActual !== "/admin" && group.groupUsers.find((el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator") && (
                         <>
                           <button
                             className="btn btn-outline-primary p-1 smallButton"
