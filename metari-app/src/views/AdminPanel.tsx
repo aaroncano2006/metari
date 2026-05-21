@@ -40,18 +40,17 @@ export default function AdminPanel() {
   const [searchTerm, setSearchTerm] = useState<string>("")
 
   useEffect(() => {
-    fetchCategories().then(setCategories)
-    fetchMetas().then(setMetas)
-    fetchUsers().then(setUsers)
-    fetchGroups().then(setGroups)
-    // fetchIndexedMetas().then(setIndexedMetas)
+    fetchCategories().then(setCategories).catch(() => {})
+    fetchMetas().then(setMetas).catch(() => {})
+    fetchUsers().then(setUsers).catch(() => {})
+    fetchGroups().then(setGroups).catch(() => {})
     fetchIndexedMetas().then((response) => {
       setIndexedMetas(response.filter((el) => el.meta.is_public === true));
-    });
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
-    fetchMetas().then(setMetas)
+    fetchMetas().then(setMetas).catch(() => {})
   }, [indexedMetas.length]);
 
   useEffect(() => {

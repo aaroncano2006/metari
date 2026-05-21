@@ -5,6 +5,8 @@ const SECRET = require("../../config/auth").SECRET;
 const { hash } = require("../../helpers/Utils");
 const { validateRestorePassword } = require("../../middlewares/validators/auth/validateRestorePassword");
 
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
 const forgotPassword = async (req, res, next) => {
   try {
     const email_or_username = req.body.email_or_username;
@@ -55,7 +57,7 @@ const forgotPassword = async (req, res, next) => {
           <p>Hola, <strong>${existingUser.name}</strong>!</p>
 
           <p>
-            Clica en <a href="http://localhost:5173/restore-password?token=${token}">el següent enllaç</a> per restaurar la teva contrasenya!
+            Clica en <a href="${FRONTEND_URL}/restore-password?token=${token}">el següent enllaç</a> per restaurar la teva contrasenya!
           </p>
 
           <hr />
@@ -78,7 +80,7 @@ const forgotPassword = async (req, res, next) => {
         throw err;
     }
 
-    return res.status(200).json({ token });
+    return res.status(200).json({ message: "Correu de recuperació enviat correctament!" });
   } catch (error) {
     next(error);
   }

@@ -20,6 +20,10 @@ const search = async (req, res, next) => {
           },
         ],
       },
+      omit: {
+        password: true,
+        restore_token: true,
+      },
     });
 
     const metas = await prisma.meta.findMany({
