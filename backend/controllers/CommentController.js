@@ -56,7 +56,7 @@ const createComment = async (req, res, next) => {
   try {
     const reqBody = req.body;
     const assignationId = parseInt(reqBody.assignation_id);
-    const userId = parseInt(reqBody.user_id);
+    const userId = req.user.id;
 
     if (isNaN(assignationId) || isNaN(userId)) {
       const error = new Error("IDs invàlides!");
@@ -114,6 +114,12 @@ const updateComment = async (req, res, next) => {
       throw error;
     }
 
+    if (existingComment.user_id !== req.user.id) {
+      const error = new Error("No tens permisos per editar aquest comentari!");
+      error.statusCode = 403;
+      throw error;
+    }
+
     const data = {
       body: reqBody.body ?? existingComment.body
     };
@@ -144,8 +150,60 @@ const updateComment = async (req, res, next) => {
 
 const deleteComment = async (req, res, next) => {
   try {
-    const comment = await prisma.comment.delete({
-      where: { id: parseInt(req.params.id) },
+    const id = parseInt(req.params.id);
+    const currentUserId = req.user.id;
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const existingComment = await prisma.comment.findUnique({
+      where: { id },
+      include: {
+        assignation: {
+          include: {
+            group: {
+              include: {
+                groupUsers: {
+                  where: { user_id: currentUserId },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!existingComment) {
+      const error = new Error("No s'ha trobat el comentari!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const isAuthor = existingComment.user_id === currentUserId;
+    const isAdmin = req.user.role === "admin";
+    const group = existingComment.assignation?.group;
+
+    let isGroupOwner = false;
+    let isGroupModerator = false;
+
+    if (group) {
+      isGroupOwner = group.owner_id === currentUserId;
+      isGroupModerator = group.groupUsers.some(
+        (gu) => gu.role === "moderator"
+      );
+    }
+
+    if (!isAuthor && !isAdmin && !isGroupOwner && !isGroupModerator) {
+      const error = new Error("No tens permisos per eliminar aquest comentari!");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    await prisma.comment.delete({
+      where: { id },
     });
 
     res.status(204).end();
