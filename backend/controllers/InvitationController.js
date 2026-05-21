@@ -5,6 +5,8 @@ const {
   validateInvitation,
 } = require("../middlewares/validators/validateInvitation");
 
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
 const getInvitations = async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -106,7 +108,7 @@ const sendInvitations = async (req, res, next) => {
           </p>
 
           <p>
-            Pots acceptar o rebutjar-la des del teu <a href='http://localhost:5173/profile?friendInvitations=true#friends_and_groups'>panell d'invitacions</a>.
+            Pots acceptar o rebutjar-la des del teu <a href='${FRONTEND_URL}/profile?friendInvitations=true#friends_and_groups'>panell d'invitacions</a>.
           </p>
 
           <hr />
@@ -128,7 +130,7 @@ const sendInvitations = async (req, res, next) => {
           </p>
 
           <p>
-            Pots revisar-la i decidir si vols unir-t'hi des del teu <a href='http://localhost:5173/profile?groupInvitations=true#friends_and_groups'>panell d'invitacions</a>.
+            Pots revisar-la i decidir si vols unir-t'hi des del teu <a href='${FRONTEND_URL}/profile?groupInvitations=true#friends_and_groups'>panell d'invitacions</a>.
           </p>
 
           <hr />
