@@ -23,6 +23,6 @@ router.put("/:id", isAuthenticated, (req, res, next) => {
     }
 }, proofController.updateProof);
 
-router.delete('/:id', isAuthenticated, isAdmin, proofController.deleteProof);
+router.delete('/:id', isAuthenticated, proofController.deleteProof);
 
 module.exports = router;
