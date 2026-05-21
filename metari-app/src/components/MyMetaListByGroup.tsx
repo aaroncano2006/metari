@@ -338,7 +338,7 @@ export function MyMetaListByGroup({
                               })()}
 
 
-                              {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
+                              {/* {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
                                 <div className="btn btn-success align-self-end me-2"
                                   onClick={async () => {
                                     const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!, true)
@@ -349,7 +349,9 @@ export function MyMetaListByGroup({
                                     ))
                                   }}>
                                   Marcar completada
-                                </div>)}
+                                </div>)} */}
+
+                                
                                 {!assignation.completed &&
                                   assignation.meta.type === "task" &&
                                   !assignation.needs_proofs && (
