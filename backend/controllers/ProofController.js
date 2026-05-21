@@ -2,6 +2,7 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 const path = require("path");
 const fs = require("fs");
+const { validateProof } = require("../middlewares/validators/validateProof");
 
 
 

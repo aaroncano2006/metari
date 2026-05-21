@@ -131,9 +131,13 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
         meta_id: newMeta.id,
         group_id: selectedGroupId,
         assigner_id: getUserId()!,
-        // score: formData.get("score"),
+        score: formData.get("score") ? Number(formData.get("score")) : undefined,
         needs_proofs: needsProofs,
         user_id: selectedUserId,
+        start_date: formData.get("start_date") as string || undefined,
+        due_date: formData.get("due_date") as string || undefined,
+        priority: formData.get("priority") as string || undefined,
+        difficulty: formData.get("difficulty") as "easy" | "normal" | "hard" | "extreme",
       })
     }
     setMetas(prev => [...prev, newMeta])
@@ -156,7 +160,7 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
 
                 <form onSubmit={handleSubmit}>
 
-                  
+
 
 
                   <div className="d-flex flex-column">
@@ -216,12 +220,39 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
                   {isPublic === false &&
                     <>
                       <div>
-                        {metaType === "challenge" &&
-                          <div>
-                            <label htmlFor="score">Punts al completar:</label>
-                            <input className="form-control mb-2" type="number" name="score" id="score" />
-                          </div>
-                        }
+                        {/* {metaType === "challenge" && */}
+                        <div>
+                          <label htmlFor="score">Punts al completar:</label>
+                          <input className="form-control mb-2" type="number" name="score" id="score" />
+                        </div>
+                        <div>
+                          <label htmlFor="start_date">📅 Inici:</label>
+                          <input className="form-control mb-2" type="date" name="start_date" id="start_date"
+                            defaultValue={new Date().toISOString().split("T")[0]}
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="due_date">⏳ Data límit</label>
+                          <input className="form-control mb-2" type="date" name="due_date" id="due_date" />
+                        </div>
+                        <div>
+                          <label htmlFor="priority">🔥 Prioritat:</label>
+                          <select className="form-select mb-2" name="priority" id="priority">
+                            <option value={""}>Sense prioritat</option>
+                            <option value="high">Alta</option>
+                            <option value="low">Baixa</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label htmlFor="difficulty">🎯 Dificultat</label>
+                          <select className="form-select mb-2" name="difficulty" id="difficulty" defaultValue="normal">
+                            <option value="easy">Fàcil</option>
+                            <option value="normal">Normal</option>
+                            <option value="hard">Difícil</option>
+                            <option value="extreme">Extrem</option>
+                          </select>
+                        </div>
+                        {/* } */}
 
                         <label htmlFor="group_id">Grups dels que formes part:</label>
                         <select className="form-select mb-2" name="group_id" id="group_id"
@@ -262,6 +293,9 @@ export function ModalUserCreateMeta({ setCreatingMeta, categories, setMetas }: M
                         <input type="checkbox" name="needs_proofs" id="needs_proofs"
                           onChange={() => setNeedsProofs(prev => !prev)} />
                       </div>
+
+
+
                       <div>
                         {errors.assign_permission && (
                           <small className="text-danger d-block mb-2">{errors.assign_permission}</small>

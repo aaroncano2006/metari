@@ -200,8 +200,8 @@ export function MyMetaListByGroup({
                                   completada
                                 </div>
                               )}
-                              {assignation.meta.type === "challenge" &&
-                                hasUserSentProof(assignation) && (
+                              {
+                                hasUserSentProof(assignation) && !hasUserCompletedChallenge(assignation) &&(
                                   <div className="badge bg-success ms-1">
                                     Proves enviades
                                   </div>
@@ -291,6 +291,15 @@ export function MyMetaListByGroup({
 
                                 return (
                                   <>
+                                    
+                                    {assignation.needs_proofs !== null &&
+                                      assignation.needs_proofs !== undefined && (
+                                        <div>
+                                          📋 Requereix proves:{" "}
+                                          {assignation.needs_proofs ? "Sí" : "No"}
+                                        </div>
+                                      )}
+
                                     <div>
                                       🆕 Creat el dia:{" "}
                                       {assignation.created_at &&
@@ -398,8 +407,48 @@ export function MyMetaListByGroup({
                                         </>
                                       )}
 
-                                      {(isChallenge ||
-                                        assignation.needs_proofs) && (
+                              {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
+                                <div className="btn btn-success align-self-end me-2"
+                                  onClick={async () => {
+                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!, true)
+                                    setAssignations(prev => prev.map(a =>
+                                      a.id === assignation.id
+                                        ? { ...a, assignationCompletions: [...(a.assignationCompletions ?? []), newCompletion] }
+                                        : a
+                                    ))
+                                  }}>
+                                  Marcar completada
+                                </div>)}
+                                {!assignation.completed &&
+                                  assignation.meta.type === "task" &&
+                                  !assignation.needs_proofs && (
+                                    <div
+                                      className="btn btn-success align-self-end me-2"
+                                      onClick={async () => {
+                                        await updateAssignation(
+                                          assignation.id,
+                                          { completed: true },
+                                        );
+                                        setAssignations((prev) =>
+                                          prev.map((a) =>
+                                            a.id === assignation.id
+                                              ? { ...a, completed: true }
+                                              : a,
+                                          ),
+                                        );
+                                      }}
+                                    >
+                                      Marcar task completada
+                                    </div>
+                                  )}
+
+                                {(() => {
+                                  const userProof = getUserProof(assignation);
+                                  return (
+                                    (assignation.meta.type === "challenge" || assignation.meta.type === "task") &&
+                                    assignation.needs_proofs &&
+                                    !hasUserCompletedChallenge(assignation) &&  (
+                                      <div className="d-flex gap-2 align-self-end me-2">
                                         <div
                                           className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
                                           onClick={() =>
