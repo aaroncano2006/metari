@@ -279,15 +279,7 @@ export function MyMetaListByGroup({
                                 const userProof = getUserProof(assignation)
                                 return (
                                   <>
-                                    {(assignation.meta.type === "challenge" || assignation.meta.type === "task") && assignation.needs_proofs && (
-                                      <div className="d-flex gap-2 align-self-end me-2">
-                                        <div className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
-                                          onClick={() => setAssignationToAddProof(assignation)}>
-                                          {userProof ? "Editar o veure prova" : "Enviar prova"}
-                                        </div>
-                                      </div>
-                                    )}
-
+                                    
                                     {assignation.needs_proofs !== null &&
                                       assignation.needs_proofs !== undefined && (
                                         <div>
@@ -384,8 +376,9 @@ export function MyMetaListByGroup({
                                 {(() => {
                                   const userProof = getUserProof(assignation);
                                   return (
-                                    assignation.meta.type === "challenge" &&
-                                    assignation.needs_proofs && (
+                                    (assignation.meta.type === "challenge" || assignation.meta.type === "task") &&
+                                    assignation.needs_proofs &&
+                                    !hasUserCompletedChallenge(assignation) &&  (
                                       <div className="d-flex gap-2 align-self-end me-2">
                                         <div
                                           className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
