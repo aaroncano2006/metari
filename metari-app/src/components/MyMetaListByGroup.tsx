@@ -134,6 +134,7 @@ export function MyMetaListByGroup({
             ({ group, myAssignations, memberAssignations }) => (
               <div className="metaList mt-4" key={group.id}>
                 <div className="d-flex align-items-center my-2 ps-4 pe-4 position-relative">
+                  <i className="bi bi-people-fill me-3 profileIcon text-primary"></i>
                   <div className="titolComponent">
                     Metes del grup: {group.name}
                   </div>
@@ -151,11 +152,11 @@ export function MyMetaListByGroup({
                     <ModalGroupModeratorPanel group={group} setEditGroup={setCurrentGroup} setter={setter} defaultMenu="metas" />
                   )}
                 </div>
-                <hr className="m-0" />
+                {/* <hr className="m-0" /> */}
                 <div className="inline">
                   <div className="d-flex ps-3 pe-3 mt-2">
                     <div className=" d-flex w-100">
-                      <div className="me-auto">Les meves metes</div>
+                      <div className="me-auto fw-bold">Les meves metes</div>
                       <label
                         htmlFor={`showCompleted-${group.id}`}
                         className="me-2"
@@ -177,10 +178,10 @@ export function MyMetaListByGroup({
                   </div>
                   {myAssignations.length === 0 ? (
                     <p className="text-muted ps-3 py-2">
-                      No hi han asignacions
+                      Encara no hi ha assignacions.
                     </p>
                   ) : (
-                    <ul className="ps-2 m-0 py-2">
+                    <ul className="ps-3 m-0 py-2">
                       {myAssignations.map((assignation) => (
                         <li key={assignation.id} className="m-0 p-0">
                           <div
@@ -568,12 +569,12 @@ export function MyMetaListByGroup({
                     </ul>
                   )}
 
-                  <div className="me-auto ms-3">
+                  <div className="me-auto ms-3 fw-bold">
                     Metes dels integrants del grup
                   </div>
                   {memberAssignations.length === 0 ? (
                     <p className="text-muted ps-3 py-2">
-                      No hi han asignacions
+                      Encara no hi ha assignacions.
                     </p>
                   ) : (
                     <ul className="ps-2 m-0 py-2">

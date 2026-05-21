@@ -73,8 +73,8 @@ li{
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.05);
   resize: vertical;
   overflow: hidden;
-  min-height: 150px;
-  max-height: 400px;
+  min-height: auto;
+  max-height: 100vh;
 }
 
 .metaEntry {
