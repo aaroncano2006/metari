@@ -200,7 +200,7 @@ export function MyMetaListByGroup({
                                   completada
                                 </div>
                               )}
-                              {assignation.meta.type === "challenge" &&
+                              {
                                 hasUserSentProof(assignation) && (
                                   <div className="badge bg-success ms-1">
                                     Proves enviades

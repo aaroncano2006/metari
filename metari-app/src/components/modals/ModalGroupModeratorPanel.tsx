@@ -14,11 +14,14 @@ import {
   fetchIndexedMetas,
   deleteIndexedMeta,
 } from "../../services/IndexerService";
+
 import {
   fetchAssignations,
   deleteAssignation,
   createAssignationCompletion,
+  updateAssignation,
 } from "../../services/assignationService";
+
 import { PendingIndexedMetas } from "../PendingIndexedMetas";
 import type { metaType } from "../../types/metaType";
 import type { assignationType } from "../../types/assignationType";
@@ -290,27 +293,31 @@ export default function ModalGroupModeratorPanel({
             if (user) {
               assignation.meta.type === "challenge"
                 ? await updateUser(user.id, {
-                    score: user.score + assignation.score,
-                  })
+                  score: user.score + assignation.score,
+                })
                 : await updateUser(user.id, {
-                    score: user.completed_tasks + 1,
-                  });
+                  score: user.completed_tasks + 1,
+                });
             }
+          }
+          if (assignation.meta.type === "task") {
+            await updateAssignation(assignation.id, { completed: true });
           }
         }
       }
 
       setAssignations((prev) =>
-        prev.map((a) => {
-          if (a.id !== assignation.id) return a;
-          return {
-            ...a,
-            proofs: a.proofs?.map((p) =>
-              p.id === proofId ? { ...p, is_valid: isValid } : p,
-            ),
-          };
-        }),
-      );
+  prev.map((a) => {
+    if (a.id !== assignation.id) return a;
+    return {
+      ...a,
+      completed: assignation.meta.type === "task" && isValid ? true : a.completed,
+      proofs: a.proofs?.map((p) =>
+        p.id === proofId ? { ...p, is_valid: isValid } : p,
+      ),
+    };
+  }),
+);
     } catch (err: any) {
       setError(err.message ?? "Error validant la prova");
       console.log(err);
@@ -669,7 +676,7 @@ export default function ModalGroupModeratorPanel({
 
                                   {assignation.assignationCompletions &&
                                     assignation.assignationCompletions.length >
-                                      0 && (
+                                    0 && (
                                       <div>
                                         ✅ Completat per:{" "}
                                         {assignation.assignationCompletions
@@ -774,10 +781,10 @@ export default function ModalGroupModeratorPanel({
                                         .split("-")
                                         .reverse()
                                         .join("-") +
-                                        " a les " +
-                                        assignation.created_at
-                                          .split("T")[1]
-                                          .split(".")[0]}
+                                      " a les " +
+                                      assignation.created_at
+                                        .split("T")[1]
+                                        .split(".")[0]}
                                   </div>
                                   <div>
                                     🔄 Actualitzat el dia:{" "}
@@ -787,10 +794,10 @@ export default function ModalGroupModeratorPanel({
                                         .split("-")
                                         .reverse()
                                         .join("-") +
-                                        " a les " +
-                                        assignation.updated_at
-                                          .split("T")[1]
-                                          .split(".")[0]}
+                                      " a les " +
+                                      assignation.updated_at
+                                        .split("T")[1]
+                                        .split(".")[0]}
                                   </div>
                                 </div>
                               )}
