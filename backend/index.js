@@ -25,7 +25,6 @@ const restorePasswordRoutes = require("./routes/auth/RestorePasswordRoutes");
 const searchRoutes = require("./routes/SearchRoutes");
 const errorHandler = require("./middlewares/errors/errorHandler");
 const nodemailer = require("./config/nodemailer");
-const { verifyToken } = require("./middlewares/auth/verifyToken");
 
 const environment = process.env.ENVIRONMENT || "dev";
 const PORT =
@@ -190,13 +189,6 @@ app.use("/api/restore-password", restorePasswordRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/uploads", express.static("uploads"));
 
-
-// app.get("/api/dashboard", verifyToken, (req, res) => {
-//   res.json({
-//     message: "Acceso permitido",
-//     user: req.user,
-//   });
-// });
 
 app.use(errorHandler);
 app.listen(PORT, () => {

@@ -49,20 +49,20 @@ export default function MyMetas() {
           el.groupUsers.some((gu) => gu.user_id === getUserId()),
       );
       setMyGroups(filteredByPublic);
-    });
+    }).catch(() => {});
   };
 
   useEffect(() => {
-    fetchUsers().then(setUsers)
-    fetchCategories().then(setCategories)
-    fetchMetas().then(setMetas)
+    fetchUsers().then(setUsers).catch(() => {})
+    fetchCategories().then(setCategories).catch(() => {})
+    fetchMetas().then(setMetas).catch(() => {})
     fetchGroups().then((response) => {
       const filteredByPublic = response.filter((el) => el.is_public);
       setGroups(filteredByPublic);
-    });
+    }).catch(() => {});
     fetchMyGroups();
-    fetchFriends(getUserId()!).then(setFriends)
-    fetchAssignations().then(setAssignations)
+    fetchFriends(getUserId()!).then(setFriends).catch(() => {})
+    fetchAssignations().then(setAssignations).catch(() => {})
 
   }, [])
 

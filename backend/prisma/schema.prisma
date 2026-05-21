@@ -42,8 +42,8 @@ model User {
   assignerAssignations   Assignation[]            @relation("AssignerUser")
   comments               Comment[]
   proofs                 Proof[]
-  sentInvitations        Invitation[] @relation("SentInvitations")
-  receivedInvitations    Invitation[] @relation("ReceivedInvitations")
+  sentInvitations        Invitation[]             @relation("SentInvitations")
+  receivedInvitations    Invitation[]             @relation("ReceivedInvitations")
   groupUsers             GroupUser[]
   indexedMetas           IndexedMeta[]
   assignationCompletions AssignationCompletions[]
@@ -67,7 +67,7 @@ model Group {
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
   //referencia al model/taula user
-  owner        User          @relation(fields: [owner_id], references: [id])
+  owner        User          @relation(fields: [owner_id], references: [id], onDelete: Cascade)
   //Autogenerades relacions bidireccionals
   metas        Meta[]
   assignations Assignation[]
@@ -90,9 +90,9 @@ model Meta {
   is_public    Boolean       @default(true)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
-  author       User          @relation(fields: [author_id], references: [id])
-  group        Group?        @relation(fields: [group_id], references: [id])
-  category     Category?     @relation(fields: [category_id], references: [id])
+  author       User          @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  group        Group?        @relation(fields: [group_id], references: [id], onDelete: SetNull)
+  category     Category?     @relation(fields: [category_id], references: [id], onDelete: SetNull)
   //Autogenerades relacions bidireccionals
   assignations Assignation[]
   indexedMetas IndexedMeta[]
@@ -121,10 +121,10 @@ model Assignation {
   completed    Boolean    @default(false)
   created_at   DateTime   @default(now())
   updated_at   DateTime   @updatedAt
-  group        Group?     @relation(fields: [group_id], references: [id])
-  meta         Meta       @relation(fields: [meta_id], references: [id])
-  user         User?      @relation("AssignedUser", fields: [user_id], references: [id])
-  assigner     User?      @relation("AssignerUser", fields: [assigner_id], references: [id])
+  group        Group?     @relation(fields: [group_id], references: [id], onDelete: SetNull)
+  meta         Meta       @relation(fields: [meta_id], references: [id], onDelete: Cascade)
+  user         User?      @relation("AssignedUser", fields: [user_id], references: [id], onDelete: SetNull)
+  assigner     User?      @relation("AssignerUser", fields: [assigner_id], references: [id], onDelete: SetNull)
   //Autogenerades relacions bidireccionals
 
   comments               Comment[]
@@ -155,8 +155,8 @@ model Comment {
   body           String      @db.Text
   created_at     DateTime    @default(now())
   updated_at     DateTime    @updatedAt
-  assignation    Assignation @relation(fields: [assignation_id], references: [id])
-  user           User        @relation(fields: [user_id], references: [id])
+  assignation    Assignation @relation(fields: [assignation_id], references: [id], onDelete: Cascade)
+  user           User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
   //Autogenerades relacions bidireccionals
 
   @@map("comments")
@@ -170,8 +170,8 @@ model Proof {
   proof_type     String
   is_valid       Boolean     @default(false)
   created_at     DateTime    @default(now())
-  assignation    Assignation @relation(fields: [assignation_id], references: [id])
-  user           User?       @relation(fields: [user_id], references: [id])
+  assignation    Assignation @relation(fields: [assignation_id], references: [id], onDelete: Cascade)
+  user           User?       @relation(fields: [user_id], references: [id], onDelete: SetNull)
   //Autogenerades relacions bidireccionals
 
   @@map("proofs")
@@ -185,10 +185,10 @@ model Invitation {
   group_id    Int?
   status      Status   @default(pending)
   created_at  DateTime @default(now())
-  group       Group?   @relation(fields: [group_id], references: [id])
+  group       Group?   @relation(fields: [group_id], references: [id], onDelete: SetNull)
   //Dues relacions al mateix model, s'ha d'especificar un nom per cada una de les relacions
-  sender      User     @relation("SentInvitations", fields: [sender_id], references: [id])
-  receiver    User     @relation("ReceivedInvitations", fields: [receiver_id], references: [id])
+  sender      User     @relation("SentInvitations", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver    User     @relation("ReceivedInvitations", fields: [receiver_id], references: [id], onDelete: Cascade)
   //Autogenerades relacions bidireccionals
 
   @@unique([sender_id, receiver_id, group_id])
@@ -205,8 +205,8 @@ model GroupUser {
   group_id Int
   user_id  Int
   role     GroupUserRole @default(member)
-  group    Group         @relation(fields: [group_id], references: [id])
-  user     User          @relation(fields: [user_id], references: [id])
+  group    Group         @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  user     User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
   //Autogenerades relacions bidireccionals
 
   @@id([group_id, user_id])
@@ -224,8 +224,8 @@ model IndexedMeta {
   meta_id               Int
   is_approved           Boolean? @default(false)
   is_community_approved Boolean? @default(false)
-  user                  User?    @relation(fields: [user_id], references: [id])
-  meta                  Meta     @relation(fields: [meta_id], references: [id])
+  user                  User?    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  meta                  Meta     @relation(fields: [meta_id], references: [id], onDelete: Cascade)
   //group                 Group?   @relation(fields: [group_id], references: [id])
 
   @@map("index")
@@ -237,8 +237,8 @@ model AssignationCompletions {
   user_id        Int
   is_Completed   Boolean @default(false)
 
-  user         User        @relation(fields: [user_id], references: [id])
-  assignations Assignation @relation(fields: [assignation_id], references: [id])
+  user         User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  assignations Assignation @relation(fields: [assignation_id], references: [id], onDelete: Cascade)
 
   @@map("assignation_completions")
 }
