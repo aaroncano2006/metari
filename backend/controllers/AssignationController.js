@@ -7,7 +7,17 @@ const {
 // GET ALL
 const getAssignations = async (req, res, next) => {
   try {
+    const userId = req.user.id;
+
     const assignations = await prisma.assignation.findMany({
+      where: {
+        OR: [
+          { user_id: userId },
+          { assigner_id: userId },
+          { group: { owner_id: userId } },
+          { group: { groupUsers: { some: { user_id: userId } } } },
+        ],
+      },
       include: {
         group: true,
         meta: {
@@ -29,7 +39,6 @@ const getAssignations = async (req, res, next) => {
     res.status(200).json(utils.handleBigInt(assignations));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    // res.status(500).json({ error: "Error al carregar assignacions" });
     next(error);
   }
 };
@@ -44,8 +53,18 @@ const getAssignationById = async (req, res, next) => {
       throw error;
     }
 
-    const assignation = await prisma.assignation.findUnique({
-      where: { id },
+    const userId = req.user.id;
+
+    const assignation = await prisma.assignation.findFirst({
+      where: {
+        id,
+        OR: [
+          { user_id: userId },
+          { assigner_id: userId },
+          { group: { owner_id: userId } },
+          { group: { groupUsers: { some: { user_id: userId } } } },
+        ],
+      },
       include: {
         group: true,
         meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
@@ -73,12 +92,13 @@ const createAssignation = async (req, res, next) => {
   try {
     const reqBody = req.body;
     const groupId = reqBody.group_id ? parseInt(reqBody.group_id) : null;
-    const userId = reqBody.user_id ? parseInt(reqBody.user_id) : null;
+    const targetUserId = reqBody.user_id ? parseInt(reqBody.user_id) : null;
     const metaId = parseInt(reqBody.meta_id);
+    const currentUserId = req.user.id;
 
     if (
       (groupId && isNaN(groupId)) ||
-      (userId && isNaN(userId)) ||
+      (targetUserId && isNaN(targetUserId)) ||
       isNaN(metaId)
     ) {
       const error = new Error("IDs invàlides!");
@@ -86,10 +106,38 @@ const createAssignation = async (req, res, next) => {
       throw error;
     }
 
+    if (groupId) {
+      const group = await prisma.group.findUnique({
+        where: { id: groupId },
+        include: {
+          groupUsers: {
+            where: { user_id: currentUserId },
+          },
+        },
+      });
+
+      if (!group) {
+        const error = new Error("El grup no existeix");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const isOwner = group.owner_id === currentUserId;
+      const isModerator = group.groupUsers.some(
+        (gu) => gu.role === "moderator"
+      );
+
+      if (!isOwner && !isModerator && req.user.role !== "admin") {
+        const error = new Error("No tens permisos per assignar metes en aquest grup");
+        error.statusCode = 403;
+        throw error;
+      }
+    }
+
     const data = {
       group_id: groupId ?? null,
       meta_id: metaId,
-      user_id: userId ?? null,
+      user_id: targetUserId ?? null,
       start_date: reqBody.start_date
         ? new Date(reqBody.start_date)
         : new Date(),
@@ -104,7 +152,7 @@ const createAssignation = async (req, res, next) => {
           : null,
       completed: reqBody.completed ?? false,
       needs_proofs: reqBody.needs_proofs ?? null,
-      assigner_id: reqBody.assigner_id ? parseInt(reqBody.assigner_id) : null,
+      assigner_id: currentUserId,
     };
 
     const validate = await validateAssignation(data);
@@ -139,8 +187,9 @@ const updateAssignation = async (req, res, next) => {
     const reqBody = req.body;
     const id = parseInt(req.params.id);
     const groupId = reqBody.group_id ? parseInt(reqBody.group_id) : undefined;
-    const userId = reqBody.user_id ? parseInt(reqBody.user_id) : undefined;
+    const targetUserId = reqBody.user_id ? parseInt(reqBody.user_id) : undefined;
     const metaId = reqBody.meta_id ? parseInt(reqBody.meta_id) : undefined;
+    const currentUserId = req.user.id;
 
     if (isNaN(id)) {
       const error = new Error("ID invàlida!");
@@ -150,6 +199,15 @@ const updateAssignation = async (req, res, next) => {
 
     const existingAssignation = await prisma.assignation.findUnique({
       where: { id },
+      include: {
+        group: {
+          include: {
+            groupUsers: {
+              where: { user_id: currentUserId },
+            },
+          },
+        },
+      },
     });
 
     if (!existingAssignation) {
@@ -158,10 +216,27 @@ const updateAssignation = async (req, res, next) => {
       throw error;
     }
 
+    const group = existingAssignation.group;
+    if (group) {
+      const isOwner = group.owner_id === currentUserId;
+      const isModerator = group.groupUsers.some(
+        (gu) => gu.role === "moderator"
+      );
+      if (!isOwner && !isModerator && req.user.role !== "admin") {
+        const error = new Error("No tens permisos per modificar aquesta assignació");
+        error.statusCode = 403;
+        throw error;
+      }
+    } else if (req.user.role !== "admin") {
+      const error = new Error("Aquesta assignació no pertany a cap grup");
+      error.statusCode = 403;
+      throw error;
+    }
+
     const data = {
       group_id: groupId !== undefined ? groupId : existingAssignation.group_id,
       meta_id: metaId !== undefined ? metaId : existingAssignation.meta_id,
-      user_id: userId !== undefined ? userId : existingAssignation.user_id,
+      user_id: targetUserId !== undefined ? targetUserId : existingAssignation.user_id,
       start_date:
         reqBody.start_date !== undefined
           ? new Date(reqBody.start_date)
@@ -211,10 +286,53 @@ const updateAssignation = async (req, res, next) => {
 
 const deleteAssignation = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id);
+    const currentUserId = req.user.id;
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const existingAssignation = await prisma.assignation.findUnique({
+      where: { id },
+      include: {
+        group: {
+          include: {
+            groupUsers: {
+              where: { user_id: currentUserId },
+            },
+          },
+        },
+      },
+    });
+
+    if (!existingAssignation) {
+      const error = new Error("No s'ha trobat l'assignació a eliminar!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const group = existingAssignation.group;
+    if (group) {
+      const isOwner = group.owner_id === currentUserId;
+      const isModerator = group.groupUsers.some(
+        (gu) => gu.role === "moderator"
+      );
+      if (!isOwner && !isModerator && req.user.role !== "admin") {
+        const error = new Error("No tens permisos per eliminar aquesta assignació");
+        error.statusCode = 403;
+        throw error;
+      }
+    } else if (req.user.role !== "admin") {
+      const error = new Error("Aquesta assignació no pertany a cap grup");
+      error.statusCode = 403;
+      throw error;
+    }
 
     await prisma.assignation.delete({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     res.status(204).end();
