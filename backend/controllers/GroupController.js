@@ -5,9 +5,10 @@ const { validateGroup } = require("../middlewares/validators/validateGroup");
 const getGroups = async (req, res, next) => {
   try {
     const userId = req.user.id;
+    const isAdmin = req.user.role === "admin";
 
     const groups = await prisma.group.findMany({
-      where: {
+      where: isAdmin ? undefined : {
         OR: [
           { is_public: true },
           { owner_id: userId },
@@ -41,15 +42,18 @@ const getGroupById = async (req, res, next) => {
     }
 
     const userId = req.user.id;
+    const isAdmin = req.user.role === "admin";
 
     const group = await prisma.group.findFirst({
       where: {
         id,
-        OR: [
-          { is_public: true },
-          { owner_id: userId },
-          { groupUsers: { some: { user_id: userId } } },
-        ],
+        ...(isAdmin ? {} : {
+          OR: [
+            { is_public: true },
+            { owner_id: userId },
+            { groupUsers: { some: { user_id: userId } } },
+          ],
+        }),
       },
       include: {
         owner: true,
