@@ -17,7 +17,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
   }
-
+  const [toggledIds, setToggledIds] = useState<Set<number>>(new Set());
 
   const token = localStorage.getItem("token");
   const role = getUserRole()
@@ -55,7 +55,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
             </div>
             <ul className=" ps-3  m-0  pb-2">
               {myAssignations
-                .filter(assignation => showCompleted || !Boolean(assignation.completed))
+                .filter(a => showCompleted || !Boolean(a.completed) || toggledIds.has(a.id))
                 .map((assignation) => (
                   <li key={assignation.id} className="m-0 p-0" >
                     <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
@@ -114,15 +114,29 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                           <div>🆕 Creat el dia: {assignation.created_at && assignation.created_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.created_at.split("T")[1].split(".")[0]}</div>
                           <div>🔄 Actualitzat el dia: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>
 
-                          {!assignation.completed && assignation.meta.type === "task" && !assignation.needs_proofs && (
-                            <div className="btn btn-success mt-2"
+                          {!assignation.needs_proofs && (
+                            <div
+                              className={`btn mt-2 ${assignation.completed ? "btn-warning" : "btn-success"}`}
                               onClick={async () => {
-                                await updateAssignation(assignation.id, { completed: true })
-                                setAssignations(prev => prev.map(a =>
-                                  a.id === assignation.id ? { ...a, completed: true } : a
-                                ))
-                              }}>
-                              Marcar completada
+                                await updateAssignation(assignation.id, {
+                                  completed: !assignation.completed,
+                                });
+                                setAssignations((prev) =>
+                                  prev.map((a) =>
+                                    a.id === assignation.id
+                                      ? {
+                                          ...a,
+                                          completed: !assignation.completed,
+                                        }
+                                      : a,
+                                  ),
+                                );
+                                setToggledIds((prev) => new Set(prev).add(assignation.id));
+                              }}
+                            >
+                              {assignation.completed
+                                ? "Desmarcar completada"
+                                : "Marcar completada"}
                             </div>
                           )}
 
