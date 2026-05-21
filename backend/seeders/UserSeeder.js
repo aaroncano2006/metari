@@ -114,7 +114,7 @@ const seedUsers = async () => {
         },
         {
           name: "Arnau",
-          username: "GitanilloPanchito",
+          username: "Gitachito",
           email: "arnau@test.com",
           password: await utils.hash("12345678"),
           role: "user",

@@ -116,7 +116,7 @@ export default function Home() {
                 metas={metas}
                 setter={setMetas}
                 filteredCategory={filteredCategory}
-                groups={groups}
+                groups={myGroups}
               />
               {/* <MyMetaList assignations={assignations}/> */}
             </div>
