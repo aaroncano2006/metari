@@ -144,6 +144,13 @@ const createProof = async (req, res, next) => {
         is_valid: false,
       };
 
+      const validate = await validateProof(data);
+      if (validate) {
+        const error = new Error(validate);
+        error.statusCode = 400;
+        throw error;
+      }
+
       const proof = await prisma.proof.create({
         data,
       });
@@ -151,7 +158,7 @@ const createProof = async (req, res, next) => {
       const ext = path.extname(req.file.originalname);
       const fileName = `${assignationId}_${proof.id}_${req.user.id}${ext}`;
       const destPath = path.join("uploads/proofs", fileName);
-      fs.renameSync(req.file.path, destPath);
+      await fs.promises.rename(req.file.path, destPath);
 
       const updatedProof = await prisma.proof.update({
         where: { id: proof.id },
@@ -221,8 +228,11 @@ const updateProof = async (req, res, next) => {
     if (existingProof.proof_type === "image" && existingProof.proof) {
       if (reqBody.proof_type === "text" || req.file) {
         const oldFilePath = path.join(__dirname, "..", existingProof.proof);
-        if (fs.existsSync(oldFilePath)) {
-          fs.unlinkSync(oldFilePath);
+        try {
+          await fs.promises.access(oldFilePath);
+          await fs.promises.unlink(oldFilePath);
+        } catch {
+          // file doesn't exist, nothing to clean up
         }
       }
     }
@@ -230,9 +240,10 @@ const updateProof = async (req, res, next) => {
       const ext = path.extname(req.file.originalname);
       const fileName = `${existingProof.assignation_id}_${req.params.id}_${req.user.id}${ext}`;
       const destPath = path.join("uploads/proofs", fileName);
-      fs.renameSync(req.file.path, destPath);
+      await fs.promises.rename(req.file.path, destPath);
       data.proof = `/uploads/proofs/${fileName}`;
     }
+
     const updatedProof = await prisma.proof.update({
       where: { id: parseInt(req.params.id) },
       data,
@@ -247,17 +258,48 @@ const updateProof = async (req, res, next) => {
 const deleteProof = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
-    const proof = await prisma.proof.findUnique({ where: { id } });
+    const proof = await prisma.proof.findUnique({
+      where: { id },
+      include: {
+        assignation: {
+          include: {
+            group: {
+              include: {
+                groupUsers: { where: { user_id: req.user.id } },
+              },
+            },
+          },
+        },
+      },
+    });
     if (!proof) {
       const error = new Error("Prova no trobada");
       error.statusCode = 404;
       throw error;
     }
-    // Esborrar l'arxiu si és una imatge
+
+    const isAuthor = proof.user_id === req.user.id;
+    const isAdmin = req.user.role === "admin";
+    const group = proof.assignation?.group;
+    const isGroupOwner = group?.owner_id === req.user.id;
+    const isGroupModerator = group?.groupUsers.some(
+      (gu) => gu.role === "moderator",
+    );
+    const canDelete = isAuthor || isGroupOwner || isGroupModerator || isAdmin;
+
+    if (!canDelete) {
+      const error = new Error("No tens permisos per eliminar aquesta prova");
+      error.statusCode = 403;
+      throw error;
+    }
+
     if (proof.proof_type === "image" && proof.proof) {
       const filePath = path.join(__dirname, "..", proof.proof);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      try {
+        await fs.promises.access(filePath);
+        await fs.promises.unlink(filePath);
+      } catch {
+        // file doesn't exist, nothing to clean up
       }
     }
     await prisma.proof.delete({ where: { id } });
