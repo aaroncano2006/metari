@@ -201,7 +201,7 @@ export function MyMetaListByGroup({
                                 </div>
                               )}
                               {
-                                hasUserSentProof(assignation) && (
+                                hasUserSentProof(assignation) && !hasUserCompletedChallenge(assignation) &&(
                                   <div className="badge bg-success ms-1">
                                     Proves enviades
                                   </div>

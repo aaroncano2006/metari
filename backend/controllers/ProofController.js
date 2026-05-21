@@ -2,6 +2,7 @@ const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
 const path = require("path");
 const fs = require("fs");
+const { validateProof } = require("../middlewares/validators/validateProof");
 
 
 
@@ -49,6 +50,17 @@ const getProofById = async (req, res, next) => {
 const createProof = async (req, res, next) => {
     const reqBody = req.body;
     try {
+        const validate = await validateProof({
+            assignation_id: reqBody.assignation_id,
+            user_id: reqBody.user_id,
+            proof_type: reqBody.proof_type,
+            proof: reqBody.proof,
+        });
+        if (validate) {
+            const error = new Error(validate);
+            error.statusCode = 400;
+            throw error;
+        }
         // per text 
         if (reqBody.proof_type === "text") {
             const proof = await prisma.proof.create({
@@ -111,6 +123,16 @@ const updateProof = async (req, res, next) => {
         if (!existingProof) {
             const error = new Error("Prova no trobada");
             error.statusCode = 404;
+            throw error;
+        }
+        const validate = await validateProof({
+            proof_type: reqBody.proof_type,
+            proof: reqBody.proof,
+            is_valid: reqBody.is_valid,
+        }, true);
+        if (validate) {
+            const error = new Error(validate);
+            error.statusCode = 400;
             throw error;
         }
         const data = {

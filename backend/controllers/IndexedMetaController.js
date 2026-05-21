@@ -1,15 +1,16 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
+const { validateIndexedMeta } = require("../middlewares/validators/validateIndexedMeta");
 
 const getIndexedMetas = async (req, res, next) => {
     try {
         const indexedMetas = await prisma.indexedMeta.findMany({
             include: {
-                meta: { 
-                    include: { 
-                        category: true, author: true 
-                        } 
-                    },
+                meta: {
+                    include: {
+                        category: true, author: true
+                    }
+                },
                 user: true,
             },
         });
@@ -52,6 +53,15 @@ const createIndexedMeta = async (req, res, next) => {
     }
 
     try {
+        const validate = await validateIndexedMeta({
+            meta_id: reqBody.meta_id,
+            user_id: reqBody.user_id,
+            is_approved: reqBody.is_approved,
+            is_community_approved: reqBody.is_community_approved,
+        });
+        if (validate) {
+            return res.status(400).json({ error: validate });
+        }
         const indexedMeta = await prisma.indexedMeta.create({
             data: {
                 user_id: reqBody.user_id ? parseInt(reqBody.user_id) : null,
@@ -75,8 +85,17 @@ const createIndexedMeta = async (req, res, next) => {
 const updateIndexedMeta = async (req, res, next) => {
     const reqBody = req.body;
 
-    
+
     try {
+        const validate = await validateIndexedMeta({
+            meta_id: reqBody.meta_id,
+            user_id: reqBody.user_id,
+            is_approved: reqBody.is_approved,
+            is_community_approved: reqBody.is_community_approved,
+        }, true);
+        if (validate) {
+            return res.status(400).json({ error: validate });
+        }
         const updatedIndexedMeta = await prisma.indexedMeta.update({
             where: { id: parseInt(req.params.id) },
             data: {
