@@ -253,10 +253,56 @@ export function ModalUserCreateMeta({
                   {isPublic === false && (
                     <>
                       <div>
+                        <label htmlFor="start_date">📅 Inici:</label>
+                        <input
+                          className="form-control mb-2"
+                          type="date"
+                          name="start_date"
+                          id="start_date"
+                          defaultValue={new Date().toISOString().split("T")[0]}
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="due_date">⏳ Data límit</label>
+                        <input
+                          className="form-control mb-2"
+                          type="date"
+                          name="due_date"
+                          id="due_date"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="priority">🔥 Prioritat:</label>
+                        <select
+                          className="form-select mb-2"
+                          name="priority"
+                          id="priority"
+                        >
+                          <option value={""}>Sense prioritat</option>
+                          <option value="high">Alta</option>
+                          <option value="low">Baixa</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label htmlFor="difficulty">🎯 Dificultat</label>
+                        <select
+                          className="form-select mb-2"
+                          name="difficulty"
+                          id="difficulty"
+                          defaultValue="normal"
+                        >
+                          <option value="easy">Fàcil</option>
+                          <option value="normal">Normal</option>
+                          <option value="hard">Difícil</option>
+                          <option value="extreme">Extrem</option>
+                        </select>
+                      </div>
+                      {/* } */}
+                      <div>
                         {/* {metaType === "challenge" && */}
                         {metaType === "challenge" && (
                           <div>
-                            <label htmlFor="score">Punts al completar:</label>
+                            <label htmlFor="score">🏆 Punts al completar:</label>
                             <input
                               className="form-control mb-2"
                               type="number"
@@ -265,55 +311,6 @@ export function ModalUserCreateMeta({
                             />
                           </div>
                         )}
-
-                        <div>
-                          <label htmlFor="start_date">📅 Inici:</label>
-                          <input
-                            className="form-control mb-2"
-                            type="date"
-                            name="start_date"
-                            id="start_date"
-                            defaultValue={
-                              new Date().toISOString().split("T")[0]
-                            }
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="due_date">⏳ Data límit</label>
-                          <input
-                            className="form-control mb-2"
-                            type="date"
-                            name="due_date"
-                            id="due_date"
-                          />
-                        </div>
-                        <div>
-                          <label htmlFor="priority">🔥 Prioritat:</label>
-                          <select
-                            className="form-select mb-2"
-                            name="priority"
-                            id="priority"
-                          >
-                            <option value={""}>Sense prioritat</option>
-                            <option value="high">Alta</option>
-                            <option value="low">Baixa</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label htmlFor="difficulty">🎯 Dificultat</label>
-                          <select
-                            className="form-select mb-2"
-                            name="difficulty"
-                            id="difficulty"
-                            defaultValue="normal"
-                          >
-                            <option value="easy">Fàcil</option>
-                            <option value="normal">Normal</option>
-                            <option value="hard">Difícil</option>
-                            <option value="extreme">Extrem</option>
-                          </select>
-                        </div>
-                        {/* } */}
 
                         <label htmlFor="group_id">
                           Grups dels que formes part:
