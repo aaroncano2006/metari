@@ -19,6 +19,7 @@ import Search from "./views/Search";
 function App() {
   return (
     <>
+
       <NavBar />
 
       <div className="flex-grow-1 pagines">

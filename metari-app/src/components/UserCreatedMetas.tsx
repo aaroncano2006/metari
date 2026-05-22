@@ -29,14 +29,14 @@ export function UserCreatedMetas({ metas, setter }: UserCreatedMetasProps) {
     return meta.indexedMetas && meta.indexedMetas.length > 0 && meta.indexedMetas[0].is_community_approved === null
   }
   return (
-    <div className="metaList mt-4">
-      <div className="titolComponent text-center my-2">Metes creades</div>
-      <hr className="m-0" />
+    <div className="metaList">
+      <div className="titolComponent text-center my-2 "><i className=" text-danger me-2 bi bi-bullseye"></i>Metas creades</div>
+      {/* <hr className="m-0" /> */}
       <div className="inline">
         {metas.length === 0 && (
           <div className="text-center text-muted py-3">No ha creat cap meta</div>
         )}
-        <ul className="ps-2 m-0 py-2">
+        <ul className="ps-3 m-0 pb-2">
           {metas.map((meta) => (
             <li key={meta.id} className="m-0 p-0">
               <div

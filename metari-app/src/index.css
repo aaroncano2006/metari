@@ -13,6 +13,7 @@ html * {
 }
 .pagines{
   background-color: #f4f7fc;
+  margin-top: 38px;
 }
 
 #root {
@@ -25,6 +26,9 @@ html * {
   display: flex;
   /* height: 40px; */
   background-color: black;
+  position: fixed;
+  width: 100%;
+  z-index: 9001;
 }
 
 .userList {
@@ -185,10 +189,11 @@ li{
 }
 
 /*Profile*/
-#userProfilePictureFromPage{max-width: 296px; max-height: 296px;}
-.user-profile-form-row{width: 70%;}
+/* #userProfilePictureFromPage{max-width: 200px; max-height: 200px;} */
+#userProfilePictureFromPage{max-width: min(100%, 296px); max-height: 296px;}
+/* .user-profile-form-row{width: 70%;} */
 .alert-profile{width: 70%;}
-.userProfileStats{ display: flex; flex-direction: column; background-color: var(--color-1); padding-bottom: 1px; border-radius: 10px 10px 20px 10px; overflow: hidden; }
+.userProfileStats{max-width: min(100%, 296px); }
 
 /*buttons*/
 

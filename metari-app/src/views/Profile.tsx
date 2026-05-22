@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { UserProfilePicture } from "../components/UserProfilePicture";
+import profileImg from "../assets/img/profileImg.png";
 import {
   getUserFullName,
   getUserId,
@@ -161,50 +162,26 @@ export default function Profile() {
       <Helmet>
         <title>{`Metari · Profile - ${username} (${name})`}</title>
       </Helmet>
-      <div className="container-fluid p-3">
+      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Metari</h1>
+
+      <div className="container p-3">
         {!error && (
           <>
-            <header className="row ms-5 p-5">
+            <header className="row py-5">
               <div className="col-9">
-                <h1>Profile</h1>
+                <h1>Perfil d'usuari</h1>
               </div>
-              <div className="col pt-2 d-flex gap-2 align-items-start">
-                {userData && (
-                  <>
-                    <SendFriendInvitationButton
-                      receiverId={userData?.id}
-                    />
-                    {myGroupsForInvite.length > 0 && selectedGroupForInvite && (
-                      <SendGroupInvitationBtn
-                        receiverId={userData.id}
-                        groupId={selectedGroupForInvite}
-                      />
-                    )}
-                    {myGroupsForInvite.length > 0 && (
-                      <select
-                        className="form-select form-select-sm"
-                        style={{ width: "auto" }}
-                        value={selectedGroupForInvite ?? ""}
-                        onChange={(e) =>
-                          setSelectedGroupForInvite(parseInt(e.target.value))
-                        }
-                      >
-                        {myGroupsForInvite.map((g) => (
-                          <option key={g.id} value={g.id}>
-                            {g.name}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  </>
-                )}
-              </div>
+
             </header>
 
-            <div className="row ms-5 mb-4">
-              <div className="col-md-3">
+            {/* perfil i formulari */}
+            <div className="row mb-4">
+
+              <div className="col-12 col-md-4 text-center mb-4 ">
+
                 <UserProfilePicture
-                  url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwo8eJYb8h6_V7THlADVmoSbVkJQw6k08Liw&s"
+                  // url="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwo8eJYb8h6_V7THlADVmoSbVkJQw6k08Liw&s"
+                  url={profileImg}
                   id="userProfilePictureFromPage"
                 />
                 <div className="mt-3">
@@ -212,65 +189,128 @@ export default function Profile() {
                   <h3 className="text-muted">{username}</h3>
                 </div>
               </div>
-              <div className="col-md-6 mb-2">
-                {!userData && (
+
+              {/* invitacions */}
+              {userData && (
+                <div className="d-md-block col pt-2 d-flex justify-content-center mb-5">
                   <>
-                    <div className="ps-5">
+                    <div className="d-flex d-md-block gap-3">
+                      <SendFriendInvitationButton receiverId={userData?.id} />
+                      <div className="d-flex gap-3 mt-md-3">
+                        {myGroupsForInvite.length > 0 && selectedGroupForInvite && (
+                          <SendGroupInvitationBtn receiverId={userData.id} groupId={selectedGroupForInvite} />
+                        )}
+
+                        {myGroupsForInvite.length > 0 && (
+                          <select
+                            className="form-select form-select-sm"
+                            style={{ width: "auto" }}
+                            value={selectedGroupForInvite ?? ""}
+                            onChange={(e) =>
+                              setSelectedGroupForInvite(parseInt(e.target.value))
+                            }
+                          >
+                            {myGroupsForInvite.map((g) => (
+                              <option key={g.id} value={g.id}>
+                                {g.name}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+
+                    </div>
+                  </>
+                </div>
+              )}
+
+
+
+              {!userData && (
+                <>
+                  <div className=" col-12 col-md me-lg-5 mb-5">
+                    <div className="mx-3">
                       <h2>Edita el perfil</h2>
                       <UserProfileForm></UserProfileForm>
                     </div>
-                  </>
-                )}
-                {userData && (
-                  <>
-                    <div className="me-5 mb-4">
+                  </div>
+
+                  <div className="col-12 col-md-4 col-xl-3 mb-5">
+                    <div className="userProfileStats mx-auto">
+                      <UserProfileStats
+                        completed_tasks={stats?.completed_tasks}
+                        score={stats?.score}
+                      ></UserProfileStats>
+                    </div>
+                  </div>
+                </>
+
+              )}
+
+
+              {userData && (
+                <>
+                  <div className=" col-12 col-md-4 mx-lg-4 mb-4">
+                    <div className="userProfileStats mx-auto mb-4">
+                      <UserProfileStats
+                        completed_tasks={stats?.completed_tasks}
+                        score={stats?.score}
+                      ></UserProfileStats>
+
                       <FriendList users={friendsList}></FriendList>
+
                       <MyGroupsList
                         groups={groupsList}
                         setter={setGroupsList}
                       ></MyGroupsList>
                     </div>
-                  </>
-                )}
-              </div>
-              <div className="col-md-2">
-                <UserProfileStats
-                  completed_tasks={stats?.completed_tasks}
-                  score={stats?.score}
-                ></UserProfileStats>
-              </div>
+                  </div>
+                </>
+              )}
             </div>
+
+
+
+            {/*  invitacions amics i grups*/}
             {!userData && (
               <>
-                <div className="row ps-5 pe-5 mb-5">
-                  <div>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => changeList("friends")}
-                    >
-                      {!friendInvitationPanelActive && (
-                        <>
-                          <i className="bi bi-envelope-fill me-2"></i> Veure
-                          invitacions
-                        </>
-                      )}
-                      {friendInvitationPanelActive && (
-                        <>
-                          <i className="bi bi-person-fill me-2"></i> Veure amics
-                        </>
-                      )}
-                    </button>
+                {/* panell amics */}
+                <div className="row mb-3">
+                  <div className="col-12 col-md-6 mb-4">
+                    <div>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => changeList("friends")}
+                      >
+                        {!friendInvitationPanelActive && (
+                          <>
+                            <i className="bi bi-envelope-fill me-2"></i>
+                            Veure invitacions
+                          </>
+                        )}
+                        {friendInvitationPanelActive && (
+                          <>
+                            <i className="bi bi-person-fill me-2"></i>
+                            Veure amics
+                          </>
+                        )}
+                      </button>
+                    </div>
+
+                    <a id="friends_and_groups"></a>
+
+                    {!friendInvitationPanelActive && (
+                      <FriendList users={friendsList}></FriendList>
+                    )}
+                    {friendInvitationPanelActive && (
+                      <InvitationList invitations={friendInvitations} target="friends"></InvitationList>
+                    )}
                   </div>
-                  <a id="friends_and_groups"></a>
-                  {!friendInvitationPanelActive && (
-                    <FriendList users={friendsList}></FriendList>
-                  )}
-                  {friendInvitationPanelActive && (
-                    <InvitationList invitations={friendInvitations} target="friends"></InvitationList>
-                  )}
-                </div>
-                <div className="row ps-5 pe-5">
-                  <div>
+                  {/* </div> */}
+
+                  {/* panell grups */}
+                  {/* <div className="row ps-5 pe-5"> */}
+                  <div className="col-12 col-md-6">
                     <button
                       className="btn btn-primary"
                       onClick={() => changeList("groups")}
@@ -287,13 +327,14 @@ export default function Profile() {
                         </>
                       )}
                     </button>
+
+                    {!groupInvitationPanelActive && (
+                      <MyGroupsList groups={groupsList} setter={setGroupsList}></MyGroupsList>
+                    )}
+                    {groupInvitationPanelActive && (
+                      <InvitationList invitations={groupInvitations} target="groups"></InvitationList>
+                    )}
                   </div>
-                  {!groupInvitationPanelActive && (
-                    <MyGroupsList groups={groupsList} setter={setGroupsList}></MyGroupsList>
-                  )}
-                  {groupInvitationPanelActive && (
-                    <InvitationList invitations={groupInvitations} target="groups"></InvitationList>
-                  )}
                 </div>
               </>
             )}
@@ -308,7 +349,11 @@ export default function Profile() {
           </>
         )}
 
-        <UserCreatedMetas metas={createdMetas} setter={setCreatedMetas} />
+        {!userData && (
+          <div className="mb-4">
+            <UserCreatedMetas metas={createdMetas} setter={setCreatedMetas} />
+          </div>
+        )}
       </div>
     </>
   );

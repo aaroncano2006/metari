@@ -81,11 +81,11 @@ export default function MyMetas() {
         <title>Metari · Les meves metes</title>
       </Helmet>
 
-      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
-      <div className="container-fluid">
+      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Metari</h1>
+      <div className="container">
 
 
-        <div className="row mt-5">
+        <div className="row mt-5 g-2 gx-md-4 gx-lg-5 mb-5">
 
           <div className="d-none d-md-block col-12 col-sm-5 col-md-4 col-xl-3">
             <CategoryList 
@@ -103,21 +103,21 @@ export default function MyMetas() {
 
 
           <div className="col-12 col-xl-3">
-            <div className="row g-2">
+            <div className="row g-2 gx-md-4 gx-lg-5">
 
-              <div className="col-12 col-sm-6 col-xl-12">
+              <div className="col-12 col-md-6 col-xl-12">
                 <FriendList users={friends} setter={setFriends} />
               </div>
 
-              <div className="col-12 col-sm-6 col-xl-12">
+              <div className="col-12 col-md-6 col-xl-12">
                 <MyGroupsList groups={myGroups} setter={setMyGroups} />
               </div>
 
-              <div className="col-12 col-sm-6 col-xl-12">
+              <div className="col-12 col-md-6 col-xl-12">
                 <UserList users={users} setter={setUsers} isTop10={true} />
               </div>
 
-              <div className="col-12 col-sm-6 col-xl-12">
+              <div className="col-12 col-md-6 col-xl-12">
                 <GroupList groups={groups} setter={setGroups} isTop10={true} />
               </div>
 

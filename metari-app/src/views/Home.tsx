@@ -73,7 +73,7 @@ export default function Home() {
       <Helmet>
         <title>Metari · Home - Comunitats, objectius i connexions</title>
       </Helmet>
-      <div className="container-fluid bg-warning pb-4">
+      <div className="container-fluid bg-warning pb-4 pt-3">
         <h1 className="py-3  flex flex-column align-content-center text-center">
           Benvingut a Metari
         </h1>
@@ -94,14 +94,14 @@ export default function Home() {
       </div>
 
 
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
 
           <div className="col-12 col-md-6 col-xl-4 mx-auto pt-4 ">
             <SearchBar />
           </div>
         </div>
-        <div className="row mt-3 g-2">
+        <div className="row  g-2 gx-md-4 gx-lg-5 mb-5">
 
           <div className="col-12 col-sm-5 col-md-4 col-xl-3">
             <CategoryList
@@ -122,7 +122,7 @@ export default function Home() {
             {/* <MyMetaList assignations={assignations}/> */}
           </div>
           <div className="col-12 col-xl-3">
-            <div className="row g-2">
+            <div className="row g-2 gx-md-4 gx-lg-5">
 
               <div className="col-12 col-sm-6 col-xl-12">
                 <FriendList users={friends} setter={setFriends} />
