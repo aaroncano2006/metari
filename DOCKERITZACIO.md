@@ -10,8 +10,8 @@ Estat: ✅ = fet, 🔲 = pendent
 
 | # | Fitxer | Línia | Problema | Solució | Estat |
 |---|--------|-------|----------|---------|-------|
-| 1 | `metari-app/src/services/axiosConnection.ts` | 4 | `baseURL: "http://localhost:3001/api"` fix | Canviar a `baseURL: "/api"` | 🔲 |
-| 2 | `metari-app/vite.config.ts` | 9 | Proxy `/uploads` → `http://localhost:3001` fix | Afegir també proxy `"/api": "http://localhost:3001"` | 🔲 |
+| 1 | `metari-app/src/services/axiosConnection.ts` | 4 | `baseURL: "http://localhost:3001/api"` fix | Canviar a `baseURL: "/api"` | ✅ |
+| 2 | `metari-app/vite.config.ts` | 9 | Proxy `/uploads` → `http://localhost:3001` fix | Afegir també proxy `"/api": "http://localhost:3001"` | ✅ |
 | 3 | `backend/controllers/InvitationController.js` | 8-9 | `FRONTEND_URL = process.env.FRONTEND_URL \|\| "http://localhost:5173"` sense distingir entorns | Canviar a `ENVIRONMENT === "dev" ? LOCAL_FRONTEND_URL : DOCKER_FRONTEND_URL` | ✅ |
 | 4 | `backend/controllers/auth/RestorePasswordController.js` | 8-9 | Mateix | Mateix | ✅ |
 | 5 | `metari-app/src/components/*.tsx` i `views/Profile.tsx` | varis | Placeholder images hardcodeades (URLs gstatic, wikimedia) | Opcional: moure a constants o variables d'entorn | 🔲 |
