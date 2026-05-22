@@ -6,7 +6,7 @@ const {
 } = require("../middlewares/validators/validateInvitation");
 
 const environment = process.env.ENVIRONMENT || "dev";
-const FRONTEND_URL = environment === "dev" ? process.env.LOCAL_FRONTEND_URL : process.env.DOCKER_FRONTEND_URL;
+const FRONTEND_URL = environment === "dev" ? process.env.LOCAL_FRONTEND_URL : process.env.DOCKER_FRONTEND_URL_WITH_HOST;
 
 const getInvitations = async (req, res, next) => {
   try {
