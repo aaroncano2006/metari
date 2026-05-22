@@ -255,9 +255,10 @@ export default function ModalGroupModeratorPanel({
         await deleteMeta(targetMeta.id);
       }
       setAssignations((prev) => prev.filter((a) => a.id !== assignationId));
-      setMetas((prev) =>
-        prev.filter((m) => m.id !== targetAssignation.meta_id),
-      );
+      const remainingAssignations = assignations.filter((a) => a.id !== assignationId);
+      if (!remainingAssignations.some((a) => a.meta_id === targetAssignation.meta_id)) {
+        setMetas((prev) => prev.filter((m) => m.id !== targetAssignation.meta_id));
+      }
       setIndexedMetas((prev) =>
         prev.filter((im) => im.meta_id !== targetAssignation.meta_id),
       );
@@ -620,17 +621,14 @@ export default function ModalGroupModeratorPanel({
                           No hi ha metes assignades al grup.
                         </small>
                       )}
-                      <ul className="p-0">
+                      <ul className="p-0" style={{ listStyle: 'none' }}>
                         {metas.map((meta) => {
-                          const assignation = assignations.find(
+                          const metaAssignations = assignations.filter(
                             (a) => a.meta_id === meta.id,
                           );
                           return (
-                            <>
-                              <li
-                                key={meta.id}
-                                className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
-                              >
+                            <li key={meta.id} className="mb-3">
+                              <div className="d-flex mb-2 p-2 border rounded bg-light justify-content-between align-items-center">
                                 <div>
                                   <strong>{meta.title}</strong>
                                   <span className="text-muted ms-2">
@@ -642,9 +640,14 @@ export default function ModalGroupModeratorPanel({
                                     {meta.author?.username}
                                   </small>
                                 </div>
-                                <div className="d-flex gap-2">
-                                  {assignation && (
-                                    <>
+                              </div>
+                              {metaAssignations.map((assignation) => (
+                                <div key={assignation.id} className="p-2">
+                                  <div className="d-flex bg-light justify-content-between align-items-center mb-2 p-2">
+                                    <span className="small text-muted">
+                                      👤 {assignation.user?.name ? `${assignation.user.name} (${assignation.user.username})` : `ID: ${assignation.id}`}
+                                    </span>
+                                    <div className="d-flex gap-2">
                                       <button
                                         className="btn btn-warning btn-sm"
                                         title="Mostrar detalls i proves de l'assignació"
@@ -656,7 +659,6 @@ export default function ModalGroupModeratorPanel({
                                       >
                                         <i className="bi bi-eye-fill"></i>
                                       </button>
-
                                       <button
                                         className="btn btn-danger btn-sm"
                                         onClick={() =>
@@ -666,11 +668,9 @@ export default function ModalGroupModeratorPanel({
                                       >
                                         <i className="bi bi-trash-fill"></i>
                                       </button>
-                                    </>
-                                  )}
-                                </div>
-                              </li>
-                              {currentAssignationId === assignation?.id && (
+                                    </div>
+                                  </div>
+                                  {currentAssignationId === assignation.id && (
                                 <div className="bg-light ps-2 py-3 mb-2">
                                   <div>📌 Tipus:{assignation.meta.type}</div>
                                   <div>
@@ -972,7 +972,9 @@ export default function ModalGroupModeratorPanel({
                                   </div>
                                 </div>
                               )}
-                            </>
+                                </div>
+                              ))}
+                            </li>
                           );
                         })}
                       </ul>
