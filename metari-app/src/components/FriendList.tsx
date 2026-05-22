@@ -53,6 +53,7 @@ export function FriendList({ users, setter }: UserListProps) {
                           <Link
                             to={`/profile?username=${user.username}`}
                             className="btn btn-primary p-1 me-2 smallButton"
+                            title="Perfil d'usuari"
                             onClick={(event) => event.stopPropagation()}
                           >
                             <i className="bi bi-person-fill"></i>

@@ -142,7 +142,11 @@ export function MyMetaListByGroup({
                   <div className="ms-auto">
                     {group.groupUsers.find((el) => el.user_id === getUserId() && el.role === "moderator") && (
                       <>
-                        <button className="btn btn-sm btn-outline-primary" onClick={() => openModeratorGroupPanel(group)}>
+                        <button className="btn  btn-outline-primary"
+                         onClick={() => openModeratorGroupPanel(group)}
+                         title="Configuració i moderació del grup"
+                         >
+                          
                           <i className="bi bi-gear-fill"></i>
                         </button>
                       </>
