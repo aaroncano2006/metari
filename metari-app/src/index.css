@@ -1,3 +1,13 @@
+
+@font-face {
+  font-family: 'tiltWarp';
+  src: url('./assets/fonts/Tilt_Warp/TiltWarp-Regular-VariableFont.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
 :root {
   --color-1: rgb(170, 170, 170);
   --color-2: rgb(204, 204, 204);
@@ -6,6 +16,9 @@
   --task-color: blue;
   --challenge-color: red;
 }
+
+
+
 
 html * {
   padding: 0;
@@ -28,13 +41,20 @@ html * {
   background-image: url(../src/assets/img/doodle.jpg);
   opacity: 0.04;
   z-index: -1;
-  pointer-events: none; /* per no bloquejar clics */
+  pointer-events: none; 
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+
+.titol{
+    font-family: "tiltWarp", sans-serif;
+    font-size: 3rem;
+
 }
 
 .navBar {
@@ -46,6 +66,7 @@ html * {
   z-index: 9001;
 }
 
+
 .userList {
   background-color: rgb(170, 170, 170);
 }
@@ -56,20 +77,22 @@ html * {
 
 .banner {
   position: relative;
-  height: 100px;
+  height: 200px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.226);
+  
 }
-.banner::before{
-  content: "";
+.banner::after{
   position: absolute;
+  background-image: url(./assets/img/stardoodle.png);
+  content: "";
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(../src/assets/img/stardoodle.png);
-  opacity: 0.04;
-  z-index: -1;
-  pointer-events: none; /* per no bloquejar clics */
+  opacity: 0.2;
+  pointer-events: none; 
 }
+
 
 .nav-btn {
   display: flex;

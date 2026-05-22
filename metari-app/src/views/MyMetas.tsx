@@ -81,7 +81,7 @@ export default function MyMetas() {
         <title>Metari · Les meves metes</title>
       </Helmet>
 
-      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Metari</h1>
+      <h1 className="banner bg-warning flex titol flex-column align-content-center text-center">Metari</h1>
       <div className="container">
 
 

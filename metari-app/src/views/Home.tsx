@@ -73,8 +73,8 @@ export default function Home() {
       <Helmet>
         <title>Metari · Home - Comunitats, objectius i connexions</title>
       </Helmet>
-      <div className="container-fluid bg-warning pb-4 pt-3">
-        <h1 className="py-3  flex flex-column align-content-center text-center">
+      <div className="container-fluid bg-warning banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">
           Benvingut a Metari
         </h1>
         {token && (

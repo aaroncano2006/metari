@@ -91,7 +91,8 @@ export default function AdminPanel() {
       <Helmet>
         <title>Metari · Admin</title>
       </Helmet>
-      <h1 className="text-center mt-4">Panell Admin</h1>
+      <h1 className="banner bg-warning flex flex-column align-content-center titol text-center">Metari</h1>
+      <h2 className="text-center mt-4">Panell Admin</h2>
       <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div
           className="btn btn-primary"

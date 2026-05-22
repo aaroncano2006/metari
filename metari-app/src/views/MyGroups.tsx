@@ -81,7 +81,7 @@ export default function MyGroups() {
       <Helmet>
         <title>Metari · Els meus grups</title>
       </Helmet>
-      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Metari</h1>
+      <h1 className="banner bg-warning flex flex-column align-content-center titol text-center">Metari</h1>
       <div className="container">
 
         <div className="row mt-5 mb-5 g-2 gx-md-4 gx-lg-5" >
