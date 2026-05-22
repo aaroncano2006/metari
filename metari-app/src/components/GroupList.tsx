@@ -125,7 +125,7 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                       <div className="metaDetails ps-2 py-2">
                         {vistaActual !== "/" &&
                           <>
-                            <div>ID: {group.id}</div>
+                            <div>🆔 ID: {group.id}</div>
                             <div>🔓 Public: {group.is_public ? "Sí" : "No"}</div>
                           </>
                         }
