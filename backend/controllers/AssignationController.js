@@ -67,7 +67,7 @@ const getAssignationById = async (req, res, next) => {
       },
       include: {
         group: true,
-        meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
+        meta: { include: { indexedMetas: { select: { is_community_approved: true, is_approved: true } } } },
         user: true,
         assigner: true,
         comments: true,
@@ -166,7 +166,7 @@ const createAssignation = async (req, res, next) => {
       data,
       include: {
         group: true,
-        meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
+        meta: { include: { indexedMetas: { select: { is_community_approved: true, is_approved: true } } } },
         user: true,
         assigner: true,
         comments: true,
@@ -289,7 +289,7 @@ const updateAssignation = async (req, res, next) => {
       data,
       include: {
         group: true,
-        meta: { include: { indexedMetas: { select: { is_community_approved: true } } } },
+        meta: { include: { indexedMetas: { select: { is_community_approved: true, is_approved: true } } } },
         user: true,
         assigner: true,
         comments: true,

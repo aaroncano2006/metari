@@ -15,7 +15,7 @@ const getMetas = async (req, res, next) => {
         category: true,
         author: true,
         indexedMetas: {
-          select: { is_community_approved: true }
+          select: { is_community_approved: true, is_approved: true }
         },
       },
     });
@@ -84,7 +84,7 @@ const getMetasByUserId = async (req, res, next) => {
         category: true,
         author: true,
         indexedMetas: {
-          select: { is_community_approved: true }
+          select: { is_community_approved: true, is_approved: true }
         },
       },
     });
