@@ -36,9 +36,9 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
   return (
     <>
       {token && (
-        <div className="metaList mt-4">
-          <div className="titolComponent  text-center my-2">Invitacions</div>
-          <hr className="m-0" />
+        <div className="metaList my-4">
+          <div className="titolComponent text-center my-2 ms-4">Invitacions</div>
+          {/* <hr className="m-0" /> */}
 
           <div className="inline">
             {token && (

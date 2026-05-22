@@ -58,6 +58,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
         : Number(formData.get("user_id")) || undefined,
       assigner_id: Number(formData.get("assigner_id")) || undefined,
       needs_proofs: needsProofs,
+      score: formData.get("score") ? Number(formData.get("score")) : undefined,
       start_date: formData.get("start_date"),
       due_date: formData.get("due_date"),
       priority: formData.get("priority") || undefined,
@@ -157,6 +158,13 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                             ))}
                           </select>
                         </div>
+
+                        {meta[0]?.type === "challenge" && (
+                          <div>
+                            <label htmlFor="score">🏆 Punts al completar:</label>
+                            <input className="form-control mb-2" type="number" name="score" id="score" />
+                          </div>
+                        )}
                       </div>
 
 
@@ -264,6 +272,13 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                             ))}
                           </select>
                         </div>
+
+                        {meta[0]?.type === "challenge" && (
+                          <div>
+                            <label htmlFor="score">🏆 Punts al completar:</label>
+                            <input className="form-control mb-2" type="number" name="score" id="score" />
+                          </div>
+                        )}
                       </div>
 
 

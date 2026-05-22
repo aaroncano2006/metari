@@ -9,6 +9,7 @@ export const assignationSchema = z.object({
   group_id: z.number().int().positive().optional(),
   assigner_id: z.number().int().positive().optional(),
   needs_proofs: z.boolean().optional(),
+  score: z.number().int().positive().optional(),
   start_date: z.string(),
   due_date: z.string().optional(),
   priority: z.enum(["high", "low"]).optional(),

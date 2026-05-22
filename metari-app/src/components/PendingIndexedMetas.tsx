@@ -42,8 +42,8 @@ export function PendingIndexedMetas({
 
   return (
     <div className="metaList mt-4">
-      <div className="titolComponent text-center my-2">Metes a indexar</div>
-      <hr className="m-0" />
+      <div className="titolComponent text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Metes a indexar</div>
+      {/* <hr className="m-0" /> */}
       <div className="inline">
         <div className="d-flex justify-content-center gap-3 my-2">
           <label>
@@ -77,9 +77,8 @@ export function PendingIndexedMetas({
           {pendingMetas.map((indexed) => (
             <li key={indexed.id} className="m-0 p-0">
               <div
-                className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === indexed.id ? "mb-0" : "mb-1"} ${
-                  indexed.meta.type === "task" ? "meta-task" : "meta-challenge"
-                }`}
+                className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === indexed.id ? "mb-0" : "mb-1"} ${indexed.meta.type === "task" ? "meta-task" : "meta-challenge"
+                  }`}
                 role="button"
                 tabIndex={0}
                 onClick={() => toggleEntity(indexed.id)}
@@ -139,83 +138,83 @@ export function PendingIndexedMetas({
                     {(isGroupModerating
                       ? indexed.is_approved !== false
                       : indexed.is_community_approved !== false) && (
-                      <button
-                        className="btn btn-danger btn-sm ms-2"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          try {
-                            const data = isGroupModerating
-                              ? { is_approved: false }
-                              : { is_community_approved: false };
-                            await updateIndexedMeta(indexed.id, data);
-                            setIndexedMetas((prev) =>
-                              prev.map((im) =>
-                                im.id === indexed.id ? { ...im, ...data } : im,
-                              ),
-                            );
-                          } catch {
-                            console.error("Error rejecting indexed meta");
-                          }
-                        }}
-                      >
-                        Rebutjar
-                      </button>
-                    )}
+                        <button
+                          className="btn btn-danger btn-sm ms-2"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            try {
+                              const data = isGroupModerating
+                                ? { is_approved: false }
+                                : { is_community_approved: false };
+                              await updateIndexedMeta(indexed.id, data);
+                              setIndexedMetas((prev) =>
+                                prev.map((im) =>
+                                  im.id === indexed.id ? { ...im, ...data } : im,
+                                ),
+                              );
+                            } catch {
+                              console.error("Error rejecting indexed meta");
+                            }
+                          }}
+                        >
+                          Rebutjar
+                        </button>
+                      )}
 
                     {(isGroupModerating
                       ? indexed.is_approved !== null
                       : indexed.is_community_approved !== null) && (
-                      <button
-                        className="btn btn-warning btn-sm ms-2"
-                        title="Marcar pendent"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          const data = isGroupModerating
-                            ? { is_approved: null }
-                            : { is_community_approved: null };
-                          await updateIndexedMeta(indexed.id, data);
-                          setIndexedMetas((prev) =>
-                            prev.map((im) =>
-                              im.id === indexed.id
-                                ? { ...im, ...data }
-                                : im,
-                            ),
-                          );
-                        }}
-                      >
-                        Marcar pendent
-                      </button>
-                    )}
+                        <button
+                          className="btn btn-warning btn-sm ms-2"
+                          title="Marcar pendent"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            const data = isGroupModerating
+                              ? { is_approved: null }
+                              : { is_community_approved: null };
+                            await updateIndexedMeta(indexed.id, data);
+                            setIndexedMetas((prev) =>
+                              prev.map((im) =>
+                                im.id === indexed.id
+                                  ? { ...im, ...data }
+                                  : im,
+                              ),
+                            );
+                          }}
+                        >
+                          Marcar pendent
+                        </button>
+                      )}
 
                     {(isGroupModerating
                       ? indexed.is_approved === false
                       : indexed.is_community_approved === false) && (
-                      <button
-                        className="btn btn-danger btn-sm ms-2"
-                        title="Eliminar meta"
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          if (!confirm("Estàs segur que el vols eliminar?"))
-                            return;
+                        <button
+                          className="btn btn-danger btn-sm ms-2"
+                          title="Eliminar meta"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!confirm("Estàs segur que el vols eliminar?"))
+                              return;
 
-                          const allAssignations = await fetchAssignations();
-                          const toDelete = allAssignations.filter(
-                            (a) => a.meta_id === indexed.meta_id,
-                          );
-                          for (const ass of toDelete) {
-                            await deleteAssignation(ass.id);
-                          }
+                            const allAssignations = await fetchAssignations();
+                            const toDelete = allAssignations.filter(
+                              (a) => a.meta_id === indexed.meta_id,
+                            );
+                            for (const ass of toDelete) {
+                              await deleteAssignation(ass.id);
+                            }
 
-                          await deleteIndexedMeta(indexed.id);
-                          await deleteMeta(indexed.meta_id);
-                          setIndexedMetas((prev) =>
-                            prev.filter((im) => im.id !== indexed.id),
-                          );
-                        }}
-                      >
-                        Eliminar
-                      </button>
-                    )}
+                            await deleteIndexedMeta(indexed.id);
+                            await deleteMeta(indexed.meta_id);
+                            setIndexedMetas((prev) =>
+                              prev.filter((im) => im.id !== indexed.id),
+                            );
+                          }}
+                        >
+                          Eliminar
+                        </button>
+                      )}
                   </div>
                 )}
               </div>

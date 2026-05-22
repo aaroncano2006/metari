@@ -59,7 +59,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                             prev === category.id ? null : category.id
                           )
                         }}
-                        
+                        onClick={(e) => e.stopPropagation()}
                       />
                     }
                     {canEdit &&
@@ -89,9 +89,9 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntitySelected === category.id && (
-                    <div className="metaDetails ps-2 py-2">
+                    <div className="metaDetails ps-4 py-2">
                       {/* <div>ID: {category.id}</div> */}
-                      <div>Descripció: {category.description}</div>
+                      <div><strong>Descripció:</strong> {category.description}</div>
                     </div>
                   )}
                 </div>

@@ -16,27 +16,30 @@ export function UserCreatedMetas({ metas, setter }: UserCreatedMetasProps) {
     if (!meta.indexedMetas || meta.indexedMetas.length === 0) {
       return <span className="badge bg-secondary">Sense indexar</span>
     }
-    const status = meta.indexedMetas[0].is_community_approved
-    if (status === true) {
-      return <span className="badge bg-success">Aprovada</span>
-    } else if (status === false) {
-      return <span className="badge bg-danger">Rebutjada</span>
-    } else {
-      return <span className="badge bg-warning text-black">Pendent</span>
-    }
-  }
-  const isPending = (meta: metaType) => {
-    return meta.indexedMetas && meta.indexedMetas.length > 0 && meta.indexedMetas[0].is_community_approved === null
+    return (
+      <div className="d-flex gap-1 flex-wrap">
+        {meta.indexedMetas.map((im, i) => {
+          const status = meta.is_public ? im.is_community_approved : im.is_approved
+          if (status === true) {
+            return <span key={i} className="badge bg-success">Aprovada</span>
+          } else if (status === false) {
+            return <span key={i} className="badge bg-danger">Rebutjada</span>
+          } else {
+            return <span key={i} className="badge bg-warning text-black">Pendent</span>
+          }
+        })}
+      </div>
+    )
   }
   return (
-    <div className="metaList mt-4">
-      <div className="titolComponent text-center my-2">Metes creades</div>
-      <hr className="m-0" />
+    <div className="metaList">
+      <div className="titolComponent text-center my-2 "><i className=" text-danger me-2 bi bi-bullseye"></i>Metas creades</div>
+      {/* <hr className="m-0" /> */}
       <div className="inline">
         {metas.length === 0 && (
           <div className="text-center text-muted py-3">No ha creat cap meta</div>
         )}
-        <ul className="ps-2 m-0 py-2">
+        <ul className="ps-3 m-0 pb-2">
           {metas.map((meta) => (
             <li key={meta.id} className="m-0 p-0">
               <div
