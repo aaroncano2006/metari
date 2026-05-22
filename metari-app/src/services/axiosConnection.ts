@@ -1,7 +1,7 @@
 import axios from "axios"
 
 export const axiosConnection = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: "/api",
 })
 
 axiosConnection.interceptors.request.use(
