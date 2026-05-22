@@ -18,5 +18,5 @@ export async function updateProfile (data: profileType): Promise<any> {
 export async function getUserProfileData (username: string): Promise<any> {
     const allUsers = await fetchUsers();
     const user = allUsers.find((el) => el.username === username);
-    return user;
+    return user || null;
 }
