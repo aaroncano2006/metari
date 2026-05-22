@@ -2,47 +2,49 @@
 
 Decisió presa: **URL relativa `/api`**. El frontend fa servir `/api` com a base URL. En dev, Vite proxyja al backend; en Docker, nginx fa de proxy.
 
+Estat: ✅ = fet, 🔲 = pendent
+
 ---
 
 ## 🔴 Bloc 1 — URLs hardcodeades → variables d'entorn
 
-| # | Fitxer | Línia | Problema | Solució |
-|---|--------|-------|----------|---------|
-| 1 | `metari-app/src/services/axiosConnection.ts` | 4 | `baseURL: "http://localhost:3001/api"` fix | Canviar a `baseURL: "/api"` |
-| 2 | `metari-app/vite.config.ts` | 9 | Proxy `/uploads` → `http://localhost:3001` fix | Afegir també proxy `"/api": "http://localhost:3001"` |
-| 3 | `backend/controllers/InvitationController.js` | 8 | `FRONTEND_URL = process.env.FRONTEND_URL \|\| "http://localhost:5173"` | Treure el fallback: `FRONTEND_URL = process.env.FRONTEND_URL` |
-| 4 | `backend/controllers/auth/RestorePasswordController.js` | 8 | Mateix | Mateix |
-| 5 | `metari-app/src/components/*.tsx` i `views/Profile.tsx` | varis | Placeholder images hardcodeades (URLs gstatic, wikimedia) | Opcional: moure a constants o variables d'entorn |
+| # | Fitxer | Línia | Problema | Solució | Estat |
+|---|--------|-------|----------|---------|-------|
+| 1 | `metari-app/src/services/axiosConnection.ts` | 4 | `baseURL: "http://localhost:3001/api"` fix | Canviar a `baseURL: "/api"` | ✅ |
+| 2 | `metari-app/vite.config.ts` | 9 | Proxy `/uploads` → `http://localhost:3001` fix | Afegir també proxy `"/api": "http://localhost:3001"` | ✅ |
+| 3 | `backend/controllers/InvitationController.js` | 8-9 | `FRONTEND_URL = process.env.FRONTEND_URL \|\| "http://localhost:5173"` sense distingir entorns | Canviar a `ENVIRONMENT === "dev" ? LOCAL_FRONTEND_URL : DOCKER_FRONTEND_URL` | ✅ |
+| 4 | `backend/controllers/auth/RestorePasswordController.js` | 8-9 | Mateix | Mateix | ✅ |
+| 5 | `metari-app/src/components/*.tsx` i `views/Profile.tsx` | varis | Placeholder images hardcodeades (URLs gstatic, wikimedia) | Opcional: moure a constants o variables d'entorn | ✅ |
 
 ---
 
 ## 🔴 Bloc 2 — L'API no ha d'estar exposada
 
-| # | Fitxer | Línia | Problema | Solució |
-|---|--------|-------|----------|---------|
-| 6 | `backend/index.js` | 8 | `app.use(cors())` sense restriccions → qualsevol web pot cridar l'API | Canviar a `app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:5173", ...], credentials: true }))` |
-| 7 | `backend/index.js` | 10 | `app.set("trusty proxy", true)` — typo, l'opció correcta és `trust proxy` | Canviar a `app.set("trust proxy", true)` |
-| 8 | `backend/index.js` | 193 | `app.use("/uploads", express.static("uploads"))` exposa fitxers sense auth | Treure-ho i que nginx serveixi directament els uploads |
-| 9 | `backend/routes/CommentRoutes.js` | 4-10 | Auth middleware **comentat** → POST/PUT/DELETE públics | Descomentar `isAuthenticated` i `isAdmin`, afegir a les rutes |
-| 10 | `backend/routes/IndexedMetaRoutes.js` | 10 | DELETE només `isAuthenticated`, hauria de ser `isAdmin` | Afegir `isAdmin` al delete |
-| 11 | `backend/controllers/UserController.js` | 81-157 | PUT `/api/usuaris/:id` sense ownership check → usuari A pot modificar usuari B | Afegir: `if (req.user.id !== id && req.user.role !== "admin")` retornar 403 |
-| 12 | `docker-compose.yml` | 47-56 | phpMyAdmin exposat al port 8089 amb accés root | Treure del `docker-compose.yml` principal, crear `docker-compose.override.yml` només per dev |
-| 13 | `nginx/default.conf` | - | Sense security headers | Afegir: `X-Frame-Options`, `X-Content-Type-Options`, `X-XSS-Protection`, `Referrer-Policy`, `Strict-Transport-Security` |
+| # | Fitxer | Línia | Problema | Solució | Estat |
+|---|--------|-------|----------|---------|-------|
+| 6 | `backend/index.js` | 8 | `app.use(cors())` sense restriccions → qualsevol web pot cridar l'API | Canviar a `app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:5173", ...], credentials: true }))` | ✅ |
+| 7 | `backend/index.js` | 10 | `app.set("trusty proxy", true)` — typo, l'opció correcta és `trust proxy` | Canviar a `app.set("trust proxy", true)` | ✅ |
+| 8 | `backend/index.js` | 193 | `app.use("/uploads", express.static("uploads"))` exposa fitxers sense auth | Treure-ho i que nginx serveixi directament els uploads | 🔲 |
+| 9 | `backend/routes/CommentRoutes.js` | 4-10 | Auth middleware **comentat** → POST/PUT/DELETE públics | Descomentar `isAuthenticated` i `isAdmin`, afegir a les rutes | 🔲 |
+| 10 | `backend/routes/IndexedMetaRoutes.js` | 10 | DELETE només `isAuthenticated`, hauria de ser `isAdmin` | Afegir `isAdmin` al delete | 🔲 |
+| 11 | `backend/controllers/UserController.js` | 81-157 | PUT `/api/usuaris/:id` sense ownership check → usuari A pot modificar usuari B | Afegir: `if (req.user.id !== id && req.user.role !== "admin")` retornar 403 | 🔲 |
+| 12 | `docker-compose.yml` | 47-56 | phpMyAdmin exposat al port 8089 amb accés root | Treure del `docker-compose.yml` principal, crear `docker-compose.override.yml` només per dev | 🔲 |
+| 13 | `nginx/default.conf` | - | Sense security headers | Afegir: `X-Frame-Options`, `X-Content-Type-Options`, `X-XSS-Protection`, `Referrer-Policy`, `Strict-Transport-Security` | 🔲 |
 
 ---
 
 ## 🟡 Bloc 3 — Millores d'infraestructura Docker
 
-| # | Fitxer | Línia | Problema | Solució |
-|---|--------|-------|----------|---------|
-| 14 | `.dockerignore` | 1-4 | No exclou `.env` → secrets a la imatge Docker | Afegir `*.env`, `**/.env`, `diagrames/`, `wireframe/`, `*.pdf`, etc. |
-| 15 | `docker-compose.yml` | 29-36 | `depends_on: - db` sense healthcheck → el backend intenta connectar abans que DB estigui llesta | Canviar a `depends_on: db: condition: service_healthy` |
-| 16 | `docker-compose.yml` | - | Sense xarxa custom, tot al bridge per defecte | Crear xarxa `internal` (backend + db, aïllada) i `frontend` (nginx + frontend) |
-| 17 | `docker-compose.yml` | 37 | Bash loop fràgil per esperar DB | Treure el loop, confiar en `condition: service_healthy` |
-| 18 | `backend/Dockerfile` | 1-12 | Single stage, corre com a root, sense `.dockerignore` específic | Multi-stage: `deps` amb `npm ci --only=production`, després copiar; crear usuari no-root |
-| 19 | `backend/.env` | 56 | `SECRET="secret"` massa feble | Generar amb `openssl rand -hex 32` |
-| 20 | `nginx/default.conf` | - | Sense TLS | Afegir `listen 443 ssl`, redirigir port 80 → 443, certificats autofirmats |
-| 21 | `docker-compose.yml` | - | Sense volum per uploads compartit entre backend i nginx | Crear volum `uploads_data` muntat a backend i nginx |
+| # | Fitxer | Línia | Problema | Solució | Estat |
+|---|--------|-------|----------|---------|-------|
+| 14 | `.dockerignore` | 1-4 | No exclou `.env` → secrets a la imatge Docker | Afegir `*.env`, `**/.env`, `diagrames/`, `wireframe/`, `*.pdf`, etc. | 🔲 |
+| 15 | `docker-compose.yml` | 29-36 | `depends_on: - db` sense healthcheck → el backend intenta connectar abans que DB estigui llesta | Canviar a `depends_on: db: condition: service_healthy` | 🔲 |
+| 16 | `docker-compose.yml` | - | Sense xarxa custom, tot al bridge per defecte | Crear xarxa `internal` (backend + db, aïllada) i `frontend` (nginx + frontend) | 🔲 |
+| 17 | `docker-compose.yml` | 37 | Bash loop fràgil per esperar DB | Treure el loop, confiar en `condition: service_healthy` | 🔲 |
+| 18 | `backend/Dockerfile` | 1-12 | Single stage, corre com a root, sense `.dockerignore` específic | Multi-stage: `deps` amb `npm ci --only=production`, després copiar; crear usuari no-root | 🔲 |
+| 19 | `backend/.env` | 51 | `SECRET` feble o buit | Generar amb `openssl rand -hex 32` | 🔲 |
+| 20 | `nginx/default.conf` | - | Sense TLS | Afegir `listen 443 ssl`, redirigir port 80 → 443, certificats autofirmats | 🔲 |
+| 21 | `docker-compose.yml` | - | Sense volum per uploads compartit entre backend i nginx | Crear volum `uploads_data` muntat a backend i nginx | 🔲 |
 
 ---
 
@@ -63,7 +65,7 @@ nginx:
 
 ---
 
-## docker-compose.yml final
+## docker-compose.yml final (proposta)
 
 ```yaml
 version: "3.9"
@@ -97,14 +99,10 @@ services:
       - .env
     environment:
       - ENVIRONMENT=production
-      - FRONTEND_URL=https://localhost
-      - CORS_ORIGIN=https://localhost
     volumes:
       - uploads_data:/app/uploads
     networks:
       - internal
-    command: >
-      sh -c "npx prisma generate && npm run migrate:apply && npm run seed && node index.js"
 
   frontend:
     build: ./metari-app
@@ -154,7 +152,7 @@ networks:
 
 ---
 
-## nginx/default.conf final
+## nginx/default.conf final (proposta)
 
 ```nginx
 server {
@@ -254,7 +252,10 @@ SETUP.MD
 ## backend/.env — noves variables
 
 ```
-CORS_ORIGIN="http://localhost:5173,http://localhost,http://localhost:80"
-FRONTEND_URL="http://localhost:5173"
+ENVIRONMENT="dev"   # "dev" per local, "production" per Docker
+
+LOCAL_FRONTEND_URL="http://localhost:5173"
+DOCKER_FRONTEND_URL="http://ipohostname:5173"
+
 SECRET=<generar amb: openssl rand -hex 32>
 ```

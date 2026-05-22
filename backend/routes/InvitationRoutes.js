@@ -7,7 +7,7 @@ router.get('/:userid/:sentorreceived/:status', isAuthenticated, invitationContro
 router.post('/:senderid/:receiverid', isAuthenticated, invitationController.sendInvitations);
 router.post('/:senderid/:receiverid/:groupid', isAuthenticated, invitationController.sendInvitations);
 router.put('/:receiverid/:id', isAuthenticated, invitationController.acceptInvitation);
-router.delete('/:id', isAuthenticated, invitationController.rejectInvitation);
+router.delete('/:userid/:id', isAuthenticated, invitationController.rejectInvitation);
 
 router.get('/friends/:userid', isAuthenticated, invitationController.getFriendsByID);
 

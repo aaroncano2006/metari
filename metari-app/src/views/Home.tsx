@@ -21,7 +21,6 @@ import { UserCreateMetaBtn } from "../components/Buttons/UserCreateMetaBtn";
 import { UserCreateGroupBtn } from "../components/Buttons/UserCreateGroupBtn";
 import { Helmet } from "react-helmet-async";
 import SearchBar from "../components/SearchBar";
-import ModalGroupModeratorPanel from "../components/modals/ModalGroupModeratorPanel";
 
 // import { useMetas } from "../services/metaService"
 // import { useCategories } from "../services/categoryService"
@@ -144,15 +143,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-
-      {/* {groupModeratorPanel && (
-        <ModalGroupModeratorPanel
-          group={groupModeratorPanel}
-          setEditGroup={setGroupModeratorPanel}
-          setter={setGroups}
-        />
-      )} */}
     </>
   );
 }
