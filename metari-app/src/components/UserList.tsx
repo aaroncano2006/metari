@@ -122,15 +122,15 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
                       <div className="metaDetails ps-2 py-2">
                         {vistaActual === "/admin" && (
                           <>
-                            <div>ID: {user.id}</div>
-                            <div>Nom: {user.name}</div>
-                            <div>e-mail: {user.email}</div>
-                            <div>Rol: {user.role}</div>
+                            <div>🆔 <strong>ID:</strong> {user.id}</div>
+                            <div>🔖 <strong>Nom:</strong> {user.name}</div>
+                            <div>📧 <strong>e-mail:</strong> {user.email}</div>
+                            <div>👤 <strong>Rol:</strong> {user.role}</div>
                           </>
                         )}
 
-                        <div>Tasques completades: {user.completed_tasks}</div>
-                        <div>Puntuacio: {user.score}</div>
+                        <div>✅ <strong>Tasques completades:</strong> {user.completed_tasks}</div>
+                        <div>💯 <strong>Puntuació:</strong> {user.score}</div>
                       </div>
                     )}
                   </div>

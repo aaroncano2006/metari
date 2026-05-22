@@ -126,21 +126,21 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                         {vistaActual !== "/" &&
                           <>
                             <div>ID: {group.id}</div>
-                            <div>Public: {group.is_public ? "Sí" : "No"}</div>
+                            <div>🔓 Public: {group.is_public ? "Sí" : "No"}</div>
                           </>
                         }
-                        <div>Nom: {group.name}</div>
-                        <div>Puntuacio del grup: {groupScores.get(group.id)}</div>
-                        <div>Descripcio: {group.description}</div>
+                        <div>🔖 Nom: {group.name}</div>
+                        <div>💯 Puntuacio del grup: {groupScores.get(group.id)}</div>
+                        <div>📝 Descripcio: {group.description}</div>
                         {/* <div>owner_id: {group.owner_id}</div> */}
-                        <div>Creador: {group.owner.username}</div>
+                        <div>👤 Creador: {group.owner.username}</div>
                         {/* {vistaActual !== "/" && */}
                         <div className="llistaUsuaris">
-                          <div className="fw-bold mb-1">Membres del grup:</div>
+                          <div className="fw-bold mb-1">👥 Membres del grup:</div>
                           {group.groupUsers.map((groupUser) => (
                             <div key={groupUser.user_id} className="d-flex  mb-1">
-                              <div className="me-2">
-                                {groupUser.user.username}
+                              <div className="me-2 ms-4">
+                                👤 {groupUser.user.username}
                               </div>
                               {groupUser.role === "moderator" && (
                                 <div className="badge bg-warning text-black">

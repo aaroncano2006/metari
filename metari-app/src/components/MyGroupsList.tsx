@@ -84,24 +84,24 @@ export function MyGroupsList({ groups, setter }: MyGroupListProps) {
                     <div className=" metaDetailsBox  my-0 me-3">
                       {openEntityId === group.id && (
                         <div className="metaDetails ps-2 py-2">
-                          <div>Nom: {group.name}</div>
+                          <div>🔖 <strong>Nom:</strong> {group.name}</div>
                           <div>
-                            Puntuacio del grup: {groupScores.get(group.id)}
+                            💯 <strong>Puntuació del grup:</strong> {groupScores.get(group.id)}
                           </div>
-                          <div>Descripcio: {group.description}</div>
-                          <div>Creador: {group.owner.username}</div>
-                          <div>Public: {group.is_public ? "Sí" : "No"}</div>
+                          <div>📝 <strong>Descripció:</strong> {group.description}</div>
+                          <div>👤 <strong>Creador:</strong> {group.owner.username}</div>
+                          <div>🔓 <strong>Públic:</strong> {group.is_public ? "Sí" : "No"}</div>
                           <div className="llistaUsuaris">
                             <div className="fw-bold mb-1">
-                              Membres del grup:
+                              👥 <strong>Membres del grup:</strong>
                             </div>
                             {group.groupUsers.map((groupUser) => (
                               <div
                                 key={groupUser.user_id}
-                                className="d-flex  mb-1"
+                                className="d-flex  mb-1 ms-4"
                               >
                                 <div className="me-2">
-                                  {groupUser.user.username}
+                                  👤 {groupUser.user.username}
                                 </div>
                                 {groupUser.role === "moderator" && (
                                   <div className="badge bg-warning text-black">

@@ -213,13 +213,13 @@ export function MyMetaListByGroup({
                           <div className="metaDetailsBox my-0 me-3 ">
                             {openEntityId === assignation.id && (
                               <div className="metaDetails ps-2 py-2 d-flex flex-column">
-                                <div>📌 Tipus:{assignation.meta.type}</div>
+                                <div>📌 <strong>Tipus:</strong>{assignation.meta.type}</div>
                                 <div>
-                                  📝 Descripció: {assignation.meta.description}
+                                  📝 <strong>Descripció:</strong> {assignation.meta.description}
                                 </div>
                                 {assignation.user_id && (
                                   <div>
-                                    👤 Assignada a:{" "}
+                                    👤 <strong>Assignada a:</strong>{" "}
                                     {assignation.user?.name
                                       ? `${assignation.user?.name} (${assignation.user?.username})`
                                       : assignation.user_id}
@@ -227,14 +227,14 @@ export function MyMetaListByGroup({
                                 )}
                                 {assignation.assigner_id && (
                                   <div>
-                                    👑 Assignada per:{" "}
+                                    👑 <strong>Assignada per:</strong>{" "}
                                     {assignation.assigner?.name
                                       ? `${assignation.assigner?.name} (${assignation.assigner?.username})`
                                       : assignation.assigner_id}
                                   </div>
                                 )}
                                 <div>
-                                  📅 Inici:{" "}
+                                  📅 <strong>Inici:</strong>{" "}
                                   {assignation.start_date
                                     ?.split("T")[0]
                                     .split("-")
@@ -242,7 +242,7 @@ export function MyMetaListByGroup({
                                     .join("-")}
                                 </div>
                                 <div>
-                                  ⏳ Data límit:{" "}
+                                  ⏳ <strong>Data límit:</strong>{" "}
                                   {assignation.due_date
                                     ?.split("T")[0]
                                     .split("-")
@@ -250,13 +250,13 @@ export function MyMetaListByGroup({
                                     .join("-") ?? "sense data limit"}
                                 </div>
                                 <div>
-                                  🔥 Prioritat:{" "}
+                                  🔥 <strong>Prioritat:</strong>{" "}
                                   {assignation.priority ?? "sense prioritat"}
                                 </div>
 
                                 {assignation.meta.type === "challenge" && (
                                   <div>
-                                    🏆 Puntuacio: {assignation.score ?? 0}
+                                    🏆 <strong>Puntuacio:</strong> {assignation.score ?? 0}
                                   </div>
                                 )}
 
@@ -266,7 +266,7 @@ export function MyMetaListByGroup({
                                   assignation.assignationCompletions.length >
                                     0 && (
                                     <div>
-                                      ✅ Completat per:{" "}
+                                      ✅ <strong>Completat per:</strong>{" "}
                                       {assignation.assignationCompletions
                                         .filter((ac) => ac.is_Completed)
                                         .map(
@@ -285,13 +285,13 @@ export function MyMetaListByGroup({
                                     {assignation.needs_proofs !== null &&
                                       assignation.needs_proofs !== undefined && (
                                         <div>
-                                          📋 Requereix proves:{" "}
+                                          📋 <strong>Requereix proves:</strong>{" "}
                                           {assignation.needs_proofs ? "Sí" : "No"}
                                         </div>
                                       )}
 
                                     <div>
-                                      🆕 Creat el dia:{" "}
+                                      🆕 <strong>Creat el dia:</strong>{" "}
                                       {assignation.created_at &&
                                         assignation.created_at
                                           .split("T")[0]
@@ -304,7 +304,7 @@ export function MyMetaListByGroup({
                                             ?.split(".")[0]}
                                     </div>
                                     <div>
-                                      🔄 Actualitzat el dia:{" "}
+                                      🔄 <strong>Actualitzat el dia:</strong>{" "}
                                       {assignation.updated_at &&
                                         assignation.updated_at
                                           .split("T")[0]

@@ -69,10 +69,10 @@ export function FriendList({ users, setter }: UserListProps) {
                     <div className=" metaDetailsBox  my-0 me-3">
                       {openEntityId === user.id && (
                         <div className="metaDetails ps-2 py-2">
-                          <div>Nom: {user.name}</div>
-                          <div>e-mail: {user.email}</div>
-                          <div>Tasques completades: {user.completed_tasks}</div>
-                          <div>Puntuacio: {user.score}</div>
+                          <div><strong>🔖 Nom:</strong> {user.name}</div>
+                          <div><strong>📧 e-mail:</strong> {user.email}</div>
+                          <div><strong>✅ Tasques completades:</strong> {user.completed_tasks}</div>
+                          <div><strong>💯 Puntuacio:</strong> {user.score}</div>
                           {vistaActual === "/profile" &&
                             user.id !== getUserId() && (
                               <div className="d-flex p-3 justify-content-end">

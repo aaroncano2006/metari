@@ -116,13 +116,13 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                     <div className="metaDetails ps-4 py-2">
                       {vistaActual !== "/" &&
                         <>
-                          <div><strong>ID: </strong> {meta.id}</div>
+                          <div><strong>🆔 <strong>ID:</strong> </strong> {meta.id}</div>
                         </>
                       }
-                      <div><strong>Tipus: </strong> {meta.type}</div>
-                      <div><strong>Descripció:</strong> {meta.description}</div>
-                      <div><strong>Categoria:</strong> {meta.category.name}</div>
-                      <div><strong>Autor:</strong> {meta.author.username}</div>
+                      <div><strong>📌 <strong>Tipus:</strong> </strong> {meta.type}</div>
+                      <div><strong>📝 <strong>Descripció:</strong></strong> {meta.description}</div>
+                      <div><strong>🏷️ <strong>Categoria:</strong></strong> {meta.category.name}</div>
+                      <div><strong>👤 <strong>Autor:</strong></strong> {meta.author.username}</div>
                       <div className="d-flex mt-2 justify-content-end">
                         {canAddMeta && meta.type === "task" &&
                           <>
