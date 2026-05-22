@@ -709,9 +709,9 @@ export function MyMetaListByGroup({
                                 </div>
                                 {(group.groupUsers.some(gu => gu.user_id === getUserId() && gu.role === "moderator") || group.owner_id === getUserId()) && (
                                   <>
-                                    <div className="d-flex align-self-end me-2 mb-2 mt-2">
+                                    <div className="d-flex justify-content-end me-2 mb-2 mt-2">
                                       <div
-                                        className="btn btn-primary d-flex align-self-end me-2 "
+                                        className="btn btn-primary me-2 "
                                         onClick={() => {
                                           setShowComments((prev) => !prev);
                                         }}
