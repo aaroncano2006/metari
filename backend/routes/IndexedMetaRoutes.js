@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const indexedMetaController = require('../controllers/IndexedMetaController');
-const { isAuthenticated, isAdmin } = require('../middlewares/auth/authorize');
+const { isAuthenticated } = require('../middlewares/auth/authorize');
 
 router.get('/', indexedMetaController.getIndexedMetas);
 router.get('/:id', indexedMetaController.getIndexedMetaById);
