@@ -24,7 +24,7 @@ const seedUsers = async () => {
         },
         {
           name: "Bruno Oro",
-          username: "Yesi",
+          username: "Yesiiii",
           email: "yesi@test.com",
           password: await utils.hash("12345678"),
           role: "user",
