@@ -4,17 +4,19 @@ import type { groupType } from "../types/groupType";
 
 
 export async function fetchGroups(): Promise<groupType[]> {
+  if (!localStorage.getItem("token")) return [];
   const { data } = await axiosConnection.get<groupType[]>("/grups");
-
   return data;
 }
 
 export async function fetchGroupsByUserId(userId: number): Promise<groupType[]> {
+  if (!localStorage.getItem("token")) return [];
   const { data } = await axiosConnection.get<groupType[]>(`/grups/user/${userId}`);
   return data;
 }
 
-export async function fetchGroupById(id: number): Promise<groupType> {
+export async function fetchGroupById(id: number): Promise<groupType | null> {
+  if (!localStorage.getItem("token")) return null;
   const { data } = await axiosConnection.get<groupType>(`/grups/${id}`);
   return data;
 }

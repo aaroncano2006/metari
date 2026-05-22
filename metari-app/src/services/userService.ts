@@ -4,14 +4,15 @@ import type { userTypeDTO } from "../types/userTypeDTO";
 
 
 export async function fetchUsers(): Promise<userTypeFrontend[]> {
+  if (!localStorage.getItem("token")) return [];
   const { data } = await axiosConnection.get<userTypeFrontend[]>("/usuaris");
-
   return data;
 }
 
 
 
-export async function fetchUserById(id: number): Promise<userTypeFrontend> {
+export async function fetchUserById(id: number): Promise<userTypeFrontend | null> {
+  if (!localStorage.getItem("token")) return null;
   const { data } = await axiosConnection.get<userTypeFrontend>(`/usuaris/${id}`);
   return data;
 }
@@ -51,15 +52,15 @@ export async function deleteUser(id: number): Promise<void> {
 }
   
 export async function usernameExists(username: string, currentUserId?: number): Promise<boolean> {
+  if (!localStorage.getItem("token")) return false;
   const response = await axiosConnection.get<userTypeDTO[]>("/usuaris");
   const userWithUsername = response.data.find((el) => el.username === username && el.id !== currentUserId);
-
   return !!userWithUsername;
 }
 
 export async function emailExists(email: string, currentUserId?: number): Promise<boolean> {
+  if (!localStorage.getItem("token")) return false;
   const response = await axiosConnection.get<userTypeDTO[]>("/usuaris");
   const userWithEmail = response.data.find((el) => el.email === email && el.id !== currentUserId);
-
   return !!userWithEmail;
 }
