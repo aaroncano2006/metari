@@ -5,7 +5,8 @@ const SECRET = require("../../config/auth").SECRET;
 const { hash } = require("../../helpers/Utils");
 const { validateRestorePassword } = require("../../middlewares/validators/auth/validateRestorePassword");
 
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const environment = process.env.ENVIRONMENT || "dev";
+const FRONTEND_URL = environment === "dev" ? process.env.LOCAL_FRONTEND_URL : process.env.DOCKER_FRONTEND_URL;
 
 const forgotPassword = async (req, res, next) => {
   try {
