@@ -1,191 +1,254 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
-const {
-  validateGroupUser,
-} = require("../middlewares/validators/validateGroupUser");
+const { validateGroup } = require("../middlewares/validators/validateGroup");
 
-const getGroupUsers = async (req, res, next) => {
+const getGroups = async (req, res, next) => {
   try {
-    const groupUsers = await prisma.groupUser.findMany({
-      include: {
-        group: true,
-        user: true,
-      },
-    });
+    const userId = req.user.id;
+    const isAdmin = req.user.role === "admin";
 
-    res.status(200).json(utils.handleBigInt(groupUsers));
+    const groups = await prisma.group.findMany({
+      where: isAdmin ? undefined : {
+        OR: [
+          { is_public: true },
+          { owner_id: userId },
+          { groupUsers: { some: { user_id: userId } } },
+        ],
+      },
+      include: {
+        owner: true,
+        groupUsers: {
+          include: {
+            user: true
+          }
+        }
+      }
+    });
+    res.status(200).json(utils.handleBigInt(groups));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    // res.status(500).json({ error: "Error al carregar relacions grup-usuari" });
     next(error);
   }
 };
 
-const getGroupUser = async (req, res, next) => {
+const getGroupById = async (req, res, next) => {
   try {
-    // const { group_id, user_id } = req.params;
-    const groupId = parseInt(req.params.group_id);
-    const userId = parseInt(req.params.user_id);
-    if (isNaN(groupId) || isNaN(userId)) {
-      const error = new Error("IDs invàlides!");
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
       error.statusCode = 400;
       throw error;
     }
 
-    const groupUser = await prisma.groupUser.findUnique({
+    const userId = req.user.id;
+    const isAdmin = req.user.role === "admin";
+
+    const group = await prisma.group.findFirst({
       where: {
-        group_id_user_id: {
-          group_id: parseInt(group_id),
-          user_id: parseInt(user_id),
-        },
+        id,
+        ...(isAdmin ? {} : {
+          OR: [
+            { is_public: true },
+            { owner_id: userId },
+            { groupUsers: { some: { user_id: userId } } },
+          ],
+        }),
       },
       include: {
-        group: true,
-        user: true,
+        owner: true,
+        groupUsers: {
+          include: { user: true }
+        },
       },
     });
 
-    if (!groupUser) {
-      //   return res.status(404).json({ error: "Relació no trobada" });
-      const error = new Error("Relació no trobada!");
+    if (!group) {
+      const error = new Error("No s'ha trobat el grup");
       error.statusCode = 404;
       throw error;
     }
 
-    res.status(200).json(utils.handleBigInt(groupUser));
+    res.status(200).json(utils.handleBigInt(group));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    // res.status(500).json({ error: "Error al carregar la relació" });
     next(error);
   }
 };
 
-const createGroupUser = async (req, res, next) => {
+const getGroupsByUserId = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const groups = await prisma.group.findMany({
+      where: {
+        OR: [
+          { owner_id: userId },
+          { groupUsers: { some: { user_id: userId } } },
+        ],
+      },
+      include: {
+        owner: true,
+        groupUsers: {
+          include: { user: true },
+        },
+      },
+    });
+    res.status(200).json(utils.handleBigInt(groups));
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    next(error);
+  }
+};
+
+const createGroup = async (req, res, next) => {
   try {
     const reqBody = req.body;
-    const groupId = parseInt(reqBody.group_id);
-    const userId = parseInt(reqBody.user_id);
-    const role = reqBody.role ?? undefined;
-
-    if (isNaN(groupId) || isNaN(userId)) {
-      const error = new Error("IDs invàlides!");
-      error.statusCode = 400;
-      throw error;
-    }
 
     const data = {
-      group_id: groupId,
-      user_id: userId,
-      role,
+      name: reqBody.name,
+      description: reqBody.description ?? undefined,
+      is_public: reqBody.is_public ?? true,
+      owner_id: req.user.id,
     };
 
-    const validate = await validateGroupUser(data);
+    const validate = await validateGroup(data);
     if (validate) {
       const error = new Error(validate);
       error.statusCode = 400;
       throw error;
     }
 
-    const groupUser = await prisma.groupUser.create({
-      data: {
-        group_id: groupId,
-        user_id: userId,
-        role,
-      },
+    const group = await prisma.group.create({
+      data,
       include: {
-        group: true,
-        user: true,
+        owner: true,
+        groupUsers: {
+          include: { user: true }
+        }
       },
     });
-
-    res.status(201).json(utils.handleBigInt(groupUser));
+    res.status(201).json(utils.handleBigInt(group));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    // res.status(500).json({ error: "Error al afegir usuari al grup" });
     next(error);
   }
 };
 
-const updateGroupUser = async (req, res, next) => {
+const updateGroup = async (req, res, next) => {
   try {
+    const id = parseInt(req.params.id);
     const reqBody = req.body;
-    const groupId = parseInt(req.params.group_id);
-    const userId = parseInt(req.params.user_id);
-    const role = reqBody.role ?? undefined;
+    const userId = req.user.id;
 
-    if (isNaN(groupId) || isNaN(userId)) {
-      const error = new Error("IDs invàlides!");
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
       error.statusCode = 400;
       throw error;
     }
 
+    const foundGroup = await prisma.group.findUnique({
+      where: { id },
+      include: {
+        groupUsers: {
+          where: { user_id: userId },
+        },
+      },
+    });
+
+    if (!foundGroup) {
+      const error = new Error("No s'ha trobat el grup per actualitzar!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const isOwner = foundGroup.owner_id === userId;
+    const isModerator = foundGroup.groupUsers.some(
+      (gu) => gu.role === "moderator"
+    );
+
+    if (!isOwner && !isModerator && req.user.role !== "admin") {
+      const error = new Error("No tens permisos per actualitzar aquest grup");
+      error.statusCode = 403;
+      throw error;
+    }
+
     const data = {
-      role,
+      name: reqBody.name ?? foundGroup.name,
+      description: reqBody.description ?? foundGroup.description,
+      is_public: reqBody.is_public ?? foundGroup.is_public,
     };
 
-    const validate = await validateGroupUser(data);
+    if (isOwner && reqBody.owner_id !== undefined) {
+      data.owner_id = parseInt(reqBody.owner_id);
+    }
+
+    const validate = await validateGroup(reqBody, true);
     if (validate) {
       const error = new Error(validate);
       error.statusCode = 400;
       throw error;
     }
 
-    const updatedGroupUser = await prisma.groupUser.update({
-      where: {
-        group_id_user_id: {
-          group_id: groupId,
-          user_id: userId,
-        },
-      },
-      data: {
-        role,
-      },
+    const group = await prisma.group.update({
+      where: { id },
+      data,
       include: {
-        group: true,
-        user: true,
+        owner: true,
+        groupUsers: {
+          include: { user: true }
+        }
       },
     });
-
-    res.status(200).json(utils.handleBigInt(updatedGroupUser));
+    res.status(200).json(utils.handleBigInt(group));
   } catch (error) {
     console.error("Error en Prisma:", error);
-    // res.status(500).json({ error: "Error al actualitzar la relació" });
     next(error);
   }
 };
 
-const deleteGroupUser = async (req, res, next) => {
+const deleteGroup = async (req, res, next) => {
   try {
-    const groupId = parseInt(req.params.group_id);
-    const userId = parseInt(req.params.user_id);
+    const id = parseInt(req.params.id);
+    const userId = req.user.id;
 
-    if (isNaN(groupId) || isNaN(userId)) {
-      const error = new Error("IDs invàlides!");
+    if (isNaN(id)) {
+      const error = new Error("ID invàlid");
       error.statusCode = 400;
       throw error;
     }
 
-    const deleted = await prisma.groupUser.delete({
-      where: {
-        group_id_user_id: {
-          group_id: parseInt(req.params.group_id),
-          user_id: parseInt(req.params.user_id),
-        },
-      },
+    const foundGroup = await prisma.group.findUnique({
+      where: { id },
     });
 
+    if (!foundGroup) {
+      const error = new Error("No s'ha trobat el grup per eliminar!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (foundGroup.owner_id !== userId && req.user.role !== "admin") {
+      const error = new Error("No tens permisos per eliminar aquest grup");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    await prisma.group.delete({
+      where: { id },
+    });
     res.status(204).end();
   } catch (error) {
     console.error("Error en Prisma:", error);
-    // res.status(500).json({ error: "Error al eliminar la relació" });
     next(error);
   }
 };
 
 module.exports = {
-  getGroupUsers,
-  getGroupUser,
-  createGroupUser,
-  updateGroupUser,
-  deleteGroupUser,
+  getGroups,
+  getGroupById,
+  getGroupsByUserId,
+  createGroup,
+  updateGroup,
+  deleteGroup,
 };
