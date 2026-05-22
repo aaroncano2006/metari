@@ -18,7 +18,6 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
   const toggleEntity = (id: number) => {
     setOpenEntityId(prev => (prev === id ? null : id))
   }
-  const [toggledIds, setToggledIds] = useState<Set<number>>(new Set());
 
   const token = localStorage.getItem("token");
   const role = getUserRole()
@@ -56,7 +55,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
             </div>
             <ul className=" ps-3  m-0  pb-2">
               {myAssignations
-                .filter(a => showCompleted || !Boolean(a.completed) || toggledIds.has(a.id))
+                .filter(a => showCompleted || !Boolean(a.completed))
                 .map((assignation) => (
                   <li key={assignation.id} className="m-0 p-0" >
                     <div className={`metaEntry mt-1 me-3 ps-2 ${openEntityId === assignation.id ? "mb-0" : "mb-1"} ${assignation.meta.type === "task" ? "meta-task" : "meta-challenge"}`}
@@ -145,7 +144,6 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                                       : a,
                                   ),
                                 );
-                                setToggledIds((prev) => new Set(prev).add(assignation.id));
                               }}
                             >
                               {assignation.completed
