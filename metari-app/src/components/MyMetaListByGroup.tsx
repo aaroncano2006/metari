@@ -367,8 +367,8 @@ export function MyMetaListByGroup({
                                         const user = await fetchUserById(loggedInUserId!);
                                         const score = assignation.score ?? 0;
                                         await updateUser(loggedInUserId!, {
-                                          completed_tasks: user.completed_tasks + 1,
-                                          score: user.score + score,
+                                          completed_tasks: (user?.completed_tasks ?? 0) + 1,
+                                          score: (user?.score ?? 0) + score,
                                         });
                                         setAssignations((prev) =>
                                           prev.map((a) =>
@@ -455,7 +455,7 @@ export function MyMetaListByGroup({
                                         if (score > 0) {
                                           const user = await fetchUserById(loggedInUserId!);
                                           await updateUser(loggedInUserId!, {
-                                            score: user.score + score,
+                                            score: (user?.score ?? 0) + score,
                                           });
                                         }
                                         setAssignations((prev) =>
