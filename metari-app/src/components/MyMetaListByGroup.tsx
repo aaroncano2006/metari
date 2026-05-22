@@ -11,6 +11,7 @@ import {
   updateAssignation,
   createAssignationCompletion,
 } from "../services/assignationService";
+import { fetchUserById, updateUser } from "../services/userService";
 import { ModalAddProof } from "./modals/ModalAddProof";
 import type { proofType } from "../types/proofType";
 import { deleteProof } from "../services/proofService";
@@ -44,7 +45,7 @@ export function MyMetaListByGroup({
     if (assignation.meta.type !== "challenge") return assignation.completed;
     return (
       assignation.assignationCompletions?.some(
-        (ac) => ac.user_id === loggedInUserId && ac.is_Completed,
+        (ac) => ac.is_Completed,
       ) ?? false
     );
   };
@@ -359,10 +360,16 @@ export function MyMetaListByGroup({
                                     <div
                                       className="btn btn-success align-self-end me-2"
                                       onClick={async () => {
-                                        await updateAssignation(
+                                        const updated = await updateAssignation(
                                           assignation.id,
                                           { completed: true },
                                         );
+                                        const user = await fetchUserById(loggedInUserId!);
+                                        const score = assignation.score ?? 0;
+                                        await updateUser(loggedInUserId!, {
+                                          completed_tasks: user.completed_tasks + 1,
+                                          score: user.score + score,
+                                        });
                                         setAssignations((prev) =>
                                           prev.map((a) =>
                                             a.id === assignation.id
@@ -444,6 +451,13 @@ export function MyMetaListByGroup({
                                             loggedInUserId!,
                                             true
                                           );
+                                        const score = assignation.score ?? 0;
+                                        if (score > 0) {
+                                          const user = await fetchUserById(loggedInUserId!);
+                                          await updateUser(loggedInUserId!, {
+                                            score: user.score + score,
+                                          });
+                                        }
                                         setAssignations((prev) =>
                                           prev.map((a) =>
                                             a.id === assignation.id
@@ -689,11 +703,130 @@ export function MyMetaListByGroup({
                                       .split("-")
                                       .reverse()
                                       .join("-") +
-                                      " a les " +
-                                      assignation.updated_at
-                                        .split("T")[1]
-                                        .split(".")[0]}
+                                    " a les " +
+                                    assignation.updated_at
+                                      .split("T")[1]
+                                      .split(".")[0]}
                                 </div>
+                                {(group.groupUsers.some(gu => gu.user_id === getUserId() && gu.role === "moderator") || group.owner_id === getUserId()) && (
+                                  <>
+                                    <div className="d-flex justify-content-end me-2 mb-2 mt-2">
+                                      <div
+                                        className="btn btn-primary me-2 "
+                                        onClick={() => {
+                                          setShowComments((prev) => !prev);
+                                        }}
+                                      >
+                                        Mostrar comentaris
+                                      </div>
+                                      <div
+                                        className="btn btn-primary align-self-end me-2 "
+                                        onClick={() => {
+                                          setAssignationToAddComment(assignation);
+                                          setcommentFormType("create");
+                                        }}
+                                      >
+                                        Nou comentari
+                                      </div>
+                                    </div>
+                                    {showComments === true &&
+                                      (() => {
+                                        const filteredComments = comments
+                                          .filter(
+                                            (c) =>
+                                              c.assignation_id === assignation.id,
+                                          )
+                                          .sort(
+                                            (a, b) =>
+                                              new Date(b.created_at).getTime() -
+                                              new Date(a.created_at).getTime(),
+                                          );
+                                        return filteredComments.length > 0 ? (
+                                          filteredComments.map((comment) => (
+                                            <>
+                                              <div
+                                                key={comment.id}
+                                                className="border rounded p-2 mb-1 bg-white me-2"
+                                              >
+                                                {comment.user?.name ??
+                                                  comment.user_id}
+                                                :
+                                                <p className="mb-0">
+                                                  {comment.body}
+                                                </p>
+                                                <small>
+                                                  {new Date(
+                                                    comment.created_at,
+                                                  ).toLocaleString("ca-ES")}
+                                                  {comment.created_at !==
+                                                    comment.updated_at && (
+                                                    <>
+                                                      {" "}
+                                                      (editat:{" "}
+                                                      {new Date(
+                                                        comment.updated_at,
+                                                      ).toLocaleString("ca-ES")}
+                                                      )
+                                                    </>
+                                                  )}
+                                                </small>
+                                                <div className=" d-flex justify-content-end">
+                                                  {comment.user_id ===
+                                                    getUserId() && (
+                                                    <div
+                                                      className="btn btn-warning align-self-end me-2 "
+                                                      title="Editar comentari"
+                                                      onClick={() => {
+                                                        setcomment(comment);
+                                                        setAssignationToAddComment(
+                                                          assignation,
+                                                        );
+                                                        setcommentFormType("edit");
+                                                      }}
+                                                    >
+                                                      <i className="bi bi-pencil"></i>
+                                                    </div>
+                                                  )}
+                                                  {(comment.user_id ===
+                                                    getUserId() ||
+                                                    group.owner_id ===
+                                                      getUserId()) && (
+                                                    <div
+                                                      className="btn btn-danger align-self-end me-2 "
+                                                      title="Eliminar comentari"
+                                                      onClick={async () => {
+                                                        if (
+                                                          !confirm(
+                                                            "Estàs segur que el vols eliminar?",
+                                                          )
+                                                        )
+                                                          return;
+                                                        await deleteComment(
+                                                          comment.id,
+                                                        );
+                                                        setComments((prev) =>
+                                                          prev.filter(
+                                                            (c) =>
+                                                              c.id !== comment.id,
+                                                          ),
+                                                        );
+                                                      }}
+                                                    >
+                                                      X
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </>
+                                          ))
+                                        ) : (
+                                          <p className="text-muted">
+                                            No hi ha comentaris
+                                          </p>
+                                        );
+                                      })()}
+                                  </>
+                                )}
                               </div>
                             )}
                           </div>

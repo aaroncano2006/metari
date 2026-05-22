@@ -4,7 +4,7 @@ import {
   updateGroupUserRole,
   deleteGroupUser,
 } from "../../services/groupUserService";
-import { updateGroup } from "../../services/groupService";
+import { updateGroup, deleteGroup } from "../../services/groupService";
 import { getUserId } from "../../services/auth/loginService";
 import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
@@ -116,6 +116,18 @@ export default function ModalGroupModeratorPanel({
       setMenu(menu);
     } catch (err: any) {
       console.log(err);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    if (!confirm("Estàs segur que vols eliminar el grup? Aquesta acció no es pot desfer.")) return;
+    try {
+      await deleteGroup(group.id);
+      setter((prev) => prev.filter((g) => g.id !== group.id));
+      setEditGroup(null);
+    } catch {
+      setError("Error eliminant el grup! Revisa els teus permisos.");
+      setTimeout(() => setError(null), 5000);
     }
   };
 
@@ -255,9 +267,10 @@ export default function ModalGroupModeratorPanel({
         await deleteMeta(targetMeta.id);
       }
       setAssignations((prev) => prev.filter((a) => a.id !== assignationId));
-      setMetas((prev) =>
-        prev.filter((m) => m.id !== targetAssignation.meta_id),
-      );
+      const remainingAssignations = assignations.filter((a) => a.id !== assignationId);
+      if (!remainingAssignations.some((a) => a.meta_id === targetAssignation.meta_id)) {
+        setMetas((prev) => prev.filter((m) => m.id !== targetAssignation.meta_id));
+      }
       setIndexedMetas((prev) =>
         prev.filter((im) => im.meta_id !== targetAssignation.meta_id),
       );
@@ -302,16 +315,23 @@ export default function ModalGroupModeratorPanel({
             );
           }
 
-          if (assignation.score && assignedUserId) {
+          if (assignedUserId) {
             const user = await fetchUserById(assignedUserId);
             if (user) {
-              assignation.meta.type === "challenge"
-                ? await updateUser(user.id, {
-                  score: user.score + assignation.score,
-                })
-                : await updateUser(user.id, {
-                  score: user.completed_tasks + 1,
+              if (assignation.meta.type === "challenge") {
+                const challengeScore = assignation.score ?? 0;
+                if (challengeScore > 0) {
+                  await updateUser(user.id, {
+                    score: user.score + challengeScore,
+                  });
+                }
+              } else {
+                const taskScore = assignation.score ?? 0;
+                await updateUser(user.id, {
+                  completed_tasks: user.completed_tasks + 1,
+                  ...(taskScore > 0 ? { score: user.score + taskScore } : {}),
                 });
+              }
             }
           }
           if (assignation.meta.type === "task") {
@@ -345,6 +365,22 @@ export default function ModalGroupModeratorPanel({
       const updated = await updateAssignation(assignation.id, {
         completed: newCompleted,
       });
+
+      if (assignation.user_id) {
+        const user = await fetchUserById(assignation.user_id);
+        if (newCompleted) {
+          await updateUser(assignation.user_id, {
+            completed_tasks: user.completed_tasks + 1,
+            ...(assignation.score ? { score: user.score + assignation.score } : {}),
+          });
+        } else {
+          await updateUser(assignation.user_id, {
+            completed_tasks: user.completed_tasks - 1,
+            ...(assignation.score ? { score: user.score - assignation.score } : {}),
+          });
+        }
+      }
+
       setAssignations((prev) =>
         prev.map((a) => (a.id === assignation.id ? { ...a, ...updated } : a)),
       );
@@ -480,6 +516,20 @@ export default function ModalGroupModeratorPanel({
                           </button>
                         </div>
                       </form>
+                      {isOwner && (
+                        <>
+                          <hr className="my-4" />
+                          <div className="d-flex justify-content-start">
+                            <button
+                              type="button"
+                              className="btn btn-danger"
+                              onClick={handleDeleteGroup}
+                            >
+                              <i className="bi bi-trash-fill me-1"></i>Eliminar grup
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                   {menu === "users" && (
@@ -613,17 +663,14 @@ export default function ModalGroupModeratorPanel({
                           No hi ha metes assignades al grup.
                         </small>
                       )}
-                      <ul className="p-0">
+                      <ul className="p-0" style={{ listStyle: 'none' }}>
                         {metas.map((meta) => {
-                          const assignation = assignations.find(
+                          const metaAssignations = assignations.filter(
                             (a) => a.meta_id === meta.id,
                           );
                           return (
-                            <>
-                              <li
-                                key={meta.id}
-                                className="d-flex mb-2 p-2 border rounded m-0 bg-light justify-content-between align-items-center"
-                              >
+                            <li key={meta.id} className="mb-3">
+                              <div className="d-flex mb-2 p-2 border rounded bg-light justify-content-between align-items-center">
                                 <div>
                                   <strong>{meta.title}</strong>
                                   <span className="text-muted ms-2">
@@ -635,9 +682,14 @@ export default function ModalGroupModeratorPanel({
                                     {meta.author?.username}
                                   </small>
                                 </div>
-                                <div className="d-flex gap-2">
-                                  {assignation && (
-                                    <>
+                              </div>
+                              {metaAssignations.map((assignation) => (
+                                <div key={assignation.id} className="p-2">
+                                  <div className="d-flex bg-light justify-content-between align-items-center mb-2 p-2">
+                                    <span className="small text-muted">
+                                      👤 {assignation.user?.name ? `${assignation.user.name} (${assignation.user.username})` : `ID: ${assignation.id}`}
+                                    </span>
+                                    <div className="d-flex gap-2">
                                       <button
                                         className="btn btn-warning btn-sm"
                                         title="Mostrar detalls i proves de l'assignació"
@@ -649,7 +701,6 @@ export default function ModalGroupModeratorPanel({
                                       >
                                         <i className="bi bi-eye-fill"></i>
                                       </button>
-
                                       <button
                                         className="btn btn-danger btn-sm"
                                         onClick={() =>
@@ -659,11 +710,9 @@ export default function ModalGroupModeratorPanel({
                                       >
                                         <i className="bi bi-trash-fill"></i>
                                       </button>
-                                    </>
-                                  )}
-                                </div>
-                              </li>
-                              {currentAssignationId === assignation?.id && (
+                                    </div>
+                                  </div>
+                                  {currentAssignationId === assignation.id && (
                                 <div className="bg-light ps-2 py-3 mb-2">
                                   <div>📌 Tipus:{assignation.meta.type}</div>
                                   <div>
@@ -728,40 +777,7 @@ export default function ModalGroupModeratorPanel({
                                       </div>
                                     )}
 
-                                  <div className="d-flex gap-2 align-self-end me-2 mt-2">
-                                    <div
-                                      className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
-                                      onClick={() =>
-                                        handleToggleCompleted(assignation)
-                                      }
-                                    >
-                                      {assignation.completed
-                                        ? "Desmarcar completada"
-                                        : "Marcar completada"}
-                                    </div>
-                                    <div
-                                      className="btn btn-primary"
-                                      onClick={() => {
-                                        setShowCommentsForId((prev) =>
-                                          prev === assignation.id
-                                            ? null
-                                            : assignation.id,
-                                        );
-                                      }}
-                                    >
-                                      Mostrar comentaris
-                                    </div>
-                                    <div
-                                      className="btn btn-primary"
-                                      onClick={() => {
-                                        setAssignationToAddComment(assignation);
-                                        setCommentFormType("create");
-                                        setEditingComment(undefined);
-                                      }}
-                                    >
-                                      Nou comentari
-                                    </div>
-                                  </div>
+
 
                                   {showCommentsForId === assignation.id &&
                                     (() => {
@@ -963,9 +979,45 @@ export default function ModalGroupModeratorPanel({
                                         .split("T")[1]
                                         .split(".")[0]}
                                   </div>
+                                  <div className="d-flex gap-2 align-self-end me-2 mt-2">
+                                    <div
+                                      className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
+                                      onClick={() =>
+                                        handleToggleCompleted(assignation)
+                                      }
+                                    >
+                                      {assignation.completed
+                                        ? "Desmarcar completada"
+                                        : "Marcar completada"}
+                                    </div>
+                                    <div
+                                      className="btn btn-primary"
+                                      onClick={() => {
+                                        setShowCommentsForId((prev) =>
+                                          prev === assignation.id
+                                            ? null
+                                            : assignation.id,
+                                        );
+                                      }}
+                                    >
+                                      Mostrar comentaris
+                                    </div>
+                                    <div
+                                      className="btn btn-primary"
+                                      onClick={() => {
+                                        setAssignationToAddComment(assignation);
+                                        setCommentFormType("create");
+                                        setEditingComment(undefined);
+                                      }}
+                                    >
+                                      Nou comentari
+                                    </div>
+                                  </div>
                                 </div>
                               )}
-                            </>
+                                </div>
+                              ))}
+                            </li>
                           );
                         })}
                       </ul>

@@ -16,17 +16,20 @@ export function UserCreatedMetas({ metas, setter }: UserCreatedMetasProps) {
     if (!meta.indexedMetas || meta.indexedMetas.length === 0) {
       return <span className="badge bg-secondary">Sense indexar</span>
     }
-    const status = meta.indexedMetas[0].is_community_approved
-    if (status === true) {
-      return <span className="badge bg-success">Aprovada</span>
-    } else if (status === false) {
-      return <span className="badge bg-danger">Rebutjada</span>
-    } else {
-      return <span className="badge bg-warning text-black">Pendent</span>
-    }
-  }
-  const isPending = (meta: metaType) => {
-    return meta.indexedMetas && meta.indexedMetas.length > 0 && meta.indexedMetas[0].is_community_approved === null
+    return (
+      <div className="d-flex gap-1 flex-wrap">
+        {meta.indexedMetas.map((im, i) => {
+          const status = meta.is_public ? im.is_community_approved : im.is_approved
+          if (status === true) {
+            return <span key={i} className="badge bg-success">Aprovada</span>
+          } else if (status === false) {
+            return <span key={i} className="badge bg-danger">Rebutjada</span>
+          } else {
+            return <span key={i} className="badge bg-warning text-black">Pendent</span>
+          }
+        })}
+      </div>
+    )
   }
   return (
     <div className="metaList">
