@@ -5,6 +5,9 @@ const {
   validateInvitation,
 } = require("../middlewares/validators/validateInvitation");
 
+const environment = process.env.ENVIRONMENT || "dev";
+const FRONTEND_URL = environment === "dev" ? process.env.LOCAL_FRONTEND_URL : process.env.DOCKER_FRONTEND_URL_WITH_HOST;
+
 const getInvitations = async (req, res, next) => {
   try {
     const userId = parseInt(req.params.userid);
@@ -121,7 +124,7 @@ const sendInvitations = async (req, res, next) => {
           </p>
 
           <p>
-            Pots acceptar o rebutjar-la des del teu panell d'invitacions.
+            Pots acceptar o rebutjar-la des del teu <a href='${FRONTEND_URL}/profile?friendInvitations=true#friends_and_groups'>panell d'invitacions</a>.
           </p>
 
           <hr />
@@ -143,7 +146,7 @@ const sendInvitations = async (req, res, next) => {
           </p>
 
           <p>
-            Pots revisar-la i decidir si vols unir-t'hi des del teu panell d'invitacions.
+            Pots revisar-la i decidir si vols unir-t'hi des del teu <a href='${FRONTEND_URL}/profile?groupInvitations=true#friends_and_groups'>panell d'invitacions</a>.
           </p>
 
           <hr />
@@ -162,7 +165,9 @@ const sendInvitations = async (req, res, next) => {
       // return res.status(400).json({
       //   error: "Ja existeix una amb aquestes característiques!",
       // });
-      error = new Error("Ja existeix una invitació amb aquestes característiques!");
+      error = new Error(
+        "Ja existeix una invitació amb aquestes característiques!",
+      );
       error.statusCode = 400;
     }
     next(error);
@@ -207,16 +212,27 @@ const acceptInvitation = async (req, res, next) => {
     });
 
     if (acceptedInvitation && acceptedInvitation.group_id) {
-      await prisma.groupUser.create({
-        data: {
-          group: {
-            connect: { id: acceptedInvitation.group_id },
-          },
-          user: {
-            connect: { id: acceptedInvitation.receiver_id },
+      const alreadyInGroup = await prisma.groupUser.findUnique({
+        where: {
+          group_id_user_id: {
+            group_id: acceptedInvitation.group_id,
+            user_id: acceptedInvitation.receiver_id,
           },
         },
       });
+
+      if (!alreadyInGroup) {
+        await prisma.groupUser.create({
+          data: {
+            group: {
+              connect: { id: acceptedInvitation.group_id },
+            },
+            user: {
+              connect: { id: acceptedInvitation.receiver_id },
+            },
+          },
+        });
+      }
 
       await prisma.invitation.delete({
         where: { id },
@@ -300,9 +316,41 @@ const rejectInvitation = async (req, res, next) => {
   }
 };
 
+const getFriendsByID = async (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.userid);
+
+    if (isNaN(userId)) {
+      const error = new Error("ID invàlida!");
+      error.statusCode = 400;
+      throw error;
+    }
+    const invitations = await prisma.invitation.findMany({
+      where: {
+        status: "accepted",
+        group_id: null,
+        OR: [{ sender_id: userId }, { receiver_id: userId }],
+      },
+      include: { sender: true, receiver: true },
+    });
+
+    const friendMap = new Map();
+    invitations.forEach((inv) => {
+      const friend = inv.sender_id === userId ? inv.receiver : inv.sender;
+      friendMap.set(friend.id, friend);
+    });
+    const friends = [...friendMap.values()];
+    res.status(200).json(utils.handleBigInt(friends));
+  } catch (error) {
+    console.error("Error en Prisma:", error);
+    next(error);
+  }
+};
+
 module.exports = {
   getInvitations,
   sendInvitations,
   acceptInvitation,
   rejectInvitation,
+  getFriendsByID,
 };

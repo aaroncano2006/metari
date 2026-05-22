@@ -17,10 +17,10 @@ const seed = async () => {
         await seedGroups();
         await seedMetas();
         await seedAssignations();
-        await seedProofs();
+        // await seedProofs();
         await seedComments();
         await seedGroupsUsers();
-        await seedIndexedMetas();
+        // await seedIndexedMetas();
         
     } catch (error) {
         console.log("Error seeding database! " + error);

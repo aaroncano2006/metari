@@ -26,6 +26,7 @@ const validateMeta = async (data, isUpdating = false) => {
     return "La descripció enviada no és vàlida! Ha de ser un text.";
   }
 
+
   if (!data.author_id && !isUpdating) {
     return "La id de l'autor de la meta és obligatoria!";
   }
@@ -43,10 +44,10 @@ const validateMeta = async (data, isUpdating = false) => {
       return "La id de l'autor enviada no correspon a cap usuari registrat!";
     }
   }
-
-  if (!data.group_id && !isUpdating) {
-    return "La id del grup de la meta és obligatoria!";
-  }
+  //no sempre cal grup (admin editant una meta)
+  // if (!data.group_id && isUpdating) {
+  //   return "La id del grup de la meta és obligatoria!";
+  // }
 
   if (data.group_id) {
     if (isNaN(data.group_id)) {
@@ -62,24 +63,24 @@ const validateMeta = async (data, isUpdating = false) => {
     }
   }
 
-  if (data.author_id && data.group_id) {
-    let isAuthorInGroup = await prisma.groupUser.findUnique({
-        where: {
-            group_id_user_id: {
-                group_id: existingGroup.id,
-                user_id: existingAuthor.id
-            }
-        }
-    });
+  // if (data.author_id && data.group_id) {
+  //   let isAuthorInGroup = await prisma.groupUser.findUnique({
+  //       where: {
+  //           group_id_user_id: {
+  //               group_id: existingGroup.id,
+  //               user_id: existingAuthor.id
+  //           }
+  //       }
+  //   });
 
-    if (!isAuthorInGroup) {
-        isAuthorInGroup = existingGroup.owner_id === existingAuthor.id
+  //   if (!isAuthorInGroup) {
+  //       isAuthorInGroup = existingGroup.owner_id === existingAuthor.id
 
-        if (!isAuthorInGroup) {
-            return "L'autor de la meta no pertany al grup!";
-        }
-    }
-  }
+  //       if (!isAuthorInGroup) {
+  //           return "L'autor de la meta no pertany al grup!";
+  //       }
+  //   }
+  // }
 
   if (!data.type && !isUpdating) {
     return "El tipus de la meta és obligatori!";

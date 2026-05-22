@@ -18,12 +18,14 @@ const seedProofs = async () => {
           user_id: 1,
           proof: "Screenshot o text de la prova",
           is_valid: true,
+          proof_type: "image"
         },
         {
           assignation_id: 2,
           user_id: 1,
           proof: "Prova resposta",
           is_valid: true,
+          proof_type: "text"
         },
       ],
       skipDuplicates: true,

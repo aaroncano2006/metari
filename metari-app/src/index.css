@@ -1,37 +1,250 @@
-
 :root {
   --color-1: rgb(170, 170, 170);
   --color-2: rgb(204, 204, 204);
   --color-3: rgb(230, 230, 230);
+
   --task-color: blue;
   --challenge-color: red;
 }
-html *{
-    padding: 0;
-    margin: 0;
+
+html * {
+  padding: 0;
+  margin: 0;
+}
+.pagines{
+  position: relative;
+  /* background-image: url(../src/assets/img/doodle.jpg); */
+  
+  /* background-color: #f4f7fc; */
+  margin-top: 34px;
+}
+.pagines::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../src/assets/img/doodle.jpg);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none; /* per no bloquejar clics */
 }
 
-.navBar{
-    display: flex;
-    /* height: 40px; */
-    background-color: black;
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
-.userList{background-color: rgb(170, 170, 170);}
+
+.navBar {
+  display: flex;
+  /* height: 40px; */
+  background-color: black;
+  position: fixed;
+  width: 100%;
+  z-index: 9001;
+}
+
+.userList {
+  background-color: rgb(170, 170, 170);
+}
+
+.listEntry:hover {
+  opacity: 50%;
+}
+
+.banner {
+  position: relative;
+  height: 100px;
+}
+.banner::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../src/assets/img/stardoodle.png);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none; /* per no bloquejar clics */
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  align-items: center;
+  height: 100%;
+  background-color: black;
+  text-decoration: none;
+  vertical-align: top;
+  color: white;
+}
+
+.titolComponent{
+  display: flex;
+  align-items: center;
+   font-weight: bold;
+}
+li{
+  list-style-type: none;
+}
 
 /* METAS components */
-.metaList{ display: flex; flex-direction: column; background-color: var(--color-1); padding-bottom: 1px; border-radius: 10px 10px 20px 10px; resize: vertical; overflow: hidden;
-  min-height: 150px;
-  max-height: 400px;}
-.metaEntry { position: relative;  background-color: var(--color-3);  border: 1px solid black;  border-radius: 5px;}
-.metaEntry:hover{background-color:  var(--color-1);}
-.inline{background-color: var(--color-2); border-radius: 10px 0 0 10px; margin: 10px; padding: 0px; display: flex; flex: 1; flex-direction: column;overflow: auto}
-.metaDetailsBox{ padding: 0 10px; }
-.metaDetails{border:solid 1px black; box-sizing: border-box; border-top: 0px; background-color: var(--color-3); border-radius: 0 0 5px 5px;}
-/* colors for meta types */
-.meta-task::after{ content: ""; position: absolute; right: 0; top: 0; width: 10px; height: 100%; background: var(--task-color); border-radius: 0 4px 4px 0;}
-.meta-challenge::after{ content: ""; position: absolute; right: 0; top: 0; width: 10px; height: 100%; background: var(--challenge-color); border-radius: 0 4px 4px 0;}
-  
+.metaList {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding-bottom: 1px;
+  border-radius: 10px 10px 20px 10px;
+  border: 1px solid #edeef3;
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.05);
+  resize: vertical;
+  overflow: hidden;
+  min-height: auto;
+  max-height: 100vh;
+}
 
-.listEntry:hover{opacity: 50%;}
-.banner{height:100px;}
-.nav-btn{display: flex; flex-direction: row; padding: 5px; align-items: center; height: 100%; background-color: black; vertical-align: top; color:white; }
+.metaEntry {
+  position: relative;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.titolComponent i {
+  font-size: 20px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.metaEntry:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.inline2 {
+  background-color: var(--color-2);
+  border-radius: 10px 0 0 10px;
+  margin: 10px;
+  padding: 0px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto
+}
+.inline{
+  overflow: auto;
+}
+
+
+.inline ul {
+  list-style-type: none;
+}
+
+.metaDetailsBox {
+  padding: 0 10px;
+}
+
+.metaDetails {
+  border: solid 1px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-top: 0px;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0 0 5px 5px;
+}
+
+.searchBar{
+  box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.05);
+}
+
+/* colors for meta types */
+.meta-task::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background: var(--task-color);
+  border-radius: 0 4px 4px 0;
+}
+
+.meta-challenge::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background: var(--challenge-color);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Modal edit components */
+
+.modalOverlay {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.767);
+  padding-top: 20vh;
+  overflow-y: scroll;
+}
+
+.modalWindow {
+  background-color: var(--color-1);
+  padding: 10px;
+  border-radius: 20px;
+}
+
+/* Categories components */
+
+/* Panell admin */
+
+.createBtn {
+  height: 38px;
+}
+
+/*Login and Register*/
+.form-card {
+  background-color: var(--color-3) !important;
+}
+
+/*Profile*/
+/* #userProfilePictureFromPage{max-width: 200px; max-height: 200px;} */
+#userProfilePictureFromPage{max-width: min(100%, 296px); max-height: 296px;}
+/* .user-profile-form-row{width: 70%;} */
+.alert-profile{width: 70%;}
+.userProfileStats{max-width: min(100%, 296px); }
+
+/*buttons*/
+
+.smallButton{
+  width: 36px;
+}
+
+.profileIcon {
+  font-size: 28px;
+  color: #6c757d;
+}
+.createBtnHome{
+  background-color: #fed102 !important;
+  padding: 12px 24px !important;
+  border-radius: 15px !important;
+  /* border: 3px solid #d19f07 !important; */
+  box-shadow: 0px 0px 4px 1px #f8ac01;
+  font-weight: 700 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.createBtnHome:hover{
+  color: white !important;
+  box-shadow: 0px 0px 6px 2px rgb(255, 255, 255) !important;
+}
+

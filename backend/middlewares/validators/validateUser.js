@@ -24,9 +24,17 @@ const validateUser = async (data, id = null) => {
   if (data.username.trim() === "") {
     return "El nom d'usuari enviat està buit!";
   }
+  
+  if (!/[a-zA-Z0-9]+$/.test(data.username)) {
+    return "El nom d'usuari només pot contenir lletres i números!";
+  }
 
   if (data.username.length < 5) {
     return "El nom d'usuari ha de contenir almenys 5 caràcters!";
+  }
+
+  if (data.username.length > 20) {
+    return "El nom d'usuari ha de contenir menys de 20 caràcters!";
   }
 
   const existingUsername = await prisma.user.findUnique({
@@ -35,6 +43,22 @@ const validateUser = async (data, id = null) => {
 
   if (existingUsername && existingUsername.id !== id) {
     return "Ja existeix un usuari amb aquest nom!";
+  }
+
+  if (!data.email) {
+    return "L'email de l'usuari és obligatori!";
+  }
+
+  if (typeof data.email !== "string") {
+    return "L'email de l'usuari enviat no és vàlid! Ha de ser un text!";
+  }
+
+  if (data.email.trim() === "") {
+    return "L'email enviat està buit!";
+  }
+
+  if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._%+-]+\.[a-zA-Z]{2,}$/.test(data.email)) {
+    return "El format de l'email no és vàlid!";
   }
 
   if (!id && !data.password) {

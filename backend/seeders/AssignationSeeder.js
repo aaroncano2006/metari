@@ -3,7 +3,7 @@ const utils = require("../helpers/Utils");
 const seedAssignations = async () => {
   try {
     const assignations = await prisma.assignation.findMany();
-    const overrideDB = true;
+    const overrideDB = false;
 
     if (assignations.length > 0 && !overrideDB) {
       console.log("Existing Assignations found! Aborting database seeding!");
@@ -15,7 +15,7 @@ const seedAssignations = async () => {
         {
           group_id: 1,
           meta_id: 1,
-          user_id: null,
+          user_id: 1,
           start_date: new Date("2026-01-01"),
           due_date: new Date("2026-01-10"),
           priority: "high",
@@ -25,7 +25,7 @@ const seedAssignations = async () => {
         },   
         {
           group_id: null,
-          meta_id: 2,
+          meta_id: 3,
           user_id: 1,
           start_date: new Date("2026-01-01"),
           due_date: new Date("2026-01-10"),
@@ -33,7 +33,16 @@ const seedAssignations = async () => {
           difficulty: "normal",
           score: 500,
           completed: false,
-        },     
+        }, 
+        {
+          group_id: null,
+          meta_id: 4,
+          user_id: 1,
+          start_date: new Date("2026-05-20"),
+          due_date: new Date("2026-05-21"),
+          priority: "high",
+          difficulty: "normal",
+        },    
       ],
       skipDuplicates: true,
     });

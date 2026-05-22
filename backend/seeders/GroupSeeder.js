@@ -30,6 +30,12 @@ const seedGroups = async () => {
           owner_id: 3,
           is_public:true,
         },
+        {
+          name: "Cool Family",
+          description: "Grup de la familia guay",
+          owner_id: 7,
+          is_public:true,
+        },
       ],
       skipDuplicates: true,
     });

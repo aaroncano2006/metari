@@ -1,11 +1,18 @@
 const prisma = require("../config/prisma");
 const utils = require("../helpers/Utils");
+const jwt = require("jsonwebtoken");
+const SECRET = require("../config/auth").SECRET;
 const { validateUser } = require("../middlewares/validators/validateUser");
 
 //Get all
 const getUsuaris = async (req, res, next) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      omit: {
+        password: true,
+        restore_token: true
+      }
+    });
     res.status(200).json(utils.handleBigInt(users));
   } catch (error) {
     console.error("Error en Prisma:", error);
@@ -26,8 +33,11 @@ const getUsuariById = async (req, res, next) => {
     }
 
     const user = await prisma.user.findUnique({
-      // where: { id: id },
       where: { id },
+      omit: {
+        password: true,
+        restore_token: true
+      }
     });
 
     if (!user) {
@@ -67,6 +77,10 @@ const createUsuari = async (req, res, next) => {
         score: 0,
         restore_token: null,
       },
+      omit: {
+        password: true,
+        restore_token: true,
+      },
     });
     res.status(201).json(utils.handleBigInt(user));
   } catch (error) {
@@ -97,10 +111,12 @@ const updateUsuari = async (req, res, next) => {
       throw error;
     }
 
-    const validate = await validateUser(reqBody, id);
-    if (validate) {
-      const error = new Error(validate);
-      error.statusCode = 400;
+    const isOwner = req.user.id === id;
+    const isAdminUser = req.user.role === "admin";
+
+    if (!isOwner && !isAdminUser) {
+      const error = new Error("No tens permís per actualitzar aquest usuari");
+      error.statusCode = 403;
       throw error;
     }
 
@@ -108,32 +124,56 @@ const updateUsuari = async (req, res, next) => {
       name: reqBody.name ?? foundUser.name,
       username: reqBody.username ?? foundUser.username,
       email: reqBody.email ?? foundUser.email,
-      role: reqBody.role ?? foundUser.role,
-      restore_token: reqBody.restore_token ?? foundUser.restore_token,
-      completed_tasks:
-        reqBody.completed_tasks !== undefined
-          ? parseInt(reqBody.completed_tasks)
-          : foundUser.completed_tasks,
-      score:
-        reqBody.score !== undefined ? parseInt(reqBody.score) : foundUser.score,
     };
 
-    let isSamePass = false;
+    if (isAdminUser) {
+      if (reqBody.role) dataToUpdate.role = reqBody.role;
+      if (reqBody.completed_tasks !== undefined)
+        dataToUpdate.completed_tasks = parseInt(reqBody.completed_tasks);
+      if (reqBody.score !== undefined)
+        dataToUpdate.score = parseInt(reqBody.score);
+    }
+
     if (reqBody.password) {
-      isSamePass = await utils.compareHash(
+      const isSamePass = await utils.compareHash(
         reqBody.password,
         foundUser.password,
       );
-
       if (!isSamePass)
         dataToUpdate.password = await utils.hash(reqBody.password);
+    }
+
+    const validate = await validateUser(dataToUpdate, id);
+    if (validate) {
+      const error = new Error(validate);
+      error.statusCode = 400;
+      throw error;
     }
 
     const user = await prisma.user.update({
       where: { id },
       data: dataToUpdate,
+      select: {
+        id: true, name: true, username: true, email: true,
+        role: true, completed_tasks: true, score: true,
+      },
     });
-    res.status(200).json(utils.handleBigInt(user));
+
+    const token = jwt.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        completed_tasks: utils.handleBigInt(user.completed_tasks),
+        score: utils.handleBigInt(user.score),
+      },
+      SECRET,
+      { expiresIn: "1h" },
+    );
+
+    res.status(200).json({ user: utils.handleBigInt(user), token });
   } catch (error) {
     console.error("Error en Prisma:", error);
     next(error);

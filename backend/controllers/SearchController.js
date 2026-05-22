@@ -1,0 +1,85 @@
+const prisma = require("../config/prisma");
+const utils = require("../helpers/Utils");
+
+const search = async (req, res, next) => {
+  try {
+    const searchWord = req.query.search;
+
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            name: {
+              contains: searchWord,
+            },
+          },
+          {
+            username: {
+              contains: searchWord,
+            },
+          },
+        ],
+      },
+      omit: {
+        password: true,
+        restore_token: true,
+      },
+    });
+
+    const metas = await prisma.meta.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: searchWord,
+            },
+          },
+          {
+            description: {
+              contains: searchWord,
+            },
+          },
+        ],
+        is_public: true
+      },
+      include: {
+        category: true,
+        author: true,
+      },
+    });
+
+    const groups = await prisma.group.findMany({
+      where: {
+        OR: [
+          {
+            name: searchWord,
+          },
+          {
+            description: searchWord,
+          },
+        ],
+        is_public: true
+      },
+      include: {
+        owner: true,
+        groupUsers: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    res.status(200).json({
+        users: utils.handleBigInt(users),
+        metas: utils.handleBigInt(metas),
+        groups: utils.handleBigInt(groups)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+    search
+};

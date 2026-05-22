@@ -5,9 +5,19 @@ require("dotenv").config();
 const app = express();
 app.use(helmet());
 //avans de les rutes!! despes de helmet!!
-app.use(cors());
+
+const environment = process.env.ENVIRONMENT || "dev";
+
+app.use(
+  cors({
+    origin:
+      environment === "dev"
+        ? process.env.LOCAL_FRONTEND_URL
+        : process.env.DOCKER_FRONTEND_URL,
+  }),
+);
 app.use(express.json());
-app.set("trusty proxy", true);
+app.set("trust proxy", true);
 
 const categoryRoutes = require("./routes/CategoryRoutes");
 const userRoutes = require("./routes/UserRoutes");
@@ -17,12 +27,15 @@ const grupRoutes = require("./routes/GroupRoutes");
 const assignationRoutes = require("./routes/AssignationRoutes");
 const commentRoutes = require("./routes/CommentRoutes");
 const proofRoutes = require("./routes/ProofRoutes");
+const assignationCompletionsRoutes = require("./routes/AssignationCompletionsRoutes");
 const groupUserRoutes = require("./routes/GroupUserRoutes");
 const indexedMetaRoutes = require("./routes/IndexedMetaRoutes");
+const loginRoutes = require("./routes/auth/LoginRoutes");
+const restorePasswordRoutes = require("./routes/auth/RestorePasswordRoutes");
+const searchRoutes = require("./routes/SearchRoutes");
 const errorHandler = require("./middlewares/errors/errorHandler");
 const nodemailer = require("./config/nodemailer");
 
-const environment = process.env.ENVIRONMENT || "dev";
 const PORT =
   (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
   3001;
@@ -55,6 +68,7 @@ app.get("/api", (req, res) => {
         base: `${BASE_URL}/api/invitacions`,
         methods: {
           GET: ["/:userid/:sentorreceived/:status"],
+          GET: ["/friends/:userid"],
           POST: ["/:senderid/:receiverid", "/:senderid/:receiverid/:groupid"],
           PUT: ["/:receiverid/:id"],
           DELETE: ["/:userid/:id"],
@@ -72,7 +86,7 @@ app.get("/api", (req, res) => {
       grups: {
         base: `${BASE_URL}/api/grups`,
         methods: {
-          GET: ["/", "/:id"],
+          GET: ["/", "/:id", "/user/:userId"],
           POST: ["/"],
           PUT: ["/:id"],
           DELETE: ["/:id"],
@@ -123,6 +137,24 @@ app.get("/api", (req, res) => {
           DELETE: ["/:id"],
         },
       },
+      login: {
+        base: `${BASE_URL}/api/login`,
+        methods: {
+          POST: ["/"],
+        },
+      },
+      restore_password: {
+        base: `${BASE_URL}/api/restore-password`,
+        methods: {
+          POST: ["/forgot", "/restore"],
+        },
+      },
+      search: {
+        base: `${BASE_URL}/api/search`,
+        methods: {
+          GET: ["/"],
+        },
+      },
     },
   });
 });
@@ -157,8 +189,13 @@ app.use("/api/grups", grupRoutes);
 app.use("/api/assignacions", assignationRoutes);
 app.use("/api/comentaris", commentRoutes);
 app.use("/api/proves", proofRoutes);
+app.use("/api/assignacio-completions", assignationCompletionsRoutes);
 app.use("/api/grups-usuaris", groupUserRoutes);
 app.use("/api/indexa-metas", indexedMetaRoutes);
+app.use("/api/login", loginRoutes);
+app.use("/api/restore-password", restorePasswordRoutes);
+app.use("/api/search", searchRoutes);
+app.use("/uploads", express.static("uploads"));
 
 app.use(errorHandler);
 app.listen(PORT, () => {
