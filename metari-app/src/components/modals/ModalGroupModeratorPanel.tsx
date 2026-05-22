@@ -4,7 +4,7 @@ import {
   updateGroupUserRole,
   deleteGroupUser,
 } from "../../services/groupUserService";
-import { updateGroup } from "../../services/groupService";
+import { updateGroup, deleteGroup } from "../../services/groupService";
 import { getUserId } from "../../services/auth/loginService";
 import type { groupType } from "../../types/groupType";
 import type { groupUserType } from "../../types/groupUserType";
@@ -116,6 +116,18 @@ export default function ModalGroupModeratorPanel({
       setMenu(menu);
     } catch (err: any) {
       console.log(err);
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    if (!confirm("Estàs segur que vols eliminar el grup? Aquesta acció no es pot desfer.")) return;
+    try {
+      await deleteGroup(group.id);
+      setter((prev) => prev.filter((g) => g.id !== group.id));
+      setEditGroup(null);
+    } catch {
+      setError("Error eliminant el grup! Revisa els teus permisos.");
+      setTimeout(() => setError(null), 5000);
     }
   };
 
@@ -504,6 +516,20 @@ export default function ModalGroupModeratorPanel({
                           </button>
                         </div>
                       </form>
+                      {isOwner && (
+                        <>
+                          <hr className="my-4" />
+                          <div className="d-flex justify-content-start">
+                            <button
+                              type="button"
+                              className="btn btn-danger"
+                              onClick={handleDeleteGroup}
+                            >
+                              <i className="bi bi-trash-fill me-1"></i>Eliminar grup
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                   {menu === "users" && (
