@@ -44,7 +44,7 @@ export function MyMetaListByGroup({
     if (assignation.meta.type !== "challenge") return assignation.completed;
     return (
       assignation.assignationCompletions?.some(
-        (ac) => ac.user_id === loggedInUserId && ac.is_Completed,
+        (ac) => ac.is_Completed,
       ) ?? false
     );
   };

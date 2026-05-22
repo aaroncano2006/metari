@@ -85,8 +85,12 @@ export function ModalAddComment({ assignation, assignationSetter, commentSetter:
 
       }
       setErrors({})
+      if (!currentComment) {
+        alert("Error: no s'ha trobat el comentari a editar")
+        return
+      }
       try {
-        const updatedComment = await updateComment(currentComment!.id, validation.data)
+        const updatedComment = await updateComment(currentComment.id, validation.data)
         commentsSetter(prev => prev.map(c => c.id === updatedComment.id ? updatedComment : c))
         assignationSetter(null)
         alert("Comentari actualitzat correctament")

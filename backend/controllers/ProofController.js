@@ -76,6 +76,7 @@ const createProof = async (req, res, next) => {
     const assignation = await prisma.assignation.findUnique({
       where: { id: assignationId },
       include: {
+        meta: true,
         group: {
           include: {
             groupUsers: { where: { user_id: req.user.id } },
@@ -96,8 +97,10 @@ const createProof = async (req, res, next) => {
       (gu) => gu.role === "moderator",
     );
     const isAdmin = req.user.role === "admin";
+    const isChallenge = assignation.meta?.type === "challenge";
+    const isGroupMember = (assignation.group?.groupUsers?.length ?? 0) > 0;
 
-    if (!isAssignee && !isGroupOwner && !isGroupModerator && !isAdmin) {
+    if (!isAssignee && !isGroupOwner && !isGroupModerator && !isAdmin && !(isChallenge && isGroupMember)) {
       const error = new Error(
         "No tens permisos per crear una prova en aquesta assignació",
       );
