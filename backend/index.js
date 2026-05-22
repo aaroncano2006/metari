@@ -5,9 +5,19 @@ require("dotenv").config();
 const app = express();
 app.use(helmet());
 //avans de les rutes!! despes de helmet!!
-app.use(cors());
+
+const environment = process.env.ENVIRONMENT || "dev";
+
+app.use(
+  cors({
+    origin:
+      environment === "dev"
+        ? process.env.LOCAL_FRONTEND_URL
+        : process.env.DOCKER_FRONTEND_URL,
+  }),
+);
 app.use(express.json());
-app.set("trusty proxy", true);
+app.set("trust proxy", true);
 
 const categoryRoutes = require("./routes/CategoryRoutes");
 const userRoutes = require("./routes/UserRoutes");
@@ -26,7 +36,6 @@ const searchRoutes = require("./routes/SearchRoutes");
 const errorHandler = require("./middlewares/errors/errorHandler");
 const nodemailer = require("./config/nodemailer");
 
-const environment = process.env.ENVIRONMENT || "dev";
 const PORT =
   (environment === "dev" ? process.env.LOCAL_PORT : process.env.DOCKER_PORT) ||
   3001;
@@ -63,7 +72,6 @@ app.get("/api", (req, res) => {
           POST: ["/:senderid/:receiverid", "/:senderid/:receiverid/:groupid"],
           PUT: ["/:receiverid/:id"],
           DELETE: ["/:userid/:id"],
-
         },
       },
       metas: {
@@ -188,7 +196,6 @@ app.use("/api/login", loginRoutes);
 app.use("/api/restore-password", restorePasswordRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/uploads", express.static("uploads"));
-
 
 app.use(errorHandler);
 app.listen(PORT, () => {
