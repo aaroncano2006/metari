@@ -11,6 +11,7 @@ import {
   updateAssignation,
   createAssignationCompletion,
 } from "../services/assignationService";
+import { fetchUserById, updateUser } from "../services/userService";
 import { ModalAddProof } from "./modals/ModalAddProof";
 import type { proofType } from "../types/proofType";
 import { deleteProof } from "../services/proofService";
@@ -358,10 +359,16 @@ export function MyMetaListByGroup({
                                     <div
                                       className="btn btn-success align-self-end me-2"
                                       onClick={async () => {
-                                        await updateAssignation(
+                                        const updated = await updateAssignation(
                                           assignation.id,
                                           { completed: true },
                                         );
+                                        const user = await fetchUserById(loggedInUserId!);
+                                        const score = assignation.score ?? 0;
+                                        await updateUser(loggedInUserId!, {
+                                          completed_tasks: user.completed_tasks + 1,
+                                          score: user.score + score,
+                                        });
                                         setAssignations((prev) =>
                                           prev.map((a) =>
                                             a.id === assignation.id
@@ -443,6 +450,13 @@ export function MyMetaListByGroup({
                                             loggedInUserId!,
                                             true
                                           );
+                                        const score = assignation.score ?? 0;
+                                        if (score > 0) {
+                                          const user = await fetchUserById(loggedInUserId!);
+                                          await updateUser(loggedInUserId!, {
+                                            score: user.score + score,
+                                          });
+                                        }
                                         setAssignations((prev) =>
                                           prev.map((a) =>
                                             a.id === assignation.id

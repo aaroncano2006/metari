@@ -302,16 +302,23 @@ export default function ModalGroupModeratorPanel({
             );
           }
 
-          if (assignation.score && assignedUserId) {
+          if (assignedUserId) {
             const user = await fetchUserById(assignedUserId);
             if (user) {
-              assignation.meta.type === "challenge"
-                ? await updateUser(user.id, {
-                  score: user.score + assignation.score,
-                })
-                : await updateUser(user.id, {
-                  score: user.completed_tasks + 1,
+              if (assignation.meta.type === "challenge") {
+                const challengeScore = assignation.score ?? 0;
+                if (challengeScore > 0) {
+                  await updateUser(user.id, {
+                    score: user.score + challengeScore,
+                  });
+                }
+              } else {
+                const taskScore = assignation.score ?? 0;
+                await updateUser(user.id, {
+                  completed_tasks: user.completed_tasks + 1,
+                  ...(taskScore > 0 ? { score: user.score + taskScore } : {}),
                 });
+              }
             }
           }
           if (assignation.meta.type === "task") {
