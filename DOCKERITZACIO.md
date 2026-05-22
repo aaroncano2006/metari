@@ -22,8 +22,8 @@ Estat: ✅ = fet, 🔲 = pendent
 
 | # | Fitxer | Línia | Problema | Solució | Estat |
 |---|--------|-------|----------|---------|-------|
-| 6 | `backend/index.js` | 8 | `app.use(cors())` sense restriccions → qualsevol web pot cridar l'API | Canviar a `app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:5173", ...], credentials: true }))` | 🔲 |
-| 7 | `backend/index.js` | 10 | `app.set("trusty proxy", true)` — typo, l'opció correcta és `trust proxy` | Canviar a `app.set("trust proxy", true)` | 🔲 |
+| 6 | `backend/index.js` | 8 | `app.use(cors())` sense restriccions → qualsevol web pot cridar l'API | Canviar a `app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:5173", ...], credentials: true }))` | ✅ |
+| 7 | `backend/index.js` | 10 | `app.set("trusty proxy", true)` — typo, l'opció correcta és `trust proxy` | Canviar a `app.set("trust proxy", true)` | ✅ |
 | 8 | `backend/index.js` | 193 | `app.use("/uploads", express.static("uploads"))` exposa fitxers sense auth | Treure-ho i que nginx serveixi directament els uploads | 🔲 |
 | 9 | `backend/routes/CommentRoutes.js` | 4-10 | Auth middleware **comentat** → POST/PUT/DELETE públics | Descomentar `isAuthenticated` i `isAdmin`, afegir a les rutes | 🔲 |
 | 10 | `backend/routes/IndexedMetaRoutes.js` | 10 | DELETE només `isAuthenticated`, hauria de ser `isAdmin` | Afegir `isAdmin` al delete | 🔲 |
