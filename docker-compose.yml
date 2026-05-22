@@ -44,17 +44,6 @@ services:
     depends_on:
       - backend
 
-  phpmyadmin:
-    image: phpmyadmin:5.2.3-apache
-    container_name: metari-phpmyadmin
-    restart: always
-    depends_on:
-      - db
-    environment:
-      PMA_HOST: db
-    ports:
-      - "${PHPMYADMIN_PORT:-8089}:80"
-
   nginx:
     image: nginx:latest
     container_name: metari-nginx
