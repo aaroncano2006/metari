@@ -370,13 +370,13 @@ export default function ModalGroupModeratorPanel({
         const user = await fetchUserById(assignation.user_id);
         if (newCompleted) {
           await updateUser(assignation.user_id, {
-            completed_tasks: user.completed_tasks + 1,
-            ...(assignation.score ? { score: user.score + assignation.score } : {}),
+            completed_tasks: user?.completed_tasks! + 1,
+            ...(assignation.score ? { score: user?.score! + assignation.score } : {}),
           });
         } else {
           await updateUser(assignation.user_id, {
-            completed_tasks: user.completed_tasks - 1,
-            ...(assignation.score ? { score: user.score - assignation.score } : {}),
+            completed_tasks: user?.completed_tasks! - 1,
+            ...(assignation.score ? { score: user?.score! - assignation.score } : {}),
           });
         }
       }
