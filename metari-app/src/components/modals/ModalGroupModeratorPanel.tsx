@@ -353,6 +353,22 @@ export default function ModalGroupModeratorPanel({
       const updated = await updateAssignation(assignation.id, {
         completed: newCompleted,
       });
+
+      if (assignation.user_id) {
+        const user = await fetchUserById(assignation.user_id);
+        if (newCompleted) {
+          await updateUser(assignation.user_id, {
+            completed_tasks: user.completed_tasks + 1,
+            ...(assignation.score ? { score: user.score + assignation.score } : {}),
+          });
+        } else {
+          await updateUser(assignation.user_id, {
+            completed_tasks: user.completed_tasks - 1,
+            ...(assignation.score ? { score: user.score - assignation.score } : {}),
+          });
+        }
+      }
+
       setAssignations((prev) =>
         prev.map((a) => (a.id === assignation.id ? { ...a, ...updated } : a)),
       );
