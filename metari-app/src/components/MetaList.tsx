@@ -25,6 +25,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
   const [metaToEdit, setMetaToEdit] = useState<metaType | null>(null)
   // const [metaToAdd, setMetaToAdd] = useState<metaType | null>(null)
   const [metaToAdd, setMetaToAdd] = useState<[metaType | null, string]>([null, ""])
+  const [typeFilter, setTypeFilter] = useState<"all" | "task" | "challenge">("all");
 
   const token = localStorage.getItem("token");
   const role = getUserRole()
@@ -35,15 +36,15 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
 
   //Si alguna de les condicions es true, es guarda la meta a la variable
   const filteredMetas = metas.filter(meta =>
-    (!filteredCategory || meta.category_id === filteredCategory) &&
-    meta.is_public &&
-    (
-      !meta.indexedMetas ||
-      meta.indexedMetas.length === 0 ||
-      meta.indexedMetas.some(im => im.is_community_approved === true) 
-      // || meta.is_public
-    )
+  (!filteredCategory || meta.category_id === filteredCategory) &&
+  meta.is_public &&
+  (typeFilter === "all" || meta.type === typeFilter) &&  // ← nova línia
+  (
+    !meta.indexedMetas ||
+    meta.indexedMetas.length === 0 ||
+    meta.indexedMetas.some(im => im.is_community_approved === true)
   )
+)
 
 
   return (
@@ -53,6 +54,27 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
       <div className="metaList mt-4">
         <div className="titolComponent  text-center my-2"><i className=" text-danger me-2 bi bi-bullseye"></i>Llistat de metas</div>
         {/* <hr className="m-0" /> */}
+
+        <div className="d-flex justify-content-center gap-3 my-2">
+          <label>
+            <input type="radio" name="typeFilter" value="all"
+              checked={typeFilter === "all"}
+              onChange={() => setTypeFilter("all")}
+            /> Totes
+          </label>
+          <label>
+            <input type="radio" name="typeFilter" value="task"
+              checked={typeFilter === "task"}
+              onChange={() => setTypeFilter("task")}
+            /> Tasks
+          </label>
+          <label>
+            <input type="radio" name="typeFilter" value="challenge"
+              checked={typeFilter === "challenge"}
+              onChange={() => setTypeFilter("challenge")}
+            /> Challenges
+          </label>
+        </div>
 
         <div className="inline">
           <ul className=" ps-3  m-0 pb-2">
