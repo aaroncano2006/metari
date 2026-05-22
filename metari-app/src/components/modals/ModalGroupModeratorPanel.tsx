@@ -735,40 +735,7 @@ export default function ModalGroupModeratorPanel({
                                       </div>
                                     )}
 
-                                  <div className="d-flex gap-2 align-self-end me-2 mt-2">
-                                    <div
-                                      className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
-                                      onClick={() =>
-                                        handleToggleCompleted(assignation)
-                                      }
-                                    >
-                                      {assignation.completed
-                                        ? "Desmarcar completada"
-                                        : "Marcar completada"}
-                                    </div>
-                                    <div
-                                      className="btn btn-primary"
-                                      onClick={() => {
-                                        setShowCommentsForId((prev) =>
-                                          prev === assignation.id
-                                            ? null
-                                            : assignation.id,
-                                        );
-                                      }}
-                                    >
-                                      Mostrar comentaris
-                                    </div>
-                                    <div
-                                      className="btn btn-primary"
-                                      onClick={() => {
-                                        setAssignationToAddComment(assignation);
-                                        setCommentFormType("create");
-                                        setEditingComment(undefined);
-                                      }}
-                                    >
-                                      Nou comentari
-                                    </div>
-                                  </div>
+
 
                                   {showCommentsForId === assignation.id &&
                                     (() => {
@@ -969,6 +936,40 @@ export default function ModalGroupModeratorPanel({
                                       assignation.updated_at
                                         .split("T")[1]
                                         .split(".")[0]}
+                                  </div>
+                                  <div className="d-flex gap-2 align-self-end me-2 mt-2">
+                                    <div
+                                      className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
+                                      onClick={() =>
+                                        handleToggleCompleted(assignation)
+                                      }
+                                    >
+                                      {assignation.completed
+                                        ? "Desmarcar completada"
+                                        : "Marcar completada"}
+                                    </div>
+                                    <div
+                                      className="btn btn-primary"
+                                      onClick={() => {
+                                        setShowCommentsForId((prev) =>
+                                          prev === assignation.id
+                                            ? null
+                                            : assignation.id,
+                                        );
+                                      }}
+                                    >
+                                      Mostrar comentaris
+                                    </div>
+                                    <div
+                                      className="btn btn-primary"
+                                      onClick={() => {
+                                        setAssignationToAddComment(assignation);
+                                        setCommentFormType("create");
+                                        setEditingComment(undefined);
+                                      }}
+                                    >
+                                      Nou comentari
+                                    </div>
                                   </div>
                                 </div>
                               )}
