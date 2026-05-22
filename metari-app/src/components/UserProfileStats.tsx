@@ -7,7 +7,7 @@ export default function UserProfileStats({ completed_tasks, score }: userProfile
     return (
         <>
             <div className="metaList userProfileStats">
-                <div className="titolComponent my-2 ms-3"><i className="bi bi-bar-chart-fill text-primary"></i>Stats</div>
+                <div className="titolComponent my-2 ms-3"><i className="bi bi-bar-chart-fill text-primary"></i>Estadístiques</div>
                 {/* <hr className="m-0" /> */}
                 <div className="inline">
                     <ul>

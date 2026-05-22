@@ -275,7 +275,7 @@ export default function Profile() {
             {!userData && (
               <>
                 {/* panell amics */}
-                <div className="row mb-3">
+                <div className="row mb-4">
                   <div className="col-12 col-md-6 mb-4">
                     <div>
                       <button

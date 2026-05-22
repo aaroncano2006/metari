@@ -113,16 +113,16 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                 </div>
                 <div className=" metaDetailsBox  my-0 me-3">
                   {openEntityId === meta.id && (
-                    <div className="metaDetails ps-2 py-2">
+                    <div className="metaDetails ps-4 py-2">
                       {vistaActual !== "/" &&
                         <>
-                          <div>ID: {meta.id}</div>
+                          <div><strong>ID: </strong> {meta.id}</div>
                         </>
                       }
-                      <div>Tipus: {meta.type}</div>
-                      <div>Descripció: {meta.description}</div>
-                      <div>Categoria: {meta.category.name}</div>
-                      <div>Autor: {meta.author.username}</div>
+                      <div><strong>Tipus: </strong> {meta.type}</div>
+                      <div><strong>Descripció:</strong> {meta.description}</div>
+                      <div><strong>Categoria:</strong> {meta.category.name}</div>
+                      <div><strong>Autor:</strong> {meta.author.username}</div>
                       <div className="d-flex mt-2 justify-content-end">
                         {canAddMeta && meta.type === "task" &&
                           <>
