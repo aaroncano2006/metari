@@ -12,8 +12,23 @@ html * {
   margin: 0;
 }
 .pagines{
-  background-color: #f4f7fc;
-  margin-top: 38px;
+  position: relative;
+  /* background-image: url(../src/assets/img/doodle.jpg); */
+  
+  /* background-color: #f4f7fc; */
+  margin-top: 34px;
+}
+.pagines::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../src/assets/img/doodle.jpg);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none; /* per no bloquejar clics */
 }
 
 #root {
@@ -40,7 +55,20 @@ html * {
 }
 
 .banner {
+  position: relative;
   height: 100px;
+}
+.banner::before{
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(../src/assets/img/stardoodle.png);
+  opacity: 0.04;
+  z-index: -1;
+  pointer-events: none; /* per no bloquejar clics */
 }
 
 .nav-btn {
