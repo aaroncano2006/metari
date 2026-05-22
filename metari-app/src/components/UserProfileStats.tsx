@@ -3,21 +3,22 @@ type userProfileStats = {
     score: number
 };
 
-export default function UserProfileStats({completed_tasks, score} : userProfileStats) {
+export default function UserProfileStats({ completed_tasks, score }: userProfileStats) {
     return (
         <>
-            <div className="userProfileStats">
-                <div className="titolComponent  text-center my-2">Stats</div>
-                <hr className="m-0" />
-
-                <ul>
-                    <li className="listEntry">
-                        Tasques completades: {completed_tasks}
-                    </li>
-                    <li className="listEntry">
-                        Puntuació: {score}
-                    </li>
-                </ul>
+            <div className="metaList userProfileStats">
+                <div className="titolComponent my-2 ms-3"><i className="bi bi-bar-chart-fill text-primary"></i>Estadístiques</div>
+                {/* <hr className="m-0" /> */}
+                <div className="inline">
+                    <ul>
+                        <li className="listEntry">
+                            Tasques completades: {completed_tasks}
+                        </li>
+                        <li className="listEntry">
+                            Puntuació: {score}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </>
     );

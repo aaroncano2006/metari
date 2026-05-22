@@ -128,10 +128,10 @@ export default function AdminPanel() {
         )}
       </div>
 
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-3"></div>
-          <div className="col-6">
+      <div className="container">
+        <div className="row justify-content-center mb-5">
+          {/* <div className="col-3"></div> */}
+          <div className="col-12 col-lg-8">
             <div className="input-group my-3">
               <span className="input-group-text"><i className="bi bi-search"></i></span>
               <input
@@ -153,9 +153,7 @@ export default function AdminPanel() {
             {menuSelection === "usuaris" && <UserList users={filteredUsers} setter={setUsers} />}
             {menuSelection === "grups" && <GroupList groups={filteredGroups} setter={setGroups} />}
           </div>
-          <div className="col-3">
-          </div>
-          <div className="col-3"></div>
+          
         </div>
       </div>
     </>

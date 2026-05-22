@@ -48,18 +48,18 @@ export default function Home() {
           el.groupUsers.some((gu) => gu.user_id === getUserId()),
       );
       setMyGroups(filteredByPublic);
-    }).catch(() => {});
+    }).catch(() => { });
   };
 
   useEffect(() => {
-    fetchUsers().then(setUsers).catch(() => {});
-    fetchCategories().then(setCategories).catch(() => {});
-    fetchMetas().then(setMetas).catch(() => {});
-    fetchGroups().then(setGroups).catch(() => {});
+    fetchUsers().then(setUsers).catch(() => { });
+    fetchCategories().then(setCategories).catch(() => { });
+    fetchMetas().then(setMetas).catch(() => { });
+    fetchGroups().then(setGroups).catch(() => { });
     fetchMyGroups();
     if (token) {
-      fetchFriends(getUserId()!).then(setFriends).catch(() => {});
-      fetchAssignations().then(setAssignations).catch(() => {});
+      fetchFriends(getUserId()!).then(setFriends).catch(() => { });
+      fetchAssignations().then(setAssignations).catch(() => { });
     }
   }, []);
 
@@ -73,7 +73,7 @@ export default function Home() {
       <Helmet>
         <title>Metari · Home - Comunitats, objectius i connexions</title>
       </Helmet>
-      <div className="container-fluid bg-warning pb-4">
+      <div className="container-fluid bg-warning pb-4 pt-3">
         <h1 className="py-3  flex flex-column align-content-center text-center">
           Benvingut a Metari
         </h1>
@@ -94,38 +94,57 @@ export default function Home() {
       </div>
 
 
-      <div className="container-fluid">
-        <div className="row ">
+      <div className="container">
+        <div className="row">
 
+          <div className="col-12 col-md-6 col-xl-4 mx-auto pt-4 ">
+            <SearchBar />
+          </div>
+        </div>
+        <div className="row  g-2 gx-md-4 gx-lg-5 mb-5">
 
-          <div className="row mt-3">
-            <div className="col-12 col-md-3">
-              <CategoryList
-                categories={categories}
-                setter={setCategories}
-                filteredCategory={filteredCategory}
-                setFilteredCategory={setFilteredCategory}
-              />
-            </div>
-            <div className="col-12 pt-4 col-md">
-              <SearchBar></SearchBar>
-              <MetaList
-                metas={metas}
-                setter={setMetas}
-                filteredCategory={filteredCategory}
-                groups={myGroups}
-              />
-              {/* <MyMetaList assignations={assignations}/> */}
-            </div>
-            <div className="col-12 col-md-3">
-              <FriendList users={friends} setter={setFriends} />
-              <MyGroupsList groups={myGroups} setter={setMyGroups} />
-              <UserList users={users} setter={setUsers} isTop10={true} />
-              <GroupList groups={groups} setter={setGroups} isTop10={true} />
+          <div className="col-12 col-sm-5 col-md-4 col-xl-3">
+            <CategoryList
+              categories={categories}
+              setter={setCategories}
+              filteredCategory={filteredCategory}
+              setFilteredCategory={setFilteredCategory}
+            />
+          </div>
+
+          <div className="col-12 col-sm-7 col-md-8 col-xl-6">
+            <MetaList
+              metas={metas}
+              setter={setMetas}
+              filteredCategory={filteredCategory}
+              groups={myGroups}
+            />
+            {/* <MyMetaList assignations={assignations}/> */}
+          </div>
+          <div className="col-12 col-xl-3">
+            <div className="row g-2 gx-md-4 gx-lg-5">
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <FriendList users={friends} setter={setFriends} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <MyGroupsList groups={myGroups} setter={setMyGroups} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <UserList users={users} setter={setUsers} isTop10={true} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <GroupList groups={groups} setter={setGroups} isTop10={true} />
+              </div>
+
             </div>
           </div>
         </div>
       </div>
+
 
       {/* {groupModeratorPanel && (
         <ModalGroupModeratorPanel

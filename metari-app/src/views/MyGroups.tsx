@@ -81,11 +81,12 @@ export default function MyGroups() {
       <Helmet>
         <title>Metari · Els meus grups</title>
       </Helmet>
-      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Benvingut a Metari</h1>
-      <div className="container-fluid">
-        <div className="row mt-5">
+      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Metari</h1>
+      <div className="container">
 
-          <div className="col-12 col-md-3">
+        <div className="row mt-5 mb-5 g-2 gx-md-4 gx-lg-5" >
+
+          <div className="d-none d-md-block col-12 col-sm-5 col-md-4 col-xl-3">
             <CategoryList 
             categories={categories} 
             setter={setCategories} 
@@ -93,14 +94,31 @@ export default function MyGroups() {
             setFilteredCategory={setFilteredCategory}
             />
           </div>
-          <div className="col-12 col-md">
+          
+          <div className="col-12  col-md-8 col-xl-6">
             <MyMetaListByGroup assignations={assignations} groups={myGroups} setAssignations={setAssignations} setter={setMyGroups} />
           </div>
-          <div className="col-12 col-md-3">
-            <FriendList users={friends} setter={setFriends} />
-            <MyGroupsList groups={myGroups} setter={setMyGroups} />
-            <UserList users={users} setter={setUsers} isTop10={true}/>
-            <GroupList groups={groups} setter={setGroups} isTop10={true}/>
+
+          <div className="col-12 col-xl-3">
+            <div className="row g-2 gx-md-4 gx-lg-5">
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <FriendList users={friends} setter={setFriends} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <MyGroupsList groups={myGroups} setter={setMyGroups} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <UserList users={users} setter={setUsers} isTop10={true} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <GroupList groups={groups} setter={setGroups} isTop10={true} />
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
