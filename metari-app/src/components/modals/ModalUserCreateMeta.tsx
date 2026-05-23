@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 
-import type { assignationType } from "../../types/assignationType";
-import { commentSchema } from "../../schemas/commentSchema";
 import { getUserId } from "../../services/auth/loginService";
-import { createComment, updateComment } from "../../services/commentService";
-import type { commentType } from "../../types/commentType";
 import type { categoryType } from "../../types/categoryType";
 import type { metaType } from "../../types/metaType";
 import { createIndexedMeta } from "../../services/IndexerService";
