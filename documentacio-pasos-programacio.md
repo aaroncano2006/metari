@@ -377,3 +377,17 @@ Servei en funcionament:
 Server running on port 3001
 [nodemon] clean exit - waiting for changes before restart
 ```
+
+
+
+
+
+
+git clone
+cd metari
+copiar arxius env, editarlos
+cd backend
+copiar .env
+  env production  
+cd ..
+docker compose up --build

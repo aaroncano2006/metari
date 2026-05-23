@@ -19,9 +19,9 @@ export default function Login() {
       <Helmet>
         <title>Metari · Login</title>
       </Helmet>
-      <div className="container-fluid">
-        <div className="row mt-5 d-flex justify-content-center">
-          <div className="col-5 mb-5">
+      <div className="container">
+        <div className="row mt-5 d-flex justify-content-center mb-5">
+          <div className="col-12 col-sm-10 col-md-8 col-xl-6 color1 bg-form ">
             <LoginForm></LoginForm>
           </div>
         </div>

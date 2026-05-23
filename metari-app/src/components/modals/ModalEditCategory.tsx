@@ -26,9 +26,9 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Edita categoria</h5>
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow bg-form p-4">
+                <h5 className="tiltWarp">Edita categoria</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
@@ -65,7 +65,7 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
 
                 }}
                 >
-                  <label htmlFor="name">Nom</label>
+                  <label htmlFor="name"><strong>Nom:</strong></label>
 
                   <input className="form-control mb-2"
                     type="text" value={formData.name} id="name"
@@ -76,7 +76,7 @@ export function ModalEditCategory({ category, setEditCategory, setter }: ModalEd
                   {errors.name && (
                     <small className="text-danger d-flex mb-2">{errors.name}</small>
                   )}
-                  <label htmlFor="description">Descripcio</label>
+                  <label htmlFor="description"><strong>Descripció:</strong></label>
                   <textarea className="form-control mb-2"
                     value={formData.description} id="description"
                     onChange={(event) =>

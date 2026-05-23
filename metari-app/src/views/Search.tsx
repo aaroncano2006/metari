@@ -51,18 +51,18 @@ export default function Search() {
           el.groupUsers.some((gu) => gu.user_id === getUserId()),
       );
       setMyGroups(filteredByPublic);
-    }).catch(() => {});
+    }).catch(() => { });
   };
 
   useEffect(() => {
-    fetchUsers().then(setUsers).catch(() => {});
-    fetchCategories().then(setCategories).catch(() => {});
-    fetchGroups().then(setGroups).catch(() => {});
+    fetchUsers().then(setUsers).catch(() => { });
+    fetchCategories().then(setCategories).catch(() => { });
+    fetchGroups().then(setGroups).catch(() => { });
     fetchMyGroups();
 
     if (token) {
-      fetchFriends(getUserId()!).then(setFriends).catch(() => {});
-      fetchAssignations().then(setAssignations).catch(() => {});
+      fetchFriends(getUserId()!).then(setFriends).catch(() => { });
+      fetchAssignations().then(setAssignations).catch(() => { });
     }
 
     if (!word?.trim()) {
@@ -92,24 +92,30 @@ export default function Search() {
       <Helmet>
         <title>{`Metari · Resultats de cerca per a: "${word}"`}</title>
       </Helmet>
+      <div className="container-fluid banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">
+          Metari
+        </h1>
+        {/* <h2 className="text-center text-muted ">Completa, millora i escala posicions.</h2> */}
+      <h2 className="text-center text-muted ">{`Resultats de cerca per a: "${word}"`}</h2>
 
-      <h1 className="p-5">{`Resultats de cerca per a: "${word}"`}</h1>
+      </div>
 
-      <div className="row mb-5 d-flex justify-content-center">
+      <div className="row my-4 d-flex justify-content-center">
         <div className="col-6">
           <SearchBar></SearchBar>
         </div>
       </div>
 
       <div className="row-sm gap-3 d-flex justify-content-center">
-          <button className="btn btn-primary" onClick={() => setList("metas")}>Metas</button>
-          <button className="btn btn-primary" onClick={() => setList("users")}>Usuaris</button>
-          <button className="btn btn-primary" onClick={() => setList("groups")}>Grups</button>
+        <button className="btn createBtnWhite" onClick={() => setList("metas")}>Metas</button>
+        <button className="btn createBtnWhite" onClick={() => setList("users")}>Usuaris</button>
+        <button className="btn createBtnWhite" onClick={() => setList("groups")}>Grups</button>
       </div>
 
-      <div className="container-fluid">
-        <div className="row mt-5">
-          <div className="col-12 col-md-3">
+      <div className="container">
+        <div className="row  g-2 gx-md-4 gx-lg-5 mb-5">
+          <div className="col-12 col-sm-5 col-md-4 col-xl-3">
             <CategoryList
               categories={categories}
               setter={setCategories}
@@ -117,7 +123,7 @@ export default function Search() {
               setFilteredCategory={setFilteredCategory}
             />
           </div>
-          <div className="col-12 col-md">
+          <div className="col-12 col-sm-7 col-md-8 col-xl-6">
             {list === "metas" && (
               <MetaList
                 metas={foundMetas}
@@ -134,11 +140,27 @@ export default function Search() {
             )}
             {/* <MyMetaList assignations={assignations}/> */}
           </div>
-          <div className="col-12 col-md-3">
-            <FriendList users={friends} setter={setFriends} />
-            <MyGroupsList groups={myGroups} setter={setMyGroups} />
-            <UserList users={users} setter={setUsers} isTop10={true}/>
-            <GroupList groups={groups} setter={setGroups} isTop10={true}/>
+          
+          <div className="col-12 col-xl-3">
+            <div className="row g-2 gx-md-4 gx-lg-5">
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <FriendList users={friends} setter={setFriends} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <MyGroupsList groups={myGroups} setter={setMyGroups} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <UserList users={users} setter={setUsers} isTop10={true} />
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-12">
+                <GroupList groups={groups} setter={setGroups} isTop10={true} />
+              </div>
+
+            </div>
           </div>
         </div>
       </div>

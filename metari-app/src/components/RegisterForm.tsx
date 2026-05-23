@@ -63,23 +63,30 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="card form-card text-center p-5 mb-5">
-      <figure>
+    <div className="  text-center p-5 mb-5">
+      {/* <figure>
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png"
           className="img-thumbnail"
           alt="img-thumbnail"
         />
-      </figure>
+      </figure> */}
 
-      <header className="mt-2">
-        <h1>Metari</h1>
-        <h3 className="text-muted">
-          Descobreix la nova forma d'aconseguir les teves metes!
-        </h3>
+      <header className="container mt-2">
+        <div className="row d-flex flex-column tiltWarp">
+          <div className="col text-center mb-3 ">
+            <h1 className="titol">Metari</h1>
+          </div>
+
+          <div className="col text-center">
+            <h3 className="text-muted mx-auto ">
+              Descobreix la nova forma d'aconseguir les teves metes!
+            </h3>
+          </div>
+        </div>
       </header>
 
-      <div className="mt-4">
+      <div className="mt-2">
         {error && <div className="alert alert-danger">{error}</div>}
 
         <form
@@ -89,7 +96,7 @@ export default function RegisterForm() {
           }}
         >
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="name">
+            <label className="form-label text-start fw-bold" htmlFor="name">
               Nom <span className="text-danger">*</span>
             </label>
 
@@ -112,7 +119,7 @@ export default function RegisterForm() {
           </div>
 
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="username">
+            <label className="form-label text-start fw-bold" htmlFor="username">
               Username <span className="text-danger">*</span>
             </label>
 
@@ -137,7 +144,7 @@ export default function RegisterForm() {
           </div>
 
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="email">
+            <label className="form-label text-start fw-bold" htmlFor="email">
               Email <span className="text-danger">*</span>
             </label>
 
@@ -162,7 +169,7 @@ export default function RegisterForm() {
           </div>
 
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="password">
+            <label className="form-label text-start fw-bold" htmlFor="password">
               Contrasenya <span className="text-danger">*</span>
             </label>
 
@@ -187,7 +194,7 @@ export default function RegisterForm() {
           </div>
 
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="repeat_password">
+            <label className="form-label text-start fw-bold" htmlFor="repeat_password">
               Repeteix la contrasenya <span className="text-danger">*</span>
             </label>
 
@@ -211,8 +218,9 @@ export default function RegisterForm() {
             )}
           </div>
 
-          <div className="row mb-2 text-start">
-            <div className="col-1">
+          <div className="d-flex align-items-center justify-content-between w-100 mb-2">
+
+            <div className="form-check m-0">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -225,23 +233,25 @@ export default function RegisterForm() {
                   })
                 }
               />
+
+            <label className="form-check-label ms-2" htmlFor="remember">
+              Recordar credencials
+            </label>
             </div>
 
-            <div className="col-5">
-              <label className="form-check-label" htmlFor="remember">
-                Recordar credencials
-              </label>
-            </div>
+            <button type="submit" className="btn btn-dark">
+              Registra't
+            </button>
+
           </div>
+
 
           <div className="d-flex justify-content-end gap-5 mt-3">
             <Link to="/login" className="text-start">
               Tens un compte? Inicia sessió
             </Link>
 
-            <button type="submit" className="btn btn-dark">
-              Registra't
-            </button>
+
           </div>
         </form>
       </div>

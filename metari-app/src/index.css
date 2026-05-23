@@ -1,24 +1,46 @@
+@font-face {
+  font-family: 'tiltWarp';
+  src: url('./assets/fonts/Tilt_Warp/TiltWarp-Regular-VariableFont.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.tiltWarp {
+  font-family: "tiltWarp", sans-serif;
+}
+
+
 :root {
-  --color-1: rgb(170, 170, 170);
-  --color-2: rgb(204, 204, 204);
-  --color-3: rgb(230, 230, 230);
+  --color-1: #ffbf00;
+  --color-2: white;
+  --color-3: #0d6efd;
 
   --task-color: blue;
   --challenge-color: red;
 }
 
+.color1 {
+  background-color: var(--color-1) !important;
+}
+
+
+
+
 html * {
   padding: 0;
   margin: 0;
 }
-.pagines{
+
+h2 {
+  font-family: "tiltWarp", sans-serif;
+}
+
+.pagines {
   position: relative;
-  /* background-image: url(../src/assets/img/doodle.jpg); */
-  
-  /* background-color: #f4f7fc; */
   margin-top: 34px;
 }
-.pagines::before{
+
+.pagines::before {
   content: "";
   position: absolute;
   top: 0;
@@ -28,13 +50,20 @@ html * {
   background-image: url(../src/assets/img/doodle.jpg);
   opacity: 0.04;
   z-index: -1;
-  pointer-events: none; /* per no bloquejar clics */
+  pointer-events: none;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+
+.titol {
+  font-family: "tiltWarp", sans-serif;
+  font-size: 3rem;
+
 }
 
 .navBar {
@@ -46,6 +75,7 @@ html * {
   z-index: 9001;
 }
 
+
 .userList {
   background-color: rgb(170, 170, 170);
 }
@@ -55,21 +85,28 @@ html * {
 }
 
 .banner {
+  background-color: var(--color-1);
   position: relative;
-  height: 100px;
+  height: 190px;
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2);
+
 }
-.banner::before{
-  content: "";
+
+.banner::before {
   position: absolute;
+  background-image: url(./assets/img/stardoodle.png);
+  content: "";
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url(../src/assets/img/stardoodle.png);
-  opacity: 0.04;
-  z-index: -1;
-  pointer-events: none; /* per no bloquejar clics */
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 1;
+  animation: estrelles 30s infinite linear;
+
 }
+
 
 .nav-btn {
   display: flex;
@@ -85,12 +122,13 @@ html * {
   color: white;
 }
 
-.titolComponent{
+.titolComponent {
   display: flex;
   align-items: center;
-   font-weight: bold;
+  font-weight: bold;
 }
-li{
+
+li {
   list-style-type: none;
 }
 
@@ -119,7 +157,7 @@ li{
 
 .titolComponent i {
   font-size: 20px;
-  margin-right: 20px;
+  margin-right: 8px;
   margin-left: 20px;
 }
 
@@ -137,7 +175,8 @@ li{
   flex-direction: column;
   overflow: auto
 }
-.inline{
+
+.inline {
   overflow: auto;
 }
 
@@ -158,7 +197,7 @@ li{
   border-radius: 0 0 5px 5px;
 }
 
-.searchBar{
+.searchBar {
   box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.05);
 }
 
@@ -201,15 +240,14 @@ li{
   background-color: var(--color-1);
   padding: 10px;
   border-radius: 20px;
+  text-align: left;
 }
 
 /* Categories components */
 
 /* Panell admin */
 
-.createBtn {
-  height: 38px;
-}
+
 
 /*Login and Register*/
 .form-card {
@@ -218,14 +256,48 @@ li{
 
 /*Profile*/
 /* #userProfilePictureFromPage{max-width: 200px; max-height: 200px;} */
-#userProfilePictureFromPage{max-width: min(100%, 296px); max-height: 296px;}
+#userProfilePictureFromPage {
+  max-width: min(100%, 296px);
+  max-height: 296px;
+}
+
 /* .user-profile-form-row{width: 70%;} */
-.alert-profile{width: 70%;}
-.userProfileStats{max-width: min(100%, 296px); }
+.alert-profile {
+  width: 70%;
+}
+
+.userProfileStats {
+  max-width: min(100%, 296px);
+}
 
 /*buttons*/
+/* UserCreateMetaBtn{background-color: red !important;} */
 
-.smallButton{
+.createBtn {
+  height: 38px;
+
+}
+
+.createBtnYellow {
+  background-color: var(--color-1) !important;
+  padding: 6px 24px !important;
+  border-radius: 15px !important;
+  border: 2px solid #d19f07 !important;
+  box-shadow: 0px 0px 2px 0px #f8ac01 !important;
+  font-weight: 700 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+  z-index: 10;
+}
+
+.createBtnYellow:hover {
+  color: black !important;
+  border: 2px solid #d19f07 !important;
+  box-shadow: 0px 0px 8px 0px #f8ac01 !important;
+
+}
+
+.smallButton {
   width: 36px;
 }
 
@@ -233,8 +305,9 @@ li{
   font-size: 28px;
   color: #6c757d;
 }
-.createBtnHome{
-  background-color: #fed102 !important;
+
+.createBtnHome {
+  background-color: var(--color-1) !important;
   padding: 12px 24px !important;
   border-radius: 15px !important;
   /* border: 3px solid #d19f07 !important; */
@@ -242,9 +315,108 @@ li{
   font-weight: 700 !important;
   margin-left: 10px;
   margin-right: 10px;
+  z-index: 10;
 }
-.createBtnHome:hover{
+
+.createBtnHome:hover {
   color: white !important;
   box-shadow: 0px 0px 6px 2px rgb(255, 255, 255) !important;
 }
 
+.createBtnWhite {
+  background-color: var(--color-2) !important;
+  padding: 6px 24px !important;
+  border-radius: 15px !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.2) !important;
+  font-weight: 700 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+  z-index: 10;
+}
+
+.createBtnWhite:hover {
+  color: black !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.1) !important;
+
+}
+
+.autoassignBtn{
+  padding: 6px 6px !important;
+  background-color: var(--color-1) !important;
+}
+
+.assignBtn{
+  padding: 6px 6px !important;
+  background-color: var(--color-1) !important;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+
+.assignBtn:hover, .autoassignBtn:hover{
+  padding: 6px 6px !important;
+  background-color: var(--color-1) !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+}
+
+.yellowBtn{
+  background-color: var(--color-1) !important;
+}
+.yellowBtn:hover{
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+  
+}
+.blueBtn{
+  background-color: var(--color-3) !important;
+  color: white !important;
+}
+.blueBtn:hover{
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+  
+}
+
+.greenBtn{
+  background-color: #198754 !important;
+  color: white !important;
+}
+.greenBtn:hover{
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+  
+}
+
+
+
+/* modals - forms */
+
+.bg-form {
+  position: relative;
+  border-radius: 25px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.13);
+  /* background-image: url(./assets/img/stardoodle.png); */
+  z-index: 2;
+}
+
+.bg-form::before {
+  content: "";
+  position: absolute;
+  background-image: url(./assets/img/stardoodle.png);
+  background-repeat: repeat;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: -1;
+  /* animation: estrelles 10s infinite ; */
+  animation: estrelles 30s infinite linear;
+}
+
+
+/* animacions */
+
+@keyframes estrelles {
+  0% { background-position: 0 0; }
+  100% { background-position: 733px -800px; }
+}

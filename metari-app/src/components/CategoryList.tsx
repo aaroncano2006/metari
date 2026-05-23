@@ -37,7 +37,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
 
     <>
       <div className="metaList mt-4">
-        <div className="titolComponent my-2 "><i className="bi bi-grid-fill text-primary"></i>Llista de Categories</div>
+        <div className="titolComponent my-2"><i className="bi bi-grid-fill text-primary"></i>Llista de Categories</div>
         {/* <hr className="m-0" /> */}
 
         <div className="inline">
@@ -63,15 +63,16 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
                       />
                     }
                     {canEdit &&
-                      <button className="  btn btn-warning p-1  me-2  ms-auto"
+                      <button className=" smallButton btn btn-warning p-1  me-2  ms-auto"
+                      title="Editar"
                         onClick={(event) => {
                           event.stopPropagation()
                           //indica quina categoria estem editant, si hi ha una, obra el modal.
                           setCategoryToEdit(category)
-                        }}>Edita</button>
+                        }}><i className="bi bi-pencil "></i></button>
                     }
                     {canEdit &&
-                      <button className="  btn btn-danger p-1   "
+                      <button className=" smallButton btn btn-danger p-1   "
                       title="Eliminar"
                         onClick={async (event) => {
                           event.stopPropagation()

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 
-import { updateUser } from "../../services/userService"
 import type { groupType } from "../../types/groupType"
 import { updateGroup } from "../../services/groupService"
 // import { fetchUsers } from "../../services/userService"
@@ -52,9 +51,9 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Edita el Grup</h5>
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow bg-form p-4">
+                <h5 className="tiltWarp">Edita el Grup</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
@@ -93,7 +92,7 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
 
                 }}
                 >
-                  <label htmlFor="name">Nom</label>
+                  <label htmlFor="name"><strong>Nom:</strong></label>
                   <input className="form-control mb-2"
                     type="text" value={formData.name} id="name"
                     onChange={(event) =>
@@ -104,7 +103,7 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                     <small className="text-danger d-flex mb-2">{errors.name}</small>
                   )}
 
-                  <label htmlFor="description">Descripcio</label>
+                  <label htmlFor="description"><strong>Descripció:</strong></label>
                   <textarea className="form-control mb-2"
                     value={formData.description} id="description"
                     onChange={(event) =>
@@ -115,7 +114,7 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                     <small className="text-danger d-flex mb-2">{errors.description}</small>
                   )}
 
-                  <label htmlFor="owner">Autor del grup</label>
+                  <label htmlFor="owner"><strong>Autor del grup:</strong></label>
                   <select
                     className="form-select mb-2"
                     value={formData.owner_id}
@@ -133,13 +132,16 @@ export function ModalEditGroup({ group, setEditGroup, setter }: ModalEditProps) 
                     ))}
                   </select>
 
-                  <label htmlFor="is_public">El grup es public?</label>
-                  <input className=" form-check mb-2"
+                    <div className="d-flex">
+
+                  <label htmlFor="is_public"><strong>El grup es públic?</strong></label>
+                  <input className=" form-check mb-2 ms-3"
                     type="checkbox" id="is_public" checked={formData.is_public}
                     onChange={(event) =>
                       setFormData({ ...formData, is_public: event.target.checked })
                     }
-                  />
+                    />
+                    </div>
 
                   <div className="d-flex justify-content-end gap-2">
                     <button className="btn btn-secondary"

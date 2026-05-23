@@ -71,21 +71,28 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="card form-card text-center p-5">
-      <figure>
+    <div className="text-center p-5">
+      {/* <figure>
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png"
           className="img-thumbnail"
           alt="img-thumbnail"
         />
-      </figure>
+      </figure> */}
 
-      <header className="mt-2">
-        <h1>Metari</h1>
-        <h3 className="text-muted">
-          Torna a lluitar per tot el que vols aconseguir
-        </h3>
+      <header className="container mt-2">
+        <div className="row d-flex flex-column tiltWarp">
+          <div className="col text-center mb-3 ">
+            <h1 className="titol">Metari</h1>
+          </div>
+          <div className="col text-center">
+            <h3 className="text-muted mx-auto ">
+              Torna a lluitar per tot el que vols aconseguir
+            </h3>
+          </div>
+        </div>
       </header>
+
 
       <div className="mt-4">
         {error && <div className="alert alert-danger">{error}</div>}
@@ -118,7 +125,7 @@ export default function LoginForm() {
               }
             />
             {errors.email_or_username && (
-                <small className="text-danger d-flex mb-2">{errors.email_or_username}</small>
+              <small className="text-danger d-flex mb-2">{errors.email_or_username}</small>
             )}
           </div>
 
@@ -151,8 +158,9 @@ export default function LoginForm() {
             </Link>
           </div>
 
-          <div className="row mb-2 text-start">
-            <div className="col-1">
+          <div className="d-flex align-items-center justify-content-between w-100 mb-2 ">
+
+            <div className="form-check m-0">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -166,23 +174,23 @@ export default function LoginForm() {
                   })
                 }
               />
-            </div>
 
-            <div className="col-5">
               <label className="form-check-label" htmlFor="remember">
                 Recordar credencials
               </label>
             </div>
-          </div>
-
-          <div className="d-flex justify-content-end gap-5 mt-3">
-            <Link to="/register" className="text-start">
-                No tens compte? Registra't
-            </Link>
 
             <button type="submit" className="btn btn-dark">
               Inicia sessió
             </button>
+          </div>
+
+          <div className="d-flex justify-content-center mt-3">
+            <Link to="/register" className="text-start">
+              No tens compte? Registra't
+            </Link>
+
+
           </div>
         </form>
       </div>
