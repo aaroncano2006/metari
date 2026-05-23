@@ -50,7 +50,9 @@ Per a l'elaboració d'aquest manual utilitzarem com a màquina de mostra un **Ub
     sudo usermod -aG docker $USER
     ```
 
-## Servei de correu i generació de app password
+## Servei de correu i generació de app password (Opcional)
+
+> **Nota:** El sistema de notificacions per correu és **opcional**. L'aplicació funciona sense aquesta configuració; només cal fer aquest pas si es volen rebre notificacions per correu electrònic.
 
 Metari compta amb un sistema bàsic de notificacions via correu electrònic, per a que funcioni necessitem un correu electrònic ja existent (preferiblement de **Gmail**) i generar una app password.
 
@@ -134,11 +136,11 @@ Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens intere
 
 - `DOCKER_FRONTEND_URL_WITH_HOST`: URL del frontend amb host per a producció. Serveix per a que els correus enviin enllaços del frontend hostejats al servidor en comptes d'enllaços directes al propi host, ja que trencaria tota l'utilitat de les notificacions per correu electrònic. Valor per defecte: http://ip (canvia IP per la teva IP del servidor o nom de domini).
 
-- `TRANSPORTER_SERVICE`: Servidor de correu que utilitzarà el servei de correu electrònic. Per defecte està buit, però es recomana utilitzar `gmail` com a valor.
+- `TRANSPORTER_SERVICE`: (Opcional) Servidor de correu que utilitzarà el servei de correu electrònic. Per defecte està buit (notificacions desactivades), però si es vol utilitzar, es recomana `gmail`.
 
-- `TRANSPORTER_USER`: Correu electrònic amb el qual has creat l'app password abans.
+- `TRANSPORTER_USER`: (Opcional) Correu electrònic amb el qual has creat l'app password abans.
 
-- `TRANSPORTER_APP_PASS`: App password generada anteriorment.
+- `TRANSPORTER_APP_PASS`: (Opcional) App password generada anteriorment.
 
 - `SECRET`: **(OBLIGATORI)** Contrasenya segura per firmar els tokens d'autenticació i de restauració de contrasenya. No té valor per defecte; n'has d'introduir una.
 
