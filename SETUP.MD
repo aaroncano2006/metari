@@ -1,277 +1,212 @@
 # Metari - Guia de desplegament
 
+En aquesta guia veurem com instal·lar i posar en producció Metari dins d'un servidor.
+
+Per a l'elaboració d'aquest manual utilitzarem com a màquina de mostra un **Ubuntu Server 24.04 LTS**, per tant, les comandes utilitzades i redactades en aquest manual estaran orientades a la màquina que utilitzarem com a mostra.
+
 ## Requisits previs
 
-### 0.1 dependencies pel desplegament
-- **Docker** (versió 20.10 o superior)
-- **Docker Compose** (versió 2.0 o superior)
+- [**Git**](https://git-scm.com/install/)
+    - Consulta la teva versió (normalment ve instal·lat en la majoria de distribucions):
 
-Per verificar que tens Docker instal·lat:
+    ```bash
+    git --version
+    ```
+    - Instal·lació:
+
+    ```bash
+    sudo apt install git
+    ```
+
+- [**Curl**](https://curl.se/docs/install.html)
+    - Consulta la teva versió:
+
+    ```bash
+    curl --version
+    ```
+
+    - Instal·lació:
+
+    ```bash
+    sudo apt install curl
+    ```
+
+- [**Docker**](https://docs.docker.com/engine/install/)
+    - Consulta la teva versió:
+
+    ```bash
+    docker --version
+    ```
+
+    - Instal·lació:
+
+    ```bash
+    curl -fsSL https://get.docker.com | sh
+    ```
+
+    - Utilitza Docker sense sudo (és més segur):
+
+    ```bash
+    sudo usermod -aG docker $USER
+    ```
+
+## Servei de correu i generació de app password
+
+Metari compta amb un sistema bàsic de notificacions via correu electrònic, per a que funcioni necessitem un correu electrònic ja existent (preferiblement de **Gmail**) i generar una app password.
+
+Per fer-ho hem d'anar al [**següent enllaç**](https://myaccount.google.com/apppasswords?rapt=AEjHL4OM_w63PzMhNjp0Pwp6UnGBYtCZE7sdark4n6IMARfu6DfpQRjLNp6fq5gk-DGlMPPRq7-eQojM67Vz1SoO0h-WE8krcHLB7kvGyhZnaSzhiCzSaqw) des del correu electrònic que vulguem utilitzar.
+
+Una vegada estiguem dins de la pàgina podrem generar la nostra app password amb només un nom d'aplicació:
+
+![alt text](img/setup/01.png)
+
+Generarà una clau similar a aquesta (la clau mostrada no funciona, només ha sigut creada per aquesta demostració):
+
+![alt text](img/setup/02.png)
+
+Desa-la, ja que en la instal·lació serà generada.
+
+Si tens problemes creant l'app password, assegura't de que el compte de Google que vols utilitzar té la **verificació en 2 passos activa** o que **l'administrador del teu Workspace no tingui les app passwords deshabilitades**.
+
+## Instal·lació, configuració i posada en producció.
+
+Després d'haver instal·lat els requisits previs i haver generat l'app password, anem al nostre servidor de producció i clonem el repositori:
+
 ```bash
-docker --version
-docker compose --version
+git clone https://github.com/aaroncano2006/metari/commits/main/
 ```
 
-### 0.2 Projecte a desplegar (Ignorar si es proporciona el projecte per altres metodes)
+O amb clau SSH:
 
-Situar-nos a la ruta on volem copiar el projecte.
+```bash
+git clone git@github.com:aaroncano2006/metari.git
+```
 
-Copiar el projecte del repositori:
- ```bash
- git clone git@github.com:aaroncano2006/metari.git
- ```
-
----
-
-## 1. Configuració inicial
-
-Situar-nos dins del projecte:
+Ens situem en el directori del projecte:
 
 ```bash
 cd metari
 ```
 
-### Crear els fitxer `.env`
+Copiem el fitxer `.env.example` i emplenem les variables d'entorn:
 
-El projecte necessita dos fitxers `.env` que contenen les variables d'entorn.
-Es necessari fer una copia dels arxius d'exemple `.env.default`, tant al directory backend com a l'arrel del projecte.
-
-### 1.1. Configurar les variables d'entorn del backend
-
-Edita el fitxer `.env` de la carpeta backend i assigna els valors corresponents.
-
-Ens situem a la carpeta backend:  
-```bash
-cd backend
-```
-Copiem l'arxiu d'exemple i el renombrem a `.env`.  
 ```bash
 cp .env.example .env
-```
-Editem l'arxiu:  
-```bash
 nano .env
 ```
 
-**Variables:**
+Exemple:
 
-| Variable | Descripció | Exemple |
-|----------|------------|---------|
-| `DOCKER_PORT` | Port que utilitzara prisma (no cal canviar) | `3001` |  
-| `DOCKER_DATABASE_URL` | Credencials per prisma, conexio a la bbdd | `mysql://root:root_password@db:3306/nom_de_la_teva_database"` |  
-| `DOCKER_ADAPTER_HOST` | Nom del servei de la bbdd (No cal canviar) | `bd` |  
-| `DOCKER_ADAPTER_PORT` | Port per phpMyAdmin (opcional) | `8089` |  
-| `DOCKER_ADAPTER_USER` | Usuari de la base de dades | `root` |  
-| `DOCKER_ADAPTER_PASSWORD` | Contrasenya de root per MariaDB | `Canvi@2024` |  
-| `DOCKER_ADAPTER_DATABASE` | Nom de la base de dades | `metari_db` |  
+```env
+MYSQL_ROOT_PASSWORD=root
+MYSQL_DATABASE=metari_db
+```
 
+Ens situem al directori del backend i fem el mateix amb el fitxer `.env.example` que trobem:
 
-### 1.2 Configurar les variables d'entorn de l'arrel del projecte
+```bash
+cd backend
+cp .env.example .env
+nano .env
+```
 
-Edita el fitxer `.env` de l'arrel del projecte "metari/"  i assigna valors:
+Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens interessen per al desplegament de l'aplicació són les següents:
 
-Ens situem a l'arrel del projecte: 
+- `ENVIRONTMENT`: Determina en quin entorn s'executa l'aplicació (`dev` o `production`). Valor per defecte: `production` (el mantenim tal qual).
+
+- `DOCKER_PORT`: Determina en quin port escoltarà el backend. Valor per defecte: 3001 (el mantenim tal qual).
+
+- `DOCKER_DATABASE_URL`: Enllaç a la base de dades amb la qual es conectarà l'ORM del backend (Prisma). Valor per defecte: `mysql://root:root_password@db:3306/nom_de_la_teva_database`. Canvia `root_password` i `nom_de_la_teva_database` pels valors especificats al `.env` de l'arrel del projecte i comprova que `db` i `3306` són els mateixos valors que els de les variables `DOCKER_ADAPTER_HOST` i `DOCKER_ADAPTER_PORT`.
+
+- `DOCKER_ADAPTER_HOST`: Host on s'ubica la base de dades. Valor per defecte: `db`. S'ha de mantenir ja que aquest és el nom del servei que conté la nostra base de dades al Docker Compose.
+
+- `DOCKER_ADAPATER_PORT`: Port del host que conté la base de dades. Valor per defecte: 3306 (el mantenim tal qual).
+
+- `DOCKER_ADAPATER_USER`: Usuari amb privilegis de la base de dades. Valor per defecte: root (el mantenim tal qual).
+
+- `DOCKER_ADAPTER_PASSWORD`: Contrasenya de l'usuari amb privilegis de la base de dades. Valor per defecte: root_password (canvia-la pel valor especificat a la variable d'entorn de l'arrel `MYSQL_ROOT_PASSWORD`).
+
+- `DOCKER_ADAPTER_DATABASE`: Base de dades utilitzada. Valor per defecte: nom_de_la_teva_database (canvia'l pel valor especificat a la variable d'entorn de l'arrel `MYSQL_DATABASE`)
+
+- `DOCKER_FRONTEND_URL`: URL del frontend per a producció. Serveix per restringir l'origen de les peticions i que només el frontend pugui fer peticions al backend. Valor per defecte: http://localhost (mantenir com està, és necessari per a que Docker ho entengui).
+
+- `DOCKER_FRONTEND_URL_WITH_HOST`: URL del frontend amb host per a producció. Serveix per a que els correus enviin enllaços del frontend hostejats al servidor en comptes d'enllaços directes al propi host, ja que trencaria tota l'utilitat de les notificacions per correu electrònic. Valor per defecte: http://ip (canvia IP per la teva IP del servidor o nom de domini).
+
+- `TRANSPORTER_SERVICE`: Servidor de correu que utilitzarà el servei de correu electrònic. Per defecte està buit, però es recomana utilitzar `gmail` com a valor.
+
+- `TRANSPORTER_USER`: Correu electrònic amb el qual has creat l'app password abans.
+
+- `TRANSPORTE_APP_PASS`: App password generada anteriorment.
+
+- `SECRET`: Contrasenya segura per firmar els tokens d'autenticació i de restuaració de contrasenya.
+
+Les variable d'entorn per localhost no són necessàries emplenar-les, aquestes només serveixen per desenvolupament.
+
+Exemple de .env final:
+
+```env
+# dev || production
+ENVIRONMENT="production"
+
+# === ENV VARIABLES FOR DOCKER ===
+# Pots deixar-ho buit si només utilitzaràs localhost
+
+# index.js & prisma.config.ts
+DOCKER_PORT=3001
+DOCKER_DATABASE_URL="mysql://root:root@db:3306/metari_db"
+
+# ./config/prisma.js
+DOCKER_ADAPTER_HOST=db
+DOCKER_ADAPTER_PORT=3306
+DOCKER_ADAPTER_USER=root
+DOCKER_ADAPTER_PASSWORD=root
+DOCKER_ADAPTER_DATABASE=metari_db
+
+# URL del frontend per producció.
+DOCKER_FRONTEND_URL="http://localhost"
+
+# URL del frontend amb host per els enllaços dels correus
+DOCKER_FRONTEND_URL_WITH_HOST="http://192.168.1.137"
+
+# === NODEMAILER CONFIG ===
+# La configuració de nodemailer funciona igual tant en desencvolupament local com en Docker
+
+# ./config/nodemailer.js
+TRANSPORTER_SERVICE="gmail"
+TRANSPORTER_USER="example@gmail.com"
+TRANSPORTER_APP_PASS="sixu tqca pepv wman"
+
+# === JSONWEBTOKEN CONFING ===
+# Introduïr clau secreta segura en l'aplicació per firmar els tokens generats.
+# És una configuració important i obligatòria per fer funcionar el sistema de login.
+
+# ./config/auth.js
+SECRET=sghihiushgiu273hf872tr2*237ry2723f8r7y7243t7y28
+```
+
+Tornem a l'arrel del projecte.
+
 ```bash
 cd ..
 ```
-Copiem l'arxiu d'exemple i el renombrem a `.env`.  
-```bash
-cp .env.example .env
-```
-Editem l'arxiu:  
-```bash
-nano .env
-```
 
-| Variable | Descripció | Exemple |
-|----------|------------|---------|
-| `MYSQL_ROOT_PASSWORD` | Password Root | `root` |
-| `MYSQL_DATABASE` | Nom de la base de dades | `metari_db` |
-| `PHPMYADMIN_PORT` | Port per accedir al php my admin | `8089` |
-
-
- ### 1.3 Important!
- Hi ha una carpeta anomenada `db` que tambe conte un arxiu `.env.exemple`.   
- IGNORAR-LA.  
- Nomes s'utilitza en el process de desenvolupament de l'aplicació.
-
-
----
-
-## 2. Desplegament
-
-### 2.1. Construir i iniciar els contenidors
-
-A directori arrel del projecte:
+Aixequem Docker Compose:
 
 ```bash
 docker compose up --build -d
 ```
 
-Aquesta comanda fa:
-- Construeix les imatges del backend i frontend
-- Crea els contenidors de MariaDB, Backend, Frontend, nginx i phpMyAdmin
-- Inicia la base de dades i executa les migracions automàticament
+Aquesta comanda:
 
-### 2.2. Verificar que els serveis estan aixecats:
+- Descarrega i munta les imatges Docker que utilitzaran cada un dels serveis.
 
-```bash
-docker compose ps
-```
+- Configura la base de dades.
 
-Tots els serveis haurien d'estar en estat **Up**:
+- Executa migracions i seeders i aixeca el backend en un servidor Node.
 
-```
-CONTAINER ID   IMAGE                     COMMAND                  CREATED         STATUS        PORTS                                     NAMES
-fe07d875b1d2   nginx:latest              "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes  0.0.0.0:80->80/tcp, [::]:80->80/tcp       metari-nginx
-517e78bee10b   metari-frontend           "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes  80/tcp                                    metari-frontend
-7134c5a6d978   phpmyadmin:5.2.3-apache   "/docker-entrypoint.…"   2 minutes ago   Up 2 minutes  0.0.0.0:8089->80/tcp, [::]:8089->80/tcp   metari-phpmyadmin
-98d0aa818079   metari-backend            "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes  3001/tcp                                  metari-backend
-080671264dc5   mariadb:11                "docker-entrypoint.s…"   2 minutes ago   Up 2 minutes  3306/tcp                                  metari-mariadb
-```
+- Monta el frontend en un Nginx.
 
----
+- Monta l'Nginx que fa de reverse proxy i genera certificats SSL per poder accedir amb HTTPS
 
-## 3. Accés als serveis
+Una vegada estigui tot aixect i funcional accedim a la IP o domini on tinguem Metari desplegat i ja podrem començar a utilitzar l'aplicació:
 
-Un cop desplegat, pots accedir a:
-
-| Servei | URL | Descripció |
-|--------|-----|------------|
-| **Frontend** | `http://localhost` | Aplicació web |
-| **Backend API** | `http://localhost/api` | API REST |
-| **phpMyAdmin** | `http://localhost:8089` | Administració de la base de dades |
-
-### 3.1. Credencials per defecte (phpMyAdmin)
-
-| Camp | Valor |
-|------|-------|
-| Servidor | `db` |
-| Usuari | `root` |
-| Contrasenya | (la que has posat a `MYSQL_ROOT_PASSWORD`) |
-
----
-
-## 4. Seeders
-
-Després del primer desplegament, s'executaran seeders i la base de dades ja estarà poblada amb dades de prova.
-
----
-
-## 5. Aturada i neteja
-
-### 5.1. Aturar els contenidors
-
-```bash
-docker compose down
-```
-
-### 5.2. Aturar i eliminar les dades
-
-Si vols netejar les dades de la bbdd:
-
-```bash
-docker compose down -v
-```
-
-### 5.3. Reconstruir des de zero
-
-```bash
-docker compose down -v
-docker compose up --build -d
-```
-
----
-
-## 6. Comandaments útils
-
-### Veure logs
-```bash
-# Tots els serveis
-docker compose logs -f
-
-# Només un servei
-docker compose logs -f backend
-docker compose logs -f frontend
-docker compose logs -f db
-```
-
-### Reiniciar un servei
-```bash
-docker compose restart backend
-```
-
-### Accedir al contenidor del backend
-```bash
-docker compose exec backend sh
-```
-
-### Accedir a la base de dades des de la línia de comandes
-```bash
-docker compose exec db mariadb -u root -p
-```
-
----
-
-## 7. Resolució de problemes
-
-### Error: "Cannot connect to database"
-
-Esperar uns segons més i provar:
-```bash
-docker compose logs db
-```
-
-### Error: Port en ús
-
-Canvia el port al fitxer `.env`:
-```
-FRONTEND_PORT=8088
-```
-
-### Les variables d'entorn no funcionen
-
-Assegura't que el fitxer `.env` està a l'arrel del projecte (on hi ha `docker-compose.yml`).
-
----
-
-## 8. Estructura del projecte
-
-```
-metari/
-├── backend/              # API REST (Node.js + Express)
-│   ├── config/         # Configuracions
-│   ├── prisma/         # Schema de la base de dades
-│   ├── routes/         # Rutes de l'API
-│   ├── seeders/        # Dades inicials
-│   ├── middlewares/    # Validacions i gestió d'errors
-│   ├── helpers/        # Utilitats varies
-│   ├── .env        # Variables d'entorn (NO inclòs a git)
-│   └── .env.example        # Variables d'entorn (A editar)
-├── metari-app/         # Frontend (React)
-├── docker-compose.yml # Definició dels serveis
-├── .env               # Variables d'entorn (NO inclòs a git)
-└── .env.example       # Plantilla d'entorn (A editar)
-```
-
----
-
-## 9. Seguretat (per auditors)
-
-**Abans de l'auditoria:**
-
-1. Canvia les contrasenyes per defecte
-2. Revisa els fitxers `.env` per credencials per defecte
-3. Desactiva el mode `dev` si fes falta: `ENVIRONMENT=production` (Per defecte ha d'estar en production)
-
-**Fitxers sensibles:**
-- `.env` - Conté contrasenyes i claus API
-- `backend/.env` - Configuració del backend
-
----
-
-## 10. Més informació
-
-- **Docker:** https://docs.docker.com/
-- **Prisma:** https://www.prisma.io/docs
-- **React:** https://react.dev/
