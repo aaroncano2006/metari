@@ -370,13 +370,13 @@ export default function ModalGroupModeratorPanel({
         const user = await fetchUserById(assignation.user_id);
         if (newCompleted) {
           await updateUser(assignation.user_id, {
-            completed_tasks: user.completed_tasks + 1,
-            ...(assignation.score ? { score: user.score + assignation.score } : {}),
+            completed_tasks: (user?.completed_tasks ?? 0) + 1,
+            ...(assignation.score ? { score: (user?.score ?? 0) + assignation.score } : {}),
           });
         } else {
           await updateUser(assignation.user_id, {
-            completed_tasks: user.completed_tasks - 1,
-            ...(assignation.score ? { score: user.score - assignation.score } : {}),
+            completed_tasks: (user?.completed_tasks ?? 0) - 1,
+            ...(assignation.score ? { score: (user?.score ?? 0) - assignation.score } : {}),
           });
         }
       }
@@ -690,7 +690,7 @@ export default function ModalGroupModeratorPanel({
                                 <div key={assignation.id} className="p-2">
                                   <div className="d-flex bg-light justify-content-between align-items-center mb-2 p-2">
                                     <span className="small text-muted">
-                                      👤 {assignation.user?.name ? `${assignation.user.name} (${assignation.user.username})` : `ID: ${assignation.id}`}
+                                      👤 {assignation.user?.name ? `${assignation.user?.name} (${assignation.user?.username})` : `ID: ${assignation.id}`}
                                     </span>
                                     <div className="d-flex gap-2">
                                       <button
