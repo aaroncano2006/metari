@@ -44,9 +44,9 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Edita Meta</h5>
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow p-4">
+                <h5 className="tiltWarp">Edita Meta</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
@@ -85,7 +85,7 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
 
                 }}
                 >
-                  <label htmlFor="title">Titol</label>
+                  <label htmlFor="title"><strong>Titol:</strong></label>
                   <input className="form-control "
                     type="text" value={formData.title} id="title"
                     onChange={(event) =>
@@ -96,7 +96,7 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                     <small className="text-danger d-flex mb-2">{errors.title}</small>
                   )}
 
-                  <label htmlFor="description">Descripcio</label>
+                  <label htmlFor="description"><strong>Descripcio:</strong></label>
                   <textarea className="form-control "
                     value={formData.description} id="description"
                     onChange={(event) =>
@@ -107,12 +107,8 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                     <small className="text-danger d-flex mb-2">{errors.description}</small>
                   )}
 
-
-
-
-
                   <div className="d-flex flex-column">
-                    <label htmlFor="category">Categoria</label>
+                    <label htmlFor="category"><strong>Categoria:</strong></label>
                     <select className="form-select mb-2" value={formData.category_id} name="category" id="category"
                       onChange={(event) =>
                         setFormData({
@@ -128,11 +124,8 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
                     </select>
                   </div>
 
-
-
-
                   <div className="d-flex flex-column">
-                    <label htmlFor="type">Tipus</label>
+                    <label htmlFor="type"><strong>Tipus:</strong></label>
                     <select className="form-select mb-2" value={formData.type} name="type" id="type"
                       onChange={(event) =>
                         setFormData({

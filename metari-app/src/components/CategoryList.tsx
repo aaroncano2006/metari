@@ -37,7 +37,7 @@ export function CategoryList({ categories, setter, filteredCategory, setFiltered
 
     <>
       <div className="metaList mt-4">
-        <div className="titolComponent my-2 "><i className="bi bi-grid-fill text-primary"></i>Llista de Categories</div>
+        <div className="titolComponent my-2"><i className="bi bi-grid-fill text-primary"></i>Llista de Categories</div>
         {/* <hr className="m-0" /> */}
 
         <div className="inline">

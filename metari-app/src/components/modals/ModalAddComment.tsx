@@ -107,12 +107,12 @@ export function ModalAddComment({ assignation, assignationSetter, commentSetter:
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Crea un comentari</h5>
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow p-4">
+                <h5 className="tiltWarp">Crea un comentari</h5>
 
                 <form onSubmit={handleSubmit}>
-                  <label htmlFor="body">Comentari</label>
+                  <label htmlFor="body"><strong>Comentari:</strong></label>
 
                   <textarea className="form-control mb-2"
                     id="body" name="body"

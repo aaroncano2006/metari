@@ -101,25 +101,25 @@ export default function AdminPanel() {
       <h2 className="text-center mt-4">Panell Admin</h2>
       <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div
-          className="btn createBtnAdmin"
+          className="btn createBtnWhite"
           onClick={() => setMenuSelection("metas")}
         >
           Metas
         </div>
         <div
-          className="btn createBtnAdmin"
+          className="btn createBtnWhite"
           onClick={() => setMenuSelection("categories")}
         >
           Categories
         </div>
         <div
-          className="btn createBtnAdmin"
+          className="btn createBtnWhite"
           onClick={() => setMenuSelection("usuaris")}
         >
           Usuaris
         </div>
         <div
-          className="btn createBtnAdmin"
+          className="btn createBtnWhite"
           onClick={() => setMenuSelection("grups")}
         >
           Grups

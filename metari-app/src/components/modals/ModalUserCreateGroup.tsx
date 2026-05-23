@@ -61,26 +61,26 @@ export function ModalUserCreateGroup({ setCreatingGroup, setGroups }: ModalProps
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Crea un grup</h5>
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow p-4">
+                <h5 className="tiltWarp">Crea un grup</h5>
                 <form onSubmit={handleSubmit}>
                   <div className="d-flex flex-column">
-                    <label htmlFor="name">Nom</label>
+                    <label htmlFor="name"><strong>Nom:</strong></label>
                     <input className="form-control mb-2" type="text" name="name" id="name" />
                   </div>
                   {errors.name && (
                     <small className="text-danger d-block mb-2">{errors.name}</small>
                   )}
                   <div className="d-flex flex-column">
-                    <label htmlFor="description">Descripció</label>
+                    <label htmlFor="description"><strong>Descripció:</strong></label>
                     <textarea className="form-control mb-2" name="description" id="description" />
                   </div>
                   {errors.description && (
                     <small className="text-danger d-block mb-2">{errors.description}</small>
                   )}
                   <div>
-                    <label className="me-5 my-2" htmlFor="is_public">El grup es public?</label>
+                    <label className="me-5 mb-2" htmlFor="is_public"><strong>El grup es public?</strong></label>
                     <input type="checkbox" name="is_public" id="is_public"
                       checked={isPublic}
                       onChange={(e) => setIsPublic(e.target.checked)}

@@ -167,14 +167,14 @@ export function ModalUserCreateMeta({
     <>
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
-          <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Crea una meta</h5>
+          <div className="row justify-content-center mb-5">
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow p-4">
+                <h5 className="tiltWarp">Crea una meta</h5>
 
                 <form onSubmit={handleSubmit}>
                   <div className="d-flex flex-column">
-                    <label htmlFor="title">Títol</label>
+                    <label htmlFor="title"><strong>Títol:</strong></label>
                     <input
                       className="form-control mb-2"
                       type="text"
@@ -189,7 +189,7 @@ export function ModalUserCreateMeta({
                   )}
 
                   <div className="d-flex flex-column">
-                    <label htmlFor="description">Descripció</label>
+                    <label htmlFor="description"><strong>Descripció:</strong></label>
                     <textarea
                       className="form-control mb-2"
                       name="description"
@@ -203,7 +203,7 @@ export function ModalUserCreateMeta({
                   )}
 
                   <div className="d-flex flex-column">
-                    <label htmlFor="type">Tipus</label>
+                    <label htmlFor="type"><strong>Tipus:</strong></label>
                     <select
                       className="form-select mb-2"
                       name="type"
@@ -222,7 +222,7 @@ export function ModalUserCreateMeta({
                   </div>
 
                   <div className="d-flex flex-column">
-                    <label htmlFor="category_id">Categoria</label>
+                    <label htmlFor="category_id"><strong>Categoria:</strong></label>
                     <select
                       className="form-select mb-2"
                       name="category_id"
@@ -237,8 +237,8 @@ export function ModalUserCreateMeta({
                   </div>
 
                   <div>
-                    <label className="me-5 my-2" htmlFor="is_public">
-                      Es publica?
+                    <label className="me-5 mb-2" htmlFor="is_public">
+                      <strong>Es publica?</strong>
                     </label>
                     <input
                       type="checkbox"
@@ -253,7 +253,7 @@ export function ModalUserCreateMeta({
                   {isPublic === false && (
                     <>
                       <div>
-                        <label htmlFor="start_date">📅 Inici:</label>
+                        <label htmlFor="start_date">📅 <strong>Inici:</strong></label>
                         <input
                           className="form-control mb-2"
                           type="date"
@@ -263,7 +263,7 @@ export function ModalUserCreateMeta({
                         />
                       </div>
                       <div>
-                        <label htmlFor="due_date">⏳ Data límit</label>
+                        <label htmlFor="due_date">⏳ <strong>Data límit:</strong></label>
                         <input
                           className="form-control mb-2"
                           type="date"
@@ -272,7 +272,7 @@ export function ModalUserCreateMeta({
                         />
                       </div>
                       <div>
-                        <label htmlFor="priority">🔥 Prioritat:</label>
+                        <label htmlFor="priority">🔥 <strong>Prioritat:</strong></label>
                         <select
                           className="form-select mb-2"
                           name="priority"
@@ -284,7 +284,7 @@ export function ModalUserCreateMeta({
                         </select>
                       </div>
                       <div>
-                        <label htmlFor="difficulty">🎯 Dificultat</label>
+                        <label htmlFor="difficulty">🎯 <strong>Dificultat:</strong></label>
                         <select
                           className="form-select mb-2"
                           name="difficulty"
@@ -302,7 +302,7 @@ export function ModalUserCreateMeta({
                         {/* {metaType === "challenge" && */}
                         {metaType === "challenge" && (
                           <div>
-                            <label htmlFor="score">🏆 Punts al completar:</label>
+                            <label htmlFor="score">🏆 <strong>Punts al completar:</strong></label>
                             <input
                               className="form-control mb-2"
                               type="number"
@@ -313,7 +313,7 @@ export function ModalUserCreateMeta({
                         )}
 
                         <label htmlFor="group_id">
-                          Grups dels que formes part:
+                          <strong>Grups dels que formes part:</strong>
                         </label>
                         <select
                           className="form-select mb-2"
@@ -344,7 +344,7 @@ export function ModalUserCreateMeta({
 
                       {metaType === "task" && (
                         <div>
-                          <label htmlFor="user_id">Usuaris del grup:</label>
+                          <label htmlFor="user_id"><strong>Usuaris del grup:</strong></label>
                           <select
                             className="form-select mb-2"
                             name="user_id"
@@ -373,8 +373,8 @@ export function ModalUserCreateMeta({
                         </div>
                       )}
                       <div>
-                        <label className="me-5 my-2" htmlFor="needs_proofs">
-                          Proves necessaries?
+                        <label className="me-5 mb-2" htmlFor="needs_proofs">
+                          <strong>Proves necessaries?</strong>
                         </label>
                         <input
                           type="checkbox"

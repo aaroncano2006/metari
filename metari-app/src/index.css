@@ -155,7 +155,7 @@ li {
 
 .titolComponent i {
   font-size: 20px;
-  margin-right: 20px;
+  margin-right: 8px;
   margin-left: 20px;
 }
 
@@ -238,35 +238,14 @@ li {
   background-color: var(--color-1);
   padding: 10px;
   border-radius: 20px;
+  text-align: left;
 }
 
 /* Categories components */
 
 /* Panell admin */
 
-.createBtn {
-  height: 38px;
 
-}
-
-.btnCreate {
-  background-color: var(--color-1) !important;
-  padding: 6px 24px !important;
-  border-radius: 15px !important;
-  border: 2px solid #d19f07 !important;
-  box-shadow: 0px 0px 2px 0px #f8ac01 !important;
-  font-weight: 700 !important;
-  margin-left: 10px;
-  margin-right: 10px;
-  z-index: 10;
-}
-
-.btnCreate:hover {
-  color: black !important;
-  border: 2px solid #d19f07 !important;
-  box-shadow: 0px 0px 8px 0px #f8ac01 !important;
-
-}
 
 /*Login and Register*/
 .form-card {
@@ -291,6 +270,30 @@ li {
 
 /*buttons*/
 /* UserCreateMetaBtn{background-color: red !important;} */
+
+.createBtn {
+  height: 38px;
+
+}
+
+.createBtnYellow {
+  background-color: var(--color-1) !important;
+  padding: 6px 24px !important;
+  border-radius: 15px !important;
+  border: 2px solid #d19f07 !important;
+  box-shadow: 0px 0px 2px 0px #f8ac01 !important;
+  font-weight: 700 !important;
+  margin-left: 10px;
+  margin-right: 10px;
+  z-index: 10;
+}
+
+.createBtnYellow:hover {
+  color: black !important;
+  border: 2px solid #d19f07 !important;
+  box-shadow: 0px 0px 8px 0px #f8ac01 !important;
+
+}
 
 .smallButton {
   width: 36px;
@@ -318,7 +321,7 @@ li {
   box-shadow: 0px 0px 6px 2px rgb(255, 255, 255) !important;
 }
 
-.createBtnAdmin {
+.createBtnWhite {
   background-color: var(--color-2) !important;
   padding: 6px 24px !important;
   border-radius: 15px !important;
@@ -330,7 +333,7 @@ li {
   z-index: 10;
 }
 
-.createBtnAdmin:hover {
+.createBtnWhite:hover {
   color: black !important;
   border: 2px solid rgba(0, 0, 0, 0.1) !important;
   box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.1) !important;

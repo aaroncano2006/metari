@@ -29,9 +29,9 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>Edita Usuari</h5>
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow p-4">
+                <h5 className="tiltWarp">Edita Usuari</h5>
 
                 <form onSubmit={async (event) => {
                   event.preventDefault()
@@ -69,7 +69,7 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
 
                 }}
                 >
-                  <label htmlFor="name">Nom</label>
+                  <label htmlFor="name"><strong>Nom:</strong></label>
                   <input className="form-control mb-2"
                     type="text" value={formData.name} id="name"
                     onChange={(event) =>
@@ -80,7 +80,7 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                     <small className="text-danger d-flex mb-2">{errors.name}</small>
                   )}
 
-                  <label htmlFor="username">Nom usuari</label>
+                  <label htmlFor="username"><strong>Nom usuari:</strong></label>
                   <input className="form-control mb-2"
                     type="text" value={formData.username} id="username"
                     onChange={(event) =>
@@ -91,7 +91,7 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                     <small className="text-danger d-flex mb-2">{errors.username}</small>
                   )}
 
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email"><strong>Email:</strong></label>
                   <input className="form-control mb-2"
                     type="text" value={formData.email} id="email"
                     onChange={(event) =>
@@ -104,7 +104,7 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
 
 
                   <div className="d-flex flex-column">
-                    <label htmlFor="type">Tipus</label>
+                    <label htmlFor="type"><strong>Tipus:</strong></label>
                     <select className="form-select mb-2" value={formData.role} name="type" id="type"
                       onChange={(event) =>
                         setFormData({
@@ -121,7 +121,7 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                     </select>
                   </div>
 
-                  <label htmlFor="completed_tasks">Tasques completades</label>
+                  <label htmlFor="completed_tasks"><strong>Tasques completades:</strong></label>
                   <input className="form-control mb-2"
                     type="number" value={formData.completed_tasks} id="completed_tasks"
                     onChange={(event) =>
@@ -132,7 +132,7 @@ export function ModalEditUser({ user, setEditUser, setter }: ModalEditProps) {
                     <small className="text-danger d-flex mb-2">{errors.completed_tasks}</small>
                   )}
 
-                  <label htmlFor="score">Puntuacio de challanges</label>
+                  <label htmlFor="score"><strong>Puntuacio de challanges:</strong></label>
                   <input className="form-control mb-2"
                     type="number" value={formData.score} id="score"
                     onChange={(event) =>

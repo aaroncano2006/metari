@@ -117,12 +117,12 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
     <div className="modalOverlay h-100 w-100">
       <div className="container-fluid">
         <div className="row justify-content-center">
-          <div className="col-12 col-sm-6">
-            <div className="modalWindow">
-              <h5>Envia una prova</h5>
+          <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+            <div className="modalWindow p-4">
+              <h5 className="tiltWarp">Envia una prova</h5>
               <form onSubmit={handleSubmit}>
-                <label>Tipus de prova</label>
-                <div className="d-flex gap-3 mb-3">
+                <label><strong>Tipus de prova:</strong></label>
+                <div className="d-flex gap-3 mb-3 justify-content-center">
                   <label>
                     <input
                       type="radio"
@@ -146,7 +146,7 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
                 </div>
                 {proofType === "text" && (
                   <>
-                    <label htmlFor="proofText">Prova</label>
+                    <label htmlFor="proofText"><strong>Prova:</strong></label>
                     <textarea
                       className="form-control mb-2"
                       id="proofText"
@@ -160,7 +160,7 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
                 )}
                 {proofType === "image" && (
                   <>
-                    <label htmlFor="proofImage">Selecciona una imatge</label>
+                    <label htmlFor="proofImage"><strong>Selecciona una imatge:</strong></label>
                     <input
                       type="file"
                       className="form-control mb-2"
@@ -174,10 +174,12 @@ export function ModalAddProof({ assignation, assignationSetter, setAssignations,
                   </>
                 )}
                 {proofType === "image" && existingProof && !proofImage && (
-                  <div className="mb-2">
-                    <p>Imatge actual:</p>
-                    <img src={existingProof.proof} alt="No hi ha imatge" className="img-fluid" style={{ maxHeight: 200 }} />
-                  </div>
+                  <>
+                    <strong>Imatge actual:</strong>
+                    <div className="mb-2 text-center">
+                      <img src={existingProof.proof} alt="No hi ha imatge" className="img-fluid" style={{ maxHeight: 200 }} />
+                    </div>
+                  </>
                 )}
                 <div className="d-flex justify-content-end gap-2">
                   <button
