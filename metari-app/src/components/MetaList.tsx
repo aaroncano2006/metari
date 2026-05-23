@@ -127,7 +127,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         {canAddMeta && meta.type === "task" &&
                           <>
                             <div className="">
-                              <button className="  btn btn-primary p-1  me-2  ms-auto"
+                              <button className="btn autoassignBtn me-2  ms-auto "
                                 onClick={() => {
                                   setMetaToAdd([meta, "autoassign"]);
                                 }}>Afegir a la meva llista</button>
@@ -137,7 +137,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         {canAddMeta &&
                           <>
                             <div className="">
-                              <button className="  btn btn-primary p-1  me-2  ms-auto"
+                              <button className="btn assignBtn  me-2  ms-auto"
                                 onClick={() => {
                                   setMetaToAdd([meta, "assign"]);
                                 }}>{/* {meta.type === "task" ? "Assigna a membre de grup" : "Assigna a un grup"} */}Assigna a un grup </button>

@@ -143,15 +143,15 @@ export function MyMetaListByGroup({
                     {group.groupUsers.find((el) => el.user_id === getUserId() && el.role === "moderator") && (
                       <>
                         <button className="btn  btn-outline-primary"
-                         onClick={() => openModeratorGroupPanel(group)}
-                         title="Configuració i moderació del grup"
-                         >
-                          
+                          onClick={() => openModeratorGroupPanel(group)}
+                          title="Configuració i moderació del grup"
+                        >
+
                           <i className="bi bi-gear-fill"></i>
                         </button>
                       </>
                     )}
-                    
+
                   </div>
                   {currentGroup?.id === group.id && (
                     <ModalGroupModeratorPanel group={group} setEditGroup={setCurrentGroup} setter={setter} defaultMenu="metas" />
@@ -202,12 +202,12 @@ export function MyMetaListByGroup({
                               </div>
                               {hasUserCompletedChallenge(assignation) ===
                                 true && (
-                                <div className="badge bg-success">
-                                  completada
-                                </div>
-                              )}
+                                  <div className="badge bg-success">
+                                    completada
+                                  </div>
+                                )}
                               {
-                                hasUserSentProof(assignation) && !hasUserCompletedChallenge(assignation) &&(
+                                hasUserSentProof(assignation) && !hasUserCompletedChallenge(assignation) && (
                                   <div className="badge bg-success ms-1">
                                     Proves enviades
                                   </div>
@@ -268,7 +268,7 @@ export function MyMetaListByGroup({
 
                                 {assignation.assignationCompletions &&
                                   assignation.assignationCompletions.length >
-                                    0 && (
+                                  0 && (
                                     <div>
                                       ✅ <strong>Completat per:</strong>{" "}
                                       {assignation.assignationCompletions
@@ -280,89 +280,84 @@ export function MyMetaListByGroup({
                                         .join(", ")}
                                     </div>
                                   )}
-                                    
-                              {(() => {
-                                const userProof = getUserProof(assignation)
-                                return (
-                                  <>
-                                    
-                                    {assignation.needs_proofs !== null &&
-                                      assignation.needs_proofs !== undefined && (
-                                        <div>
-                                          📋 <strong>Requereix proves:</strong>{" "}
-                                          {assignation.needs_proofs ? "Sí" : "No"}
-                                        </div>
-                                      )}
-
+                                {assignation.needs_proofs !== null &&
+                                  assignation.needs_proofs !== undefined && (
                                     <div>
-                                      🆕 <strong>Creat el dia:</strong>{" "}
-                                      {assignation.created_at &&
-                                        assignation.created_at
-                                          .split("T")[0]
-                                          .split("-")
-                                          .reverse()
-                                          .join("-") +
-                                          " a les " +
-                                          assignation.created_at
-                                            .split("T")[1]
-                                            ?.split(".")[0]}
+                                      📋 <strong>Requereix proves:</strong>{" "}
+                                      {assignation.needs_proofs ? "Sí" : "No"}
                                     </div>
-                                    <div>
-                                      🔄 <strong>Actualitzat el dia:</strong>{" "}
-                                      {assignation.updated_at &&
-                                        assignation.updated_at
-                                          .split("T")[0]
-                                          .split("-")
-                                          .reverse()
-                                          .join("-") +
-                                          " a les " +
-                                          assignation.updated_at
-                                            .split("T")[1]
-                                            ?.split(".")[0]}
+                                  )}
+                                <div>
+                                  🆕 <strong>Creat el dia:</strong>{" "}
+                                  {assignation.created_at &&
+                                    assignation.created_at
+                                      .split("T")[0]
+                                      .split("-")
+                                      .reverse()
+                                      .join("-") +
+                                    " a les " +
+                                    assignation.created_at
+                                      .split("T")[1]
+                                      ?.split(".")[0]}
+                                </div>
+                                <div>
+                                  🔄 <strong>Actualitzat el dia:</strong>{" "}
+                                  {assignation.updated_at &&
+                                    assignation.updated_at
+                                      .split("T")[0]
+                                      .split("-")
+                                      .reverse()
+                                      .join("-") +
+                                    " a les " +
+                                    assignation.updated_at
+                                      .split("T")[1]
+                                      ?.split(".")[0]}
+                                </div>
+
+                                {!hasUserCompletedChallenge(assignation) &&
+                                  assignation.meta.type === "challenge" &&
+                                  assignation.needs_proofs === false && (
+                                    <div
+                                      className="btn greenBtn align-self-center my-2"
+                                      onClick={async () => {
+                                        const newCompletion =
+                                          await createAssignationCompletion(
+                                            assignation.id,
+                                            loggedInUserId!,
+                                            true
+                                          );
+                                        const score = assignation.score ?? 0;
+                                        if (score > 0) {
+                                          const user = await fetchUserById(loggedInUserId!);
+                                          await updateUser(loggedInUserId!, {
+                                            score: user.score + score,
+                                          });
+                                        }
+                                        setAssignations((prev) =>
+                                          prev.map((a) =>
+                                            a.id === assignation.id
+                                              ? {
+                                                ...a,
+                                                assignationCompletions: [
+                                                  ...(a.assignationCompletions ??
+                                                    []),
+                                                  newCompletion,
+                                                ],
+                                              }
+                                              : a,
+                                          ),
+                                        );
+                                      }}
+                                    >
+                                      Marcar completada
                                     </div>
-                                    <div className=" d-flex align-self-end me-2 mb-2 mt-2">
-                                      <div
-                                        className="btn btn-primary d-flex align-self-end me-2 "
-                                        onClick={() => {
-                                          setShowComments((prev) => !prev);
-                                        }}
-                                      >
-                                        Mostrar comentaris
-                                      </div>
-                                      <div
-                                        className="btn btn-primary align-self-end me-2 "
-                                        onClick={() => {
-                                          setAssignationToAddComment(assignation);
-                                          setcommentFormType("create");
-                                        }}
-                                      >
-                                        Nou comentari
-                                      </div>
-                                    </div>
-                                  </>
-                                )
-                              })()}
+                                  )}
 
-
-                              {/* {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
-                                <div className="btn btn-success align-self-end me-2"
-                                  onClick={async () => {
-                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!, true)
-                                    setAssignations(prev => prev.map(a =>
-                                      a.id === assignation.id
-                                        ? { ...a, assignationCompletions: [...(a.assignationCompletions ?? []), newCompletion] }
-                                        : a
-                                    ))
-                                  }}>
-                                  Marcar completada
-                                </div>)} */}
-
-                                
-                                {!assignation.completed &&
+                                  {!assignation.completed &&
                                   assignation.meta.type === "task" &&
                                   !assignation.needs_proofs && (
                                     <div
-                                      className="btn btn-success align-self-end me-2"
+                                      className="btn btn-success align-self-center my-2"
                                       onClick={async () => {
                                         const updated = await updateAssignation(
                                           assignation.id,
@@ -387,15 +382,17 @@ export function MyMetaListByGroup({
                                     </div>
                                   )}
 
+                                {/* seccio proves */}
                                 {(() => {
                                   const userProof = getUserProof(assignation);
                                   return (
                                     (assignation.meta.type === "challenge" || assignation.meta.type === "task") &&
                                     assignation.needs_proofs &&
-                                    !hasUserCompletedChallenge(assignation) &&  (
-                                      <div className="d-flex gap-2 align-self-end me-2">
-                                        <div
-                                          className={`btn ${userProof ? "btn-info" : "btn-warning"}`}
+                                    !hasUserCompletedChallenge(assignation) && (
+                                      <div className=" d-flex align-self-end align-items-center me-2 my-2 w-100">
+                                        <strong className=" ms-3 me-auto">Proves:</strong>
+                                        <button
+                                          className={`btn ${userProof ? "blueBtn" : "blueBtn"} me-2`}
                                           onClick={() =>
                                             setAssignationToAddProof(
                                               assignation,
@@ -405,10 +402,12 @@ export function MyMetaListByGroup({
                                           {userProof
                                             ? "Editar o veure prova"
                                             : "Enviar prova"}
-                                        </div>
+                                        </button>
+
                                         {userProof && (
-                                          <div
-                                            className="btn btn-danger"
+                                          <button
+                                            className="btn btn-danger me-2 "
+                                            title="Eliminar prova"
                                             onClick={async () => {
                                               if (
                                                 !confirm(
@@ -422,65 +421,78 @@ export function MyMetaListByGroup({
                                                 prev.map((a) =>
                                                   a.id === assignation.id
                                                     ? {
-                                                        ...a,
-                                                        proofs:
-                                                          a.proofs?.filter(
-                                                            (p) =>
-                                                              p.id !==
-                                                              userProof.id,
-                                                          ),
-                                                      }
+                                                      ...a,
+                                                      proofs:
+                                                        a.proofs?.filter(
+                                                          (p) =>
+                                                            p.id !==
+                                                            userProof.id,
+                                                        ),
+                                                    }
                                                     : a,
                                                 ),
                                               );
                                             }}
                                           >
-                                            Elimina prova
-                                          </div>
+                                           <i className="bi bi-x-lg"></i>
+                                          </button>
                                         )}
                                       </div>
                                     )
                                   );
                                 })()}
 
-                                {!hasUserCompletedChallenge(assignation) &&
-                                  assignation.meta.type === "challenge" &&
-                                  assignation.needs_proofs === false && (
-                                    <div
-                                      className="btn btn-success align-self-end me-2"
-                                      onClick={async () => {
-                                        const newCompletion =
-                                          await createAssignationCompletion(
-                                            assignation.id,
-                                            loggedInUserId!,
-                                            true
-                                          );
-                                        const score = assignation.score ?? 0;
-                                        if (score > 0) {
-                                          const user = await fetchUserById(loggedInUserId!);
-                                          await updateUser(loggedInUserId!, {
-                                            score: user.score + score,
-                                          });
-                                        }
-                                        setAssignations((prev) =>
-                                          prev.map((a) =>
-                                            a.id === assignation.id
-                                              ? {
-                                                  ...a,
-                                                  assignationCompletions: [
-                                                    ...(a.assignationCompletions ??
-                                                      []),
-                                                    newCompletion,
-                                                  ],
-                                                }
-                                              : a,
-                                          ),
-                                        );
-                                      }}
-                                    >
-                                      Marcar completada
-                                    </div>
-                                  )}
+                                {/* comentaris */}
+                                {(() => {
+                                  // const userProof = getUserProof(assignation)
+                                  return (
+                                    <>
+                                      <div className=" d-flex align-self-end align-items-center me-2 my-2 w-100">
+                                        <strong className=" ms-3 me-auto">Comentaris:</strong>
+                                        <button
+                                          className="btn blueBtn align-self-end me-2 "
+                                          onClick={() => {
+                                            setAssignationToAddComment(assignation);
+                                            setcommentFormType("create");
+                                          }}
+                                        >
+                                          Afegeix un comentari
+                                        </button>
+                                        <button
+                                          className="btn yellowBtn d-flex align-self-end me-2 "
+                                          title="Mostrar/Amagar Comentaris"
+                                          onClick={() => {
+                                            setShowComments((prev) => !prev);
+                                          }}
+                                        >
+                                          <i className="bi bi-eye text-black"></i>
+                                        </button>
+
+                                      </div>
+                                    </>
+                                  )
+                                })()}
+
+
+                                {/* {!hasUserCompletedChallenge(assignation) && assignation.meta.type === "challenge" && assignation.needs_proofs === false && (
+                                <div className="btn btn-success align-self-end me-2"
+                                  onClick={async () => {
+                                    const newCompletion = await createAssignationCompletion(assignation.id, loggedInUserId!, true)
+                                    setAssignations(prev => prev.map(a =>
+                                      a.id === assignation.id
+                                        ? { ...a, assignationCompletions: [...(a.assignationCompletions ?? []), newCompletion] }
+                                        : a
+                                    ))
+                                  }}>
+                                  Marcar completada
+                                </div>)} */}
+
+
+                                
+
+
+
+                                
 
                                 {showComments === true &&
                                   (() => {
@@ -513,62 +525,62 @@ export function MyMetaListByGroup({
                                               ).toLocaleString("ca-ES")}
                                               {comment.created_at !==
                                                 comment.updated_at && (
-                                                <>
-                                                  {" "}
-                                                  (editat:{" "}
-                                                  {new Date(
-                                                    comment.updated_at,
-                                                  ).toLocaleString("ca-ES")}
-                                                  )
-                                                </>
-                                              )}
+                                                  <>
+                                                    {" "}
+                                                    (editat:{" "}
+                                                    {new Date(
+                                                      comment.updated_at,
+                                                    ).toLocaleString("ca-ES")}
+                                                    )
+                                                  </>
+                                                )}
                                             </small>
                                             <div className=" d-flex justify-content-end">
                                               {comment.user_id ===
                                                 getUserId() && (
-                                                <div
-                                                  className="btn btn-warning align-self-end me-2 "
-                                                  title="Editar comentari"
-                                                  onClick={() => {
-                                                    //edit
-                                                    setcomment(comment);
-                                                    setAssignationToAddComment(
-                                                      assignation,
-                                                    );
-                                                    setcommentFormType("edit");
-                                                  }}
-                                                >
-                                                  <i className="bi bi-pencil"></i>
-                                                </div>
-                                              )}
+                                                  <div
+                                                    className="btn btn-warning align-self-end me-2 "
+                                                    title="Editar comentari"
+                                                    onClick={() => {
+                                                      //edit
+                                                      setcomment(comment);
+                                                      setAssignationToAddComment(
+                                                        assignation,
+                                                      );
+                                                      setcommentFormType("edit");
+                                                    }}
+                                                  >
+                                                    <i className="bi bi-pencil"></i>
+                                                  </div>
+                                                )}
                                               {(comment.user_id ===
                                                 getUserId() ||
                                                 group.owner_id ===
-                                                  getUserId()) && (
-                                                <div
-                                                  className="btn btn-danger align-self-end me-2 "
-                                                  title="Eliminar comentari"
-                                                  onClick={async () => {
-                                                    if (
-                                                      !confirm(
-                                                        "Estàs segur que el vols eliminar?",
+                                                getUserId()) && (
+                                                  <div
+                                                    className="btn btn-danger align-self-end me-2 "
+                                                    title="Eliminar comentari"
+                                                    onClick={async () => {
+                                                      if (
+                                                        !confirm(
+                                                          "Estàs segur que el vols eliminar?",
+                                                        )
                                                       )
-                                                    )
-                                                      return;
-                                                    await deleteComment(
-                                                      comment.id,
-                                                    );
-                                                    setComments((prev) =>
-                                                      prev.filter(
-                                                        (c) =>
-                                                          c.id !== comment.id,
-                                                      ),
-                                                    );
-                                                  }}
-                                                >
-                                                  X
-                                                </div>
-                                              )}
+                                                        return;
+                                                      await deleteComment(
+                                                        comment.id,
+                                                      );
+                                                      setComments((prev) =>
+                                                        prev.filter(
+                                                          (c) =>
+                                                            c.id !== comment.id,
+                                                        ),
+                                                      );
+                                                    }}
+                                                  >
+                                                    X
+                                                  </div>
+                                                )}
                                             </div>
                                           </div>
                                         </>
@@ -665,7 +677,7 @@ export function MyMetaListByGroup({
 
                                 {assignation.assignationCompletions &&
                                   assignation.assignationCompletions.length >
-                                    0 && (
+                                  0 && (
                                     <div>
                                       ✅ Completat per:{" "}
                                       {assignation.assignationCompletions
@@ -694,10 +706,10 @@ export function MyMetaListByGroup({
                                       .split("-")
                                       .reverse()
                                       .join("-") +
-                                      " a les " +
-                                      assignation.created_at
-                                        .split("T")[1]
-                                        .split(".")[0]}
+                                    " a les " +
+                                    assignation.created_at
+                                      .split("T")[1]
+                                      .split(".")[0]}
                                 </div>
                                 <div>
                                   🔄 Actualitzat el dia:{" "}
@@ -764,61 +776,61 @@ export function MyMetaListByGroup({
                                                   ).toLocaleString("ca-ES")}
                                                   {comment.created_at !==
                                                     comment.updated_at && (
-                                                    <>
-                                                      {" "}
-                                                      (editat:{" "}
-                                                      {new Date(
-                                                        comment.updated_at,
-                                                      ).toLocaleString("ca-ES")}
-                                                      )
-                                                    </>
-                                                  )}
+                                                      <>
+                                                        {" "}
+                                                        (editat:{" "}
+                                                        {new Date(
+                                                          comment.updated_at,
+                                                        ).toLocaleString("ca-ES")}
+                                                        )
+                                                      </>
+                                                    )}
                                                 </small>
                                                 <div className=" d-flex justify-content-end">
                                                   {comment.user_id ===
                                                     getUserId() && (
-                                                    <div
-                                                      className="btn btn-warning align-self-end me-2 "
-                                                      title="Editar comentari"
-                                                      onClick={() => {
-                                                        setcomment(comment);
-                                                        setAssignationToAddComment(
-                                                          assignation,
-                                                        );
-                                                        setcommentFormType("edit");
-                                                      }}
-                                                    >
-                                                      <i className="bi bi-pencil"></i>
-                                                    </div>
-                                                  )}
+                                                      <div
+                                                        className="btn btn-warning align-self-end me-2 "
+                                                        title="Editar comentari"
+                                                        onClick={() => {
+                                                          setcomment(comment);
+                                                          setAssignationToAddComment(
+                                                            assignation,
+                                                          );
+                                                          setcommentFormType("edit");
+                                                        }}
+                                                      >
+                                                        <i className="bi bi-pencil"></i>
+                                                      </div>
+                                                    )}
                                                   {(comment.user_id ===
                                                     getUserId() ||
                                                     group.owner_id ===
-                                                      getUserId()) && (
-                                                    <div
-                                                      className="btn btn-danger align-self-end me-2 "
-                                                      title="Eliminar comentari"
-                                                      onClick={async () => {
-                                                        if (
-                                                          !confirm(
-                                                            "Estàs segur que el vols eliminar?",
+                                                    getUserId()) && (
+                                                      <div
+                                                        className="btn btn-danger align-self-end me-2 "
+                                                        title="Eliminar comentari"
+                                                        onClick={async () => {
+                                                          if (
+                                                            !confirm(
+                                                              "Estàs segur que el vols eliminar?",
+                                                            )
                                                           )
-                                                        )
-                                                          return;
-                                                        await deleteComment(
-                                                          comment.id,
-                                                        );
-                                                        setComments((prev) =>
-                                                          prev.filter(
-                                                            (c) =>
-                                                              c.id !== comment.id,
-                                                          ),
-                                                        );
-                                                      }}
-                                                    >
-                                                      X
-                                                    </div>
-                                                  )}
+                                                            return;
+                                                          await deleteComment(
+                                                            comment.id,
+                                                          );
+                                                          setComments((prev) =>
+                                                            prev.filter(
+                                                              (c) =>
+                                                                c.id !== comment.id,
+                                                            ),
+                                                          );
+                                                        }}
+                                                      >
+                                                        X
+                                                      </div>
+                                                    )}
                                                 </div>
                                               </div>
                                             </>

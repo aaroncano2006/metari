@@ -13,7 +13,7 @@
 :root {
   --color-1: #ffbf00;
   --color-2: white;
-  --color-3: rgb(230, 230, 230);
+  --color-3: #0d6efd;
 
   --task-color: blue;
   --challenge-color: red;
@@ -341,6 +341,51 @@ li {
   box-shadow: 0px 0px 4px 2px rgba(0, 0, 0, 0.1) !important;
 
 }
+
+.autoassignBtn{
+  padding: 6px 6px !important;
+  background-color: var(--color-1) !important;
+}
+
+.assignBtn{
+  padding: 6px 6px !important;
+  background-color: var(--color-1) !important;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+}
+
+
+.assignBtn:hover, .autoassignBtn:hover{
+  padding: 6px 6px !important;
+  background-color: var(--color-1) !important;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+}
+
+.yellowBtn{
+  background-color: var(--color-1) !important;
+}
+.yellowBtn:hover{
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+  
+}
+.blueBtn{
+  background-color: var(--color-3) !important;
+  color: white !important;
+}
+.blueBtn:hover{
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+  
+}
+
+.greenBtn{
+  background-color: #198754 !important;
+  color: white !important;
+}
+.greenBtn:hover{
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.200);
+  
+}
+
+
 
 /* modals - forms */
 
