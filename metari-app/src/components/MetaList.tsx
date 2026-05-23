@@ -87,7 +87,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                     <div>{meta.title}</div>
 
                     {canEdit &&
-                      <button className="  btn btn-warning p-1  me-2  ms-auto"
+                      <button className="smallButton btn btn-warning p-1  me-2  ms-auto"
                         title="Edita"
                         onClick={(event) => {
                           event.stopPropagation()
@@ -95,7 +95,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         }}><i className="bi bi-pencil"></i></button>
                     }
                     {canEdit &&
-                      <button className="  btn btn-danger p-1   "
+                      <button className=" smallButton btn btn-danger p-1   "
                         title="Elimina"
                         onClick={async (event) => {
                           event.stopPropagation()
@@ -116,18 +116,18 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                     <div className="metaDetails ps-4 py-2">
                       {vistaActual !== "/" &&
                         <>
-                          <div><strong>ID: </strong> {meta.id}</div>
+                          <div><strong>🆔 <strong>ID:</strong> </strong> {meta.id}</div>
                         </>
                       }
-                      <div><strong>Tipus: </strong> {meta.type}</div>
-                      <div><strong>Descripció:</strong> {meta.description}</div>
-                      <div><strong>Categoria:</strong> {meta.category.name}</div>
-                      <div><strong>Autor:</strong> {meta.author.username}</div>
+                      <div><strong>📌 <strong>Tipus:</strong> </strong> {meta.type}</div>
+                      <div><strong>📝 <strong>Descripció:</strong></strong> {meta.description}</div>
+                      <div><strong>🏷️ <strong>Categoria:</strong></strong> {meta.category.name}</div>
+                      <div><strong>👤 <strong>Autor:</strong></strong> {meta.author.username}</div>
                       <div className="d-flex mt-2 justify-content-end">
                         {canAddMeta && meta.type === "task" &&
                           <>
                             <div className="">
-                              <button className="  btn btn-primary p-1  me-2  ms-auto"
+                              <button className="btn autoassignBtn me-2  ms-auto "
                                 onClick={() => {
                                   setMetaToAdd([meta, "autoassign"]);
                                 }}>Afegir a la meva llista</button>
@@ -137,7 +137,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         {canAddMeta &&
                           <>
                             <div className="">
-                              <button className="  btn btn-primary p-1  me-2  ms-auto"
+                              <button className="btn assignBtn  me-2  ms-auto"
                                 onClick={() => {
                                   setMetaToAdd([meta, "assign"]);
                                 }}>{/* {meta.type === "task" ? "Assigna a membre de grup" : "Assigna a un grup"} */}Assigna a un grup </button>

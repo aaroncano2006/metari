@@ -92,7 +92,7 @@ export default function ModalGroupModeratorPanel({
   useEffect(() => {
     fetchGroupUsers().then((response) => {
       setGroupUsers(response.filter((el) => el.group_id === group.id));
-    }).catch(() => {});
+    }).catch(() => { });
     fetchAssignations().then((allAssignations) => {
       const groupAssignations = allAssignations.filter(
         (a) => a.group_id === group.id,
@@ -101,14 +101,14 @@ export default function ModalGroupModeratorPanel({
       const groupMetaIds = groupAssignations.map((a) => a.meta_id);
       fetchMetas().then((metas) => {
         setMetas(metas.filter((m) => groupMetaIds.includes(m.id)));
-      }).catch(() => {});
+      }).catch(() => { });
       fetchIndexedMetas().then((indexedMetas) => {
         setIndexedMetas(
           indexedMetas.filter((im) => groupMetaIds.includes(im.meta_id)),
         );
-      }).catch(() => {});
-    }).catch(() => {});
-    fetchComments().then((data) => setComments(data)).catch(() => {});
+      }).catch(() => { });
+    }).catch(() => { });
+    fetchComments().then((data) => setComments(data)).catch(() => { });
   }, [group]);
 
   const switchMenu = (menu: "users" | "metas" | "group_config") => {
@@ -341,17 +341,17 @@ export default function ModalGroupModeratorPanel({
       }
 
       setAssignations((prev) =>
-  prev.map((a) => {
-    if (a.id !== assignation.id) return a;
-    return {
-      ...a,
-      completed: assignation.meta.type === "task" && isValid ? true : a.completed,
-      proofs: a.proofs?.map((p) =>
-        p.id === proofId ? { ...p, is_valid: isValid } : p,
-      ),
-    };
-  }),
-);
+        prev.map((a) => {
+          if (a.id !== assignation.id) return a;
+          return {
+            ...a,
+            completed: assignation.meta.type === "task" && isValid ? true : a.completed,
+            proofs: a.proofs?.map((p) =>
+              p.id === proofId ? { ...p, is_valid: isValid } : p,
+            ),
+          };
+        }),
+      );
     } catch (err: any) {
       setError(err.message ?? "Error validant la prova");
       console.log(err);
@@ -405,9 +405,9 @@ export default function ModalGroupModeratorPanel({
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
-                <h5>{title} · Panell de moderació</h5>
+            <div className="col-12 col-sm-10 col-md-8 col-xl-6">
+              <div className="modalWindow bg-form p-4">
+                <h5 className="tiltWarp">{title} · Panell de moderació</h5>
 
                 {error && <div className="alert alert-danger">{error}</div>}
                 {success && (
@@ -416,33 +416,36 @@ export default function ModalGroupModeratorPanel({
                   </div>
                 )}
 
-                <div className="row-sm mt-4 mb-2 d-flex justify-content-center gap-3">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      switchMenu("group_config");
-                    }}
-                  >
-                    <i className="bi bi-gear-fill me-1"></i> Configuració del
-                    grup
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      switchMenu("users");
-                    }}
-                  >
-                    <i className="bi bi-people-fill me-1"></i> Membres del grup
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => {
-                      switchMenu("metas");
-                    }}
-                  >
-                    <i className="bi bi-bullseye me-1"></i>Metas del grup
-                  </button>
-                </div>
+                <div className="d-flex justify-content-center gap-2 flex-wrap mt-4">
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        switchMenu("group_config");
+                      }}
+                    >
+                      <i className="bi bi-gear-fill me-1"></i> Configuració del
+                      grup
+                    </button>
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        switchMenu("users");
+                      }}
+                    >
+                      <i className="bi bi-people-fill me-1"></i> Membres del grup
+                    </button>
+
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => {
+                        switchMenu("metas");
+                      }}
+                    >
+                      <i className="bi bi-bullseye me-1"></i>Metas del grup
+                    </button>
+                  </div>
 
                 <div className="row">
                   {menu === "group_config" && (
@@ -713,308 +716,308 @@ export default function ModalGroupModeratorPanel({
                                     </div>
                                   </div>
                                   {currentAssignationId === assignation.id && (
-                                <div className="bg-light ps-2 py-3 mb-2">
-                                  <div>📌 Tipus:{assignation.meta.type}</div>
-                                  <div>
-                                    📝 Descripció:{" "}
-                                    {assignation.meta.description}
-                                  </div>
-                                  {assignation.user_id && (
-                                    <div>
-                                      👤 Assignada a:{" "}
-                                      {assignation.user?.name
-                                        ? `${assignation.user?.name} (${assignation.user?.username})`
-                                        : assignation.user_id}
-                                    </div>
-                                  )}
-                                  {assignation.assigner_id && (
-                                    <div>
-                                      👑 Assignada per:{" "}
-                                      {assignation.assigner?.name
-                                        ? `${assignation.assigner?.name} (${assignation.assigner?.username})`
-                                        : assignation.assigner_id}
-                                    </div>
-                                  )}
-                                  <div>
-                                    📅 Inici:{" "}
-                                    {assignation.start_date
-                                      ?.split("T")[0]
-                                      .split("-")
-                                      .reverse()
-                                      .join("-")}
-                                  </div>
-                                  <div>
-                                    ⏳ Data límit:{" "}
-                                    {assignation.due_date
-                                      ?.split("T")[0]
-                                      .split("-")
-                                      .reverse()
-                                      .join("-") ?? "sense data limit"}
-                                  </div>
-                                  <div>
-                                    🔥 Prioritat:{" "}
-                                    {assignation.priority ?? "sense prioritat"}
-                                  </div>
-
-                                  {assignation.meta.type === "challenge" && (
-                                    <div>
-                                      🏆 Puntuacio: {assignation.score ?? 0}
-                                    </div>
-                                  )}
-
-                                  {assignation.assignationCompletions &&
-                                    assignation.assignationCompletions.length >
-                                    0 && (
+                                    <div className="bg-light ps-2 py-3 mb-2">
+                                      <div>📌 Tipus:{assignation.meta.type}</div>
                                       <div>
-                                        ✅ Completat per:{" "}
-                                        {assignation.assignationCompletions
-                                          .filter((ac) => ac.is_Completed)
-                                          .map(
-                                            (ac) =>
-                                              ac.user?.username ?? ac.user_id,
-                                          )
-                                          .join(", ")}
+                                        📝 Descripció:{" "}
+                                        {assignation.meta.description}
                                       </div>
-                                    )}
+                                      {assignation.user_id && (
+                                        <div>
+                                          👤 Assignada a:{" "}
+                                          {assignation.user?.name
+                                            ? `${assignation.user?.name} (${assignation.user?.username})`
+                                            : assignation.user_id}
+                                        </div>
+                                      )}
+                                      {assignation.assigner_id && (
+                                        <div>
+                                          👑 Assignada per:{" "}
+                                          {assignation.assigner?.name
+                                            ? `${assignation.assigner?.name} (${assignation.assigner?.username})`
+                                            : assignation.assigner_id}
+                                        </div>
+                                      )}
+                                      <div>
+                                        📅 Inici:{" "}
+                                        {assignation.start_date
+                                          ?.split("T")[0]
+                                          .split("-")
+                                          .reverse()
+                                          .join("-")}
+                                      </div>
+                                      <div>
+                                        ⏳ Data límit:{" "}
+                                        {assignation.due_date
+                                          ?.split("T")[0]
+                                          .split("-")
+                                          .reverse()
+                                          .join("-") ?? "sense data limit"}
+                                      </div>
+                                      <div>
+                                        🔥 Prioritat:{" "}
+                                        {assignation.priority ?? "sense prioritat"}
+                                      </div>
+
+                                      {assignation.meta.type === "challenge" && (
+                                        <div>
+                                          🏆 Puntuacio: {assignation.score ?? 0}
+                                        </div>
+                                      )}
+
+                                      {assignation.assignationCompletions &&
+                                        assignation.assignationCompletions.length >
+                                        0 && (
+                                          <div>
+                                            ✅ Completat per:{" "}
+                                            {assignation.assignationCompletions
+                                              .filter((ac) => ac.is_Completed)
+                                              .map(
+                                                (ac) =>
+                                                  ac.user?.username ?? ac.user_id,
+                                              )
+                                              .join(", ")}
+                                          </div>
+                                        )}
 
 
 
-                                  {showCommentsForId === assignation.id &&
-                                    (() => {
-                                      const filteredComments = comments
-                                        .filter(
-                                          (c) =>
-                                            c.assignation_id === assignation.id,
-                                        )
-                                        .sort(
-                                          (a, b) =>
-                                            new Date(b.created_at).getTime() -
-                                            new Date(a.created_at).getTime(),
-                                        );
-                                      return (
-                                        <div className="mt-2">
-                                          {filteredComments.length > 0 ? (
-                                            filteredComments.map((c) => (
-                                              <div
-                                                key={c.id}
-                                                className="border rounded p-2 mb-1 bg-white"
-                                                style={{ fontSize: "0.9rem" }}
-                                              >
-                                                <strong>
-                                                  {c.user?.name ??
-                                                    c.user_id}
-                                                </strong>
-                                                :{" "}
-                                                <span>{c.body}</span>
-                                                <br />
-                                                <small className="text-muted">
-                                                  {new Date(
-                                                    c.created_at,
-                                                  ).toLocaleString("ca-ES")}
-                                                  {c.created_at !==
-                                                    c.updated_at && (
-                                                    <>
-                                                      {" "}
-                                                      (editat:{" "}
+                                      {showCommentsForId === assignation.id &&
+                                        (() => {
+                                          const filteredComments = comments
+                                            .filter(
+                                              (c) =>
+                                                c.assignation_id === assignation.id,
+                                            )
+                                            .sort(
+                                              (a, b) =>
+                                                new Date(b.created_at).getTime() -
+                                                new Date(a.created_at).getTime(),
+                                            );
+                                          return (
+                                            <div className="mt-2">
+                                              {filteredComments.length > 0 ? (
+                                                filteredComments.map((c) => (
+                                                  <div
+                                                    key={c.id}
+                                                    className="border rounded p-2 mb-1 bg-white"
+                                                    style={{ fontSize: "0.9rem" }}
+                                                  >
+                                                    <strong>
+                                                      {c.user?.name ??
+                                                        c.user_id}
+                                                    </strong>
+                                                    :{" "}
+                                                    <span>{c.body}</span>
+                                                    <br />
+                                                    <small className="text-muted">
                                                       {new Date(
-                                                        c.updated_at,
+                                                        c.created_at,
                                                       ).toLocaleString("ca-ES")}
-                                                      )
-                                                    </>
-                                                  )}
-                                                </small>
-                                                <div className="d-flex justify-content-end gap-1 mt-1">
-                                                  {c.user_id ===
-                                                    currentUserId && (
-                                                    <div
-                                                      className="btn btn-warning btn-sm"
-                                                      title="Editar comentari"
-                                                      onClick={() => {
-                                                        setEditingComment(c);
-                                                        setAssignationToAddComment(
-                                                          assignation,
-                                                        );
-                                                        setCommentFormType(
-                                                          "edit",
-                                                        );
-                                                      }}
-                                                    >
-                                                      <i className="bi bi-pencil"></i>
+                                                      {c.created_at !==
+                                                        c.updated_at && (
+                                                          <>
+                                                            {" "}
+                                                            (editat:{" "}
+                                                            {new Date(
+                                                              c.updated_at,
+                                                            ).toLocaleString("ca-ES")}
+                                                            )
+                                                          </>
+                                                        )}
+                                                    </small>
+                                                    <div className="d-flex justify-content-end gap-1 mt-1">
+                                                      {c.user_id ===
+                                                        currentUserId && (
+                                                          <div
+                                                            className="btn btn-warning btn-sm"
+                                                            title="Editar comentari"
+                                                            onClick={() => {
+                                                              setEditingComment(c);
+                                                              setAssignationToAddComment(
+                                                                assignation,
+                                                              );
+                                                              setCommentFormType(
+                                                                "edit",
+                                                              );
+                                                            }}
+                                                          >
+                                                            <i className="bi bi-pencil"></i>
+                                                          </div>
+                                                        )}
+                                                      {(c.user_id ===
+                                                        currentUserId ||
+                                                        isOwner) && (
+                                                          <div
+                                                            className="btn btn-danger btn-sm"
+                                                            title="Eliminar comentari"
+                                                            onClick={() =>
+                                                              handleDeleteComment(
+                                                                c.id,
+                                                              )
+                                                            }
+                                                          >
+                                                            <i className="bi bi-trash"></i>
+                                                          </div>
+                                                        )}
                                                     </div>
-                                                  )}
-                                                  {(c.user_id ===
-                                                    currentUserId ||
-                                                    isOwner) && (
-                                                    <div
-                                                      className="btn btn-danger btn-sm"
-                                                      title="Eliminar comentari"
-                                                      onClick={() =>
-                                                        handleDeleteComment(
-                                                          c.id,
-                                                        )
-                                                      }
-                                                    >
-                                                      <i className="bi bi-trash"></i>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            ))
-                                          ) : (
-                                            <p className="text-muted small">
-                                              No hi ha comentaris
-                                            </p>
-                                          )}
-                                        </div>
-                                      );
-                                    })()}
-
-                                  {assignation.needs_proofs !== null &&
-                                    assignation.needs_proofs !== undefined && (
-                                      <div>
-                                        📋 Requereix proves:{" "}
-                                        {assignation.needs_proofs ? "Sí" : "No"}
-                                      </div>
-                                    )}
-
-                                  {assignation.proofs &&
-                                    assignation.proofs.length > 0 && (
-                                      <div className="mt-2">
-                                        <div className="fw-bold">
-                                          📋 Proves adjuntes (
-                                          {assignation.proofs.length}):
-                                        </div>
-                                        <div className="p-3">
-                                          <>
-                                            {assignation.proofs.map((proof) => (
-                                              <div
-                                                key={proof.id}
-                                                className="border rounded p-2 mb-1 bg-white"
-                                                style={{ fontSize: "0.9rem" }}
-                                              >
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                  <span className="fw-medium">
-                                                    {proof.user?.name
-                                                      ? `${proof.user?.name} (${proof.user?.username})`
-                                                      : "Usuari desconegut"}
-                                                  </span>
-                                                  <span>
-                                                    {proof.is_valid
-                                                      ? "✅ Vàlida"
-                                                      : "❌ Pendent"}
-                                                  </span>
-                                                </div>
-                                                <small className="text-muted">
-                                                  {proof.created_at
-                                                    ?.split("T")[0]
-                                                    .split("-")
-                                                    .reverse()
-                                                    .join("-") +
-                                                    " a les " +
-                                                    proof.created_at
-                                                      ?.split("T")[1]
-                                                      ?.split(".")[0]}
-                                                </small>
-                                                {proof.proof_type === "text" ? (
-                                                  <p className="mb-0 mt-1">
-                                                    {proof.proof}
-                                                  </p>
-                                                ) : (
-                                                  <p>
-                                                    <img
-                                                      src={proof.proof}
-                                                      alt="Prova"
-                                                      className="img-fluid mt-1"
-                                                      style={{
-                                                        maxHeight: 150,
-                                                        objectFit: "contain",
-                                                      }}
-                                                    />
-                                                  </p>
-                                                )}
-                                                {!proof.is_valid && (
-                                                  <div className="mt-2 d-flex gap-2 justify-content-end">
-                                                    <button
-                                                      className="btn btn-success"
-                                                      onClick={async () => {
-                                                        await validateProof(
-                                                          proof.id, true
-                                                        );
-                                                      }}
-                                                    >
-                                                      És vàlida
-                                                    </button>
                                                   </div>
-                                                )}
-                                              </div>
-                                            ))}
-                                          </>
+                                                ))
+                                              ) : (
+                                                <p className="text-muted small">
+                                                  No hi ha comentaris
+                                                </p>
+                                              )}
+                                            </div>
+                                          );
+                                        })()}
+
+                                      {assignation.needs_proofs !== null &&
+                                        assignation.needs_proofs !== undefined && (
+                                          <div>
+                                            📋 Requereix proves:{" "}
+                                            {assignation.needs_proofs ? "Sí" : "No"}
+                                          </div>
+                                        )}
+
+                                      {assignation.proofs &&
+                                        assignation.proofs.length > 0 && (
+                                          <div className="mt-2">
+                                            <div className="fw-bold">
+                                              📋 Proves adjuntes (
+                                              {assignation.proofs.length}):
+                                            </div>
+                                            <div className="p-3">
+                                              <>
+                                                {assignation.proofs.map((proof) => (
+                                                  <div
+                                                    key={proof.id}
+                                                    className="border rounded p-2 mb-1 bg-white"
+                                                    style={{ fontSize: "0.9rem" }}
+                                                  >
+                                                    <div className="d-flex justify-content-between align-items-center">
+                                                      <span className="fw-medium">
+                                                        {proof.user?.name
+                                                          ? `${proof.user?.name} (${proof.user?.username})`
+                                                          : "Usuari desconegut"}
+                                                      </span>
+                                                      <span>
+                                                        {proof.is_valid
+                                                          ? "✅ Vàlida"
+                                                          : "❌ Pendent"}
+                                                      </span>
+                                                    </div>
+                                                    <small className="text-muted">
+                                                      {proof.created_at
+                                                        ?.split("T")[0]
+                                                        .split("-")
+                                                        .reverse()
+                                                        .join("-") +
+                                                        " a les " +
+                                                        proof.created_at
+                                                          ?.split("T")[1]
+                                                          ?.split(".")[0]}
+                                                    </small>
+                                                    {proof.proof_type === "text" ? (
+                                                      <p className="mb-0 mt-1">
+                                                        {proof.proof}
+                                                      </p>
+                                                    ) : (
+                                                      <p>
+                                                        <img
+                                                          src={proof.proof}
+                                                          alt="Prova"
+                                                          className="img-fluid mt-1"
+                                                          style={{
+                                                            maxHeight: 150,
+                                                            objectFit: "contain",
+                                                          }}
+                                                        />
+                                                      </p>
+                                                    )}
+                                                    {!proof.is_valid && (
+                                                      <div className="mt-2 d-flex gap-2 justify-content-end">
+                                                        <button
+                                                          className="btn btn-success"
+                                                          onClick={async () => {
+                                                            await validateProof(
+                                                              proof.id, true
+                                                            );
+                                                          }}
+                                                        >
+                                                          És vàlida
+                                                        </button>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                ))}
+                                              </>
+                                            </div>
+                                          </div>
+                                        )}
+
+                                      <div>
+                                        🆕 Creat el dia:{" "}
+                                        {assignation.created_at &&
+                                          assignation.created_at
+                                            .split("T")[0]
+                                            .split("-")
+                                            .reverse()
+                                            .join("-") +
+                                          " a les " +
+                                          assignation.created_at
+                                            .split("T")[1]
+                                            .split(".")[0]}
+                                      </div>
+                                      <div>
+                                        🔄 Actualitzat el dia:{" "}
+                                        {assignation.updated_at &&
+                                          assignation.updated_at
+                                            .split("T")[0]
+                                            .split("-")
+                                            .reverse()
+                                            .join("-") +
+                                          " a les " +
+                                          assignation.updated_at
+                                            .split("T")[1]
+                                            .split(".")[0]}
+                                      </div>
+                                      <div className="d-flex gap-2 align-self-end me-2 mt-2">
+                                        <div
+                                          className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
+                                          onClick={() =>
+                                            handleToggleCompleted(assignation)
+                                          }
+                                        >
+                                          {assignation.completed
+                                            ? "Desmarcar completada"
+                                            : "Marcar completada"}
+                                        </div>
+                                        <div
+                                          className="btn btn-primary"
+                                          onClick={() => {
+                                            setShowCommentsForId((prev) =>
+                                              prev === assignation.id
+                                                ? null
+                                                : assignation.id,
+                                            );
+                                          }}
+                                        >
+                                          Mostrar comentaris
+                                        </div>
+                                        <div
+                                          className="btn btn-primary"
+                                          onClick={() => {
+                                            setAssignationToAddComment(assignation);
+                                            setCommentFormType("create");
+                                            setEditingComment(undefined);
+                                          }}
+                                        >
+                                          Nou comentari
                                         </div>
                                       </div>
-                                    )}
-
-                                  <div>
-                                    🆕 Creat el dia:{" "}
-                                    {assignation.created_at &&
-                                      assignation.created_at
-                                        .split("T")[0]
-                                        .split("-")
-                                        .reverse()
-                                        .join("-") +
-                                      " a les " +
-                                      assignation.created_at
-                                        .split("T")[1]
-                                        .split(".")[0]}
-                                  </div>
-                                  <div>
-                                    🔄 Actualitzat el dia:{" "}
-                                    {assignation.updated_at &&
-                                      assignation.updated_at
-                                        .split("T")[0]
-                                        .split("-")
-                                        .reverse()
-                                        .join("-") +
-                                      " a les " +
-                                      assignation.updated_at
-                                        .split("T")[1]
-                                        .split(".")[0]}
-                                  </div>
-                                  <div className="d-flex gap-2 align-self-end me-2 mt-2">
-                                    <div
-                                      className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
-                                      onClick={() =>
-                                        handleToggleCompleted(assignation)
-                                      }
-                                    >
-                                      {assignation.completed
-                                        ? "Desmarcar completada"
-                                        : "Marcar completada"}
                                     </div>
-                                    <div
-                                      className="btn btn-primary"
-                                      onClick={() => {
-                                        setShowCommentsForId((prev) =>
-                                          prev === assignation.id
-                                            ? null
-                                            : assignation.id,
-                                        );
-                                      }}
-                                    >
-                                      Mostrar comentaris
-                                    </div>
-                                    <div
-                                      className="btn btn-primary"
-                                      onClick={() => {
-                                        setAssignationToAddComment(assignation);
-                                        setCommentFormType("create");
-                                        setEditingComment(undefined);
-                                      }}
-                                    >
-                                      Nou comentari
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
+                                  )}
                                 </div>
                               ))}
                             </li>

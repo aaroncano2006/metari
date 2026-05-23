@@ -115,8 +115,9 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                           <div>🔄 Actualitzat el dia: {assignation.updated_at && assignation.updated_at.split("T")[0].split("-").reverse().join("-") + " a les " + assignation.updated_at.split("T")[1].split(".")[0]}</div>
 
                           {!assignation.needs_proofs && (
+                            <div className="d-flex justify-content-center">
                             <div
-                              className={`btn mt-2 ${assignation.completed ? "btn-warning" : "btn-success"}`}
+                              className={`btn mt-2  ${assignation.completed ? "yellowBtn" : "greenBtn"}`}
                               onClick={async () => {
                                 const update = await updateAssignation(assignation.id, {
                                   completed: !assignation.completed,
@@ -149,6 +150,7 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                               {assignation.completed
                                 ? "Desmarcar completada"
                                 : "Marcar completada"}
+                            </div>
                             </div>
                           )}
 

@@ -62,7 +62,9 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
       <div className="metaList mt-4">
         <div className="titolComponent text-center my-2">
           {vistaActual === "/admin" || !isTop10 ? (
-            "Llista de grups"
+            <>
+            <i className="bi bi-people-fill text-primary"></i>"Llista de grups"
+            </>
           ) : (
             <>
               <i className="bi bi-trophy-fill me-2 text-primary"></i>
@@ -98,14 +100,16 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                         </>
                       )}
                       {canEdit &&
-                        <button className="  btn btn-warning p-1  me-2  ms-auto"
+                        <button className=" smallButton btn btn-warning p-1  me-1  ms-auto"
+                          title="Editar"
                           onClick={(event) => {
                             event.stopPropagation()
                             setGroupToEdit(group)
-                          }}>Edita</button>
+                          }}><i className="bi bi-pencil "></i></button>
                       }
                       {canEdit &&
-                        <button className="  btn btn-danger p-1   "
+                        <button className=" smallButton btn btn-danger p-1   "
+                        title="Eliminar"
                           onClick={async (event) => {
                             event.stopPropagation();
                             try {
@@ -125,22 +129,22 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                       <div className="metaDetails ps-2 py-2">
                         {vistaActual !== "/" &&
                           <>
-                            <div>ID: {group.id}</div>
-                            <div>Public: {group.is_public ? "Sí" : "No"}</div>
+                            <div>🆔 ID: {group.id}</div>
+                            <div>🔓 Public: {group.is_public ? "Sí" : "No"}</div>
                           </>
                         }
-                        <div>Nom: {group.name}</div>
-                        <div>Puntuacio del grup: {groupScores.get(group.id)}</div>
-                        <div>Descripcio: {group.description}</div>
+                        <div>🔖 Nom: {group.name}</div>
+                        <div>💯 Puntuacio del grup: {groupScores.get(group.id)}</div>
+                        <div>📝 Descripcio: {group.description}</div>
                         {/* <div>owner_id: {group.owner_id}</div> */}
-                        <div>Creador: {group.owner.username}</div>
+                        <div>👤 Creador: {group.owner.username}</div>
                         {/* {vistaActual !== "/" && */}
                         <div className="llistaUsuaris">
-                          <div className="fw-bold mb-1">Membres del grup:</div>
+                          <div className="fw-bold mb-1">👥 Membres del grup:</div>
                           {group.groupUsers.map((groupUser) => (
                             <div key={groupUser.user_id} className="d-flex  mb-1">
-                              <div className="me-2">
-                                {groupUser.user.username}
+                              <div className="me-2 ms-4">
+                                👤 {groupUser.user.username}
                               </div>
                               {groupUser.role === "moderator" && (
                                 <div className="badge bg-warning text-black">

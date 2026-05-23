@@ -98,25 +98,29 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
       <div className="modalOverlay h-100 w-100">
         <div className="container-fluid">
           <div className="row justify-content-center">
-            <div className="col-12 col-sm-6">
-              <div className="modalWindow">
+            <div className="col-12 col-sm-8 col-md-6 col-xl-4">
+              <div className="modalWindow bg-form p-4 ">
 
                 <form onSubmit={handleSubmit}>
 
-
                   {meta[1] === "autoassign" &&
                     <>
-                      <h5>Personalitza la teva meta</h5>
+                      <h5 className="tiltWarp">Personalitza la teva meta</h5>
 
                       <div className="">
-                        <div>Titol:{meta[0]?.title}</div>
-                        {meta[0]?.description &&
-                          <div>Descripcio:{meta[0]?.description}</div>
-                        }
+                        <div className="my-3">
+
+                          <div><strong>Titol: </strong>{meta[0]?.title}</div>
+                          {meta[0]?.description &&
+                            <div><strong>Descripcio: </strong>{meta[0]?.description}</div>
+                          }
+                        </div>
+
                         <input type="hidden" name="user_id" value={getUserId() ?? ""} />
                         <input type="hidden" name="meta_id" value={meta[0]?.id} />
-                        <div>
-                          <label htmlFor="start_date">📅 Inici:</label>
+
+                        <div className="my-2">
+                          <label htmlFor="start_date">📅 <strong>Inici:</strong></label>
                           <input
                             className="form-control"
                             type="date"
@@ -124,15 +128,15 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                             defaultValue={new Date().toISOString().split("T")[0]}
                           />
                         </div>
-                        <div>
-                          <label htmlFor="due_date">⏳ Data límit</label>
+                        <div className="my-2">
+                          <label htmlFor="due_date">⏳ <strong>Data límit</strong></label>
 
                           <input className="form-control" type="date" name="due_date"
                           // defaultValue={new Date().toISOString().split("T")[0]}
                           />
                         </div>
-                        <div>
-                          <label htmlFor="priority">🔥 Prioritat:</label>
+                        <div className="my-2">
+                          <label htmlFor="priority">🔥 <strong>Prioritat:</strong></label>
                           <select className="form-select mb-2" name="priority" id="priority"
 
                           >
@@ -148,7 +152,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                         </div>
 
                         <div>
-                          <label htmlFor="difficulty">🎯 Dificultat</label>
+                          <label htmlFor="difficulty">🎯 <strong>Dificultat:</strong> </label>
                           <select className="form-select mb-2" defaultValue="normal" name="difficulty" id="difficulty"
                           >
                             {difficultyOptions.map((difficulty) => (
@@ -176,17 +180,19 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                       <h5>Personalitza la meta a assignar</h5>
 
                       <div className="">
-                        <div>Titol:{meta[0]?.title}</div>
+                        <div className="my-3">
+                        <div><strong>Titol: </strong>{meta[0]?.title}</div>
                         {meta[0]?.description &&
-                          <div>Descripcio:{meta[0]?.description}</div>
+                          <div><strong>Descripcio: </strong>{meta[0]?.description}</div>
                         }
+                        </div>
                         <input type="hidden" name="user_id" value={getUserId() ?? ""} />
                         <input type="hidden" name="assigner_id" value={loggedInUserId ?? ""} />
                         <input type="hidden" name="meta_id" value={meta[0]?.id} />
 
 
                         <div>
-                          <label htmlFor="group_id">{meta[0]?.type === "task" ? "Grups dels que ets moderador:" : "Grups dels que formes part:"}</label>
+                          <label htmlFor="group_id">{meta[0]?.type === "task" ? <strong>Grups dels que ets moderador:</strong> : <strong>Grups dels que formes part:</strong>}</label>
                           <select className="form-select mb-2" name="group_id" id="group_id"
                             onChange={(e) => setSelectedGroupId(e.target.value ? Number(e.target.value) : "")}
                           >
@@ -207,7 +213,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
                         {meta[0]?.type === "task" &&
                           <div>
-                            <label htmlFor="userToAssign">usuari del grup:</label>
+                            <label htmlFor="userToAssign"><strong>usuari del grup:</strong></label>
                             <select className="form-select mb-2" name="userToAssign" id="userToAssign"
                             >
                               <option key={"empty"} value={""}>Tria un usuari</option>
@@ -221,7 +227,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                           </div>
 
                         }
-                        <label className="me-5 my-2" htmlFor="needs_proofs">Proves necessaries?</label>
+                        <label className="me-5 my-2" htmlFor="needs_proofs"><strong>Proves necessaries?</strong></label>
                         <input type="checkbox" name="needs_proofs" id="needs_proofs"
                           checked={needsProofs}
                           onChange={() => setNeedsProofs(prev => !prev)} />
@@ -230,7 +236,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
 
                         <div>
-                          <label htmlFor="start_date">📅 Inici:</label>
+                          <label htmlFor="start_date">📅 <strong>Inici:</strong></label>
                           <input
                             className="form-control"
                             type="date"
@@ -239,14 +245,14 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                           />
                         </div>
                         <div>
-                          <label htmlFor="due_date">⏳ Data límit</label>
+                          <label htmlFor="due_date">⏳ <strong>Data límit:</strong></label>
 
                           <input className="form-control" type="date" name="due_date"
                           // defaultValue={new Date().toISOString().split("T")[0]}
                           />
                         </div>
                         <div>
-                          <label htmlFor="priority">🔥 Prioritat:</label>
+                          <label htmlFor="priority">🔥 <strong>Prioritat:</strong></label>
                           <select className="form-select mb-2" name="priority" id="priority"
 
                           >
@@ -262,7 +268,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
                         </div>
 
                         <div>
-                          <label htmlFor="difficulty">🎯 Dificultat</label>
+                          <label htmlFor="difficulty">🎯 <strong>Dificultat:</strong></label>
                           <select className="form-select mb-2" defaultValue="normal" name="difficulty" id="difficulty"
                           >
                             {difficultyOptions.map((difficulty) => (
@@ -275,7 +281,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
                         {meta[0]?.type === "challenge" && (
                           <div>
-                            <label htmlFor="score">🏆 Punts al completar:</label>
+                            <label htmlFor="score">🏆 <strong>Punts al completar:</strong></label>
                             <input className="form-control mb-2" type="number" name="score" id="score" />
                           </div>
                         )}

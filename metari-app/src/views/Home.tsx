@@ -72,23 +72,29 @@ export default function Home() {
       <Helmet>
         <title>Metari · Home - Comunitats, objectius i connexions</title>
       </Helmet>
-      <div className="container-fluid bg-warning pb-4 pt-3">
-        <h1 className="py-3  flex flex-column align-content-center text-center">
+      
+      <div className="container-fluid banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">
           Benvingut a Metari
         </h1>
+        {!token && 
+          <h2 className="text-center text-muted">Organitza metes, crea hàbits, avança.</h2>
+        }
         {token && (
+          <>
           <div className="d-flex gap-2 justify-content-center">
             <UserCreateMetaBtn setMetas={setMetas} categories={categories} />
             <UserCreateGroupBtn setGroups={setGroups} />
             {/* {groups[0] && (
                 <button
-                  className="btn btn-outline-primary"
+                className="btn btn-outline-primary"
                   onClick={() => setGroupModeratorPanel(groups[0])}
-                >
+                  >
                   Panell de grup
-                </button>
+                  </button>
               )} */}
           </div>
+                  </>
         )}
       </div>
 
