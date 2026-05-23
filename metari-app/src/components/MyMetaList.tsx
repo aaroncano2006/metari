@@ -126,12 +126,12 @@ export function MyMetaList({ assignations, setAssignations }: MyMetaListProps) {
                                 if (update.completed) {
                                   const user = await fetchUserById(getUserId()!);
                                   await updateUser(getUserId()!, {
-                                    completed_tasks: user.completed_tasks + 1
+                                    completed_tasks: (user?.completed_tasks ?? 0) + 1
                                   });
                                 } else {
                                   const user = await fetchUserById(getUserId()!);
                                   await updateUser(getUserId()!, {
-                                    completed_tasks: user.completed_tasks - 1
+                                    completed_tasks: (user?.completed_tasks ?? 0) - 1
                                   });
                                 }
 

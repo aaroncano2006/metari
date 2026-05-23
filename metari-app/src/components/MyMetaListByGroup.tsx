@@ -352,6 +352,7 @@ export function MyMetaListByGroup({
                                       Marcar completada
                                     </div>
                                   )}
+                                
 
                                   {!assignation.completed &&
                                   assignation.meta.type === "task" &&
@@ -366,8 +367,8 @@ export function MyMetaListByGroup({
                                         const user = await fetchUserById(loggedInUserId!);
                                         const score = assignation.score ?? 0;
                                         await updateUser(loggedInUserId!, {
-                                          completed_tasks: user.completed_tasks + 1,
-                                          score: user.score + score,
+                                          completed_tasks: (user?.completed_tasks ?? 0) + 1,
+                                          score: (user?.score ?? 0) + score,
                                         });
                                         setAssignations((prev) =>
                                           prev.map((a) =>
