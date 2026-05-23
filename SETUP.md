@@ -208,8 +208,6 @@ Aquesta comanda:
 
 - Monta l'Nginx que fa de reverse proxy i genera certificats SSL per poder accedir amb HTTPS.
 
-> **Nota:** `docker compose` (v2) ja ve inclòs amb Docker a Ubuntu 24.04, no cal instal·lar-lo a part.
-
 Un cop finalitzat, verifica que tots els serveis estan funcionant correctament:
 
 ```bash
