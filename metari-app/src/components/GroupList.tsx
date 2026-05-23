@@ -62,7 +62,9 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
       <div className="metaList mt-4">
         <div className="titolComponent text-center my-2">
           {vistaActual === "/admin" || !isTop10 ? (
-            "Llista de grups"
+            <>
+            <i className="bi bi-people-fill text-primary"></i>"Llista de grups"
+            </>
           ) : (
             <>
               <i className="bi bi-trophy-fill me-2 text-primary"></i>
@@ -98,14 +100,16 @@ export function GroupList({ groups, setter, isTop10 }: GroupListProps) {
                         </>
                       )}
                       {canEdit &&
-                        <button className="  btn btn-warning p-1  me-2  ms-auto"
+                        <button className=" smallButton btn btn-warning p-1  me-1  ms-auto"
+                          title="Editar"
                           onClick={(event) => {
                             event.stopPropagation()
                             setGroupToEdit(group)
-                          }}>Edita</button>
+                          }}><i className="bi bi-pencil "></i></button>
                       }
                       {canEdit &&
-                        <button className="  btn btn-danger p-1   "
+                        <button className=" smallButton btn btn-danger p-1   "
+                        title="Eliminar"
                           onClick={async (event) => {
                             event.stopPropagation();
                             try {

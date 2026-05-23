@@ -49,20 +49,20 @@ export default function MyMetas() {
           el.groupUsers.some((gu) => gu.user_id === getUserId()),
       );
       setMyGroups(filteredByPublic);
-    }).catch(() => {});
+    }).catch(() => { });
   };
 
   useEffect(() => {
-    fetchUsers().then(setUsers).catch(() => {})
-    fetchCategories().then(setCategories).catch(() => {})
-    fetchMetas().then(setMetas).catch(() => {})
+    fetchUsers().then(setUsers).catch(() => { })
+    fetchCategories().then(setCategories).catch(() => { })
+    fetchMetas().then(setMetas).catch(() => { })
     fetchGroups().then((response) => {
       const filteredByPublic = response.filter((el) => el.is_public);
       setGroups(filteredByPublic);
-    }).catch(() => {});
+    }).catch(() => { });
     fetchMyGroups();
-    fetchFriends(getUserId()!).then(setFriends).catch(() => {})
-    fetchAssignations().then(setAssignations).catch(() => {})
+    fetchFriends(getUserId()!).then(setFriends).catch(() => { })
+    fetchAssignations().then(setAssignations).catch(() => { })
 
   }, [])
 
@@ -81,24 +81,32 @@ export default function MyMetas() {
         <title>Metari · Les meves metes</title>
       </Helmet>
 
-      <h1 className="banner bg-warning flex titol flex-column align-content-center text-center">Metari</h1>
+      {/* <h1 className="banner bg-warning flex titol flex-column align-content-center text-center">Metari</h1>
+      <h2>Gestiona el teu progrés, una tasca a la vegada.</h2> */}
+
+      <div className="container-fluid banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">
+          Metari
+        </h1>
+        <h2 className="text-center text-muted ">Planifica, executa i completa.</h2>
+
+      </div>
+      <h2 className="text-center mt-4">Les meves metas</h2>
+
       <div className="container">
-
-
-        <div className="row mt-5 g-2 gx-md-4 gx-lg-5 mb-5">
-
+        <div className="row  g-2 gx-md-4 gx-lg-5 mb-5">
           <div className="d-none d-md-block col-12 col-sm-5 col-md-4 col-xl-3">
-            <CategoryList 
-            categories={categories} 
-            setter={setCategories} 
-            filteredCategory={filteredCategory}
-            setFilteredCategory={setFilteredCategory}
+            <CategoryList
+              categories={categories}
+              setter={setCategories}
+              filteredCategory={filteredCategory}
+              setFilteredCategory={setFilteredCategory}
             />
           </div>
 
 
           <div className="col-12  col-md-8 col-xl-6">
-            <MyMetaList assignations={assignations} setAssignations={setAssignations}/>
+            <MyMetaList assignations={assignations} setAssignations={setAssignations} />
           </div>
 
 

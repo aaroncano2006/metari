@@ -91,29 +91,35 @@ export default function AdminPanel() {
       <Helmet>
         <title>Metari · Admin</title>
       </Helmet>
-      <h1 className="banner bg-warning flex flex-column align-content-center titol text-center">Metari</h1>
+      <div className="container-fluid banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">
+          Metari
+        </h1>
+        <h2 className="text-center text-muted ">Gestiona i supervisa la plataforma.</h2>
+
+      </div>
       <h2 className="text-center mt-4">Panell Admin</h2>
       <div className="selectionMenu mt-4 d-flex justify-content-center gap-3">
         <div
-          className="btn btn-primary"
+          className="btn createBtnAdmin"
           onClick={() => setMenuSelection("metas")}
         >
           Metas
         </div>
         <div
-          className="btn btn-primary"
+          className="btn createBtnAdmin"
           onClick={() => setMenuSelection("categories")}
         >
           Categories
         </div>
         <div
-          className="btn btn-primary"
+          className="btn createBtnAdmin"
           onClick={() => setMenuSelection("usuaris")}
         >
           Usuaris
         </div>
         <div
-          className="btn btn-primary"
+          className="btn createBtnAdmin"
           onClick={() => setMenuSelection("grups")}
         >
           Grups

@@ -42,7 +42,9 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
       <div className="metaList mt-4">
         <div className="titolComponent text-center my-2">
           {vistaActual === "/admin" || !isTop10 ? (
-            "Llista d'usuaris"
+            <>
+            <i className="bi bi-person-fill text-primary"></i>Llista d'usuaris
+            </>
           ) : (
             <>
               <i className="bi bi-trophy-fill text-primary"></i>
@@ -62,12 +64,12 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
                     onClick={() => toggleEntity(user.id)}
                   >
                     <div className="d-flex  ps-2 pe-2  align-items-center">
-                        <i className="bi bi-person-circle profileIcon me-3"></i>
+                      <i className="bi bi-person-circle profileIcon me-3"></i>
                       <div className="me-auto">{user.username}</div>
                       {token && (
                         <Link
                           to={`/profile?username=${user.username}`}
-                          className="btn btn-primary p-1 me-2 smallButton"
+                          className="btn btn-primary p-1 me-1 smallButton"
                           title="Perfil d'usuari"
                           onClick={(event) => event.stopPropagation()}
                         >
@@ -88,18 +90,20 @@ export function UserList({ users, setter, isTop10 }: UserListProps) {
 
                       {canEdit && (
                         <button
-                          className="  btn btn-warning p-1 ms-2 me-2 "
+                          className=" smallButton btn btn-warning p-1 ms-2 me-2 "
+                          title="Editar"
                           onClick={(event) => {
                             event.stopPropagation();
                             setUserToEdit(user);
                           }}
                         >
-                          Edita
+                          <i className="bi bi-pencil "></i>
                         </button>
                       )}
                       {canEdit && (
                         <button
-                          className="  btn btn-danger p-1   "
+                          className=" smallButton btn btn-danger p-1   "
+                          title="Eliminar"
                           onClick={async (event) => {
                             event.stopPropagation();
                             try {

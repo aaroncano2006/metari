@@ -87,7 +87,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                     <div>{meta.title}</div>
 
                     {canEdit &&
-                      <button className="  btn btn-warning p-1  me-2  ms-auto"
+                      <button className="smallButton btn btn-warning p-1  me-2  ms-auto"
                         title="Edita"
                         onClick={(event) => {
                           event.stopPropagation()
@@ -95,7 +95,7 @@ export function MetaList({ metas, setter, filteredCategory, groups }: MetaListPr
                         }}><i className="bi bi-pencil"></i></button>
                     }
                     {canEdit &&
-                      <button className="  btn btn-danger p-1   "
+                      <button className=" smallButton btn btn-danger p-1   "
                         title="Elimina"
                         onClick={async (event) => {
                           event.stopPropagation()

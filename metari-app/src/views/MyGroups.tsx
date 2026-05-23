@@ -81,10 +81,17 @@ export default function MyGroups() {
       <Helmet>
         <title>Metari · Els meus grups</title>
       </Helmet>
-      <h1 className="banner bg-warning flex flex-column align-content-center titol text-center">Metari</h1>
+      <div className="container-fluid banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">
+          Metari
+        </h1>
+        <h2 className="text-center text-muted ">Completa, millora i escala posicions.</h2>
+
+      </div>
+      <h2 className="text-center mt-4">Els meus grups</h2>
       <div className="container">
 
-        <div className="row mt-5 mb-5 g-2 gx-md-4 gx-lg-5" >
+        <div className="row  mb-5 g-2 gx-md-4 gx-lg-5" >
 
           <div className="d-none d-md-block col-12 col-sm-5 col-md-4 col-xl-3">
             <CategoryList 
