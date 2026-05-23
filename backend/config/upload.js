@@ -12,10 +12,9 @@ const storage = multer.diskStorage({
     },
 });
 const fileFilter = (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|webp/;
-    const extOk = allowed.test(path.extname(file.originalname).toLowerCase());
-    const mimeOk = allowed.test(file.mimetype.split("/")[1]);
-    cb(extOk && mimeOk ? null : new Error("Només imatges (jpeg, png, webp)"), extOk && mimeOk);
+    const allowed = /.(jpeg|jpg|png|webp)$/i;
+    const extOk = allowed.test(path.extname(file.originalname));
+    cb(extOk ? null : new Error("Només imatges (jpeg, png, webp)"), extOk);
 };
 const upload = multer({
     storage,

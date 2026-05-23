@@ -1,7 +1,7 @@
 # Estimacio d'hores
 
 Hores totals lectives: 140H
-Hores totals:
+Hores totals: 230H
 
 ## Backend
 ### Estimacio d'hores
@@ -28,5 +28,3 @@ Estados: 5h
 Components: 10h
 Maquetacio: 10h
 Estils: 10h
-
-### Hores realitzades
