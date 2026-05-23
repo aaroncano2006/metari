@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 
-import { updateUser } from "../../services/userService"
 import type { groupType } from "../../types/groupType"
 import { updateGroup } from "../../services/groupService"
 // import { fetchUsers } from "../../services/userService"
