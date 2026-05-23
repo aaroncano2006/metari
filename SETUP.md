@@ -99,8 +99,10 @@ Exemple:
 
 ```env
 MYSQL_ROOT_PASSWORD=root
-MYSQL_DATABASE=metari_db
+MYSQL_DATABASE=metari
 ```
+
+> ⚠️ **Important:** Els valors que definiu aquí (`MYSQL_ROOT_PASSWORD` i `MYSQL_DATABASE`) s'han de reproduir exactament al fitxer `backend/.env`. Si no coincideixen, el backend no podrà connectar-se a la base de dades i donarà l'error `P1000`.
 
 Ens situem al directori del backend i fem el mateix amb el fitxer `.env.example` que trobem:
 
@@ -116,7 +118,7 @@ Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens intere
 
 - `DOCKER_PORT`: Determina en quin port escoltarà el backend. Valor per defecte: 3001 (el mantenim tal qual).
 
-- `DOCKER_DATABASE_URL`: Enllaç a la base de dades amb la qual es conectarà l'ORM del backend (Prisma). Valor per defecte: `mysql://root:root_password@db:3306/nom_de_la_teva_database`. Canvia `root_password` i `nom_de_la_teva_database` pels valors especificats al `.env` de l'arrel del projecte i comprova que `db` i `3306` són els mateixos valors que els de les variables `DOCKER_ADAPTER_HOST` i `DOCKER_ADAPTER_PORT`.
+- `DOCKER_DATABASE_URL`: Enllaç a la base de dades amb la qual es conectarà l'ORM del backend (Prisma). Valor per defecte: `mysql://root:root@db:3306/metari`. Canvia `root` (contrasenya) i `metari` (nom de BD) pels valors especificats al `.env` de l'arrel del projecte i comprova que `db` i `3306` són els mateixos valors que els de les variables `DOCKER_ADAPTER_HOST` i `DOCKER_ADAPTER_PORT`.
 
 - `DOCKER_ADAPTER_HOST`: Host on s'ubica la base de dades. Valor per defecte: `db`. S'ha de mantenir ja que aquest és el nom del servei que conté la nostra base de dades al Docker Compose.
 
@@ -124,9 +126,9 @@ Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens intere
 
 - `DOCKER_ADAPTER_USER`: Usuari amb privilegis de la base de dades. Valor per defecte: root (el mantenim tal qual).
 
-- `DOCKER_ADAPTER_PASSWORD`: Contrasenya de l'usuari amb privilegis de la base de dades. Valor per defecte: root_password (canvia-la pel valor especificat a la variable d'entorn de l'arrel `MYSQL_ROOT_PASSWORD`).
+- `DOCKER_ADAPTER_PASSWORD`: Contrasenya de l'usuari amb privilegis de la base de dades. Valor per defecte: root (canvia-la pel valor especificat a la variable d'entorn de l'arrel `MYSQL_ROOT_PASSWORD`).
 
-- `DOCKER_ADAPTER_DATABASE`: Base de dades utilitzada. Valor per defecte: nom_de_la_teva_database (canvia'l pel valor especificat a la variable d'entorn de l'arrel `MYSQL_DATABASE`)
+- `DOCKER_ADAPTER_DATABASE`: Base de dades utilitzada. Valor per defecte: metari (canvia'l pel valor especificat a la variable d'entorn de l'arrel `MYSQL_DATABASE`)
 
 - `DOCKER_FRONTEND_URL`: URL del frontend per a producció. Serveix per restringir l'origen de les peticions i que només el frontend pugui fer peticions al backend. Valor per defecte: http://localhost (mantenir com està, és necessari per a que Docker ho entengui).
 
@@ -138,9 +140,19 @@ Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens intere
 
 - `TRANSPORTER_APP_PASS`: App password generada anteriorment.
 
-- `SECRET`: Contrasenya segura per firmar els tokens d'autenticació i de restuaració de contrasenya.
+- `SECRET`: **(OBLIGATORI)** Contrasenya segura per firmar els tokens d'autenticació i de restauració de contrasenya. No té valor per defecte; n'has d'introduir una.
 
 Les variable d'entorn per localhost no són necessàries emplenar-les, aquestes només serveixen per desenvolupament.
+
+### Correspondència de variables
+
+Assegura't que aquests valors coincideixen entre els dos fitxers:
+
+| Root `.env` | `backend/.env` | Exemple |
+|---|---|---|
+| `MYSQL_ROOT_PASSWORD` | `DOCKER_ADAPTER_PASSWORD` | `root` |
+| `MYSQL_DATABASE` | `DOCKER_ADAPTER_DATABASE` | `metari` |
+| (derivat) | `DOCKER_DATABASE_URL` | `mysql://root:root@db:3306/metari` |
 
 Exemple de .env final:
 
@@ -153,14 +165,14 @@ ENVIRONMENT="production"
 
 # index.js & prisma.config.ts
 DOCKER_PORT=3001
-DOCKER_DATABASE_URL="mysql://root:root@db:3306/metari_db"
+DOCKER_DATABASE_URL="mysql://root:root@db:3306/metari"
 
 # ./config/prisma.js
 DOCKER_ADAPTER_HOST=db
 DOCKER_ADAPTER_PORT=3306
 DOCKER_ADAPTER_USER=root
 DOCKER_ADAPTER_PASSWORD=root
-DOCKER_ADAPTER_DATABASE=metari_db
+DOCKER_ADAPTER_DATABASE=metari
 
 # URL del frontend per producció.
 DOCKER_FRONTEND_URL="http://localhost"
