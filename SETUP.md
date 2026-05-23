@@ -73,7 +73,7 @@ Si tens problemes creant l'app password, assegura't de que el compte de Google q
 Després d'haver instal·lat els requisits previs i haver generat l'app password, anem al nostre servidor de producció i clonem el repositori:
 
 ```bash
-git clone https://github.com/aaroncano2006/metari/commits/main/
+git clone https://github.com/aaroncano2006/metari.git
 ```
 
 O amb clau SSH:
@@ -112,7 +112,7 @@ nano .env
 
 Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens interessen per al desplegament de l'aplicació són les següents:
 
-- `ENVIRONTMENT`: Determina en quin entorn s'executa l'aplicació (`dev` o `production`). Valor per defecte: `production` (el mantenim tal qual).
+- `ENVIRONMENT`: Determina en quin entorn s'executa l'aplicació (`dev` o `production`). Valor per defecte: `production` (el mantenim tal qual).
 
 - `DOCKER_PORT`: Determina en quin port escoltarà el backend. Valor per defecte: 3001 (el mantenim tal qual).
 
@@ -120,9 +120,9 @@ Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens intere
 
 - `DOCKER_ADAPTER_HOST`: Host on s'ubica la base de dades. Valor per defecte: `db`. S'ha de mantenir ja que aquest és el nom del servei que conté la nostra base de dades al Docker Compose.
 
-- `DOCKER_ADAPATER_PORT`: Port del host que conté la base de dades. Valor per defecte: 3306 (el mantenim tal qual).
+- `DOCKER_ADAPTER_PORT`: Port del host que conté la base de dades. Valor per defecte: 3306 (el mantenim tal qual).
 
-- `DOCKER_ADAPATER_USER`: Usuari amb privilegis de la base de dades. Valor per defecte: root (el mantenim tal qual).
+- `DOCKER_ADAPTER_USER`: Usuari amb privilegis de la base de dades. Valor per defecte: root (el mantenim tal qual).
 
 - `DOCKER_ADAPTER_PASSWORD`: Contrasenya de l'usuari amb privilegis de la base de dades. Valor per defecte: root_password (canvia-la pel valor especificat a la variable d'entorn de l'arrel `MYSQL_ROOT_PASSWORD`).
 
@@ -136,7 +136,7 @@ Dins d'aquest `.env` tenim diverses variables d'entorn, però les que ens intere
 
 - `TRANSPORTER_USER`: Correu electrònic amb el qual has creat l'app password abans.
 
-- `TRANSPORTE_APP_PASS`: App password generada anteriorment.
+- `TRANSPORTER_APP_PASS`: App password generada anteriorment.
 
 - `SECRET`: Contrasenya segura per firmar els tokens d'autenticació i de restuaració de contrasenya.
 
@@ -206,7 +206,16 @@ Aquesta comanda:
 
 - Monta el frontend en un Nginx.
 
-- Monta l'Nginx que fa de reverse proxy i genera certificats SSL per poder accedir amb HTTPS
+- Monta l'Nginx que fa de reverse proxy i genera certificats SSL per poder accedir amb HTTPS.
 
-Una vegada estigui tot aixect i funcional accedim a la IP o domini on tinguem Metari desplegat i ja podrem començar a utilitzar l'aplicació:
+> **Nota:** `docker compose` (v2) ja ve inclòs amb Docker a Ubuntu 24.04, no cal instal·lar-lo a part.
 
+Un cop finalitzat, verifica que tots els serveis estan funcionant correctament:
+
+```bash
+docker compose ps
+```
+
+Si tot està bé, accedim a la IP o domini on tinguem Metari desplegat i ja podrem començar a utilitzar l'aplicació:
+
+![alt text](img/setup/03.png)
