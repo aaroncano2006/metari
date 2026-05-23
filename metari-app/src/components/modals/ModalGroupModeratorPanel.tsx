@@ -406,7 +406,7 @@ export default function ModalGroupModeratorPanel({
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-sm-10 col-md-8 col-xl-6">
-              <div className="modalWindow p-4">
+              <div className="modalWindow bg-form p-4">
                 <h5 className="tiltWarp">{title} · Panell de moderació</h5>
 
                 {error && <div className="alert alert-danger">{error}</div>}

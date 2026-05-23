@@ -99,7 +99,7 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-sm-8 col-md-6 col-xl-4">
-              <div className="modalWindow p-4 ">
+              <div className="modalWindow bg-form p-4 ">
 
                 <form onSubmit={handleSubmit}>
 

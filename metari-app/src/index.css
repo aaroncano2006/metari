@@ -103,6 +103,8 @@ h2 {
   opacity: 0.4;
   pointer-events: none;
   z-index: 1;
+  animation: estrelles 30s infinite linear;
+
 }
 
 
@@ -354,6 +356,7 @@ li {
   content: "";
   position: absolute;
   background-image: url(./assets/img/stardoodle.png);
+  background-repeat: repeat;
   top: 0;
   left: 0;
   width: 100%;
@@ -361,4 +364,14 @@ li {
   opacity: 0.2;
   pointer-events: none;
   z-index: -1;
+  /* animation: estrelles 10s infinite ; */
+  animation: estrelles 30s infinite linear;
+}
+
+
+/* animacions */
+
+@keyframes estrelles {
+  0% { background-position: 0 0; }
+  100% { background-position: 733px -800px; }
 }

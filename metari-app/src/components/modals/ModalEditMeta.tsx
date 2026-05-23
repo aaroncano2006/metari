@@ -45,7 +45,7 @@ export function ModalEditMeta({ meta, setEditMeta, setter }: ModalEditProps) {
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-12 col-sm-8 col-md-6 col-xl-4">
-              <div className="modalWindow p-4">
+              <div className="modalWindow bg-form p-4">
                 <h5 className="tiltWarp">Edita Meta</h5>
 
                 <form onSubmit={async (event) => {
