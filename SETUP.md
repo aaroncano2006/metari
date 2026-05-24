@@ -52,7 +52,7 @@ Per a l'elaboració d'aquest manual utilitzarem com a màquina de mostra un **Ub
 
 ## Servei de correu i generació de app password (Opcional)
 
-> **Nota:** El sistema de notificacions per correu és **opcional**. L'aplicació funciona sense aquesta configuració; només cal fer aquest pas si es volen rebre notificacions per correu electrònic.
+> **Nota:** El sistema de notificacions per correu és **opcional**. L'aplicació funciona sense aquesta configuració; només cal fer aquest pas si es volen rebre notificacions per correu electrònic o si es vol provar la restauració de contrasenya.
 
 Metari compta amb un sistema bàsic de notificacions via correu electrònic, per a que funcioni necessitem un correu electrònic ja existent (preferiblement de **Gmail**) i generar una app password.
 
@@ -66,7 +66,7 @@ Generarà una clau similar a aquesta (la clau mostrada no funciona, només ha si
 
 ![alt text](img/setup/02.png)
 
-Desa-la, ja que en la instal·lació serà generada.
+Desa-la, ja que en la instal·lació serà utilitzada en cas de voler notificacions via correu electrònic.
 
 Si tens problemes creant l'app password, assegura't de que el compte de Google que vols utilitzar té la **verificació en 2 passos activa** o que **l'administrador del teu Workspace no tingui les app passwords deshabilitades**.
 
