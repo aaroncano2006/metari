@@ -154,6 +154,13 @@ Un cop configurat, instal·la les dependències i aplica les migracions per crea
 
 ```bash
 npm install
+npx prisma generate
+npx run migrate:apply
+```
+
+> **Nota**: `npm run migrate:apply` és una comanda custom especificada a `package.json`, si vols utilitzar la comanda original:
+
+```bash
 npx prisma migrate dev
 ```
 
