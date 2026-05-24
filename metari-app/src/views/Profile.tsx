@@ -162,7 +162,9 @@ export default function Profile() {
       <Helmet>
         <title>{`Metari · Profile - ${username} (${name})`}</title>
       </Helmet>
-      <h1 className="banner bg-warning flex flex-column align-content-center text-center">Metari</h1>
+      <div className="container-fluid banner pb-4 pt-3">
+        <h1 className="py-3 titol flex flex-column align-content-center text-center">Metari</h1>
+      </div>
 
       <div className="container p-3">
         {!error && (
