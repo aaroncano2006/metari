@@ -2,14 +2,13 @@ import { useState } from "react";
 import type { forgotPasswordType } from "../types/auth/forgotPasswordType";
 import { fetchForgotPassword } from "../services/auth/forgotPasswordService";
 import { forgotPasswordSchema } from "../schemas/auth/forgotPasswordSchema";
-import { fetchUsers } from "../services/userService";
-import type { userTypeFrontend } from "../types/userTypeFrontend";
+
 
 export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<boolean>(false);
-  const [foundUser, setFoundUser] = useState<userTypeFrontend | undefined>(undefined);
+  const [email, setEmail] = useState<string>("");
 
   // const rememberedPassword = localStorage.getItem("password");
 
@@ -20,7 +19,7 @@ export default function ForgotPasswordForm() {
   const handleSubmit = async (data: forgotPasswordType) => {
     setError(null);
     setSuccess(false);
-    setFoundUser(undefined);
+    setEmail("");
 
     const validation = forgotPasswordSchema.safeParse(data);
     if (!validation.success) {
@@ -38,11 +37,7 @@ export default function ForgotPasswordForm() {
     let response = null;
     try {
       response = await fetchForgotPassword(data);
-
-      const users = await fetchUsers();
-      const user = users.find((el) => el.username === data.email_or_username || el.email === data.email_or_username);
-      setFoundUser(user);
-
+      setEmail(response.email);
       setSuccess(true);
     } catch (error: any) {
       const message = error.request.responseText;
@@ -55,25 +50,25 @@ export default function ForgotPasswordForm() {
   };
 
   return (
-    <div className="card form-card text-center p-5">
-      <figure>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png"
-          className="img-thumbnail"
-          alt="img-thumbnail"
-        />
-      </figure>
-
-      <header className="mt-2">
-        <h1>Metari</h1>
-        <h3 className="text-muted">Recupera el control dels teus objectius!</h3>
+    <div className="text-center p-5 mb-5">
+      <header className="container mt-2">
+        <div className="row d-flex flex-column tiltWarp">
+          <div className="col text-center mb-3">
+            <h1 className="titol">Metari</h1>
+          </div>
+          <div className="col text-center">
+            <h3 className="text-muted mx-auto">
+              Recupera el control dels teus objectius!
+            </h3>
+          </div>
+        </div>
       </header>
 
       <div className="mt-4">
         {error && <div className="alert alert-danger">{error}</div>}
         {success && (
           <div className="alert alert-success">
-            Revisa el teu correu electrònic <strong>({foundUser?.email})</strong> i restaura la teva contrasenya!
+            Revisa el teu correu electrònic <strong>({email})</strong> i restaura la teva contrasenya!
           </div>
         )}
         <form
@@ -84,7 +79,7 @@ export default function ForgotPasswordForm() {
         >
           <div className="row mb-2">
             <label
-              className="form-label text-start"
+              className="form-label text-start fw-bold"
               htmlFor="email_or_username"
             >
               Nom d'usuari o email <span className="text-danger">*</span>

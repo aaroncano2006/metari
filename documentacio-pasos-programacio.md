@@ -1,4 +1,22 @@
-Documentacio dels pasos de programacio
+# Documentacio dels passos de programacio
+
+## Taula de Continguts
+
+- [Backend](#backend)
+  - [Instal·lar prisma](#instal-lar-prisma)
+  - [Aplicar seeders](#aplicar-seeders)
+  - [Helmet](#helmet)
+  - [Instal·lar express](#instal-lar-express)
+  - [Instal·lar nodemon](#instal-lar-nodemon)
+  - [Instal·lar dotenv](#instal-lar-dotenv)
+  - [Forçar la versio de Node.js](#for%C3%A7ar-la-versio-de-nodejs)
+  - [bcrypt](#bcrypt)
+  - [JSONWebToken](#jsonwebtoken)
+  - [Nodemailer](#nodemailer)
+  - [Multer](#multer)
+- [Frontend](#frontend)
+- [executar projecte en desenvolupament](#executar-projecte-en-desenvolupament)
+  - [backend](#backend-1)
 
 # Backend
 
@@ -28,7 +46,58 @@ Creem la carpeta de prisma i l'arxiu de configuracio de prisma (schema.prisma)
 npx prisma init
 ```
 
-Helmet:
+Cada vegada que modifiquem `schema.prisma` haurem de generar una migració:
+
+```bash
+npx prisma migrate dev
+```
+
+O utilitzar l'script custom del projecte (especificat a `package.json`):
+
+```bash
+npm run migrate
+```
+
+I generar de nou el client de Prisma:
+
+```bash
+npx prisma generate
+```
+
+Si volem aplicar les ja existents:
+
+```bash
+npm run migrate:apply
+```
+
+O:
+
+```bash
+npx prisma migrate deploy
+```
+
+Si volem resetejar la base de dades i reaplicar les migracions:
+
+```bash
+npm run migrate:reset
+```
+
+O:
+
+```bash
+npx prisma migrate reset
+```
+
+## Aplicar seeders:
+
+Si vols que la base de dades estigui poblada, pots afegir dades de prova amb la següent comanda:
+
+```bash
+npm run seed
+```
+
+## Helmet
+
 Helmet.js ens ajuda a millorar la seguretat d'aplicacions Node/Express, configura automaticament alguns "Headers" que ens protegeixen dels atacs mes comuns, com per exemple:
 
 - XSS (Cross-Site Scripting)
@@ -50,6 +119,21 @@ Instalem cors:
 npm install cors
 ```
 
+Configurar origens:
+
+```javascript
+const cors = require("cors");
+
+app.use(
+  cors({
+    origin:
+      environment === "dev"
+        ? process.env.LOCAL_FRONTEND_URL
+        : process.env.DOCKER_FRONTEND_URL,
+  }),
+);
+```
+
 ## Instal·lar express:
 
 Instala el servei web principal per crear la api:
@@ -60,13 +144,13 @@ npm install express
 
 ## Instal·lar nodemon:
 
-Instal·lem nodemon per les dev dependencies (-D). S'utilitza per reiniciar el servidor automaticament cuan hi ha canvis en el projecte en desenvolupament:
+Instal·lem nodemon per les dev dependencies (-D). S'utilitza per reiniciar el servidor automaticament quan hi ha canvis en el projecte en desenvolupament:
 
 ```bash
 npm install nodemon -D
 ```
 
-## Instal·lar .env:
+## Instal·lar dotenv:
 
 Se'utilitza per carregar variables d'entron des dels fitxers .env:
 
@@ -74,7 +158,7 @@ Se'utilitza per carregar variables d'entron des dels fitxers .env:
 npm i dotenv
 ```
 
-## forçar la versio de Node.js:
+## Forçar la versio de Node.js:
 
 Creem l'arxiu .nvmrc ( node version manager run configuration/commands) per establir la versio de node que s'ha de tenir instal·lada per utilitzar l'aplicacio durant el desenvolupament.
 
@@ -91,24 +175,6 @@ Instal·lem bcrypt, s'utilitza per fer hash de les contrasenyes:
 ```bash
 npm install bcrypt
 ```
-
-## Instal·lar prisma:
-
-Instal·lem prisma cli per les dev dependencies (--save-dev)
-
-```bash
-npm install prisma --save-dev
-```
-
-Instal·lem prisma client per les dev dependencies
-
-```bash
-npm install @prisma/client
-```
-
-aixo ens crea la carpeta de prisma
-
-i un arxiu de configuracio del prisma
 
 ## JSONWebToken
 
@@ -262,14 +328,14 @@ Si l'autenticació passa, retorna el missatge i les dades de l'usuari:
 
 ```json
 {
-    "message": "Acceso permitido",
-    "user": {
-        "id": 5,
-        "email": "manologafotas@test.com",
-        "username": "ermanolito45",
-        "iat": 1777556479,
-        "exp": 1777560079
-    }
+  "message": "Acceso permitido",
+  "user": {
+    "id": 5,
+    "email": "manologafotas@test.com",
+    "username": "ermanolito45",
+    "iat": 1777556479,
+    "exp": 1777560079
+  }
 }
 ```
 
@@ -279,8 +345,76 @@ Si l'autenticació passa, retorna el missatge i les dades de l'usuari:
 
 Generats automàticament per JWT.
 
+## Nodemailer
 
-## instal·lem multer
+Llibreria per gestionar enviament de correus electrònics als control·ladors.
+
+```bash
+npm i nodemailer
+```
+
+En el .env haurem de configurar les següents variables d'entorn si volem utilitzar aquestes funcions:
+
+```env
+TRANSPORTER_SERVICE="gmail"
+TRANSPORTER_USER="example@gmail.com"
+TRANSPORTER_APP_PASS="sixu tqca pepv wman"
+```
+
+- `TRANSPORTER_SERVICE`: Servidor de correu electrònic utilitzat. Amb el valor gmail utilitzem els serveis de correu electrònic de Google.
+
+- `TRANSPORTER_USER`: Correu electrònic que enviarà les notificacions.
+
+- `TRANSPORTER_APP_PASS`: App password associada al correu electrònic introduït.
+
+Per a més informació de com configurar les variables d'entorn i generar l'app password consulta [SETUP.md](SETUP.md)
+
+Configurar nodemailer a Express:
+
+```javascript
+require("dotenv").config({
+  path: require("path").resolve(__dirname, "../.env"),
+});
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: process.env.TRANSPORTER_SERVICE || "gmail",
+  auth: {
+    user: process.env.TRANSPORTER_USER,
+    pass: process.env.TRANSPORTER_APP_PASS,
+  },
+});
+
+module.exports = transporter;
+```
+
+Exemple d'ús:
+
+```javascript
+app.post("/api/test-email", async (req, res, next) => {
+  const { to, subject, text } = req.body;
+
+  try {
+    const info = await nodemailer.sendMail({
+      from: "Metari",
+      to: to,
+      subject: subject,
+      text: text,
+      html: `<p>${text}</p>`,
+    });
+
+    res.status(200).json({
+      message: "Correo enviado correctamente",
+      info: info.messageId,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+```
+
+## Multer
 
 ```bash
 npm install multer
@@ -288,7 +422,6 @@ npm install multer
 
 backend/index.js — afegir:  
 app.use("/uploads", express.static("uploads"));
-
 
 # Frontend
 
@@ -328,11 +461,12 @@ Instal·lem axios:
 ```bash
 npm install axios
 ```
+
 Instal·lem zod:
+
 ```bash
 npm install zod
 ```
-
 
 # executar projecte en desenvolupament
 
@@ -378,16 +512,11 @@ Server running on port 3001
 [nodemon] clean exit - waiting for changes before restart
 ```
 
-
-
-
-
-
 git clone
 cd metari
 copiar arxius env, editarlos
 cd backend
 copiar .env
-  env production  
+env production  
 cd ..
 docker compose up --build

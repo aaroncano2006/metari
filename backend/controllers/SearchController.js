@@ -52,10 +52,10 @@ const search = async (req, res, next) => {
       where: {
         OR: [
           {
-            name: searchWord,
+            name: {contains: searchWord},
           },
           {
-            description: searchWord,
+            description: {contains: searchWord},
           },
         ],
         is_public: true
