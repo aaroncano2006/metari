@@ -395,34 +395,34 @@ export default function ModalGroupModeratorPanel({
 
                 <div className="d-flex justify-content-center gap-2 flex-wrap mt-4">
 
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        switchMenu("group_config");
-                      }}
-                    >
-                      <i className="bi bi-gear-fill me-1"></i> Configuració del
-                      grup
-                    </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      switchMenu("group_config");
+                    }}
+                  >
+                    <i className="bi bi-gear-fill me-1"></i> Configuració del
+                    grup
+                  </button>
 
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        switchMenu("users");
-                      }}
-                    >
-                      <i className="bi bi-people-fill me-1"></i> Membres del grup
-                    </button>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      switchMenu("users");
+                    }}
+                  >
+                    <i className="bi bi-people-fill me-1"></i> Membres del grup
+                  </button>
 
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => {
-                        switchMenu("metas");
-                      }}
-                    >
-                      <i className="bi bi-bullseye me-1"></i>Metas del grup
-                    </button>
-                  </div>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      switchMenu("metas");
+                    }}
+                  >
+                    <i className="bi bi-bullseye me-1"></i>Metas del grup
+                  </button>
+                </div>
 
                 <div className="row">
                   {menu === "group_config" && (
@@ -759,95 +759,7 @@ export default function ModalGroupModeratorPanel({
 
 
 
-                                      {showCommentsForId === assignation.id &&
-                                        (() => {
-                                          const filteredComments = comments
-                                            .filter(
-                                              (c) =>
-                                                c.assignation_id === assignation.id,
-                                            )
-                                            .sort(
-                                              (a, b) =>
-                                                new Date(b.created_at).getTime() -
-                                                new Date(a.created_at).getTime(),
-                                            );
-                                          return (
-                                            <div className="mt-2">
-                                              {filteredComments.length > 0 ? (
-                                                filteredComments.map((c) => (
-                                                  <div
-                                                    key={c.id}
-                                                    className="border rounded p-2 mb-1 bg-white"
-                                                    style={{ fontSize: "0.9rem" }}
-                                                  >
-                                                    <strong>
-                                                      {c.user?.name ??
-                                                        c.user_id}
-                                                    </strong>
-                                                    :{" "}
-                                                    <span>{c.body}</span>
-                                                    <br />
-                                                    <small className="text-muted">
-                                                      {new Date(
-                                                        c.created_at,
-                                                      ).toLocaleString("ca-ES")}
-                                                      {c.created_at !==
-                                                        c.updated_at && (
-                                                          <>
-                                                            {" "}
-                                                            (editat:{" "}
-                                                            {new Date(
-                                                              c.updated_at,
-                                                            ).toLocaleString("ca-ES")}
-                                                            )
-                                                          </>
-                                                        )}
-                                                    </small>
-                                                    <div className="d-flex justify-content-end gap-1 mt-1">
-                                                      {c.user_id ===
-                                                        currentUserId && (
-                                                          <div
-                                                            className="btn btn-warning btn-sm"
-                                                            title="Editar comentari"
-                                                            onClick={() => {
-                                                              setEditingComment(c);
-                                                              setAssignationToAddComment(
-                                                                assignation,
-                                                              );
-                                                              setCommentFormType(
-                                                                "edit",
-                                                              );
-                                                            }}
-                                                          >
-                                                            <i className="bi bi-pencil"></i>
-                                                          </div>
-                                                        )}
-                                                      {(c.user_id ===
-                                                        currentUserId ||
-                                                        isOwner) && (
-                                                          <div
-                                                            className="btn btn-danger btn-sm"
-                                                            title="Eliminar comentari"
-                                                            onClick={() =>
-                                                              handleDeleteComment(
-                                                                c.id,
-                                                              )
-                                                            }
-                                                          >
-                                                            <i className="bi bi-trash"></i>
-                                                          </div>
-                                                        )}
-                                                    </div>
-                                                  </div>
-                                                ))
-                                              ) : (
-                                                <p className="text-muted small">
-                                                  No hi ha comentaris
-                                                </p>
-                                              )}
-                                            </div>
-                                          );
-                                        })()}
+
 
                                       {assignation.needs_proofs !== null &&
                                         assignation.needs_proofs !== undefined && (
@@ -960,16 +872,18 @@ export default function ModalGroupModeratorPanel({
                                             .split(".")[0]}
                                       </div>
                                       <div className="d-flex gap-2 align-self-end me-2 mt-2">
-                                        <div
-                                          className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
-                                          onClick={() =>
-                                            handleToggleCompleted(assignation)
-                                          }
-                                        >
-                                          {assignation.completed
-                                            ? "Desmarcar completada"
-                                            : "Marcar completada"}
-                                        </div>
+                                        {assignation.completed &&
+                                          <div
+                                            className={`btn ${assignation.completed ? "btn-warning" : "btn-success"}`}
+                                            onClick={() =>
+                                              handleToggleCompleted(assignation)
+                                            }
+                                          >
+                                            {assignation.completed
+                                              ? "Desmarcar completada"
+                                              : "Marcar completada"}
+                                          </div>
+                                        }
                                         <div
                                           className="btn btn-primary"
                                           onClick={() => {
@@ -993,6 +907,95 @@ export default function ModalGroupModeratorPanel({
                                           Nou comentari
                                         </div>
                                       </div>
+                                      {showCommentsForId === assignation.id &&
+                                        (() => {
+                                          const filteredComments = comments
+                                            .filter(
+                                              (c) =>
+                                                c.assignation_id === assignation.id,
+                                            )
+                                            .sort(
+                                              (a, b) =>
+                                                new Date(b.created_at).getTime() -
+                                                new Date(a.created_at).getTime(),
+                                            );
+                                          return (
+                                            <div className="mt-2">
+                                              {filteredComments.length > 0 ? (
+                                                filteredComments.map((c) => (
+                                                  <div
+                                                    key={c.id}
+                                                    className="border rounded p-2 mb-1 bg-white"
+                                                    style={{ fontSize: "0.9rem" }}
+                                                  >
+                                                    <strong>
+                                                      {c.user?.name ??
+                                                        c.user_id}
+                                                    </strong>
+                                                    :{" "}
+                                                    <span>{c.body}</span>
+                                                    <br />
+                                                    <small className="text-muted">
+                                                      {new Date(
+                                                        c.created_at,
+                                                      ).toLocaleString("ca-ES")}
+                                                      {c.created_at !==
+                                                        c.updated_at && (
+                                                          <>
+                                                            {" "}
+                                                            (editat:{" "}
+                                                            {new Date(
+                                                              c.updated_at,
+                                                            ).toLocaleString("ca-ES")}
+                                                            )
+                                                          </>
+                                                        )}
+                                                    </small>
+                                                    <div className="d-flex justify-content-end gap-1 mt-1">
+                                                      {c.user_id ===
+                                                        currentUserId && (
+                                                          <div
+                                                            className="btn btn-warning btn-sm"
+                                                            title="Editar comentari"
+                                                            onClick={() => {
+                                                              setEditingComment(c);
+                                                              setAssignationToAddComment(
+                                                                assignation,
+                                                              );
+                                                              setCommentFormType(
+                                                                "edit",
+                                                              );
+                                                            }}
+                                                          >
+                                                            <i className="bi bi-pencil"></i>
+                                                          </div>
+                                                        )}
+                                                      {(c.user_id ===
+                                                        currentUserId ||
+                                                        isOwner) && (
+                                                          <div
+                                                            className="btn btn-danger btn-sm"
+                                                            title="Eliminar comentari"
+                                                            onClick={() =>
+                                                              handleDeleteComment(
+                                                                c.id,
+                                                              )
+                                                            }
+                                                          >
+                                                            <i className="bi bi-trash"></i>
+                                                          </div>
+                                                        )}
+                                                    </div>
+                                                  </div>
+                                                ))
+                                              ) : (
+                                                <p className="text-muted small">
+                                                  No hi ha comentaris
+                                                </p>
+                                              )}
+                                            </div>
+                                          );
+                                        })()}
                                     </div>
                                   )}
                                 </div>
