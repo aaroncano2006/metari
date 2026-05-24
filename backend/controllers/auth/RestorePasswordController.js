@@ -81,7 +81,7 @@ const forgotPassword = async (req, res, next) => {
         throw err;
     }
 
-    return res.status(200).json({ message: "Correu de recuperació enviat correctament!" });
+    return res.status(200).json({ message: "Correu de recuperació enviat correctament!", email: existingUser.email });
   } catch (error) {
     next(error);
   }

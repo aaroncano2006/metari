@@ -66,18 +66,18 @@ export default function RestorePasswordForm() {
   }
 
   return (
-    <div className="card form-card text-center p-5">
-      <figure>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/330px-Placeholder_view_vector.svg.png"
-          className="img-thumbnail"
-          alt="img-thumbnail"
-        />
-      </figure>
-
-      <header className="mt-2">
-        <h1>Metari</h1>
-        <h3 className="text-muted">Restableix la contrasenya!</h3>
+    <div className="text-center p-5 mb-5">
+      <header className="container mt-2">
+        <div className="row d-flex flex-column tiltWarp">
+          <div className="col text-center mb-3">
+            <h1 className="titol">Metari</h1>
+          </div>
+          <div className="col text-center">
+            <h3 className="text-muted mx-auto">
+              Restableix la contrasenya!
+            </h3>
+          </div>
+        </div>
       </header>
 
       <div className="mt-4">
@@ -95,7 +95,7 @@ export default function RestorePasswordForm() {
           }}
         >
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="new_password">
+            <label className="form-label text-start fw-bold" htmlFor="new_password">
               Nova contrasenya <span className="text-danger">*</span>
             </label>
 
@@ -118,7 +118,7 @@ export default function RestorePasswordForm() {
           </div>
 
           <div className="row mb-2">
-            <label className="form-label text-start" htmlFor="confirm_password">
+            <label className="form-label text-start fw-bold" htmlFor="confirm_password">
               Confirma nova contrasenya <span className="text-danger">*</span>
             </label>
 
