@@ -60,6 +60,30 @@ const createAssignationCompletion = async (req, res, next) => {
         where: { id: assignationId },
         data: { completed: true },
       });
+
+      const user = await prisma.user.findUnique({ where: { id: targetUserId } });
+      if (user) {
+        const assignationScore = assignation.score ?? BigInt(0);
+        if (assignation.meta?.type === "challenge") {
+          if (assignationScore > BigInt(0)) {
+            await prisma.user.update({
+              where: { id: targetUserId },
+              data: { score: (user.score ?? BigInt(0)) + assignationScore },
+            });
+          }
+        } else {
+          const updateData = {
+            completed_tasks: (user.completed_tasks ?? BigInt(0)) + BigInt(1),
+          };
+          if (assignationScore > BigInt(0)) {
+            updateData.score = (user.score ?? BigInt(0)) + assignationScore;
+          }
+          await prisma.user.update({
+            where: { id: targetUserId },
+            data: updateData,
+          });
+        }
+      }
     }
 
     res.status(201).json(utils.handleBigInt(completion));
