@@ -6,11 +6,6 @@ const createAssignationCompletion = async (req, res, next) => {
     const { assignation_id, user_id, is_Completed } = req.body;
 
     const targetUserId = parseInt(user_id);
-    if (targetUserId !== req.user.id) {
-      const error = new Error("No pots completar una assignació per a un altre usuari");
-      error.statusCode = 403;
-      throw error;
-    }
 
     const assignationId = parseInt(assignation_id);
     if (isNaN(assignationId)) {
@@ -39,10 +34,13 @@ const createAssignationCompletion = async (req, res, next) => {
 
     const isAssignee = assignation.user_id === req.user.id;
     const isGroupOwner = assignation.group?.owner_id === req.user.id;
+    const isGroupModerator = assignation.group?.groupUsers?.some(
+      (gu) => gu.role === "moderator",
+    ) ?? false;
     const isGroupMember = (assignation.group?.groupUsers?.length ?? 0) > 0;
     const isChallenge = assignation.meta?.type === "challenge";
 
-    if (!isAssignee && !isGroupOwner && !(isChallenge && isGroupMember) && req.user.role !== "admin") {
+    if (!isAssignee && !isGroupOwner && !isGroupModerator && !(isChallenge && isGroupMember) && req.user.role !== "admin") {
       const error = new Error("No tens permisos per completar aquesta assignació");
       error.statusCode = 403;
       throw error;
