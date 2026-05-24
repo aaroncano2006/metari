@@ -177,10 +177,10 @@ DOCKER_ADAPTER_PASSWORD=root
 DOCKER_ADAPTER_DATABASE=metari
 
 # URL del frontend per producció.
-DOCKER_FRONTEND_URL="http://localhost"
+DOCKER_FRONTEND_URL="https://localhost"
 
 # URL del frontend amb host per els enllaços dels correus
-DOCKER_FRONTEND_URL_WITH_HOST="http://192.168.1.137"
+DOCKER_FRONTEND_URL_WITH_HOST="https://192.168.1.137"
 
 # === NODEMAILER CONFIG ===
 # La configuració de nodemailer funciona igual tant en desencvolupament local com en Docker
