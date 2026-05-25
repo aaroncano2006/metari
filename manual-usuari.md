@@ -1,5 +1,58 @@
 # Metari - Manual d'Usuari 
 
+## Índex
+
+- [1. Introducció](#1-introducció)
+  - [1.1 Què és Metari](#11-què-és-metari)
+  - [1.2 Públic objectiu](#12-públic-objectiu)
+- [2. Funcionalitats principals](#2-funcionalitats-principals)
+- [3. Accés a l'aplicació](#3-accés-a-laplicació)
+  - [3.1 URL d'accés](#31-url-daccés)
+  - [3.2 Registre de nou usuari](#32-registre-de-nou-usuari)
+  - [3.3 Inici de sessió](#33-inici-de-sessió)
+  - [3.4 Recuperació de contrasenya](#34-recuperació-de-contrasenya)
+- [4. Navegació general](#4-navegació-general)
+  - [4.1 Barra de navegació](#41-barra-de-navegació)
+  - [4.2 Menú d'usuari](#42-menú-dusuari)
+  - [4.3 Cercador](#43-cercador)
+  - [4.4 Pagina de cerca](#44-pagina-de-cerca)
+- [5. Gestió del perfil d'usuari](#5-gestió-del-perfil-dusuari)
+  - [5.1 Visualització del perfil](#51-visualització-del-perfil)
+  - [5.2 Edició del perfil](#52-edició-del-perfil)
+  - [5.3 Estadístiques d'usuari](#53-estadístiques-dusuari)
+- [6. Sistema de rols i permisos](#6-sistema-de-rols-i-permisos)
+- [7. Gestió de grups](#7-gestió-de-grups)
+  - [7.1 Tipus de grups](#71-tipus-de-grups)
+  - [7.2 Rols dins del grup](#72-rols-dins-del-grup)
+  - [7.3 Crear un grup](#73-crear-un-grup)
+  - [7.4 Unir-se a un grup](#74-unir-se-a-un-grup)
+  - [7.5 Gestió del grup (Moderadors del grup)](#75-gestió-del-grup-moderadors-del-grup)
+  - [7.5.1 Editar i eliminar grup](#751-editar-i-eliminar-grup)
+  - [7.5.2 Administrar membres del grup](#752-administrar-membres-del-grup)
+  - [7.5.3 Administrar metas del grup](#753-administrar-metas-del-grup)
+- [8. Gestió de metes](#8-gestió-de-metes)
+  - [8.1 Tipus de metes](#81-tipus-de-metes)
+  - [8.2 Crear una meta](#82-crear-una-meta)
+  - [8.2.1 Meta publica](#821-meta-publica)
+  - [8.2.2 Meta privada](#822-meta-privada)
+- [9. Assignacions de metas de la comunitat](#9-assignacions-de-metas-de-la-comunitat)
+  - [9.1 Afegir metes personals a la teva llista](#91-afegir-metes-personals-a-la-teva-llista)
+  - [9.2 Assignar metes a usuaris del grup](#92-assignar-metes-a-usuaris-del-grup)
+  - [9.3 Completar una assignació personal](#93-completar-una-assignació-personal)
+  - [9.4 Afegir comentaris a les assignacions de grup](#94-afegir-comentaris-a-les-assignacions-de-grup)
+- [10. Proves](#10-proves)
+  - [10.1 Pujar proves](#101-pujar-proves)
+- [11. Sistema d'amics](#11-sistema-damics)
+  - [11.1 Enviar invitació d'amistat](#111-enviar-invitació-damistat)
+  - [11.2 Acceptar / rebutjar invitacions](#112-acceptar--rebutjar-invitacions)
+  - [11.3 Llista d'amics](#113-llista-damics)
+- [12. Rànquings i leaderboards](#12-rànquings-i-leaderboards)
+  - [12.1 Rànquing per grups](#121-rànquing-per-grups)
+  - [12.2 Puntuacions d'usuari](#122-puntuacions-dusuari)
+- [14. Panell d'administració](#14-panell-dadministració)
+  - [14.1 Accés al panell](#141-accés-al-panell)
+  - [14.2 Metes pendents d'indexar](#142-metes-pendents-dindexar)
+
 ## 1. Introducció
 
 ### 1.1 Què és Metari
@@ -11,7 +64,7 @@ Metari és una plataforma comunitària de gestió de metes (objectius), ja sigui
 Metari està dissenyat per a qualsevol persona que vulgui gestionar objectius personals o en grup, ja sigui per motivació pròpia, per competir amb amics, o per organitzar tasques dins d'un equip.
 
 
-### 2.3 Funcionalitats principals
+## 2 Funcionalitats principals
 
 - Creació de metes (tasques individuals i reptes en grup).
 - Gestió de grups (públics i privats).
@@ -41,6 +94,8 @@ http://localhost
 2. Omple els camps del formulari.   
 3. Fes clic a "Registra't" per crear el compte.
 
+![alt text](img/manual/image-25.png)
+
 
 ###  3.3 Inici de sessió
 
@@ -49,6 +104,7 @@ http://localhost
 3. Introdueix la teva **contrasenya**.
 4. Fes clic a "Login".
 
+![alt text](img/manual/image-26.png)
 
 ###  3.4 Recuperació de contrasenya
 
@@ -61,6 +117,15 @@ http://localhost
 
 **Nota:** L'enllaç de recuperació té una durada limitada. Si caduca, l'hauràs de sol·licitar de nou.
 
+![alt text](img/manual/image-36.png)
+
+- Correu electronic de recuperació de contrasenya:  
+
+![alt text](img/manual/image-37.png)
+
+- Nova contrasenya:
+
+![alt text](img/manual/image-39.png)
 
 
 ## 4. Navegació general
@@ -86,7 +151,7 @@ La Barra de navegació es mostra fixa a la part superior de totes les pàgines i
 
   - **amb sessió iniciada:**
 
-  ![alt text](img/image-1.png)
+  ![alt text](img/manual/image-1.png)
 
 
 ### 4.2 Menú d'usuari
@@ -118,7 +183,7 @@ Hi ha tres botons disponibles per escollir el que es vol trobar:
 
 #### Imatges de referencia:
 
-![alt text](img/image-2.png)
+![alt text](img/manual/image-2.png)
 
 
 
@@ -126,7 +191,7 @@ Hi ha tres botons disponibles per escollir el que es vol trobar:
 
 Podem anar al nostre perfil d'usuari al menu desplegable amb el nom del nostre usuari de la barra de navegació.
 
-![alt text](img/image-4.png)
+![alt text](img/manual/image-4.png)
 
 ### 5.1 Visualització del perfil
 
@@ -160,7 +225,7 @@ El perfil mostra les següents estadístiques:
 
 #### Imatge de referencia:
 
-![alt text](img/image-5.png)
+![alt text](img/manual/image-5.png)
 
 ---
 
@@ -208,14 +273,14 @@ Metari utilitza un sistema de control d'accés basat en rols (RBAC). Els permiso
    - **Tipus de grup:** públic (visible i accessible per a tothom) o privat (només per invitació)
 4. Fes clic a "Create".
 
-![alt text](img/image-6.png)
+![alt text](img/manual/image-6.png)
 
 ### 7.4 Unir-se a un grup
 
 - **Grup públic:** Fes una cerca del nom del grup al que vols unir-te, despres clica al botó verd "unir-se"
 - **Grup privat:** necessites una invitació d'un membre o moderador del grup.
 
-![alt text](img/image-7.png)
+![alt text](img/manual/image-7.png)
 
 
 ### 7.5 Gestió del grup (Moderadors del grup)
@@ -225,7 +290,7 @@ Des de la pàgina de "Els meus grups", si ets moderador del grup clica el botó 
 - Canviar el rol d'un membre (membre / moderador).
 - Expulsar un membre del grup.
 
-![alt text](img/image-9.png)
+![alt text](img/manual/image-9.png)
 
 
 ### 7.5.1 Editar i eliminar grup
@@ -235,7 +300,7 @@ Al panell "Configuració de grup" podem:
 - **Editar:** el moderador pot canviar el nom, descripció i categories del grup des de la pàgina del grup.
 - **Eliminar:** només l'owner pot eliminar el grup. En cas de voler abandonar el grup sent l'owner, cal transferir la propietat a un altre membre abans de sortir.
 
-![alt text](img/image-10.png)
+![alt text](img/manual/image-10.png)
 
 ### 7.5.2 Administrar membres del grup
 
@@ -245,7 +310,7 @@ Al panell "Membres del grup" podem:
 - **Expulsar a un usuari**
 - **Canviar el rol a un usuari**
 
-![alt text](img/image-11.png)
+![alt text](img/manual/image-11.png)
 
 ### 7.5.3 Administrar metas del grup
 
@@ -256,14 +321,12 @@ Al panell "Metas del grup" podem:
 - **Veure i crear comentaris de les tasques**
 - **Eliminar tasques del grup**
 
-![alt text](img/image-13.png)
-corregir!
+![alt text](img/manual/image-29.png)
+
 
 - **Aprobar o rebutjar tasques indexades al grup**
 
-![alt text](img/image-14.png)
-
-corregir!
+![alt text](img/manual/image-28.png)
 
 ---
 
@@ -287,7 +350,7 @@ corregir!
    - **Es publica?** (si es fa pública per la comunitat)
 3. Fes clic a "Crea la meta".
 
-![alt text](img/image-15.png)
+![alt text](img/manual/image-15.png)
 
 
 ### 8.2.1 Meta publica
@@ -307,7 +370,7 @@ corregir!
    - **Usuari del grup a assignar:** (Només si es una "task")
 
 
-![alt text](img/image-16.png)
+![alt text](img/manual/image-16.png)
 
 ---
 
@@ -320,7 +383,7 @@ corregir!
 2. Fes clic a "Afegir a la meva llista".
 3. A la barra de navegació al apartat "Les meves metas" pots veure la llista de les teves metas.
 
-![alt text](img/image-17.png)
+![alt text](img/manual/image-17.png)
 
 ### 9.2 Assignar metes a usuaris del grup
 
@@ -336,7 +399,7 @@ corregir!
    - **Puntuació** (Només si es "challenge")
 4. Fes clic a "Afegeix la meta".
 
-![alt text](img/image-18.png)
+![alt text](img/manual/image-18.png)
 
 
 
@@ -345,6 +408,8 @@ corregir!
 
 1. Anar a la pagina "Les meves metes", selecciona la meta que has completat.
 2. Fes clic a "Marcar completada".
+
+![alt text](img/manual/image-40.png)
 
 
 ### 9.4 Afegir comentaris a les assignacions de grup
@@ -356,6 +421,8 @@ corregir!
 4. Fes clic a "Crea el comentari".
 
 Els comentaris són útils per aclarir dubtes sobre la meta o l'assignació.
+
+![alt text](img/manual/image-31.png)
 
 ---
 
@@ -377,7 +444,7 @@ Per pujar una prova:
 5. Introdueix el text o selecciona el fitxer d'imatge.
 6. Fes clic a "Submit".
 
-![alt text](img/image-19.png)
+![alt text](img/manual/image-19.png)
 
 
 ---
@@ -391,20 +458,22 @@ Per pujar una prova:
 3. Fes clic a "Afegir amic".
 4. L'usuari rebrà una invitació d'amistat.
 
-![alt text](img/image-20.png)
+![alt text](img/manual/image-20.png)
 
-### 11.2 Acceptar / rebutjar invitacions
+### 11.2 Acceptar/rebutjar invitacions d'amics/grups
 
-1. Des del teu perfil o des de la llista d'invitacions, veuràs les invitacions d'amistat pendents.
+1. Des del teu perfil a la llista d'invitacions, veuràs les invitacions d'amistat/grups pendents.
 2. Per a cada invitació, pots:
    - **Acceptar:** passarà a formar part de la teva llista d'amics.
    - **Rebutjar:** la invitació es descarta.
+
+   ![alt text](img/manual/image-27.png)
 
 ### 11.3 Llista d'amics
 
 Al teu perfil es mostra la llista d'amics acceptats. Des d'aquí pots veure el perfil i la puntuació de cada amic.
 
-[imatge]
+![alt text](img/manual/image-32.png)
 
 ---
 
@@ -414,7 +483,7 @@ Al teu perfil es mostra la llista d'amics acceptats. Des d'aquí pots veure el p
 
 Per cada grup públic, es mostra un rànquing basat en la suma total de punts dels integrants del grup.
 
-![alt text](img/image-21.png)
+![alt text](img/manual/image-21.png)
 
 
 ### 12.2 Puntuacions d'usuari
@@ -423,7 +492,7 @@ Cada usuari té una puntuació global que es mostra al seu perfil:
 - Nombre de metes completades.
 - La suma de punts de challenges completats en tots els grups
 
-![alt text](img/image-22.png)
+![alt text](img/manual/image-22.png)
 
 ---
 
@@ -459,14 +528,19 @@ Només els usuaris amb rol d'administrador poden accedir al panell d'administrac
 - Editar informació dels grups
 - Eliminar grups
 
-### Gestió de categories
+### Imatges de referencia:
 
-- Visualitzar categories disponibles
-- Crear noves categories
-- Editar categories existents
-- Eliminar categories
+- Panell admin:
+![alt text](img/manual/image-23.png)
 
-![alt text](img/image-23.png)
+- Crear una meta:
+
+![alt text](img/manual/image-34.png)
+
+- Editar una meta:
+
+![alt text](img/manual/image-33.png)
+
 
 
 ### 14.2 Metes pendents d'indexar
@@ -475,6 +549,6 @@ Des del "panell admin", l'administrador pot revisar les metes pendents d'aprovac
 - **Aprovar** la meta per a la comunitat
 - **Rebutjar** la proposta
 
-![alt text](img/image-24.png)
+![alt text](img/manual/image-24.png)
 
 
