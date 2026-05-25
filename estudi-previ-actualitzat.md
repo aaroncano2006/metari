@@ -1,5 +1,21 @@
 # Estudi previ
 
+## Índex
+
+1. [Descripció del sistema](#1-descripció-del-sistema)
+2. [Requisits del sistema](#2-requisits-del-sistema)
+   - 2.1 [Requisits funcionals](#requisits-funcionals)
+   - 2.2 [Requisits no funcionals](#requisits-no-funcionals)
+3. [Model de negoci](#3-model-de-negoci)
+   - 3.1 [Actors del sistema](#actors-del-sistema)
+   - 3.2 [Diagrama de casos d'ús](#diagrama-de-casos-dús)
+4. [Model conceptual (simplificat)](#4-model-conceptual-simplificat)
+   - 4.1 [Canvis respecte al model original](#41-canvis-respecte-al-model-original)
+5. [Disseny inicial de la interfície (bàsic)](#5-disseny-inicial-de-la-interfície-bàsic)
+6. [Tecnologies utilitzades](#6-tecnologies-utilitzades)
+7. [Planificació inicial](#7-planificació-inicial)
+8. [Possibles millores](#8-possibles-millores)
+
 # 1. Descripció del sistema
 
 **Nom del projecte:** Metari
