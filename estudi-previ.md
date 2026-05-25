@@ -1,5 +1,21 @@
 # Estudi previ
 
+## Índex
+
+1. [Descripció del sistema](#1-descripció-del-sistema)
+2. [Requisits del sistema](#2-requisits-del-sistema)
+   - 2.1 [Requisits funcionals](#requisits-funcionals)
+   - 2.2 [Requisits no funcionals](#requisits-no-funcionals)
+3. [Model de negoci](#3-model-de-negoci)
+   - 3.1 [Actors del sistema](#actors-del-sistema)
+   - 3.2 [Diagrama de casos d'ús](#diagrama-de-casos-dús)
+4. [Model conceptual (simplificat)](#4-model-conceptual-simplificat)
+   - 4.1 [Canvis respecte al model original](#41-canvis-respecte-al-model-original)
+5. [Disseny inicial de la interfície (bàsic)](#5-disseny-inicial-de-la-interfície-bàsic)
+6. [Tecnologies utilitzades](#6-tecnologies-utilitzades)
+7. [Planificació inicial](#7-planificació-inicial)
+8. [Possibles millores](#8-possibles-millores)
+
 # 1. Descripció del sistema
 
 **Nom del projecte:** Metari
@@ -288,6 +304,31 @@ Un usuari pot realitzar cap o moltes proves per a una assignació concreta.
 
 ---
 
+## 4.1 Canvis respecte al model original
+
+
+**Meta**
+
+- Camps afegits: `is_public`, `category_id`
+
+**Assignation**
+
+- Camps afegits: `assigner_id`, `needs_proofs` 
+
+**Proof**
+
+- Camps afegits: `proof_type`
+
+**Index** (IndexedMeta)
+
+- Camps eliminats: `group_id`, `is_public`
+
+**AssignationCompletions** — Nova taula
+
+- Camps: `id`, `user_id`, `assignation_id`, `is_Completed`
+
+- Gestiona complecions individuals per a challenges de grup
+
 # 5. Disseny inicial de la interfície (bàsic)
 
 Per visualitzar millor com volem que sigui el frontend de Metari, hem especificat les principals pàgines i components en el [següent document](wireframe/planificacio-wireframe.md).
@@ -320,6 +361,9 @@ També hem realitzat un wireframe amb **Figma** per poder exemplificar millor co
 
 ![alt text](wireframe/imgs/AdminPanel.png)
 
+**Diseny orientatiu final**:
+
+![alt text](wireframe/imgs/diseny_final.png)
 ---
 
 # 6. Tecnologies utilitzades
@@ -328,31 +372,40 @@ També hem realitzat un wireframe amb **Figma** per poder exemplificar millor co
 
 Frontend
 
-- React (TypeScript)
-- CSS
-- Bootstrap
+- **Framework:** React (TypeScript) amb Vite
+- **Estils:** CSS, Bootstrap
+- **Routing:** react-router-dom
+- **HTTP Client:** Axios
+- **Validació:** Zod
 
 Backend
 
-- Express JS
-- API RESTful
-
-ORM
-
-- [Prisma](https://www.prisma.io/orm)
+- **Framework:** Express JS
+- **API:** RESTful
+- **ORM:** [Prisma](https://www.prisma.io/orm)
+- **Seguretat:** Helmet, CORS
 
 Base de dades
 
-- MariaDB
+- **BBDD:** MariaDB
 
 Autenticació
 
-- bcrypt -> Hash de contrasenyes
-- JWT (JSONWebToken) -> Autenticació
+- **Hash de contrasenyes:** bcrypt
+- **Tokens:** JWT (JSONWebToken)
 
 Pujada de fitxers
 
-- Multer
+- **Middleware:** Multer
+
+Correu electrònic
+
+- **Notificacions:** Nodemailer
+
+Eines de desenvolupament
+
+- **Gestor de processos:** Nodemon (reinici automàtic en desenvolupament)
+- **Variables d'entorn:** Dotenv
 
 ## Diagrama d'arquitectura
 
@@ -374,3 +427,44 @@ Pujada de fitxers
 
 
 **Nota**: És possible que algunes fases del projecte s'hagin de realitzar a l'hora, per exemple, desenvolupar el backend i provar-ho o documentar mentre es desplega per tenir documentat com s'executa en local i com es posa en producció.
+
+
+# 8. Possibles millores
+Degut a les restriccions de temps a l'hora de fer el projecte, no s'han pogut desenvolupar algunes de les funcionalitats desitjades.
+
+**Millores funcionals:**
+
+- Organització avançada de metes: filtrar i ordenar per dates, prioritat o dificultat, i mostrar un calendari amb les tasques a complir.
+
+- Paginació a les llistes de metes, grups, usuaris i categories.
+
+- Fer el sistema de puntuació de grups més robust i millorar l'experiència de l'usuari a l'hora de comparar punts amb altres membres.
+
+- Historial de seguiment de les tasques completades, tant per grup com per usuari.
+
+- Millorar panell d'estadístiques (gràfics de progrés, percentatge de completats, puntuació personal per grup, dies consecutius de complecions...).
+
+- Reportar usuaris o contingut inapropiat.
+
+- Pujada de foto de perfil personalitzada. Per temps hem hagut de retallar contingut i no hem implementat aquesta funcionalitat.
+
+- Ordenar rankings per tasques completades. D'aquesta forma podem veure quins usuaris han completat més tasques i quins usuaris tenen més puntuació.
+
+- Rankings interns de grup i rankings de tu i els teus amics en el perfil o a la home de forma similar a com surt el Top 10 Usuaris.
+
+- Comprovació de dates d'inici i de finalització a l'hora de comptar la puntuació o a l'hora de poder marcar-les com a completada o llistar-les en les assignacions. En aquesta versió del projecte només són dades informatives, però podria ser comode a l'hora de gestionar-les.
+
+**Millores d'estil:**
+
+- Pàgina de presentació: una introducció explicant de què tracta la plataforma abans d'entrar a l'aplicació.
+
+- L'opció de canviar la paleta de colors de la plataforma (alguns elements de l'aplicació ja tenen colors per variable preparats per aquesta funcionalitat).
+
+**Millores tècniques:**
+
+- CI/CD per desplegament automàtic
+- Documentació de l'API amb Swagger
+
+
+
+
