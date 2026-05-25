@@ -13,8 +13,14 @@ const seedGroups = async () => {
     const createMany = await prisma.group.createMany({
       data: [
         {
-          name: "Los pelaos",
-          description: "Grup per fer tests",
+          name: "Programadors S.L",
+          description: "Grup de programadors",
+          owner_id: 8,
+          is_public:true,
+        },
+        {
+          name: "Los Pelaos",
+          description: "Grup d'amics",
           owner_id: 3,
           is_public:false,
         },
@@ -26,14 +32,20 @@ const seedGroups = async () => {
         },
         {
           name: "Coleguis",
-          description: "Grup 3 per fer tests",
+          description: "Grup dels 3 penjats",
           owner_id: 3,
           is_public:true,
         },
         {
           name: "Cool Family",
-          description: "Grup de la familia guay",
+          description: "Grup de la familia guai",
           owner_id: 7,
+          is_public:true,
+        },
+        {
+          name: "Vallbona Daw 2026",
+          description: "Classe de daw",
+          owner_id: 12,
           is_public:true,
         },
       ],

@@ -13,14 +13,14 @@ const seed = async () => {
     try {
         await seedCategories();
         await seedUsers();
-        await seedInvitations();
         await seedGroups();
+        await seedInvitations();
         await seedMetas();
         await seedAssignations();
         // await seedProofs();
         await seedComments();
         await seedGroupsUsers();
-        // await seedIndexedMetas();
+        await seedIndexedMetas();
         
     } catch (error) {
         console.log("Error seeding database! " + error);

@@ -144,7 +144,7 @@ li {
   resize: vertical;
   overflow: hidden;
   min-height: auto;
-  max-height: 100vh;
+  max-height: 600px;
 }
 
 .metaEntry {

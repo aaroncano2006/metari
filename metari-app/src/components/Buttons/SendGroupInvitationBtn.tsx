@@ -18,6 +18,7 @@ type SendGroupInvitationBtnProps = {
   small?: boolean;
   groupId: number;
   isPublic?: boolean;
+  ownerId?: number;
 };
 
 export default function SendGroupInvitationBtn({
@@ -25,6 +26,7 @@ export default function SendGroupInvitationBtn({
   small,
   groupId,
   isPublic = false,
+  ownerId,
 }: SendGroupInvitationBtnProps) {
   const [_error, setError] = useState<boolean>(false);
   const [_success, setSuccess] = useState<boolean>(false);
@@ -208,7 +210,7 @@ export default function SendGroupInvitationBtn({
           </button>
         </>
       )}
-      {!pendingInvitation && alreadyInGrup && receiverId === userId && (
+      {!pendingInvitation && alreadyInGrup && receiverId === userId && ownerId !== userId && (
         <button
           className={`btn ${small ? "p-1 smallButton" : ""} btn-danger`}
           onClick={async (event) => {

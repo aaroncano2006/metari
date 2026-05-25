@@ -30,6 +30,7 @@ const seedGroupsUsers = async () => {
         {
           user_id:2,          
           group_id:3,
+          role:"member",
         },
         {
           user_id:4,          
@@ -47,6 +48,22 @@ const seedGroupsUsers = async () => {
           role:"moderator",
           
         },
+        {
+          user_id:1,          
+          group_id:6,
+          role:"member",
+        },
+        {
+          user_id:4,          
+          group_id:6,
+          role:"moderator",
+        },
+        {
+          user_id:12,          
+          group_id:6,
+          role:"moderator",
+        },
+        
       ],
       skipDuplicates: true,
     });

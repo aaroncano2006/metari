@@ -192,6 +192,7 @@ export default function ModalGroupModeratorPanel({
     setError(null);
     setSuccess(false);
     try {
+      await updateGroupUserRole(group.id, userId, "moderator");
       const updatedGroup = await updateGroup(group.id, { owner_id: userId });
       setter((prev) => prev.map((g) => (g.id === group.id ? updatedGroup : g)));
       setSuccess(true);
