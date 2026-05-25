@@ -130,6 +130,15 @@ const seedUsers = async () => {
           completed_tasks: 0,
           score: 0,
         },
+        {
+          name: "Nom Alumne",
+          username: "Alumne",
+          email: "presentacio@test.com",
+          password: await utils.hash("12345678"),
+          role: "user",
+          completed_tasks: 0,
+          score: 0,
+        },
         
       ],
       skipDuplicates: true,
