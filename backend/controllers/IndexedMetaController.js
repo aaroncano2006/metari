@@ -73,11 +73,35 @@ const createIndexedMeta = async (req, res, next) => {
     }
 
     const isAuthor = meta.author_id === req.user.id;
-    const isGroupMember = meta.group?.groupUsers.some(
+    const isAdmin = req.user.role === "admin";
+    const group = meta.group;
+
+    let isGroupOwner = group?.owner_id === req.user.id;
+    let isGroupMember = group?.groupUsers.some(
       (gu) => gu.role === "member" || gu.role === "moderator",
     );
-    const isGroupOwner = meta.group?.owner_id === req.user.id;
-    const isAdmin = req.user.role === "admin";
+
+    if (!group) {
+      const assignations = await prisma.assignation.findMany({
+        where: { meta_id: meta.id },
+        include: {
+          group: {
+            include: {
+              groupUsers: { where: { user_id: req.user.id } },
+            },
+          },
+        },
+      });
+
+      isGroupOwner = assignations.some(
+        (a) => a.group?.owner_id === req.user.id,
+      );
+      isGroupMember = assignations.some(
+        (a) => a.group?.groupUsers.some(
+          (gu) => gu.role === "member" || gu.role === "moderator",
+        ),
+      );
+    }
 
     if (!isAuthor && !isGroupMember && !isGroupOwner && !isAdmin) {
       const error = new Error("No tens permisos per proposar aquesta meta!");
@@ -144,10 +168,31 @@ const updateIndexedMeta = async (req, res, next) => {
 
     const isAdmin = req.user.role === "admin";
     const group = existing.meta?.group;
-    const isGroupOwner = group?.owner_id === req.user.id;
-    const isGroupModerator = group?.groupUsers.some(
+    let isGroupOwner = group?.owner_id === req.user.id;
+    let isGroupModerator = group?.groupUsers.some(
       (gu) => gu.role === "moderator",
     );
+
+    if (!group) {
+      const assignations = await prisma.assignation.findMany({
+        where: { meta_id: existing.meta.id },
+        include: {
+          group: {
+            include: {
+              groupUsers: { where: { user_id: req.user.id } },
+            },
+          },
+        },
+      });
+
+      isGroupOwner = assignations.some(
+        (a) => a.group?.owner_id === req.user.id,
+      );
+      isGroupModerator = assignations.some(
+        (a) => a.group?.groupUsers.some((gu) => gu.role === "moderator"),
+      );
+    }
+
     const canApprove = isGroupOwner || isGroupModerator || isAdmin;
 
     const data = {};
