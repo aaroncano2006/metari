@@ -105,6 +105,14 @@ const createAssignation = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
+    const meta = await prisma.meta.findUnique({ where: { id: metaId } });
+    if (!meta) {
+      const error = new Error("Meta no trobada");
+      error.statusCode = 404;
+      throw error;
+    }
+
+
 
     if (groupId) {
       const group = await prisma.group.findUnique({
@@ -127,12 +135,21 @@ const createAssignation = async (req, res, next) => {
         (gu) => gu.role === "moderator"
       );
 
-      if (!isOwner && !isModerator && req.user.role !== "admin") {
+      // if (!isOwner && !isModerator && req.user.role !== "admin") {
+      //   const error = new Error("No tens permisos per assignar metes en aquest grup");
+      //   error.statusCode = 403;
+      //   throw error;
+      // }
+
+      if (meta.type !== "challenge" && !isOwner && !isModerator && req.user.role !== "admin") {
         const error = new Error("No tens permisos per assignar metes en aquest grup");
         error.statusCode = 403;
         throw error;
       }
+
     }
+
+
 
     const data = {
       group_id: groupId ?? null,
@@ -173,6 +190,7 @@ const createAssignation = async (req, res, next) => {
         proofs: { include: { user: true } },
       },
     });
+
 
     res.status(201).json(utils.handleBigInt(assignation));
   } catch (error) {
@@ -220,8 +238,8 @@ const updateAssignation = async (req, res, next) => {
     const group = existingAssignation.group;
     const canManageAll = group
       ? group.owner_id === currentUserId ||
-        group.groupUsers.some((gu) => gu.role === "moderator") ||
-        req.user.role === "admin"
+      group.groupUsers.some((gu) => gu.role === "moderator") ||
+      req.user.role === "admin"
       : req.user.role === "admin";
 
     const isAssignedUser = existingAssignation.user_id === currentUserId;

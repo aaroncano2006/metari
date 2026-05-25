@@ -21,7 +21,12 @@ const seedComments = async () => {
           assignation_id:2,
           user_id: 2,
           body: "Esteu tots d'acord a fer aixo...?",
-        },       
+        },  
+        {
+          assignation_id:6,
+          user_id: 1,
+          body: "Genial!! Jo m'apunto!",
+        },      
       ],
       skipDuplicates: true,
     });

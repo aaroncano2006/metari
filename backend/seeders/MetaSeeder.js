@@ -231,7 +231,7 @@ const seedMetas = async () => {
           author_id:1,
         },
         {
-          title:"Completar Crash Banticoot 3 al 105%",
+          title:"Completar Crash Bandicoot 3 al 105%",
           description:"",
           category_id: 7,
           author_id:1,

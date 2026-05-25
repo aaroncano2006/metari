@@ -43,8 +43,8 @@ const seedGroups = async () => {
           is_public:true,
         },
         {
-          name: "Grup Presentacio",
-          description: "Grup per la presentacio del projecte",
+          name: "Vallbona Daw 2026",
+          description: "Classe de daw",
           owner_id: 12,
           is_public:true,
         },

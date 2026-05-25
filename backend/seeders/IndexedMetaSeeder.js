@@ -13,20 +13,12 @@ const seedIndexedMetas = async () => {
     const createMany = await prisma.indexedMeta.createMany({
       data: [
         {
-          meta_id:1,
-          group_id:1,
-          is_public:true,
-        },
-        {
           user_id:1,
-          meta_id:2,
-          is_public:false,
-        },
-        {
-          user_id:4,
           meta_id:3,
-          is_public:true,
+          is_approved: true,
+          is_community_approved: true,
         },
+        
       ],
       skipDuplicates: true,
     });

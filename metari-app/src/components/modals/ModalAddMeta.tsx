@@ -7,6 +7,7 @@ import { getUserId } from "../../services/auth/loginService";
 import { assignationSchema } from "../../schemas/assignationSchema"
 // import { createAssignationSchema } from "../../schemas/assignationSchema"
 import type { groupType } from "../../types/groupType";
+import { createIndexedMeta } from "../../services/IndexerService";
 
 
 
@@ -85,6 +86,12 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
     try {
       await createAssignation(validation.data)
+       if (meta[0]?.type === "challenge" && loggedInUserId) {
+        await createIndexedMeta({
+          user_id: loggedInUserId,
+          meta_id: meta[0].id,
+        });
+      }
       alert("Meta afegida correctament!")
       setMetaToAdd([null, ""])
     } catch (error) {
@@ -181,10 +188,10 @@ export function ModalAddMeta({ meta, setMetaToAdd, groups }: ModalAddMetaProps) 
 
                       <div className="">
                         <div className="my-3">
-                        <div><strong>Titol: </strong>{meta[0]?.title}</div>
-                        {meta[0]?.description &&
-                          <div><strong>Descripcio: </strong>{meta[0]?.description}</div>
-                        }
+                          <div><strong>Titol: </strong>{meta[0]?.title}</div>
+                          {meta[0]?.description &&
+                            <div><strong>Descripcio: </strong>{meta[0]?.description}</div>
+                          }
                         </div>
                         <input type="hidden" name="user_id" value={getUserId() ?? ""} />
                         <input type="hidden" name="assigner_id" value={loggedInUserId ?? ""} />

@@ -154,7 +154,7 @@ export function ModalUserCreateMeta({
           | "extreme",
       });
     }
-    setMetas((prev) => [...prev, newMeta]);
+    // setMetas((prev) => [...prev, newMeta]);
     alert("Meta creada correctament");
     setCreatingMeta(false);
   }
