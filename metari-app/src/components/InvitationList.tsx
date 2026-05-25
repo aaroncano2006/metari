@@ -52,11 +52,11 @@ export function InvitationList({ invitations, setter, target }: UserListProps) {
                       <div className="d-flex py-1 ps-2 pe-2 align-items-center">
                         <div className="me-auto">
                           {target === "groups" && i.group && (
-                            <span className="ms-2 ">{i.group.name}</span>
+                            <span className="ms-2 ">{i.group.name} - </span>
                           )}
-                          {/* {i.sender.username === username
+                          {i.sender.username === username
                             ? i.receiver.username
-                            : i.sender.username} */}
+                            : i.sender.username}
                         </div>
                         {token && target === "friends" && (
                           <Link
