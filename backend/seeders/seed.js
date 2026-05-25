@@ -13,8 +13,8 @@ const seed = async () => {
     try {
         await seedCategories();
         await seedUsers();
-        await seedInvitations();
         await seedGroups();
+        await seedInvitations();
         await seedMetas();
         await seedAssignations();
         // await seedProofs();

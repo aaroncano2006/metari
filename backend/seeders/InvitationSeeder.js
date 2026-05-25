@@ -102,7 +102,7 @@ const seedInvitations = async () => {
             sender_id: 12,
             receiver_id: 8,
             status: "pending",
-            group_id: 7,
+            group_id: 6,
         },
         {
             sender_id: 1,
