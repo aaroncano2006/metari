@@ -165,6 +165,24 @@ const deleteGroupUser = async (req, res, next) => {
       throw error;
     }
 
+    const group = await prisma.group.findUnique({
+      where: { id: groupId },
+    });
+
+    if (!group) {
+      const error = new Error("Grup no trobat!");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (group.owner_id === userId) {
+      const error = new Error(
+        "El propietari del grup no pot sortir-ne! Transfereix la propietat primer.",
+      );
+      error.statusCode = 400;
+      throw error;
+    }
+
     const deleted = await prisma.groupUser.delete({
       where: {
         group_id_user_id: {

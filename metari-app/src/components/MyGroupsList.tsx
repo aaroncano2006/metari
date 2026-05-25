@@ -65,6 +65,7 @@ export function MyGroupsList({ groups, setter }: MyGroupListProps) {
                                 groupId={group.id}
                                 isPublic={group.is_public}
                                 small={true}
+                                ownerId={group.owner_id}
                               />
                               {group.groupUsers.find(
                                 (el) => el.group_id === group.id && el.user_id === getUserId() && el.role === "moderator"
@@ -121,6 +122,7 @@ export function MyGroupsList({ groups, setter }: MyGroupListProps) {
                                 receiverId={getUserId()!}
                                 groupId={group.id}
                                 isPublic={group.is_public}
+                                ownerId={group.owner_id}
                               />
                             </div>
                           )}
