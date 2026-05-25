@@ -36,8 +36,6 @@ import { search as searchUsers } from "../../services/searchService";
 import { sendInvitation } from "../../services/invitationService";
 import type { userTypeFrontend } from "../../types/userTypeFrontend";
 import { updateProof } from "../../services/proofService";
-import { fetchUserById, updateUser } from "../../services/userService";
-
 type ModalGroupModeratorPanelProps = {
   group: groupType;
   setEditGroup: React.Dispatch<React.SetStateAction<groupType | null>>;
@@ -342,21 +340,6 @@ export default function ModalGroupModeratorPanel({
       const updated = await updateAssignation(assignation.id, {
         completed: newCompleted,
       });
-
-      if (assignation.user_id) {
-        const user = await fetchUserById(assignation.user_id);
-        if (newCompleted) {
-          await updateUser(assignation.user_id, {
-            completed_tasks: (user?.completed_tasks ?? 0) + 1,
-            ...(assignation.score ? { score: (user?.score ?? 0) + assignation.score } : {}),
-          });
-        } else {
-          await updateUser(assignation.user_id, {
-            completed_tasks: (user?.completed_tasks ?? 0) - 1,
-            ...(assignation.score ? { score: (user?.score ?? 0) - assignation.score } : {}),
-          });
-        }
-      }
 
       setAssignations((prev) =>
         prev.map((a) => (a.id === assignation.id ? { ...a, ...updated } : a)),

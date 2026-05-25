@@ -11,7 +11,6 @@ import {
   updateAssignation,
   createAssignationCompletion,
 } from "../services/assignationService";
-import { fetchUserById, updateUser } from "../services/userService";
 import { ModalAddProof } from "./modals/ModalAddProof";
 import type { proofType } from "../types/proofType";
 import { deleteProof } from "../services/proofService";
@@ -357,12 +356,6 @@ export function MyMetaListByGroup({
                                           assignation.id,
                                           { completed: true },
                                         );
-                                        const user = await fetchUserById(loggedInUserId!);
-                                        const score = assignation.score ?? 0;
-                                        await updateUser(loggedInUserId!, {
-                                          completed_tasks: (user?.completed_tasks ?? 0) + 1,
-                                          score: (user?.score ?? 0) + score,
-                                        });
                                         setAssignations((prev) =>
                                           prev.map((a) =>
                                             a.id === assignation.id

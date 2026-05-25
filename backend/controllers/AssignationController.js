@@ -200,6 +200,7 @@ const updateAssignation = async (req, res, next) => {
     const existingAssignation = await prisma.assignation.findUnique({
       where: { id },
       include: {
+        meta: true,
         group: {
           include: {
             groupUsers: {
@@ -296,6 +297,61 @@ const updateAssignation = async (req, res, next) => {
         proofs: { include: { user: true } },
       },
     });
+
+    const completedChanged = reqBody.completed !== undefined && reqBody.completed !== existingAssignation.completed;
+    if (completedChanged && existingAssignation.user_id) {
+      const targetUser = await prisma.user.findUnique({
+        where: { id: existingAssignation.user_id },
+      });
+      if (targetUser) {
+        const assignationScore = existingAssignation.score ?? BigInt(0);
+        const isChallenge = existingAssignation.meta?.type === "challenge";
+
+        if (reqBody.completed === true) {
+          if (isChallenge) {
+            if (assignationScore > BigInt(0)) {
+              await prisma.user.update({
+                where: { id: existingAssignation.user_id },
+                data: { score: (targetUser.score ?? BigInt(0)) + assignationScore },
+              });
+            }
+          } else {
+            const updateData = {
+              completed_tasks: (targetUser.completed_tasks ?? BigInt(0)) + BigInt(1),
+            };
+            if (assignationScore > BigInt(0)) {
+              updateData.score = (targetUser.score ?? BigInt(0)) + assignationScore;
+            }
+            await prisma.user.update({
+              where: { id: existingAssignation.user_id },
+              data: updateData,
+            });
+          }
+        } else {
+          if (isChallenge) {
+            if (assignationScore > BigInt(0)) {
+              const newScore = (targetUser.score ?? BigInt(0)) - assignationScore;
+              await prisma.user.update({
+                where: { id: existingAssignation.user_id },
+                data: { score: newScore < BigInt(0) ? BigInt(0) : newScore },
+              });
+            }
+          } else {
+            const updateData = {};
+            const newTasks = (targetUser.completed_tasks ?? BigInt(0)) - BigInt(1);
+            updateData.completed_tasks = newTasks < BigInt(0) ? BigInt(0) : newTasks;
+            if (assignationScore > BigInt(0)) {
+              const newScore = (targetUser.score ?? BigInt(0)) - assignationScore;
+              updateData.score = newScore < BigInt(0) ? BigInt(0) : newScore;
+            }
+            await prisma.user.update({
+              where: { id: existingAssignation.user_id },
+              data: updateData,
+            });
+          }
+        }
+      }
+    }
 
     res.status(200).json(utils.handleBigInt(updatedAssignation));
   } catch (error) {
