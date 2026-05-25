@@ -413,5 +413,34 @@ Eines de desenvolupament
 **Nota**: És possible que algunes fases del projecte s'hagin de realitzar a l'hora, per exemple, desenvolupar el backend i provar-ho o documentar mentre es desplega per tenir documentat com s'executa en local i com es posa en producció.
 
 
-# 8. Posibles millores
+# 8. Possibles millores
+Degut a les restriccions de temps a l'hora de fer el projecte, no s'han pogut desenvolupar algunes de les funcionalitats desitjades.
+
+**Millores funcionals:**
+
+- Organització avançada de metes: filtrar i ordenar per dates, prioritat o dificultat, i mostrar un calendari amb les tasques a complir.
+
+- Paginació a les llistes de metes, grups, usuaris i categories.
+
+- Fer el sistema de puntuació de grups més robust i millorar l'experiència de l'usuari a l'hora de comparar punts amb altres membres.
+
+- Historial de seguiment de les tasques completades, tant per grup com per usuari.
+
+- Millorar panell d'estadístiques (gràfics de progrés, percentatge de completats, puntuació personal per grup, dies consecutius de complecions...).
+
+- Reportar usuaris o contingut inapropiat.
+
+**Millores d'estil:**
+
+- Pàgina de presentació: una introducció explicant de què tracta la plataforma abans d'entrar a l'aplicació.
+
+- L'opció de canviar la paleta de colors de la plataforma (alguns elements de l'aplicació ja tenen colors per variable preparats per aquesta funcionalitat).
+
+**Millores tècniques:**
+
+- CI/CD per desplegament automàtic
+- Documentació de l'API amb Swagger
+
+
+
 
