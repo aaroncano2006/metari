@@ -416,16 +416,58 @@ app.post("/api/test-email", async (req, res, next) => {
 
 ## Multer
 
+Multer és una llibreria per gestionar la pujada d'arxius al servidor. S'utilitza per rebre imatges des del client i guardar-los backend.
+
+Instal·lem multer:
+
 ```bash
 npm install multer
 ```
 
-backend/index.js — afegir:  
+Creem un fitxer de configuració (`backend/config/upload.js`) on definim:
+- **storage**: Configuració de destí i nom dels arxius.
+- **fileFilter**: Filtre per permetre només certs tipus de fitxer (imatges jpeg, png, webp).
+- **limits**: Límit de mida màxima del fitxer (5 MB) i el seu tamany (1024 x 1024).
+
+```javascript
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, "../uploads/proofs"));
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `temp_${Date.now()}${ext}`);
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowed = /\.(jpeg|jpg|png|webp)$/i;
+    const extOk = allowed.test(path.extname(file.originalname));
+    cb(extOk ? null : new Error("Només imatges (jpeg, png, webp)"), extOk);
+};
+
+const upload = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+module.exports = upload;
+```
+
+
+Per servir els fitxers pujats, afegim al `backend/index.js`:
+
+```javascript
 app.use("/uploads", express.static("uploads"));
+```
 
 # Frontend
 
-Creem el projecte de l'aplicacio:
+Creem el projecte de l'aplicació:
 
 ```bash
 npm create vite@latest react-notes-app
@@ -437,66 +479,99 @@ Les opcions utilitzades per configurar el projecte:
 - Typescript
 - Install with npm and start now? -yes
 
-Instal·lem bootstrap:
+
+## Bootstrap:  
+
+Bootstrap és un framework CSS que proporciona components i estils per crear interfícies responsives de forma ràpida.
 
 ```bash
 npm install bootstrap
 ```
-
-importem bootstrap al projecte:
+Importem bootstrap al projecte a `src/main.tsx`:
 
 ```bash
-// src/main.tsx
 import "bootstrap/dist/css/bootstrap.min.css";
 ```
 
-Intal·lem llibreria per fer pagines amb react:
+
+## Bootstrap icons:  
+
+Bootstrap Icons és una llibreria d'icones vectorials dissenyades per a Bootstrap. Proporciona icones en format SVG i font que es poden utilitzar fàcilment als components de React.
+
+```bash
+npm install bootstrap-icons
+```
+
+Importem les icones al projecte a `src/main.tsx`:
+
+```bash
+import "bootstrap-icons/font/bootstrap-icons.css";
+```
+
+## react-router-dom:  
+
+React Router DOM és la llibreria de navegació per a React. Permet definir rutes al frontend i navegar entre pàgines sense recarregar el navegador.
 
 ```bash
 npm install react-router-dom
 ```
 
-Instal·lem axios:
+## Axios:  
+
+Axios és un client HTTP per fer peticions a la API del backend des del frontend. Gestiona automàticament les respostes en JSON, les capçaleres i els errors.
 
 ```bash
 npm install axios
 ```
 
-Instal·lem zod:
+## Zod:
+
+Zod és una llibreria de validació d'esquemes per TypeScript. Permet definir i validar dades de forma segura, utilitzada per validar formularis abans d'enviar-los al backend.
 
 ```bash
 npm install zod
 ```
 
-# executar projecte en desenvolupament
+# Executar projecte en desenvolupament
 
-## backend
 
-Instal·lar dependencies:
+## Configuració inicial
+
+Copiar els fitxers `.env.example` a `.env` tant a l'arrel com al backend i omplir amb les dades corresponents.
+
+backend:
 
 ```bash
+cd backend
+cp .env.example .env
+nano .env
+cd ..
+```
+A l'arrel del projecte:
+
+```bash
+
+cp .env.example .env
+nano .env
+```
+
+Per a desenvolupament local, establir `ENVIRONMENT="dev"` al `backend/.env` i configurar les variables amb les dades de connexió a la base de dades local.
+
+
+
+## Backend (local)
+
+
+```bash
+cd backend
 npm i
-```
-
-Importar prisma client:
-
-```bash
 npx prisma generate
-```
-
-Executar migracions:
-
-```bash
 npm run migrate
-```
-
-Arrancar servei:
-
-```bash
+npm run seed
 npm run dev
 ```
 
-Servei en funcionament:
+El servei arrencarà a `http://localhost`:
 
 ```bash
 > backend@1.0.0 dev
@@ -507,16 +582,44 @@ Servei en funcionament:
 [nodemon] watching path(s): *.*
 [nodemon] watching extensions: js,mjs,cjs,json
 [nodemon] starting `node index.js`
-◇ injected env (8) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (22) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
 Server running on port 3001
-[nodemon] clean exit - waiting for changes before restart
 ```
 
-git clone
-cd metari
-copiar arxius env, editarlos
-cd backend
-copiar .env
-env production  
-cd ..
-docker compose up --build
+## Frontend (local)
+
+```bash
+cd metari-app
+npm i
+npm run dev
+```
+
+El frontend arrencarà a `http://localhost:5173`.
+
+```
+  VITE v8.0.8  ready in 190 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+
+```
+
+## Docker (producció)
+
+desde la carpeta arrel del projecte:
+
+```bash
+docker compose up --build -d
+```
+
+Això crearà i arrencarà els contenidors de:
+- **db** → MariaDB
+- **backend** → Node.js amb Prisma (migracions + seeders automàtics)
+- **frontend** → Vite build servit amb Nginx
+- **nginx** → Reverse proxy amb HTTPS autosignat
+
+
